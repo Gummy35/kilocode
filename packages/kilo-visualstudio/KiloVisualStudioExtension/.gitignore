@@ -1,0 +1,20 @@
+# Build outputs
+bin/
+obj/
+*.vsix
+*.nupkg
+
+# Visual Studio files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+# Temporary files
+*.tmp
+Temp/
+
+# WebView2 cache
+WebView2Cache/
