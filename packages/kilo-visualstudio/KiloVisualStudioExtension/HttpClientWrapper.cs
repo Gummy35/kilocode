@@ -14,6 +14,7 @@ namespace KiloVisualStudioExtension
         private readonly string _baseUrl;
         private readonly string _password;
         private bool _disposed;
+        private ConnectionState _state = ConnectionState.Disconnected;
 
         public HttpClientWrapper(string baseUrl, string password)
         {
@@ -26,6 +27,7 @@ namespace KiloVisualStudioExtension
             };
             var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"kilo:{password}"));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
+            _state = ConnectionState.Connected;
         }
 
         public async Task<HttpResponseMessage> GetAsync(string endpoint, CancellationToken cancellationToken = default)
@@ -69,11 +71,45 @@ namespace KiloVisualStudioExtension
             return JsonSerializer.Deserialize<T>(json);
         }
 
+        public async Task<JsonDocument?> GetJsonAsync(string endpoint, CancellationToken cancellationToken = default)
+        {
+            var response = await GetAsync(endpoint, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] GET {endpoint} failed: {(int)response.StatusCode}");
+                return null;
+            }
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonDocument.Parse(json);
+        }
+
+        public async Task<JsonDocument?> PostJsonAsync(string endpoint, object? body, CancellationToken cancellationToken = default)
+        {
+            var response = await PostAsync(endpoint, body, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] POST {endpoint} failed: {(int)response.StatusCode}");
+                return null;
+            }
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonDocument.Parse(json);
+        }
+
+        public bool IsConnected() => _state == ConnectionState.Connected;
+
         public void Dispose()
         {
             if (_disposed) return;
             _disposed = true;
             _httpClient.Dispose();
+        }
+    }
+
+    public static class JsonElementExtensions
+    {
+        public static JsonElement OrElse(this JsonElement? element, JsonElement defaultValue)
+        {
+            return element ?? defaultValue;
         }
     }
 }

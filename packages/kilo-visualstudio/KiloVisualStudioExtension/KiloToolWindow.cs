@@ -10,6 +10,7 @@ namespace KiloVisualStudioExtension
     {
         private KiloWebViewControl? _webView;
         private KiloConnectionService? _connectionService;
+        private VSProvider? _vsProvider;
 
         public KiloToolWindow() : base(null)
         {
@@ -30,6 +31,7 @@ namespace KiloVisualStudioExtension
             {
                 _connectionService = new KiloConnectionService(backendManager);
                 _webView.SetConnectionService(_connectionService);
+                _vsProvider = new VSProvider(_webView, _connectionService);
                 await _connectionService.ConnectAsync();
             }
         }

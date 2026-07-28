@@ -42,6 +42,7 @@ namespace KiloVisualStudioExtension
     {
         private readonly CliBackendManager _backendManager;
         private HttpClientWrapper? _httpClient;
+        private CachedHttpClient? _cachedHttpClient;
         private SseClient? _sseClient;
         private ConnectionState _state = ConnectionState.Disconnected;
         private string? _baseUrl;
@@ -56,6 +57,34 @@ namespace KiloVisualStudioExtension
         public ConnectionState State => _state;
         public string? BaseUrl => _baseUrl;
         public string? Password => _password;
+
+        public class ServerInfo
+        {
+            public int Port { get; set; }
+        }
+
+        public ServerInfo? GetServerInfo()
+        {
+            if (_state != ConnectionState.Connected)
+                return null;
+            var port = _backendManager.GetPort();
+            if (port == null)
+                return null;
+            return new ServerInfo { Port = port.Value };
+        }
+
+        public ServerConfig? GetServerConfig()
+        {
+            if (_state != ConnectionState.Connected || string.IsNullOrEmpty(_baseUrl))
+                return null;
+            return new ServerConfig { BaseUrl = _baseUrl, Password = _password ?? "" };
+        }
+
+        public class ServerConfig
+        {
+            public string BaseUrl { get; set; } = "";
+            public string Password { get; set; } = "";
+        }
 
         public KiloConnectionService(CliBackendManager backendManager)
         {
@@ -94,6 +123,7 @@ namespace KiloVisualStudioExtension
 
                 System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: creating HTTP client for {_baseUrl}");
                 _httpClient = new HttpClientWrapper(_baseUrl, password);
+                _cachedHttpClient = new CachedHttpClient(_httpClient);
 
                 System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating SSE client");
                 _sseClient = new SseClient(_baseUrl, password);
@@ -207,12 +237,23 @@ namespace KiloVisualStudioExtension
             return _httpClient;
         }
 
+        public CachedHttpClient? GetCachedHttpClient()
+        {
+            if (_state != ConnectionState.Connected)
+            {
+                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
+            }
+            return _cachedHttpClient;
+        }
+
         public void Disconnect()
         {
             StopHealthPoll();
             _sseClient?.Disconnect();
+            _cachedHttpClient?.Dispose();
             _httpClient?.Dispose();
             _httpClient = null;
+            _cachedHttpClient = null;
             _sseClient = null;
             SetState(ConnectionState.Disconnected);
         }

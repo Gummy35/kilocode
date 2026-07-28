@@ -23,6 +23,21 @@ namespace KiloVisualStudioExtension
 
         public string? BaseUrl => _baseUrl;
 
+        public int? GetPort()
+        {
+            if (string.IsNullOrEmpty(_baseUrl))
+                return null;
+            try
+            {
+                var uri = new Uri(_baseUrl);
+                return uri.Port;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// Static instance for easy access from other classes.
         /// </summary>

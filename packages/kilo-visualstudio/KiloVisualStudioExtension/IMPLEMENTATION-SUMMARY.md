@@ -121,6 +121,8 @@ CLI process manager that:
 ## What's Missing
 
 ### Phase 1: Core Features (MVP) - ✅ COMPLETE
+- [x] **VSProvider helper class**: Message routing and request handlers mirroring VS Code extension pattern
+- [x] **webviewReady initialization flow**: Sends `ready`, `connectionState`, fetches providers/agents/config/MCP, sends `extensionDataReady`
 - [x] **HTTP Client**: `HttpClientWrapper.cs` - REST API client with Basic Auth
 - [x] **SSE Client**: `SseClient.cs` - Server-Sent Events with auto-reconnect
 - [x] **Connection Service**: `KiloConnectionService.cs` - Connection lifecycle management
@@ -249,7 +251,7 @@ bun run build.ts
 
 | Feature | VS Code | Visual Studio | Status |
 |---|---|---|---|
-| Extension Language | TypeScript | C# | ✅ Implemented |
+| Extension Language | TypeScript | C#/.NET Framework | ✅ Implemented |
 | UI Technology | Webview | WebView2 | ✅ Framework ready |
 | Process Management | child_process | System.Diagnostics | ✅ Implemented |
 | HTTP/SSE Client | @kilocode/sdk | C# HttpClient + SseClient | ✅ Implemented |
@@ -257,7 +259,7 @@ bun run build.ts
 | WebView2 Bridge | postMessage | CoreWebView2.WebMessageAsJson | ✅ Implemented |
 | VS Code API | acquireVsCodeApi | vscode-api.js compatibility | ✅ Implemented |
 | Message Reception | ✅ | ✅ | ✅ Working |
-| Message Responses | ✅ | ⏳ | ⏳ Needs handlers |
+| Message Responses | KiloProvider | VSProvider | ✅ Implemented |
 | Webview UI | SolidJS | SolidJS (via WebView2) | ✅ Loaded |
 | Commands | VS Code API | VS SDK | ⏳ TODO |
 | Autocomplete | VS Code API | IVsTextViewConnectionProvider | ⏳ TODO |
