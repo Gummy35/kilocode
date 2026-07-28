@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
+  
+  <Commands package="guidKiloPackage">
+    <Menus>
+      <Menu guid="guidKiloCmdSet" id="KiloMenu" priority="0x700" type="Menu">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+        <Strings>
+          <ButtonText>Kilo Code</ButtonText>
+        </Strings>
+      </Menu>
+    </Menus>
+    <Groups>
+      <Group guid="guidKiloCmdSet" id="KiloWindowGroup" priority="0x0600">
+        <Parent guid="guidKiloCmdSet" id="KiloMenu" />
+      </Group>
+    </Groups>
+    <Buttons>
+      <Button guid="guidKiloCmdSet" id="cmdidShowKiloWindow" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Open Kilo Code</ButtonText>
+          <Tooltip>Open Kilo Code AI assistant</Tooltip>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+  
+  <Symbols>
+    <GuidSymbol name="guidKiloPackage" value="{8a8f8e8c-1234-5678-9abc-def012345678}" />
+    <GuidSymbol name="guidKiloCmdSet" value="{8a8f8e8c-1234-5678-9abc-def012345679}">
+      <IDSymbol name="KiloMenu" value="0x1021" />
+      <IDSymbol name="KiloWindowGroup" value="0x1020" />
+      <IDSymbol name="cmdidShowKiloWindow" value="0x0100" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

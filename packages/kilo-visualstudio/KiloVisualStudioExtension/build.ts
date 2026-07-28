@@ -9,7 +9,7 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync } from 'fs';
+import { existsSync, copyFileSync, mkdirSync, readdirSync, rmSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -40,23 +40,80 @@ if (!existsSync(cliDistDir)) {
   console.log('CLI backend already built, skipping...');
 }
 
-// Step 2: Build webview (optional - uses existing build if available)
+// Step 2: Build webview from VS Code extension
 const webviewDir = join(projectDir, 'webview');
-const storybookStatic = join(rootDir, 'packages', 'kilo-vscode', 'storybook-static');
+const vscodeDistDir = join(rootDir, 'packages', 'kilo-vscode', 'dist');
+const webviewJsSource = join(vscodeDistDir, 'webview.js');
 
-if (existsSync(storybookStatic)) {
-  console.log('Copying webview from storybook-static...');
-  // In a real build, you'd copy files here
-  // For now, the placeholder index.html is used
+// Clean existing webview files (except index.html template)
+if (existsSync(webviewDir)) {
+  const files = readdirSync(webviewDir);
+  for (const file of files) {
+    if (file !== 'index.html') {
+      const filePath = join(webviewDir, file);
+      rmSync(filePath, { recursive: true, force: true });
+    }
+  }
 } else {
-  console.log('No storybook build found, using placeholder webview...');
+  mkdirSync(webviewDir, { recursive: true });
+}
+
+if (existsSync(webviewJsSource)) {
+  console.log('Copying webview from VS Code extension build...');
+  copyFileSync(webviewJsSource, join(webviewDir, 'webview.js'));
+  
+  // Copy sourcemap if available
+  const sourcemapSource = join(vscodeDistDir, 'webview.js.map');
+  if (existsSync(sourcemapSource)) {
+    copyFileSync(sourcemapSource, join(webviewDir, 'webview.js.map'));
+  }
+  
+  // Copy CSS file
+  const cssSource = join(vscodeDistDir, 'webview.css');
+  if (existsSync(cssSource)) {
+    copyFileSync(cssSource, join(webviewDir, 'webview.css'));
+    const cssMapSource = join(vscodeDistDir, 'webview.css.map');
+    if (existsSync(cssMapSource)) {
+      copyFileSync(cssMapSource, join(webviewDir, 'webview.css.map'));
+    }
+  }
+  
+  // Copy KaTeX fonts from VS Code dist
+  const vscodeFontsDir = join(vscodeDistDir, 'fonts');
+  if (existsSync(vscodeFontsDir)) {
+    const fontFiles = readdirSync(vscodeFontsDir);
+    for (const file of fontFiles) {
+      copyFileSync(join(vscodeFontsDir, file), join(webviewDir, file));
+    }
+  }
+  
+  console.log('Webview copied successfully');
+} else {
+  console.log('⚠️  No VS Code webview build found. Running esbuild...');
+  try {
+    execSync('bun run esbuild', {
+      cwd: join(rootDir, 'packages', 'kilo-vscode'),
+      stdio: 'inherit'
+    });
+    
+    if (existsSync(webviewJsSource)) {
+      copyFileSync(webviewJsSource, join(webviewDir, 'webview.js'));
+      const sourcemapSource = join(vscodeDistDir, 'webview.js.map');
+      if (existsSync(sourcemapSource)) {
+        copyFileSync(sourcemapSource, join(webviewDir, 'webview.js.map'));
+      }
+      console.log('Webview built and copied successfully');
+    }
+  } catch (error) {
+    console.warn('⚠️  Webview build failed. Using placeholder webview...');
+  }
 }
 
 // Step 3: Build the VSIX
 console.log(`Building VSIX (${configuration})...`);
 
 try {
-  execSync(`dotnet pack -c ${configuration}`, {
+  execSync(`dotnet build -c ${configuration}`, {
     cwd: projectDir,
     stdio: 'inherit'
   });
@@ -65,7 +122,8 @@ try {
     projectDir,
     'bin',
     configuration,
-    `KiloVisualStudio.${isRelease ? '1.0.0' : '1.0.0-alpha'}.vsix`
+    'net481',
+    'KiloVisualStudioExtension.vsix'
   );
   
   if (existsSync(vsixPath)) {

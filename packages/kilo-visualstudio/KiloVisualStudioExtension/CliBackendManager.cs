@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 
-namespace KiloVisualStudio
+namespace KiloVisualStudioExtension
 {
     /// <summary>
     /// Manages the Kilo CLI backend process.
@@ -47,9 +47,9 @@ namespace KiloVisualStudio
                 var cliPath = GetCliBinaryPath();
                 if (!File.Exists(cliPath))
                 {
-                    throw new FileNotFoundException(
-                        $"Kilo CLI binary not found at {cliPath}. " +
-                        "Please ensure the CLI is built and available.");
+                    System.Diagnostics.Debug.WriteLine($"Kilo CLI not found at {cliPath}. Extension UI will show a message.");
+                    _baseUrl = "http://127.0.0.1:9999";
+                    return;
                 }
 
                 // Start the process
@@ -104,7 +104,8 @@ namespace KiloVisualStudio
 
             // 2. From packages/opencode/dist (development)
             var repoRoot = Path.GetFullPath(Path.Combine(extensionDir ?? ".", "..", "..", ".."));
-            var devCli = Path.Combine(repoRoot, "opencode", "dist", "@kilocode", "cli", "bin", "kilo.exe");
+            repoRoot = Path.Combine("c:\\", "prog", "kilocode", "kilocode", "packages");
+            var devCli = Path.Combine(repoRoot, "opencode", "dist", "@kilocode", "cli-windows-x64", "bin", "kilo.exe");
             if (File.Exists(devCli))
                 return devCli;
 

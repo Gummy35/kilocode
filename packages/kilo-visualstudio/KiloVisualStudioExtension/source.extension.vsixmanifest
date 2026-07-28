@@ -4,11 +4,10 @@
     <Identity Id="kilo-visualstudio" Version="1.0" Language="en-US" Publisher="Kilo Code" />
     <DisplayName>Kilo Code for Visual Studio</DisplayName>
     <Description>Open Source AI coding agent for Visual Studio. Features inline autocomplete, browser automation, automated refactoring, and custom modes for planning, coding, and debugging. Supports 500+ AI models.</Description>
-    <License>MIT</License>
     <Tags>ai,coding,assistant,autocomplete,agent,kilo</Tags>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.14, )">
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[18.0,)">
       <ProductArchitecture>amd64</ProductArchitecture>
     </InstallationTarget>
   </Installation>

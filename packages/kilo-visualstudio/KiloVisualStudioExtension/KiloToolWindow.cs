@@ -1,53 +1,44 @@
-using KiloVisualStudioExtension;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Runtime.InteropServices;
-using System.Threading;
-using Task = System.Threading.Tasks.Task;
+using System.Threading.Tasks;
 
-namespace KiloVisualStudio
+namespace KiloVisualStudioExtension
 {
-    /// <summary>
-    /// Kilo Code tool window containing the WebView2 control.
-    /// </summary>
-    [Guid(PackageGuids.KiloToolWindowString)]
+    [Guid("8a8f8e8c-1234-5678-9abc-def012345680")]
     public class KiloToolWindow : ToolWindowPane
     {
         private KiloWebViewControl? _webView;
+        private KiloConnectionService? _connectionService;
 
         public KiloToolWindow() : base(null)
         {
             Caption = "Kilo Code";
-            BitmapResourceID = 301;
-            BitmapIndex = 1;
+            _webView = new KiloWebViewControl();
+            Content = _webView;
+            
+            _ = InitializeWebViewAsync();
         }
 
-        /// <summary>
-        /// Initialize the tool window with the package reference.
-        /// </summary>
-        public static async Task InitializeAsync(KiloVisualStudioExtensionPackage package)
+        private async Task InitializeWebViewAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var window = package.FindToolWindow(typeof(KiloToolWindow), 0, true);
-            if (window == null)
+            await _webView!.InitializeAsync();
+            
+            var backendManager = CliBackendManager.Instance;
+            if (backendManager != null)
             {
-                throw new NotSupportedException("Cannot find Kilo tool window.");
+                _connectionService = new KiloConnectionService(backendManager);
+                _webView.SetConnectionService(_connectionService);
+                await _connectionService.ConnectAsync();
             }
-
-            // Create WebView2 control on main thread
-            var webView = new KiloWebViewControl();
-            window.Content = webView;
-
-            // Initialize WebView2 (will need to be called after window is shown)
-            // Note: WebView2 initialization requires async, but we can't override OnToolWindowCreatedAsync
-            // The control will initialize when first accessed
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                _connectionService?.Dispose();
                 _webView?.Dispose();
             }
             base.Dispose(disposing);

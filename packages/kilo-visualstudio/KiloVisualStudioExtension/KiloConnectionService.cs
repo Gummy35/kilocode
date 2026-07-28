@@ -1,0 +1,228 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
+
+namespace KiloVisualStudioExtension
+{
+    public enum ConnectionState
+    {
+        Disconnected,
+        Connecting,
+        Connected,
+        Error
+    }
+
+    public class ConnectionStateEventArgs : EventArgs
+    {
+        public ConnectionState State { get; }
+        public string? ErrorMessage { get; }
+
+        public ConnectionStateEventArgs(ConnectionState state, string? errorMessage = null)
+        {
+            State = state;
+            ErrorMessage = errorMessage;
+        }
+    }
+
+    public class SseEventReceivedEventArgs : EventArgs
+    {
+        public string EventType { get; }
+        public string Data { get; }
+
+        public SseEventReceivedEventArgs(string eventType, string data)
+        {
+            EventType = eventType;
+            Data = data;
+        }
+    }
+
+    public class KiloConnectionService : IDisposable
+    {
+        private readonly CliBackendManager _backendManager;
+        private HttpClientWrapper? _httpClient;
+        private SseClient? _sseClient;
+        private ConnectionState _state = ConnectionState.Disconnected;
+        private string? _baseUrl;
+        private string? _password;
+        private Timer? _healthPollTimer;
+        private bool _disposed;
+        private readonly object _lock = new object();
+
+        public event EventHandler<ConnectionStateEventArgs>? OnStateChange;
+        public event EventHandler<SseEventReceivedEventArgs>? OnSseEvent;
+
+        public ConnectionState State => _state;
+        public string? BaseUrl => _baseUrl;
+        public string? Password => _password;
+
+        public KiloConnectionService(CliBackendManager backendManager)
+        {
+            _backendManager = backendManager;
+        }
+
+        public async Task ConnectAsync(CancellationToken cancellationToken = default)
+        {
+            if (_state == ConnectionState.Connected)
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: already connected");
+                return;
+            }
+
+            if (_state == ConnectionState.Connecting)
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: connection already in progress");
+                return;
+            }
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            SetState(ConnectionState.Connecting);
+
+            try
+            {
+                await _backendManager.StartAsync(cancellationToken);
+
+                _baseUrl = _backendManager.BaseUrl;
+                if (string.IsNullOrEmpty(_baseUrl))
+                {
+                    throw new Exception("Backend manager did not provide a valid base URL");
+                }
+
+                var password = ExtractPasswordFromUrl(_baseUrl);
+                _password = password;
+
+                System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: creating HTTP client for {_baseUrl}");
+                _httpClient = new HttpClientWrapper(_baseUrl, password);
+
+                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating SSE client");
+                _sseClient = new SseClient(_baseUrl, password);
+                _sseClient.OnConnected += SseClient_OnConnected;
+                _sseClient.OnDisconnected += SseClient_OnDisconnected;
+                _sseClient.OnError += SseClient_OnError;
+                _sseClient.OnEvent += SseClient_OnEvent;
+
+                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: connecting SSE");
+                _sseClient.Connect();
+
+                StartHealthPoll();
+
+                SetState(ConnectionState.Connected);
+                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: connected successfully");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: connection failed - {ex.Message}");
+                SetState(ConnectionState.Error, ex.Message);
+            }
+        }
+
+        private string ExtractPasswordFromUrl(string baseUrl)
+        {
+            var uri = new Uri(baseUrl);
+            var userInfo = uri.UserInfo;
+            return userInfo ?? "default-password";
+        }
+
+        private void StartHealthPoll()
+        {
+            StopHealthPoll();
+            _healthPollTimer = new Timer(async _ =>
+            {
+                if (_state != ConnectionState.Connected) return;
+
+                var healthy = await CheckHealthAsync();
+                if (!healthy)
+                {
+                    System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: health check failed, forcing reconnect");
+                    if (_sseClient != null)
+                    {
+                        _sseClient.Disconnect();
+                        _sseClient.Connect();
+                    }
+                }
+            }, null, 10000, 10000);
+        }
+
+        private void StopHealthPoll()
+        {
+            _healthPollTimer?.Dispose();
+            _healthPollTimer = null;
+        }
+
+        private async Task<bool> CheckHealthAsync()
+        {
+            if (_httpClient == null) return false;
+
+            try
+            {
+                var response = await _httpClient.GetAsync("/global/health");
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void SseClient_OnConnected(object? sender, EventArgs e)
+        {
+            SetState(ConnectionState.Connected);
+        }
+
+        private void SseClient_OnDisconnected(object? sender, EventArgs e)
+        {
+            if (_state == ConnectionState.Connected)
+            {
+                SetState(ConnectionState.Disconnected);
+            }
+        }
+
+        private void SseClient_OnError(object? sender, Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: SSE error - {ex.Message}");
+            SetState(ConnectionState.Error, ex.Message);
+        }
+
+        private void SseClient_OnEvent(object? sender, SseEventArgs e)
+        {
+            OnSseEvent?.Invoke(this, new SseEventReceivedEventArgs(e.EventType, e.Data));
+        }
+
+        private void SetState(ConnectionState newState, string? errorMessage = null)
+        {
+            if (_state == newState) return;
+
+            _state = newState;
+            System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: state changed to {newState}");
+            OnStateChange?.Invoke(this, new ConnectionStateEventArgs(newState, errorMessage));
+        }
+
+        public HttpClientWrapper? GetHttpClient()
+        {
+            if (_state != ConnectionState.Connected)
+            {
+                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
+            }
+            return _httpClient;
+        }
+
+        public void Disconnect()
+        {
+            StopHealthPoll();
+            _sseClient?.Disconnect();
+            _httpClient?.Dispose();
+            _httpClient = null;
+            _sseClient = null;
+            SetState(ConnectionState.Disconnected);
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            Disconnect();
+            _healthPollTimer?.Dispose();
+        }
+    }
+}
