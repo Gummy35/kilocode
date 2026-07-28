@@ -92,11 +92,12 @@ CLI process manager that:
 - CLI backend process management
 - HTTP/SSE communication
 - Webview bundling (webview.js, webview.css, KaTeX fonts)
+- **WebView2 message bridge** - Messages from webview are now properly received and parsed
 
 ✅ **Build System**
 - .NET project configuration
 - VSIX manifest with webview packaging
-- Build automation script
+- Build automation script (no CLI/webview builds, just file copying)
 - Solution file
 - Build succeeds with no errors (nullable warnings only)
 
@@ -105,17 +106,51 @@ CLI process manager that:
 - AGENTS.md with development guidelines
 - QUICKSTART.md for rapid onboarding
 
+✅ **VS Code API Compatibility**
+- `vscode-api.js` provides `acquireVsCodeApi()` for WebView2
+- Webview messages are received via `e.WebMessageAsJson`
+- All request messages logged and routed correctly
+
+### Known Issues
+1. **Response handling**: Extension receives messages but doesn't respond to `requestProviders`, `requestAgents`, `requestConfig`, etc. - these need handlers to fetch data from CLI and send back to webview
+2. **Theme**: Webview uses CSS variables that should resolve to proper dark theme colors
+3. **Settings**: Some setting requests (`requestAutoApproveState`, `requestThroughputSetting`, `requestTimelineSetting`) have no handlers yet
+
+## What's Missing
+
 ## What's Missing
 
 ### Phase 1: Core Features (MVP) - ✅ COMPLETE
 - [x] **HTTP Client**: `HttpClientWrapper.cs` - REST API client with Basic Auth
 - [x] **SSE Client**: `SseClient.cs` - Server-Sent Events with auto-reconnect
 - [x] **Connection Service**: `KiloConnectionService.cs` - Connection lifecycle management
-- [x] **WebView2 Bridge**: Message routing in `KiloWebViewControl.cs`
+- [x] **WebView2 Bridge**: Message routing in `KiloWebViewControl.cs` - messages received via `e.WebMessageAsJson`
 - [x] **Tool Window**: Proper initialization in `KiloToolWindow.cs`
 - [x] **Webview Integration**: Bundled SolidJS webview (webview.js, webview.css, KaTeX fonts)
+- [x] **VS Code API Compatibility**: `vscode-api.js` compatibility layer for WebView2
 
-### Phase 2: Editor Integration
+### Phase 2: Response Handlers - ⏳ IN PROGRESS
+The webview sends many requests that need responses:
+- [ ] `requestProviders` - Fetch and return available providers/models
+- [ ] `requestAgents` - Fetch and return available agents
+- [ ] `requestConfig` / `requestGlobalConfig` - Return config data
+- [ ] `requestAutocompleteSettings` - Return autocomplete settings
+- [ ] `requestIndexingSettings` - Return indexing settings
+- [ ] `requestChatSettings` - Return chat settings
+- [ ] `requestWorkStyle` - Return work style preferences
+- [ ] `requestKiloEmbeddingModels` - Return embedding models
+- [ ] `requestImageModels` - Return image models
+- [ ] `requestMcpStatus` - Return MCP server status
+- [ ] `requestVariants` - Return stored variants
+- [ ] `requestModelSelections` - Return model selections
+- [ ] `requestRecents` - Return recent models
+- [ ] `requestFavorites` - Return favorited models
+- [ ] `requestNotifications` - Return notifications
+- [ ] `requestAutoApproveState` - Return auto-approve state
+- [ ] `requestThroughputSetting` - Return throughput setting
+- [ ] `requestTimelineSetting` - Return timeline setting
+
+### Phase 3: Editor Integration
 - [ ] **Inline Autocomplete**: Implement `IVsTextViewConnectionProvider`
 - [ ] **Context Menus**: Add right-click menu integration
 - [ ] **Terminal Integration**: Use `IVsTerminal` interfaces
@@ -130,35 +165,31 @@ CLI process manager that:
 ## Next Steps
 
 ### Immediate (Week 1-2)
-1. **Test the basic infrastructure**:
-   ```bash
-   cd packages/kilo-visualstudio
-   bun run build.ts
-   ```
-2. **Install the VSIX** and verify tool window appears
-3. **Verify CLI backend starts** and responds to health checks
-4. **Test SSE connection** - check debug output for connection events
+1. **Implement response handlers** for webview requests:
+   - Add handlers for `requestProviders`, `requestAgents`, `requestConfig`, etc.
+   - Fetch data from CLI via HTTP and send back to webview via `PostMessage`
+   - Start with critical paths: providers, agents, config
+2. **Test the basic chat loop**:
+   - User types prompt → webview sends `prompt` message
+   - Extension forwards to CLI via HTTP
+   - SSE events stream back → extension pushes to webview
+   - Response renders in webview
 
 ### Short-term (Month 1)
-1. **Integrate actual webview**:
-   - Build webview from `packages/kilo-vscode/webview-ui` using esbuild
-   - Copy output to `packages/kilo-visualstudio/webview/`
-   - Update `KiloWebViewControl.cs` to serve bundled webview
-   - Configure CSP headers for security
-2. **Implement message rendering**:
-   - Update webview to listen for SSE events
+1. **Implement message rendering**:
+   - Update webview to listen for SSE events via extension bridge
    - Render message parts (text, code, tool calls)
    - Handle streaming updates (part deltas)
-3. **Add error handling**:
+2. **Add error handling**:
    - Backend connection failures
    - WebView2 loading errors
    - User-friendly error messages
 
 ### Medium-term (Month 2-3)
 1. **Implement core features**:
-   - Chat interface (reuse VS Code webview components)
    - Model selection
    - Settings UI
+   - Permission/question handling
 2. **Add editor integration**:
    - Context menus
    - Keyboard shortcuts
@@ -223,20 +254,23 @@ bun run build.ts
 | Process Management | child_process | System.Diagnostics | ✅ Implemented |
 | HTTP/SSE Client | @kilocode/sdk | C# HttpClient + SseClient | ✅ Implemented |
 | Connection Service | KiloConnectionService | KiloConnectionService | ✅ Implemented |
-| WebView2 Bridge | postMessage | CoreWebView2.PostWebMessage | ✅ Implemented |
-| Webview UI | SolidJS | SolidJS (via WebView2) | ⏳ Needs integration |
+| WebView2 Bridge | postMessage | CoreWebView2.WebMessageAsJson | ✅ Implemented |
+| VS Code API | acquireVsCodeApi | vscode-api.js compatibility | ✅ Implemented |
+| Message Reception | ✅ | ✅ | ✅ Working |
+| Message Responses | ✅ | ⏳ | ⏳ Needs handlers |
+| Webview UI | SolidJS | SolidJS (via WebView2) | ✅ Loaded |
 | Commands | VS Code API | VS SDK | ⏳ TODO |
 | Autocomplete | VS Code API | IVsTextViewConnectionProvider | ⏳ TODO |
 | Terminal | VS Code API | IVsTerminal | ⏳ TODO |
 
 ## Files Created
 
-Total: **22 files** across the project
+Total: **23 files** across the project
 
 ### Core Implementation (10 files)
 - `KiloPackage.cs` - Package initialization
 - `KiloToolWindow.cs` - Tool window with WebView2
-- `KiloWebViewControl.cs` - WebView2 wrapper with message bridge
+- `KiloWebViewControl.cs` - WebView2 wrapper with message bridge (uses `WebMessageAsJson`)
 - `CliBackendManager.cs` - CLI process lifecycle
 - `KiloConnectionService.cs` - Connection lifecycle (NEW)
 - `HttpClientWrapper.cs` - REST API client (NEW)
@@ -257,11 +291,12 @@ Total: **22 files** across the project
 - `QUICKSTART.md`
 - `IMPLEMENTATION-SUMMARY.md` (this file)
 
-### Build & Assets (4 files)
-- `build.ts`
-- `webview/index.html` - Enhanced with retry logic
-- `source.extension.cs`
-- `KiloToolWindow.cs` - Updated with connection service
+### Build & Assets (5 files)
+- `build.ts` - Simplified: only copies files, no builds
+- `webview/index.html` - Entry point with vscode-api.js script
+- `webview/vscode-api.js` - VS Code API compatibility for WebView2
+- `webview/webview.css` - Theme styles from VS Code extension
+- `webview/` - 60+ KaTeX font files copied from VS Code dist
 
 ## Conclusion
 
@@ -272,5 +307,6 @@ This implementation provides a **solid foundation** for a Visual Studio extensio
 - ✅ **Maintainable architecture** (separation of concerns)
 - ✅ **Scalable design** (easy to add features)
 - ✅ **Complete connection infrastructure** (HTTP, SSE, reconnection logic)
+- ✅ **Working message bridge** (webview → extension communication via `WebMessageAsJson`)
 
-**Phase 1 is complete** with all core infrastructure in place. The next phase should focus on **integrating the actual SolidJS webview** by building from `packages/kilo-vscode/webview-ui` and bundling it with the extension. Once the webview is integrated, basic chat functionality will work through the existing HTTP/SSE infrastructure.
+**Phase 1 is complete** with all core infrastructure in place. The webview loads successfully and sends messages to the extension. The next phase should focus on **implementing response handlers** for the webview's request messages (`requestProviders`, `requestAgents`, `requestConfig`, etc.) to complete the bidirectional communication loop.

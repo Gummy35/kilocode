@@ -138,40 +138,128 @@ namespace KiloVisualStudioExtension
         {
             try
             {
-                var messageStr = e.TryGetWebMessageAsString();
-                var message = JsonSerializer.Deserialize<WebviewMessage>(messageStr);
-                if (message == null) return;
+                // Use WebMessageAsJson instead of TryGetWebMessageAsString (which throws)
+                var messageStr = e.WebMessageAsJson;
+                System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2: Received raw message: {messageStr}");
+                
+                // Try to parse the message
+                JsonElement? payload = null;
+                string messageType = "";
+                
+                try
+                {
+                    var json = JsonDocument.Parse(messageStr);
+                    if (json.RootElement.TryGetProperty("type", out var typeProp))
+                    {
+                        messageType = typeProp.GetString() ?? "";
+                    }
+                    if (json.RootElement.TryGetProperty("payload", out var payloadProp))
+                    {
+                        payload = payloadProp.Clone();
+                    }
+                }
+                catch (Exception parseEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2: JSON parse error: {parseEx.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2: Raw message was: {messageStr}");
+                    return;
+                }
 
-                System.Diagnostics.Debug.WriteLine($"[Kilo] WebView: received message type={message.Type}");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] WebView: received message type={messageType}");
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                OnMessageReceived?.Invoke(this, new WebViewMessageEventArgs(message.Type, message.Payload));
+                OnMessageReceived?.Invoke(this, new WebViewMessageEventArgs(messageType, payload));
 
-                switch (message.Type)
+                switch (messageType)
                 {
                     case "prompt":
-                        await HandlePrompt(message.Payload);
+                        await HandlePrompt(payload);
                         break;
                     case "permission/reply":
-                        await HandlePermissionReply(message.Payload);
+                        await HandlePermissionReply(payload);
                         break;
                     case "question/reply":
-                        await HandleQuestionReply(message.Payload);
+                        await HandleQuestionReply(payload);
                         break;
                     case "config/read":
-                        await HandleConfigRead(message.Payload);
+                        await HandleConfigRead(payload);
                         break;
                     case "config/write":
-                        await HandleConfigWrite(message.Payload);
+                        await HandleConfigWrite(payload);
+                        break;
+                    case "webviewReady":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: webview ready");
+                        break;
+                    case "requestProviders":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: requesting providers");
+                        break;
+                    case "requestAgents":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: requesting agents");
+                        break;
+                    case "requestConfig":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: requesting config");
+                        await HandleConfigRead(payload);
+                        break;
+                    case "retryConnection":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: retry connection");
+                        break;
+                    case "action":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: action message");
+                        break;
+                    case "setState":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: setState message");
+                        break;
+                    case "webviewFocusChanged":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: focus changed");
+                        break;
+                    case "requestModelSelectorExpanded":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request model selector expanded");
+                        break;
+                    case "requestAutocompleteSettings":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request autocomplete settings");
+                        break;
+                    case "requestIndexingSettings":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request indexing settings");
+                        break;
+                    case "requestChatSettings":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request chat settings");
+                        break;
+                    case "requestWorkStyle":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request work style");
+                        break;
+                    case "requestKiloEmbeddingModels":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request embedding models");
+                        break;
+                    case "requestImageModels":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request image models");
+                        break;
+                    case "requestMcpStatus":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request MCP status");
+                        break;
+                    case "requestVariants":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request variants");
+                        break;
+                    case "requestModelSelections":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request model selections");
+                        break;
+                    case "requestRecents":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request recents");
+                        break;
+                    case "requestFavorites":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request favorites");
+                        break;
+                    case "requestNotifications":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request notifications");
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine($"[Kilo] WebView: unknown message type {message.Type}");
+                        System.Diagnostics.Debug.WriteLine($"[Kilo] WebView: message type {messageType} (no handler yet)");
                         break;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2 message error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
         }
 
@@ -254,7 +342,14 @@ namespace KiloVisualStudioExtension
             {
                 var message = new { type = "sse", payload = new { eventType = eventType, data } };
                 var json = JsonSerializer.Serialize(message);
-                CoreWebView2.PostWebMessageAsString(json);
+                try
+                {
+                    CoreWebView2.PostWebMessageAsString(json);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2 post SSE error: {ex.Message}");
+                }
             }
         }
 

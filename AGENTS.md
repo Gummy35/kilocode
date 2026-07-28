@@ -36,6 +36,7 @@ Before saying an implementation is ready, run the smallest relevant checks that 
 | VS Code extension | From `packages/kilo-vscode/`: `bun run typecheck`, `bun run lint`, `bun run test:unit` or `bun run test` |
 | Extension build/package | From `packages/kilo-vscode/`: `bun run compile` or `bun run package` when touching build, packaging, SDK, or webview integration paths |
 | JetBrains plugin | From `packages/kilo-jetbrains/`: `./gradlew typecheck`, `./gradlew test`. Requires Java 21; do not run `java -version` as a routine preflight. Check Java only after a Java-version or missing-Java failure. |
+| Visual Studio extension | From `packages/kilo-visualstudio/`: `dotnet build`, `bun run build.ts`. Requires .NET 8.0 SDK and Visual Studio 2022+ |
 | CI/local guards | Run affected guards documented above, such as `bun run knip`, `bun run check-kilocode-change`, `bun run script/check-opencode-annotations.ts --worktree`, or source link extraction |
 
 Never run root `bun test`; the root script prints `do not run tests from root` and exits with code 1. Use package-level tests instead.
@@ -48,6 +49,7 @@ All products are clients of the **CLI** (`packages/opencode/`), which contains t
 |---|---|---|
 | Kilo CLI | `packages/opencode/` | Core engine. TUI, `kilo run`, `kilo serve`. Fork of upstream OpenCode. |
 | Kilo VS Code Extension | `packages/kilo-vscode/` | VS Code extension. Bundles the CLI binary, spawns `kilo serve` as a child process. Includes the **Agent Manager** — a multi-session orchestration panel with git worktree isolation. |
+| Kilo Visual Studio Extension | `packages/kilo-visualstudio/` | Visual Studio 2022/2026 extension. Uses WebView2 to host the same SolidJS webview. Spawns `kilo serve` via C# process manager. |
 
 **Agent Manager** refers to a feature inside `packages/kilo-vscode/` (extension code in `src/agent-manager/`, webview in `webview-ui/agent-manager/`). It is not a standalone product. See the extension's `AGENTS.md` for details.
 

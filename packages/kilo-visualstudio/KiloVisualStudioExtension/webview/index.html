@@ -6,17 +6,26 @@
     <title>Kilo Code</title>
     <link rel="stylesheet" href="webview.css">
     <style>
+        /* WebView2 theme overrides - ensures proper dark theme rendering */
         html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            background-color: var(--background-base, #101010) !important;
+            color: var(--text-strong, rgba(255, 255, 255, 0.936)) !important;
+        }
+        #root {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
+    <!-- VS Code API compatibility layer for WebView2 -->
+    <script src="vscode-api.js"></script>
     <script src="webview.js"></script>
 </body>
 </html>
