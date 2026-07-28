@@ -184,7 +184,7 @@ namespace KiloVisualStudioExtension
                         await HandleQuestionReply(payload);
                         break;
                     case "config/read":
-                        await HandleConfigRead(payload);
+                        await HandleRequestConfig(payload);
                         break;
                     case "config/write":
                         await HandleConfigWrite(payload);
@@ -199,7 +199,7 @@ namespace KiloVisualStudioExtension
                         await HandleRequestAgents(payload);
                         break;
                     case "requestConfig":
-                        await HandleConfigRead(payload);
+                        await HandleRequestConfig(payload);
                         break;
                     case "retryConnection":
                         await HandleRetryConnection(payload);
@@ -302,15 +302,24 @@ namespace KiloVisualStudioExtension
             await httpClient.PostAsync($"/question/reply/{requestID}", body);
         }
 
-        private async Task HandleConfigRead(JsonElement? payload)
+        private async Task HandleRequestConfig(JsonElement? payload)
         {
             if (_connectionService?.GetHttpClient() is not { } httpClient) return;
 
-            var config = await httpClient.GetJsonAsync<object>("/config");
-            if (config != null)
+            try
             {
-                var response = new { type = "config/read", payload = config };
-                PostMessage(JsonSerializer.Serialize(response));
+                var config = await httpClient.GetJsonAsync<JsonElement>("/config");
+                if (config.ValueKind != JsonValueKind.Null)
+                {
+                    var response = new { type = "configLoaded", config = config, globalConfig = config, projectConfig = config, features = new { indexing = false, sandboxControls = false } };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestConfig error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "config_error" };
+                PostMessage(JsonSerializer.Serialize(error));
             }
         }
 
@@ -331,13 +340,12 @@ namespace KiloVisualStudioExtension
                 var providersObj = await httpClient.GetJsonAsync<JsonElement>("/provider");
                 var providersDict = new Dictionary<string, object>();
                 var connectedList = new List<string>();
+                var failedList = new List<string>();
                 var defaultsDict = new Dictionary<string, string>();
-                var authMethodsList = new List<object>();
-                var authStatesDict = new Dictionary<string, string>();
 
-                if (providersObj.TryGetProperty("providers", out var providersProp) && providersProp.ValueKind == JsonValueKind.Array)
+                if (providersObj.TryGetProperty("all", out var allProp) && allProp.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var provider in providersProp.EnumerateArray())
+                    foreach (var provider in allProp.EnumerateArray())
                     {
                         if (provider.TryGetProperty("id", out var idProp) && provider.TryGetProperty("name", out var nameProp))
                         {
@@ -374,6 +382,14 @@ namespace KiloVisualStudioExtension
                     }
                 }
 
+                if (providersObj.TryGetProperty("failed", out var failedProp) && failedProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var fail in failedProp.EnumerateArray())
+                    {
+                        if (fail.ValueKind == JsonValueKind.String) failedList.Add(fail.GetString() ?? "");
+                    }
+                }
+
                 if (providersObj.TryGetProperty("default", out var defaultsProp) && defaultsProp.ValueKind == JsonValueKind.Object)
                 {
                     foreach (var entry in defaultsProp.EnumerateObject())
@@ -399,8 +415,8 @@ namespace KiloVisualStudioExtension
                     connected = connectedList.ToArray(),
                     defaults = defaultsDict,
                     defaultSelection = defaultSelection,
-                    authMethods = authMethodsList.ToArray(),
-                    authStates = authStatesDict
+                    authMethods = new object[0],
+                    authStates = new Dictionary<string, string>()
                 };
                 PostMessage(JsonSerializer.Serialize(response));
             }
@@ -457,17 +473,66 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var config = await httpClient.GetJsonAsync<object>("/config");
-                if (config != null)
+                var config = await httpClient.GetJsonAsync<JsonElement>("/config");
+                if (config.ValueKind != JsonValueKind.Null)
                 {
                     var response = new { type = "configLoaded", config = config, globalConfig = config, projectConfig = config, features = new { indexing = false, sandboxControls = false } };
                     PostMessage(JsonSerializer.Serialize(response));
                 }
 
-                var providers = await httpClient.GetJsonAsync<object>("/provider");
-                if (providers != null)
+                var providersResult = await httpClient.GetJsonAsync<JsonElement>("/provider");
+                if (providersResult.ValueKind != JsonValueKind.Null)
                 {
-                    var providersResponse = new { type = "providersLoaded", providers = providers, connected = new object[0], defaults = new object[0], defaultSelection = new { providerID = "", modelID = "" }, authMethods = new object[0], authStates = new object[0] };
+                    var providersDict = new Dictionary<string, object>();
+                    var connectedList = new List<string>();
+
+                    if (providersResult.TryGetProperty("all", out var allProp) && allProp.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var provider in allProp.EnumerateArray())
+                        {
+                            if (provider.TryGetProperty("id", out var idProp) && provider.TryGetProperty("name", out var nameProp))
+                            {
+                                var providerId = idProp.GetString() ?? "";
+                                var providerName = nameProp.GetString() ?? "";
+                                var modelsDict = new Dictionary<string, object>();
+
+                                if (provider.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Object)
+                                {
+                                    foreach (var modelEntry in modelsProp.EnumerateObject())
+                                    {
+                                        modelsDict[modelEntry.Name] = new { id = modelEntry.Name };
+                                    }
+                                }
+
+                                providersDict[providerId] = new
+                                {
+                                    id = providerId,
+                                    name = providerName,
+                                    models = modelsDict,
+                                    source = provider.TryGetProperty("source", out var srcProp) ? srcProp.GetString() : "env"
+                                };
+                            }
+                        }
+                    }
+
+                    if (providersResult.TryGetProperty("connected", out var connectedProp) && connectedProp.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var conn in connectedProp.EnumerateArray())
+                        {
+                            if (conn.ValueKind == JsonValueKind.String) connectedList.Add(conn.GetString() ?? "");
+                        }
+                    }
+
+                    var providersResponse = new
+                    {
+                        type = "providersLoaded",
+                        providers = providersDict,
+                        connected = connectedList.ToArray(),
+                        defaults = new Dictionary<string, string>(),
+                        defaultSelection = new { providerID = "", modelID = "" },
+                        authMethods = new object[0],
+                        authStates = new Dictionary<string, string>()
+                    };
                     PostMessage(JsonSerializer.Serialize(providersResponse));
                 }
             }
@@ -524,12 +589,12 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var providers = await httpClient.GetJsonAsync<object>("/provider");
-                if (providers != null)
-                {
+                //var providers = await httpClient.GetJsonAsync<object>("/provider");
+                //if (providers != null)
+                //{
                     var response = new { type = "modelSelectorExpandedLoaded", value = false };
                     PostMessage(JsonSerializer.Serialize(response));
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -701,12 +766,9 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var variants = await httpClient.GetJsonAsync<object>("/config");
-                if (variants != null)
-                {
-                    var response = new { type = "variantsLoaded", variants = new object[0] };
-                    PostMessage(JsonSerializer.Serialize(response));
-                }
+                var variantsDict = new Dictionary<string, string>();
+                var response = new { type = "variantsLoaded", variants = variantsDict };
+                PostMessage(JsonSerializer.Serialize(response));
             }
             catch (Exception ex)
             {
@@ -722,12 +784,9 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var selections = await httpClient.GetJsonAsync<object>("/config");
-                if (selections != null)
-                {
-                    var response = new { type = "modelSelectionsLoaded", selections = new object[0] };
-                    PostMessage(JsonSerializer.Serialize(response));
-                }
+                var selectionsDict = new Dictionary<string, object>();
+                var response = new { type = "modelSelectionsLoaded", selections = selectionsDict };
+                PostMessage(JsonSerializer.Serialize(response));
             }
             catch (Exception ex)
             {
@@ -743,12 +802,26 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var recents = await httpClient.GetJsonAsync<object>("/session");
-                if (recents != null)
+                var sessions = await httpClient.GetJsonAsync<JsonElement[]>("/session");
+                var recentsList = new List<object>();
+                
+                if (sessions != null)
                 {
-                    var response = new { type = "recentsLoaded", recents = new object[0] };
-                    PostMessage(JsonSerializer.Serialize(response));
+                    foreach (var session in sessions)
+                    {
+                        if (session.ValueKind == JsonValueKind.Object)
+                        {
+                            var id = session.TryGetProperty("id", out var idProp) ? idProp.GetString() : "";
+                            var title = session.TryGetProperty("title", out var titleProp) ? titleProp.GetString() : "";
+                            var updated = session.TryGetProperty("updated", out var updatedProp) ? updatedProp.GetInt64() : 0;
+                            
+                            recentsList.Add(new { id, title, updated });
+                        }
+                    }
                 }
+                
+                var response = new { type = "recentsLoaded", recents = recentsList.ToArray() };
+                PostMessage(JsonSerializer.Serialize(response));
             }
             catch (Exception ex)
             {
@@ -764,12 +837,9 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var favorites = await httpClient.GetJsonAsync<object>("/session");
-                if (favorites != null)
-                {
-                    var response = new { type = "favoritesLoaded", favorites = new object[0] };
-                    PostMessage(JsonSerializer.Serialize(response));
-                }
+                var favoritesList = new List<object>();
+                var response = new { type = "favoritesLoaded", favorites = favoritesList.ToArray() };
+                PostMessage(JsonSerializer.Serialize(response));
             }
             catch (Exception ex)
             {
@@ -785,12 +855,10 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var notifications = await httpClient.GetJsonAsync<object>("/global/event");
-                if (notifications != null)
-                {
-                    var response = new { type = "notificationsLoaded", notifications = new object[0], dismissedIds = new object[0] };
-                    PostMessage(JsonSerializer.Serialize(response));
-                }
+                var notificationsList = new List<object>();
+                var dismissedIds = new List<string>();
+                var response = new { type = "notificationsLoaded", notifications = notificationsList.ToArray(), dismissedIds = dismissedIds.ToArray() };
+                PostMessage(JsonSerializer.Serialize(response));
             }
             catch (Exception ex)
             {
