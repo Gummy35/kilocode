@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
@@ -188,68 +190,67 @@ namespace KiloVisualStudioExtension
                         await HandleConfigWrite(payload);
                         break;
                     case "webviewReady":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: webview ready");
+                        await HandleWebViewReady(payload);
                         break;
                     case "requestProviders":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: requesting providers");
+                        await HandleRequestProviders(payload);
                         break;
                     case "requestAgents":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: requesting agents");
+                        await HandleRequestAgents(payload);
                         break;
                     case "requestConfig":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: requesting config");
                         await HandleConfigRead(payload);
                         break;
                     case "retryConnection":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: retry connection");
+                        await HandleRetryConnection(payload);
                         break;
                     case "action":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: action message");
+                        await HandleAction(payload);
                         break;
                     case "setState":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: setState message");
+                        await HandleSetState(payload);
                         break;
                     case "webviewFocusChanged":
                         System.Diagnostics.Debug.WriteLine("[Kilo] WebView: focus changed");
                         break;
                     case "requestModelSelectorExpanded":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request model selector expanded");
+                        await HandleRequestModelSelectorExpanded(payload);
                         break;
                     case "requestAutocompleteSettings":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request autocomplete settings");
+                        await HandleRequestAutocompleteSettings(payload);
                         break;
                     case "requestIndexingSettings":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request indexing settings");
+                        await HandleRequestIndexingSettings(payload);
                         break;
                     case "requestChatSettings":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request chat settings");
+                        await HandleRequestChatSettings(payload);
                         break;
                     case "requestWorkStyle":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request work style");
+                        await HandleRequestWorkStyle(payload);
                         break;
                     case "requestKiloEmbeddingModels":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request embedding models");
+                        await HandleRequestKiloEmbeddingModels(payload);
                         break;
                     case "requestImageModels":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request image models");
+                        await HandleRequestImageModels(payload);
                         break;
                     case "requestMcpStatus":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request MCP status");
+                        await HandleRequestMcpStatus(payload);
                         break;
                     case "requestVariants":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request variants");
+                        await HandleRequestVariants(payload);
                         break;
                     case "requestModelSelections":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request model selections");
+                        await HandleRequestModelSelections(payload);
                         break;
                     case "requestRecents":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request recents");
+                        await HandleRequestRecents(payload);
                         break;
                     case "requestFavorites":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request favorites");
+                        await HandleRequestFavorites(payload);
                         break;
                     case "requestNotifications":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] WebView: request notifications");
+                        await HandleRequestNotifications(payload);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine($"[Kilo] WebView: message type {messageType} (no handler yet)");
@@ -319,6 +320,484 @@ namespace KiloVisualStudioExtension
             if (!payload.HasValue) return;
 
             await httpClient.PostAsync("/config", new { config = payload.Value });
+        }
+
+        private async Task HandleRequestProviders(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var providersObj = await httpClient.GetJsonAsync<JsonElement>("/provider");
+                var providersDict = new Dictionary<string, object>();
+                var connectedList = new List<string>();
+                var defaultsDict = new Dictionary<string, string>();
+                var authMethodsList = new List<object>();
+                var authStatesDict = new Dictionary<string, string>();
+
+                if (providersObj.TryGetProperty("providers", out var providersProp) && providersProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var provider in providersProp.EnumerateArray())
+                    {
+                        if (provider.TryGetProperty("id", out var idProp) && provider.TryGetProperty("name", out var nameProp))
+                        {
+                            var providerId = idProp.GetString() ?? "";
+                            var providerName = nameProp.GetString() ?? "";
+                            var modelsDict = new Dictionary<string, object>();
+
+                            if (provider.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Object)
+                            {
+                                foreach (var modelEntry in modelsProp.EnumerateObject())
+                                {
+                                    modelsDict[modelEntry.Name] = new { id = modelEntry.Name };
+                                }
+                            }
+
+                            providersDict[providerId] = new
+                            {
+                                id = providerId,
+                                name = providerName,
+                                models = modelsDict,
+                                source = provider.TryGetProperty("source", out var srcProp) ? srcProp.GetString() : "env",
+                                env = provider.TryGetProperty("env", out var envProp) ? (object)envProp : new object[0],
+                                metadata = provider.TryGetProperty("metadata", out var metaProp) ? (object)metaProp : new { }
+                            };
+                        }
+                    }
+                }
+
+                if (providersObj.TryGetProperty("connected", out var connectedProp) && connectedProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var conn in connectedProp.EnumerateArray())
+                    {
+                        if (conn.ValueKind == JsonValueKind.String) connectedList.Add(conn.GetString() ?? "");
+                    }
+                }
+
+                if (providersObj.TryGetProperty("default", out var defaultsProp) && defaultsProp.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var entry in defaultsProp.EnumerateObject())
+                    {
+                        if (entry.Value.ValueKind == JsonValueKind.String)
+                        {
+                            defaultsDict[entry.Name] = entry.Value.GetString() ?? "";
+                        }
+                    }
+                }
+
+                var defaultSelection = new { providerID = "", modelID = "" };
+                if (defaultsDict.Count > 0)
+                {
+                    var firstKey = defaultsDict.Keys.First();
+                    defaultSelection = new { providerID = firstKey, modelID = defaultsDict[firstKey] };
+                }
+
+                var response = new
+                {
+                    type = "providersLoaded",
+                    providers = providersDict,
+                    connected = connectedList.ToArray(),
+                    defaults = defaultsDict,
+                    defaultSelection = defaultSelection,
+                    authMethods = authMethodsList.ToArray(),
+                    authStates = authStatesDict
+                };
+                PostMessage(JsonSerializer.Serialize(response));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestProviders error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "providers_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestAgents(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var agents = await httpClient.GetJsonAsync<string[]>("/experimental/tool/ids");
+                if (agents != null && agents.Length > 0)
+                {
+                    var agentList = agents.Select(a => new
+                    {
+                        name = a,
+                        displayName = "",
+                        description = "",
+                        mode = "primary" as string,
+                        native = false,
+                        hidden = false,
+                        deprecated = false
+                    }).ToArray();
+                    var response = new
+                    {
+                        type = "agentsLoaded",
+                        agents = agentList,
+                        allAgents = agentList,
+                        defaultAgent = "default"
+                    };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestAgents error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "agents_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleWebViewReady(JsonElement? payload)
+        {
+            System.Diagnostics.Debug.WriteLine("[Kilo] WebView: webview ready, triggering initialization");
+            
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var config = await httpClient.GetJsonAsync<object>("/config");
+                if (config != null)
+                {
+                    var response = new { type = "configLoaded", config = config, globalConfig = config, projectConfig = config, features = new { indexing = false, sandboxControls = false } };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+
+                var providers = await httpClient.GetJsonAsync<object>("/provider");
+                if (providers != null)
+                {
+                    var providersResponse = new { type = "providersLoaded", providers = providers, connected = new object[0], defaults = new object[0], defaultSelection = new { providerID = "", modelID = "" }, authMethods = new object[0], authStates = new object[0] };
+                    PostMessage(JsonSerializer.Serialize(providersResponse));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleWebViewReady error: {ex.Message}");
+            }
+        }
+
+        private async Task HandleRetryConnection(JsonElement? payload)
+        {
+            System.Diagnostics.Debug.WriteLine("[Kilo] WebView: retry connection requested");
+            if (_connectionService != null)
+            {
+                try
+                {
+                    await _connectionService.ConnectAsync();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRetryConnection error: {ex.Message}");
+                }
+            }
+        }
+
+        private async Task HandleAction(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+            if (!payload.HasValue) return;
+
+            try
+            {
+                if (payload.Value.TryGetProperty("action", out var actionProp))
+                {
+                    var action = actionProp.GetString();
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] HandleAction: {action}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleAction error: {ex.Message}");
+            }
+        }
+
+        private async Task HandleSetState(JsonElement? payload)
+        {
+            if (!payload.HasValue) return;
+            System.Diagnostics.Debug.WriteLine($"[Kilo] HandleSetState: state received");
+        }
+
+        private async Task HandleRequestModelSelectorExpanded(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var providers = await httpClient.GetJsonAsync<object>("/provider");
+                if (providers != null)
+                {
+                    var response = new { type = "modelSelectorExpandedLoaded", value = false };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestModelSelectorExpanded error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "model_selector_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestAutocompleteSettings(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var settings = await httpClient.GetJsonAsync<object>("/config");
+                if (settings != null)
+                {
+                    var response = new { type = "autocompleteSettingsLoaded", settings = new { enableAutoTrigger = true, enableSmartInlineTaskKeybinding = false, enableChatAutocomplete = false, provider = (string)null, model = (string)null } };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestAutocompleteSettings error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "autocomplete_settings_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestIndexingSettings(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var settings = await httpClient.GetJsonAsync<object>("/config");
+                if (settings != null)
+                {
+                    var response = new { type = "indexingSettingsLoaded", settings = new { showButtonWhenDisabled = true } };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestIndexingSettings error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "indexing_settings_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestChatSettings(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var settings = await httpClient.GetJsonAsync<object>("/config");
+                if (settings != null)
+                {
+                    var response = new { type = "chatSettingsLoaded", settings = new { shiftTabCyclesVariant = false } };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestChatSettings error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "chat_settings_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestWorkStyle(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var settings = await httpClient.GetJsonAsync<object>("/config");
+                if (settings != null)
+                {
+                    var response = new { type = "workStyleLoaded", style = new { mode = "ask" as string, autoApprove = new object[0], deniedAlways = new object[0] } };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestWorkStyle error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "work_style_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestKiloEmbeddingModels(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var models = await httpClient.GetJsonAsync<object>("/provider");
+                if (models != null)
+                {
+                    var response = new { type = "kiloEmbeddingModelsLoaded", catalog = new { defaultModel = "", models = new object[0], aliases = new object[0] } };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestKiloEmbeddingModels error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "embedding_models_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestImageModels(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var models = await httpClient.GetJsonAsync<object>("/provider");
+                if (models != null)
+                {
+                    var response = new { type = "imageModelsLoaded", models = new object[0] };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestImageModels error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "image_models_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestMcpStatus(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var status = await httpClient.GetJsonAsync<JsonElement>("/mcp");
+                var statusDict = new Dictionary<string, object>();
+                if (status.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var entry in status.EnumerateObject())
+                    {
+                        statusDict[entry.Name] = new
+                        {
+                            status = "connected" as string,
+                            error = (string?)null
+                        };
+                    }
+                }
+                var response = new { type = "mcpStatusLoaded", status = statusDict };
+                PostMessage(JsonSerializer.Serialize(response));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestMcpStatus error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "mcp_status_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestVariants(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var variants = await httpClient.GetJsonAsync<object>("/config");
+                if (variants != null)
+                {
+                    var response = new { type = "variantsLoaded", variants = new object[0] };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestVariants error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "variants_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestModelSelections(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var selections = await httpClient.GetJsonAsync<object>("/config");
+                if (selections != null)
+                {
+                    var response = new { type = "modelSelectionsLoaded", selections = new object[0] };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestModelSelections error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "model_selections_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestRecents(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var recents = await httpClient.GetJsonAsync<object>("/session");
+                if (recents != null)
+                {
+                    var response = new { type = "recentsLoaded", recents = new object[0] };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestRecents error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "recents_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestFavorites(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var favorites = await httpClient.GetJsonAsync<object>("/session");
+                if (favorites != null)
+                {
+                    var response = new { type = "favoritesLoaded", favorites = new object[0] };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestFavorites error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "favorites_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
+        }
+
+        private async Task HandleRequestNotifications(JsonElement? payload)
+        {
+            if (_connectionService?.GetHttpClient() is not { } httpClient) return;
+
+            try
+            {
+                var notifications = await httpClient.GetJsonAsync<object>("/global/event");
+                if (notifications != null)
+                {
+                    var response = new { type = "notificationsLoaded", notifications = new object[0], dismissedIds = new object[0] };
+                    PostMessage(JsonSerializer.Serialize(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] HandleRequestNotifications error: {ex.Message}");
+                var error = new { type = "error", message = ex.Message, code = "notifications_error" };
+                PostMessage(JsonSerializer.Serialize(error));
+            }
         }
 
         private void SseClient_OnSseEvent(object? sender, SseEventReceivedEventArgs e)

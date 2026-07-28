@@ -20,6 +20,9 @@
   console.log('[VSCodeAPI] window.chrome:', !!window.chrome);
   console.log('[VSCodeAPI] window.chrome.webview:', !!(window.chrome && window.chrome.webview));
 
+  // Message handler registry for onMessage - supports multiple handlers
+  const messageHandlers = [];
+
   // Create the VS Code API object
   const vscodeApi = {
     /**
@@ -58,16 +61,43 @@
       currentState = state;
       // State is persisted via postMessage to extension
       this.postMessage({ type: 'setState', state: state });
+    },
+
+    /**
+     * Register a message handler to receive messages from the extension host
+     * @param {function} handler - The message handler function
+     * @returns {function} Unsubscribe function to remove the handler
+     */
+    onMessage: function(handler) {
+      console.log('[VSCodeAPI] onMessage called');
+      messageHandlers.push(handler);
+      
+      // Return unsubscribe function
+      return function() {
+        const index = messageHandlers.indexOf(handler);
+        if (index > -1) {
+          messageHandlers.splice(index, 1);
+          console.log('[VSCodeAPI] Handler unsubscribed');
+        }
+      };
     }
   };
 
-  // Listen for messages from extension host (for state updates)
+  // Listen for messages from extension host (for state updates and data)
   if (isWebView2) {
     console.log('[VSCodeAPI] Setting up message listener');
     messageListener = function(event) {
       console.log('[VSCodeAPI] Received message:', event.data);
       if (event.data && event.data.type === 'setState') {
         currentState = event.data.state;
+      }
+      // Forward all messages to all registered handlers
+      for (let i = 0; i < messageHandlers.length; i++) {
+        try {
+          messageHandlers[i](event.data);
+        } catch (err) {
+          console.error('[VSCodeAPI] Message handler error:', err);
+        }
       }
     };
     window.chrome.webview.addEventListener('message', messageListener);
