@@ -20,9 +20,6 @@
   console.log('[VSCodeAPI] window.chrome:', !!window.chrome);
   console.log('[VSCodeAPI] window.chrome.webview:', !!(window.chrome && window.chrome.webview));
 
-  // Message handler registry for onMessage - supports multiple handlers
-  const messageHandlers = [];
-
   // Create the VS Code API object
   const vscodeApi = {
     /**
@@ -62,47 +59,214 @@
       // State is persisted via postMessage to extension
       this.postMessage({ type: 'setState', state: state });
     },
-
-    /**
-     * Register a message handler to receive messages from the extension host
-     * @param {function} handler - The message handler function
-     * @returns {function} Unsubscribe function to remove the handler
-     */
-    onMessage: function(handler) {
-      console.log('[VSCodeAPI] onMessage called');
-      messageHandlers.push(handler);
-      
-      // Return unsubscribe function
-      return function() {
-        const index = messageHandlers.indexOf(handler);
-        if (index > -1) {
-          messageHandlers.splice(index, 1);
-          console.log('[VSCodeAPI] Handler unsubscribed');
-        }
-      };
-    }
   };
+
+  // Valid ExtensionMessage types that the webview expects
+  const VALID_MESSAGE_TYPES = new Set([
+    'ready',
+    'fontSizeChanged',
+    'gitStatus',
+    'workspaceDirectoryChanged',
+    'languageChanged',
+    'connectionState',
+    'error',
+    'sendMessageFailed',
+    'sessionCommandCompleted',
+    'partUpdated',
+    'partsUpdated',
+    'partRemoved',
+    'sessionStatus',
+    'sessionTurnClosed',
+    'sessionError',
+    'permissionRequest',
+    'permissionResolved',
+    'permissionError',
+    'todoUpdated',
+    'sessionCreated',
+    'sessionForked',
+    'sessionUpdated',
+    'sessionDeleted',
+    'messageRemoved',
+    'messagesLoaded',
+    'sessionModelUsageLoaded',
+    'sessionModelUsageChanged',
+    'messageCreated',
+    'sessionsLoaded',
+    'cloudSessionsLoaded',
+    'gitRemoteUrlLoaded',
+    'action',
+    'profileData',
+    'deviceAuthStarted',
+    'deviceAuthComplete',
+    'deviceAuthFailed',
+    'deviceAuthCancelled',
+    'navigate',
+    'indexingStatusLoaded',
+    'indexingSettingsLoaded',
+    'chatSettingsLoaded',
+    'kiloEmbeddingModelsLoaded',
+    'imageModelsLoaded',
+    'providersLoaded',
+    'agentsLoaded',
+    'skillsLoaded',
+    'agentRequirementsLoaded',
+    'agentRequirementsInvalidated',
+    'commandsLoaded',
+    'autocompleteSettingsLoaded',
+    'chatCompletionResult',
+    'speechToTextStarted',
+    'speechToTextCancelled',
+    'speechToTextResult',
+    'speechToTextError',
+    'fileSearchResult',
+    'sessionSearchResult',
+    'filePickerResult',
+    'terminalContextResult',
+    'terminalContextError',
+    'gitChangesContextResult',
+    'gitChangesContextError',
+    'questionRequest',
+    'questionResolved',
+    'questionError',
+    'sessionCostAlert',
+    'sessionCostAlertResolved',
+    'suggestionRequest',
+    'suggestionResolved',
+    'suggestionError',
+    'browserSettingsLoaded',
+    'claudeCompatSettingLoaded',
+    'configLoaded',
+    'configUpdated',
+    'configUpdateFailed',
+    'globalConfigLoaded',
+    'notificationSettingsLoaded',
+    'timelineSetting',
+    'throughputSetting',
+    'workStyleLoaded',
+    'workStyleApplied',
+    'workStyleApplyFailed',
+    'notificationsLoaded',
+    'agentManager.sessionMeta',
+    'agentManager.repoInfo',
+    'agentManager.worktreeSetup',
+    'agentManager.sessionAdded',
+    'agentManager.sessionForked',
+    'agentManager.sessionClosed',
+    'agentManager.state',
+    'agentManager.runStatus',
+    'agentManager.keybindings',
+    'autoApproveState',
+    'sandboxStatus',
+    'sandboxDefaultStatus',
+    'sandboxStatusError',
+    'agentManager.multiVersionProgress',
+    'agentManager.setSessionModel',
+    'agentManager.sendInitialMessage',
+    'setChatBoxMessage',
+    'appendChatBoxMessage',
+    'appendReviewComments',
+    'appendReviewCommentsToTerminal',
+    'triggerTask',
+    'variantsLoaded',
+    'cloudSessionDataLoaded',
+    'cloudSessionImported',
+    'cloudSessionImportFailed',
+    'openCloudSession',
+    'selectKiloModel',
+    'agentManager.branches',
+    'agentManager.externalWorktrees',
+    'agentManager.importResult',
+    'agentManager.worktreeDiff',
+    'agentManager.worktreeDiffFile',
+    'agentManager.worktreeDiffLoading',
+    'agentManager.applyWorktreeDiffResult',
+    'agentManager.revertWorktreeFileResult',
+    'agentManager.worktreeStats',
+    'agentManager.localStats',
+    'agentManager.prStatus',
+    'worktreeStatsLoaded',
+    'agentManager.terminal.created',
+    'agentManager.terminal.fontChanged',
+    'agentManager.terminal.closed',
+    'agentManager.terminal.error',
+    'migrationState',
+    'migrationData',
+    'migrationProgress',
+    'migrationSessionProgress',
+    'migrationComplete',
+    'enhancePromptResult',
+    'enhancePromptError',
+    'viewSubAgentSession',
+    'diffViewer.diffs',
+    'diffViewer.loading',
+    'diffViewer.revertFileResult',
+    'diffViewer.diffFile',
+    'diffViewer.markdownRender',
+    'setAvailableSources',
+    'diffViewer.capabilities',
+    'diffViewer.notice',
+    'diffViewer.branches',
+    'clearPendingPrompts',
+    'extensionDataReady',
+    'telemetryState',
+    'marketplaceData',
+    'marketplaceInstallResult',
+    'openInstallModal',
+    'marketplaceRemoveResult',
+    'providerOAuthReady',
+    'providerConnected',
+    'providerDisconnected',
+    'providerActionError',
+    'customProviderModelsFetched',
+    'mcpStatusLoaded',
+    'continueInWorktreeProgress',
+    'remoteStatus',
+    'validateFilesResult',
+    'memoryLoaded',
+    'memoryEvent',
+    'memoryOperationResult',
+    'recentsLoaded',
+    'modelSelectorExpandedLoaded',
+    'favoritesLoaded',
+    'modelSelectionsLoaded',
+    'setAvailableSources',
+    'diffViewer.diffs',
+    'diffViewer.loading',
+    'diffViewer.revertFileResult',
+    'diffViewer.diffFile',
+    'diffViewer.markdownRender',
+    'setAvailableSources',
+    'diffViewer.capabilities',
+    'diffViewer.notice',
+    'diffViewer.branches',
+  ]);
 
   // Listen for messages from extension host (for state updates and data)
   if (isWebView2) {
     console.log('[VSCodeAPI] Setting up message listener');
     messageListener = function(event) {
-      console.log('[VSCodeAPI] Received message:', event.data);
+      console.log('[VSCodeAPI] Received message from chrome.webview:', event.data);
       if (event.data && event.data.type === 'setState') {
         currentState = event.data.state;
       }
-      // Forward all messages to all registered handlers
-      for (let i = 0; i < messageHandlers.length; i++) {
-        try {
-          messageHandlers[i](event.data);
-        } catch (err) {
-          console.error('[VSCodeAPI] Message handler error:', err);
-        }
+      // Validate message type before forwarding to ensure webview can properly type-narrow
+      if (event.data && event.data.type && VALID_MESSAGE_TYPES.has(event.data.type)) {
+        console.log('[VSCodeAPI] Forwarding valid message type:', event.data.type);
+        window.postMessage(event.data, '*');
+      } else if (event.data && event.data.type) {
+        console.warn('[VSCodeAPI] Unknown message type, forwarding anyway:', event.data.type);
+        window.postMessage(event.data, '*');
       }
     };
     window.chrome.webview.addEventListener('message', messageListener);
+    console.log('[VSCodeAPI] Message listener attached to chrome.webview');
   } else {
     console.log('[VSCodeAPI] Not in WebView2, skipping message listener setup');
+    console.log('[VSCodeAPI] chrome:', typeof window.chrome);
+    console.log('[VSCodeAPI] chrome.webview:', typeof (window.chrome && window.chrome.webview));
+    if (window.chrome && window.chrome.webview) {
+      console.log('[VSCodeAPI] chrome.webview methods:', Object.keys(window.chrome.webview));
+    }
   }
 
   // Expose the API globally (same as VS Code's acquireVsCodeApi)

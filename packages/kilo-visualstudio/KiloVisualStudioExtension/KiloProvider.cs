@@ -35,9 +35,14 @@ namespace KiloVisualStudioExtension
                 switch (type)
                 {
                     case "webviewReady":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] KiloProvider: webviewReady received");
+                        System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
                         _isWebviewReady = true;
                         await HandleWebviewReadyAsync();
+                        break;
+
+                    case "webviewInitialized":
+                        System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewInitialized received, releasing data send");
+                        _webviewInitializedTcs?.TrySetResult(null);
                         break;
 
                     case "requestProviders":
@@ -457,6 +462,8 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        private TaskCompletionSource<object?>? _webviewInitializedTcs;
+
         private async Task HandleWebviewReadyAsync()
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received, starting initialization");
@@ -486,6 +493,19 @@ namespace KiloVisualStudioExtension
             var connState = new { type = "connectionState", state = _connectionService.State.ToString() };
             _webView.PostMessage(JsonSerializer.Serialize(connState));
 
+            // Wait for webviewInitialized signal before sending data
+            if (_webviewInitializedTcs == null)
+            {
+                _webviewInitializedTcs = new TaskCompletionSource<object?>();
+            }
+            
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: waiting for webviewInitialized...");
+            await _webviewInitializedTcs.Task;
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewInitialized received, sending initial data");
+
+            // Create a default session if none exists
+            await HandleCreateSessionAsync();
+
             // Fetch and send initial data in parallel
             try
             {
@@ -493,7 +513,12 @@ namespace KiloVisualStudioExtension
                     HandleRequestProvidersAsync(),
                     HandleRequestAgentsAsync(),
                     HandleRequestConfigAsync(),
-                    HandleRequestMcpStatusAsync()
+                    HandleRequestMcpStatusAsync(),
+                    HandleRequestSkillsAsync(),
+                    HandleRequestCommandsAsync(),
+                    HandleRequestIndexingStatusAsync(),
+                    HandleRequestNotificationsAsync(),
+                    HandleRequestWorkStyleAsync()
                 );
             }
             catch (Exception ex)
@@ -532,22 +557,66 @@ namespace KiloVisualStudioExtension
             try
             {
                 var responseDoc = await httpClient.GetJsonAsync("/provider");
-                JsonElement providers = JsonDocument.Parse("[]").RootElement;
-                JsonElement connected = JsonDocument.Parse("[]").RootElement;
-                JsonElement defaults = JsonDocument.Parse("{}").RootElement;
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("all", out var all))
-                    providers = all;
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("connected", out var conn))
-                    connected = conn;
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("default", out var def))
-                    defaults = def;
-                var message = new { type = "providersLoaded", providers, connected, defaults };
+                
+                // Convert providers array to Record<string, Provider> format
+                var providersDict = new Dictionary<string, object>();
+                var connectedList = new List<string>();
+                var defaultsDict = new Dictionary<string, string>();
+                
+                if (responseDoc != null)
+                {
+                    var root = responseDoc.RootElement;
+                    
+                    // Parse "all" array and convert to dictionary
+                    if (root.TryGetProperty("all", out var all) && all.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var provider in all.EnumerateArray())
+                        {
+                            if (provider.TryGetProperty("id", out var id))
+                            {
+                                providersDict[id.GetString() ?? ""] = provider;
+                            }
+                        }
+                    }
+                    
+                    // Parse "connected" array
+                    if (root.TryGetProperty("connected", out var connected) && connected.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var item in connected.EnumerateArray())
+                        {
+                            if (item.ValueKind == JsonValueKind.String)
+                            {
+                                connectedList.Add(item.GetString() ?? "");
+                            }
+                        }
+                    }
+                    
+                    // Parse "default" object
+                    if (root.TryGetProperty("default", out var defaults) && defaults.ValueKind == JsonValueKind.Object)
+                    {
+                        foreach (var prop in defaults.EnumerateObject())
+                        {
+                            defaultsDict[prop.Name] = prop.Value.GetString() ?? "";
+                        }
+                    }
+                }
+                
+                var message = new 
+                { 
+                    type = "providersLoaded", 
+                    providers = providersDict,
+                    connected = connectedList.ToArray(),
+                    defaults = defaultsDict,
+                    defaultSelection = new { },
+                    authMethods = new Dictionary<string, object[]>(),
+                    authStates = new Dictionary<string, object>()
+                };
                 _webView.PostMessage(JsonSerializer.Serialize(message));
                 responseDoc?.Dispose();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: error fetching providers: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error fetching providers: {ex.Message}");
                 await SendEmptyProvidersAsync();
             }
         }
@@ -557,9 +626,12 @@ namespace KiloVisualStudioExtension
             var message = new
             {
                 type = "providersLoaded",
-                providers = new object[0],
-                connected = new object[0],
-                defaults = new { }
+                providers = new Dictionary<string, object>(),
+                connected = Array.Empty<string>(),
+                defaults = new Dictionary<string, string>(),
+                defaultSelection = new { },
+                authMethods = new Dictionary<string, object[]>(),
+                authStates = new Dictionary<string, object>()
             };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
@@ -576,23 +648,40 @@ namespace KiloVisualStudioExtension
             try
             {
                 var responseDoc = await httpClient.GetJsonAsync("/experimental/tool/ids");
-                JsonElement agents = JsonDocument.Parse("[]").RootElement;
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("agents", out var ag))
-                    agents = ag;
-                var message = new { type = "agentsLoaded", agents };
+                var agentsList = new List<object>();
+                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("agents", out var agents))
+                {
+                    foreach (var agent in agents.EnumerateArray())
+                    {
+                        agentsList.Add(agent);
+                    }
+                }
+                var message = new 
+                { 
+                    type = "agentsLoaded", 
+                    agents = agentsList.ToArray(),
+                    allAgents = agentsList.ToArray(),
+                    defaultAgent = "ask"
+                };
                 _webView.PostMessage(JsonSerializer.Serialize(message));
                 responseDoc?.Dispose();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: error fetching agents: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error fetching agents: {ex.Message}");
                 await SendEmptyAgentsAsync();
             }
         }
 
         private async Task SendEmptyAgentsAsync()
         {
-            var message = new { type = "agentsLoaded", agents = new object[0] };
+            var message = new 
+            { 
+                type = "agentsLoaded", 
+                agents = Array.Empty<object>(),
+                allAgents = Array.Empty<object>(),
+                defaultAgent = "ask"
+            };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
@@ -719,7 +808,7 @@ namespace KiloVisualStudioExtension
 
         private async Task HandleRequestWorkStyleAsync()
         {
-            var message = new { type = "workStyleLoaded", workStyle = "ask" };
+            var message = new { type = "workStyleLoaded", style = "unset" as string };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
@@ -829,8 +918,26 @@ namespace KiloVisualStudioExtension
             try
             {
                 var dir = Environment.CurrentDirectory;
-                var response = await httpClient.PostJsonAsync("/session", new { directory = dir });
-                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: session created");
+                var responseDoc = await httpClient.PostJsonAsync("/session", new { directory = dir });
+                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("id", out var id))
+                {
+                    var sessionID = id.GetString() ?? "";
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: session created: {sessionID}");
+                    var sessionCreated = new 
+                    { 
+                        type = "sessionCreated",
+                        session = new 
+                        { 
+                            id = sessionID,
+                            directory = dir,
+                            title = "New Chat",
+                            updated = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                            status = "idle"
+                        }
+                    };
+                    _webView.PostMessage(JsonSerializer.Serialize(sessionCreated));
+                }
+                responseDoc?.Dispose();
             }
             catch (Exception ex)
             {

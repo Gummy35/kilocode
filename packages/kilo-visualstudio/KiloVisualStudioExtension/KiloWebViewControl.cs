@@ -170,12 +170,18 @@ namespace KiloVisualStudioExtension
             {
                 try
                 {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2: PostMessage sending: {message.Substring(0, Math.Min(100, message.Length))}...");
                     CoreWebView2.PostWebMessageAsString(message);
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2: PostMessage sent successfully");
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2 post message error: {ex.Message}");
                 }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2: PostMessage skipped - not initialized or CoreWebView2 is null");
             }
         }
 
