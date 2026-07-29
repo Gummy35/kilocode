@@ -12,6 +12,7 @@ namespace KiloVisualStudioExtension
         private readonly KiloConnectionService _connectionService;
         private bool _isWebviewReady = false;
         private bool _disposed;
+        private string? _currentSessionID;  // Track the current active session ID
 
         public VSProvider(KiloWebViewControl webView, KiloConnectionService connectionService)
         {
@@ -220,6 +221,10 @@ namespace KiloVisualStudioExtension
 
                     case "dismissNotification":
                         await HandleDismissNotificationAsync(payload);
+                        break;
+
+                    case "applyWorkStyle":
+                        await HandleApplyWorkStyleAsync(payload);
                         break;
 
                     case "resetReadNotifications":
@@ -490,7 +495,7 @@ namespace KiloVisualStudioExtension
             }
 
             // Send connection state
-            var connState = new { type = "connectionState", state = _connectionService.State.ToString() };
+            var connState = new { type = "connectionState", state = _connectionService.State.ToString().ToLowerInvariant() };
             _webView.PostMessage(JsonSerializer.Serialize(connState));
 
             // Wait for webviewInitialized signal before sending data
@@ -499,9 +504,9 @@ namespace KiloVisualStudioExtension
                 _webviewInitializedTcs = new TaskCompletionSource<object?>();
             }
             
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: waiting for webviewInitialized...");
-            await _webviewInitializedTcs.Task;
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewInitialized received, sending initial data");
+            //System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: waiting for webviewInitialized...");
+            //await _webviewInitializedTcs.Task;
+            //System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewInitialized received, sending initial data");
 
             // Create a default session if none exists
             await HandleCreateSessionAsync();
@@ -535,7 +540,7 @@ namespace KiloVisualStudioExtension
 
         private void HandleStateChange(object? sender, ConnectionStateEventArgs e)
         {
-            var message = new { type = "connectionState", state = e.State.ToString(), errorMessage = e.ErrorMessage };
+            var message = new { type = "connectionState", state = e.State.ToString().ToLowerInvariant(), errorMessage = e.ErrorMessage };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
@@ -784,31 +789,30 @@ namespace KiloVisualStudioExtension
 
         private void HandleRequestIndexingSettings()
         {
-            var message = new { type = "indexingSettingsLoaded", setting = "off" };
+            var message = new { type = "indexingSettingsLoaded", settings = new { showButtonWhenDisabled = true } };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
         private void HandleRequestChatSettings()
         {
-            var message = new { type = "chatSettingsLoaded", settings = new { } };
+            var message = new { type = "chatSettingsLoaded", settings = new { shiftTabCyclesVariant = false } };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
         private void HandleRequestThroughputSetting()
         {
-            var message = new { type = "throughputSettingLoaded", value = 0 };
+            var message = new { type = "throughputSettingLoaded", visible = true };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
         private void HandleRequestAutocompleteSettings()
         {
-            var message = new { type = "autocompleteSettingsLoaded", setting = "off" };
-            _webView.PostMessage(JsonSerializer.Serialize(message));
+          _webView.PostMessage(JsonSerializer.Serialize(new { type = "autocompleteSettingsLoaded", settings = new { enableAutoTrigger = false, enableSmartInlineTaskKeybinding = false, enableChatAutocomplete = false, provider = (string?)null, model = (string?)null } }));
         }
 
         private async Task HandleRequestWorkStyleAsync()
         {
-            var message = new { type = "workStyleLoaded", style = "unset" as string };
+            var message = new { type = "workStyleLoaded", style = new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } } };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
@@ -820,23 +824,72 @@ namespace KiloVisualStudioExtension
                 return;
             }
 
-            if (payload.HasValue && payload.Value.TryGetProperty("text", out var textProp))
-            {
-                var text = textProp.GetString() ?? "";
-                var len = text.Length < 50 ? text.Length : 50;
-                System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: prompt received: {text.Substring(0, len)}...");
+            if (!payload.HasValue) return;
 
-                var httpClient = _connectionService.GetHttpClient();
-                try
+            // Extract sessionID from payload - must be a valid session ID starting with "ses"
+            string? sessionID = null;
+            if (payload.Value.TryGetProperty("sessionID", out var sessionIDProp) && !string.IsNullOrEmpty(sessionIDProp.GetString()))
+            {
+                var sid = sessionIDProp.GetString()!;
+                if (sid.StartsWith("ses_"))
                 {
-                    var response = await httpClient.PostJsonAsync("/session/prompt", new { text });
-                    System.Diagnostics.Debug.WriteLine("[Kilo] KiloProvider: prompt sent successfully");
+                    sessionID = sid;
                 }
-                catch (Exception ex)
+            }
+            
+            // Fall back to tracked current session
+            if (string.IsNullOrEmpty(sessionID) && !string.IsNullOrEmpty(_currentSessionID))
+            {
+                sessionID = _currentSessionID;
+            }
+
+            if (string.IsNullOrEmpty(sessionID))
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] KiloProvider: no valid session ID available for prompt (draftIDs are not valid session IDs)");
+                await SendErrorAsync("Prompt Error", "No active session - please create a session first");
+                return;
+            }
+
+            // Extract text from payload
+            if (!payload.Value.TryGetProperty("text", out var textProp) || string.IsNullOrEmpty(textProp.GetString()))
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] KiloProvider: missing text in prompt request");
+                await SendErrorAsync("Prompt Error", "Missing message text");
+                return;
+            }
+            var text = textProp.GetString()!;
+            var len = text.Length < 50 ? text.Length : 50;
+            System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: prompt received for session {sessionID}: {text.Substring(0, len)}...");
+
+            var httpClient = _connectionService.GetHttpClient();
+            try
+            {
+                // Build prompt data - start with minimal payload
+                var part = new { type = "text", text };
+                var promptData = new { 
+                    parts = new[] { part }
+                };
+                
+                var json = JsonSerializer.Serialize(promptData);
+                System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: sending POST to /session/{sessionID}/prompt_async with body: {json}");
+                
+                // Use prompt_async - returns 204 No Content, so use PostAsync instead of PostJsonAsync
+                var response = await httpClient.PostAsync($"/session/{sessionID}/prompt_async", promptData);
+                if (response.IsSuccessStatusCode)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: error sending prompt: {ex.Message}");
-                    await SendErrorAsync("Prompt Error", ex.Message);
+                    System.Diagnostics.Debug.WriteLine("[Kilo] KiloProvider: prompt accepted, response will come via SSE");
                 }
+                else
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: prompt failed: {(int)response.StatusCode} - {errorBody}");
+                    await SendErrorAsync("Prompt Error", $"Server returned {(int)response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: error sending prompt: {ex.Message}");
+                await SendErrorAsync("Prompt Error", ex.Message);
             }
         }
 
@@ -921,7 +974,8 @@ namespace KiloVisualStudioExtension
                 var responseDoc = await httpClient.PostJsonAsync("/session", new { directory = dir });
                 if (responseDoc != null && responseDoc.RootElement.TryGetProperty("id", out var id))
                 {
-                    var sessionID = id.GetString() ?? "";
+                    _currentSessionID = id.GetString() ?? "";
+                    var sessionID = _currentSessionID;
                     System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: session created: {sessionID}");
                     var sessionCreated = new 
                     { 
@@ -1206,6 +1260,13 @@ namespace KiloVisualStudioExtension
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: dismissNotification");
         }
 
+        private async Task HandleApplyWorkStyleAsync(JsonElement? payload)
+        {
+          if (!payload.HasValue) return;
+          System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: applyWorkStyle received");
+          // WorkStyle is applied client-side; just acknowledge
+        }
+
         private async Task HandleResetReadNotificationsAsync()
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: resetReadNotifications");
@@ -1318,7 +1379,9 @@ namespace KiloVisualStudioExtension
 
         private void HandleRequestTimelineSetting()
         {
-            _webView.PostMessage(JsonSerializer.Serialize(new { type = "timelineSettingLoaded", value = 0 }));
+      //_webView.PostMessage(JsonSerializer.Serialize(new { type = "timelineSettingLoaded", value = 0 }));
+
+      _webView.PostMessage(JsonSerializer.Serialize(new { type = "timelineSettingLoaded", visible = true }));
         }
 
         private async Task HandleRequestGitRemoteUrlAsync()

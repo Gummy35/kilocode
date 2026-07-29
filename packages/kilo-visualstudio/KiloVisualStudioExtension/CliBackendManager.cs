@@ -71,7 +71,7 @@ namespace KiloVisualStudioExtension
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = cliPath,
-                    Arguments = "serve --port 0",
+                    Arguments = "serve --port 0 --print-logs",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
@@ -132,7 +132,7 @@ namespace KiloVisualStudioExtension
         {
             if (string.IsNullOrEmpty(e.Data))
                 return;
-
+            System.Diagnostics.Debug.WriteLine($"Kilo Cli: {e.Data}");
             // Parse port from output: "listening on http://127.0.0.1:PORT"
             var match = Regex.Match(e.Data, @"listening on http://127\.0\.0\.1:(\d+)");
             if (match.Success)

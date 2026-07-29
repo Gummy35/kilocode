@@ -245,18 +245,21 @@
   if (isWebView2) {
     console.log('[VSCodeAPI] Setting up message listener');
     messageListener = function(event) {
-      console.log('[VSCodeAPI] Received message from chrome.webview:', event.data);
-      if (event.data && event.data.type === 'setState') {
-        currentState = event.data.state;
+      console.log('[VSCodeAPI] Received raw message from chrome.webview:', event.data);
+      // WebView2 delivers messages as JSON strings, need to parse them
+      let parsedData;
+      try {
+        parsedData = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        console.log('[VSCodeAPI] Parsed message:', parsedData);
+      } catch (err) {
+        console.error('[VSCodeAPI] Failed to parse message:', err);
+        return;
       }
-      // Validate message type before forwarding to ensure webview can properly type-narrow
-      if (event.data && event.data.type && VALID_MESSAGE_TYPES.has(event.data.type)) {
-        console.log('[VSCodeAPI] Forwarding valid message type:', event.data.type);
-        window.postMessage(event.data, '*');
-      } else if (event.data && event.data.type) {
-        console.warn('[VSCodeAPI] Unknown message type, forwarding anyway:', event.data.type);
-        window.postMessage(event.data, '*');
+      if (parsedData && parsedData.type === 'setState') {
+        currentState = parsedData.state;
       }
+      // Forward parsed message to window.postMessage for webview consumption
+      window.postMessage(parsedData, '*');
     };
     window.chrome.webview.addEventListener('message', messageListener);
     console.log('[VSCodeAPI] Message listener attached to chrome.webview');
