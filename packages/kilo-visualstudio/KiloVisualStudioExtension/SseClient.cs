@@ -199,8 +199,6 @@ namespace KiloVisualStudioExtension
 
             _lastEventTime = DateTime.UtcNow;
             var trimmedData = data.TrimEnd('\n');
-
-            System.Diagnostics.Debug.WriteLine($"[Kilo] SSE: event={eventType}");
             OnEvent?.Invoke(this, new SseEventArgs(eventType, trimmedData));
         }
 

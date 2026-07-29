@@ -10,17 +10,29 @@ namespace KiloVisualStudioExtension
     {
         private readonly KiloWebViewControl _webView;
         private readonly KiloConnectionService _connectionService;
+        private readonly SSEHelper _sseHelper;
         private bool _isWebviewReady = false;
         private bool _disposed;
-        private string? _currentSessionID;  // Track the current active session ID
 
         public VSProvider(KiloWebViewControl webView, KiloConnectionService connectionService)
         {
             _webView = webView;
             _connectionService = connectionService;
+            _sseHelper = new SSEHelper(PostMessage);
             _webView.OnMessageReceived += HandleMessageReceived;
             _connectionService.OnStateChange += HandleStateChange;
             _connectionService.OnSseEvent += HandleSseEvent;
+        }
+
+        private void PostMessage(string message)
+        {
+            _webView.PostMessage(message);
+        }
+
+        private string? _currentSessionID
+        {
+            get => _sseHelper.CurrentSessionID;
+            set => _sseHelper.SetCurrentSession(value);
         }
 
         private void HandleMessageReceived(object? sender, WebViewMessageEventArgs e)
@@ -546,8 +558,7 @@ namespace KiloVisualStudioExtension
 
         private void HandleSseEvent(object? sender, SseEventReceivedEventArgs e)
         {
-            var message = new { type = "sse", payload = new { eventType = e.EventType, data = e.Data } };
-            _webView.PostMessage(JsonSerializer.Serialize(message));
+            _sseHelper.HandleEvent(e.EventType, e.Data);
         }
 
         private async Task HandleRequestProvidersAsync()

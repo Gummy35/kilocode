@@ -155,6 +155,7 @@ namespace KiloVisualStudioExtension
           if (message == null) return;
           
           var json = JsonSerializer.Serialize(message);
+          System.Diagnostics.Debug.WriteLine($"[SSE fwd]: {json}");
           CoreWebView2.PostWebMessageAsString(json);
         }
         catch (Exception ex)
@@ -169,7 +170,9 @@ namespace KiloVisualStudioExtension
       try
       {
         var jsonData = JsonSerializer.Deserialize<JsonElement>(data);
-        
+        if (jsonData.TryGetProperty("payload", out var payload))
+          jsonData = payload;
+          
         // Check if this is a sync event (has "name" field) or stream event (has "type" field)
         if (jsonData.TryGetProperty("name", out var nameProp))
         {
@@ -181,8 +184,8 @@ namespace KiloVisualStudioExtension
           {
             "message.updated.1" => CreateMessageCreated(dataProp),
             "message.removed.1" => CreateMessageRemoved(dataProp),
-            "message.part.updated.1" => CreatePartUpdated(dataProp, null),
-            "message.part.removed.1" => CreatePartRemoved(dataProp),
+            "message.part.updated.1" => CreatePartUpdatedFromSync(dataProp),
+            "message.part.removed.1" => CreatePartRemovedFromSync(dataProp),
             "session.created.1" => CreateSessionCreated(dataProp),
             "session.updated.1" => null,
             "session.deleted.1" => CreateSessionDeleted(dataProp),
@@ -197,8 +200,9 @@ namespace KiloVisualStudioExtension
         var type = typeProp.GetString() ?? "";
         var properties = jsonData.TryGetProperty("properties", out var propsProp) ? propsProp : JsonDocument.Parse("{}").RootElement;
         
+        // message.part.delta is a stream event
         if (type == "message.part.delta")
-          return CreatePartDelta(properties);
+          return CreatePartDeltaFromStream(properties);
           
         return type switch
         {
@@ -257,7 +261,7 @@ namespace KiloVisualStudioExtension
       };
     }
     
-    private object CreatePartUpdated(JsonElement data, string? sessionID)
+    private object CreatePartUpdatedFromSync(JsonElement data)
     {
       var part = data.GetProperty("part");
       return new
@@ -269,7 +273,7 @@ namespace KiloVisualStudioExtension
       };
     }
     
-    private object CreatePartRemoved(JsonElement data)
+    private object CreatePartRemovedFromSync(JsonElement data)
     {
       return new
       {
@@ -306,7 +310,7 @@ namespace KiloVisualStudioExtension
       };
     }
     
-    private object CreatePartDelta(JsonElement properties)
+    private object CreatePartDeltaFromStream(JsonElement properties)
     {
       var partID = properties.GetProperty("partID").GetString();
       var messageID = properties.GetProperty("messageID").GetString();
@@ -489,7 +493,7 @@ namespace KiloVisualStudioExtension
       return new
       {
         type = "indexingStatusLoaded",
-        status = properties.GetProperty("status").GetString()
+        status = properties.GetProperty("status")
       };
     }
 
