@@ -87,7 +87,7 @@ namespace KiloVisualStudioExtension
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: error handling SSE event: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: error handling SSE event: {ex.Message} / {data}");
             }
         }
 
@@ -240,20 +240,22 @@ namespace KiloVisualStudioExtension
             }
 
             var createdAt = info.TryGetProperty("time", out var time) && time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeSeconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
+            
+            // Match TypeScript: { ...info, createdAt: new Date(info.time.created).toISOString() }
+            // We need to copy all properties from info and add createdAt
+            var messageObj = new Dictionary<string, object?>();
+            foreach (var prop in info.EnumerateObject())
+            {
+                messageObj[prop.Name] = prop.Value;
+            }
+            messageObj["createdAt"] = createdAt;
             
             PostMessage(new
             {
                 type = "messageCreated",
-                message = new
-                {
-                    id = messageID,
-                    sessionID,
-                    role = info.GetProperty("role").GetString(),
-                    createdAt,
-                    parts = info.GetProperty("parts")
-                }
+                message = messageObj
             });
         }
 
@@ -323,16 +325,26 @@ namespace KiloVisualStudioExtension
                 _trackedSessionIds.Add(sessionID);
             }
 
+            var time = info.GetProperty("time");
+            var createdAt = time.TryGetProperty("created", out var created)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            var updatedAt = time.TryGetProperty("updated", out var updated)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            
             PostMessage(new
             {
                 type = "sessionCreated",
                 session = new
                 {
                     id = sessionID,
-                    directory = info.GetProperty("directory").GetString(),
+                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
                     title = info.GetProperty("title").GetString(),
-                    updated = info.GetProperty("updated").GetInt64(),
-                    status = "idle"
+                    createdAt,
+                    updatedAt,
+                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
+                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
                 }
             });
         }
@@ -358,16 +370,26 @@ namespace KiloVisualStudioExtension
                 CurrentSessionID = sessionID;
             }
 
+            var time = info.GetProperty("time");
+            var createdAt = time.TryGetProperty("created", out var created)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            var updatedAt = time.TryGetProperty("updated", out var updated)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            
             PostMessage(new
             {
                 type = "sessionUpdated",
                 session = new
                 {
                     id = sessionID,
-                    directory = info.GetProperty("directory").GetString(),
+                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
                     title = info.GetProperty("title").GetString(),
-                    updated = info.GetProperty("updated").GetInt64(),
-                    status = "idle"
+                    createdAt,
+                    updatedAt,
+                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
+                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
                 }
             });
         }
@@ -491,16 +513,26 @@ namespace KiloVisualStudioExtension
                 _trackedSessionIds.Add(sessionID);
             }
 
+            var time = info.GetProperty("time");
+            var createdAt = time.TryGetProperty("created", out var created)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            var updatedAt = time.TryGetProperty("updated", out var updated)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            
             PostMessage(new
             {
                 type = "sessionCreated",
                 session = new
                 {
                     id = sessionID,
-                    directory = info.GetProperty("directory").GetString(),
+                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
                     title = info.GetProperty("title").GetString(),
-                    updated = info.GetProperty("updated").GetInt64(),
-                    status = "idle"
+                    createdAt,
+                    updatedAt,
+                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
+                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
                 }
             });
         }
@@ -520,16 +552,26 @@ namespace KiloVisualStudioExtension
                 CurrentSessionID = sessionID;
             }
 
+            var time = info.GetProperty("time");
+            var createdAt = time.TryGetProperty("created", out var created)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            var updatedAt = time.TryGetProperty("updated", out var updated)
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+                : DateTime.UtcNow.ToString("o");
+            
             PostMessage(new
             {
                 type = "sessionUpdated",
                 session = new
                 {
                     id = sessionID,
-                    directory = info.GetProperty("directory").GetString(),
+                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
                     title = info.GetProperty("title").GetString(),
-                    updated = info.GetProperty("updated").GetInt64(),
-                    status = "idle"
+                    createdAt,
+                    updatedAt,
+                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
+                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
                 }
             });
         }
@@ -572,20 +614,21 @@ namespace KiloVisualStudioExtension
             }
 
             var createdAt = info.TryGetProperty("time", out var time) && time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeSeconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetInt64()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
+            
+            // Match TypeScript: { ...info, createdAt: new Date(info.time.created).toISOString() }
+            var messageObj = new Dictionary<string, object?>();
+            foreach (var prop in info.EnumerateObject())
+            {
+                messageObj[prop.Name] = prop.Value;
+            }
+            messageObj["createdAt"] = createdAt;
             
             PostMessage(new
             {
                 type = "messageCreated",
-                message = new
-                {
-                    id = messageID,
-                    sessionID,
-                    role = info.GetProperty("role").GetString(),
-                    createdAt,
-                    parts = info.GetProperty("parts")
-                }
+                message = messageObj
             });
         }
 
