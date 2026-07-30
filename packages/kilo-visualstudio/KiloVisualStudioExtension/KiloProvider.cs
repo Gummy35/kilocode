@@ -13,6 +13,8 @@ namespace KiloVisualStudioExtension
         private readonly SSEHelper _sseHelper;
         private bool _isWebviewReady = false;
         private bool _disposed;
+        private JsonElement? _webviewState;
+        private string? _contextSessionID;
 
         public VSProvider(KiloWebViewControl webView, KiloConnectionService connectionService)
         {
@@ -137,6 +139,14 @@ namespace KiloVisualStudioExtension
 
                     case "clearSession":
                         HandleClearSession();
+                        break;
+
+                    case "setState":
+                        await HandleSetStateAsync(payload);
+                        break;
+
+                    case "getState":
+                        await HandleGetStateAsync();
                         break;
 
                     case "loadMessages":
@@ -546,6 +556,14 @@ namespace KiloVisualStudioExtension
             // Send extensionDataReady to signal all initial data is loaded
             var extensionReady = new { type = "extensionDataReady" };
             _webView.PostMessage(JsonSerializer.Serialize(extensionReady));
+
+            // Send saved state to webview if it exists (for webview reload recovery)
+            if (_webviewState.HasValue)
+            {
+                var stateMessage = new { type = "setState", state = _webviewState.Value };
+                _webView.PostMessage(JsonSerializer.Serialize(stateMessage));
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: restored state to webview");
+            }
 
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: initialization complete");
         }
@@ -978,16 +996,35 @@ namespace KiloVisualStudioExtension
         private async Task HandleCreateSessionAsync()
         {
             var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null) return;
+            if (httpClient == null)
+            {
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+                return;
+            }
             try
             {
                 var dir = Environment.CurrentDirectory;
                 var responseDoc = await httpClient.PostJsonAsync("/session", new { directory = dir });
                 if (responseDoc != null && responseDoc.RootElement.TryGetProperty("id", out var id))
                 {
-                    _currentSessionID = id.GetString() ?? "";
-                    var sessionID = _currentSessionID;
+                    var sessionID = id.GetString() ?? "";
                     System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: session created: {sessionID}");
+                    
+                    // Stop current session processes (if any) - similar to VS Code's stopCurrentSessionProcesses(session.id)
+                    // Process management would need to be implemented separately for Visual Studio
+                    
+                    // Set current session
+                    _currentSessionID = sessionID;
+                    
+                    // Set context session ID - similar to VS Code's contextSessionID = session.id
+                    _contextSessionID = sessionID;
+                    
+                    // Track the session so SSE events are processed
+                    _sseHelper.SetCurrentSession(sessionID);
+                    
+                    // Focus session - similar to VS Code's focusSession(session.id)
+                    // For Visual Studio, this would reset any session focus tracking
+                    
                     var sessionCreated = new 
                     { 
                         type = "sessionCreated",
@@ -1007,29 +1044,157 @@ namespace KiloVisualStudioExtension
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error creating session: {ex.Message}");
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to create session: {ex.Message}" }));
             }
         }
 
         private void HandleClearSession()
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: clearSession");
+            
+            // Stop current session processes (if any)
+            // Note: In VS Code, this calls stopCurrentSessionProcesses() which stops background processes
+            // Process management would need to be implemented separately for Visual Studio
+            
+            // Clear the context session ID
+            _contextSessionID = null;
+            
+            // Clear current session (via _currentSessionID which wraps _sseHelper.CurrentSessionID)
+            _currentSessionID = null;
+            
+            // Focus session (reset stream focus)
+            // In VS Code, this calls focusSession() which resets the focused session
+            // For Visual Studio, this would reset any session focus tracking
+        }
+
+        private async Task HandleSetStateAsync(JsonElement? payload)
+        {
+            if (!payload.HasValue) return;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: setState received");
+            
+            if (payload.Value.TryGetProperty("state", out var state))
+            {
+                _webviewState = state;
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: state saved");
+            }
+        }
+
+        private async Task HandleGetStateAsync()
+        {
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: getState requested");
+            
+            if (_webviewState.HasValue)
+            {
+                var message = new { type = "setState", state = _webviewState.Value };
+                _webView.PostMessage(JsonSerializer.Serialize(message));
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: state sent to webview");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: no state to send");
+            }
         }
 
         private async Task HandleLoadMessagesAsync(JsonElement? payload)
         {
             if (!payload.HasValue) return;
+            
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
+            
+            var mode = "replace";
+            if (payload.Value.TryGetProperty("mode", out var modeProp) && !string.IsNullOrEmpty(modeProp.GetString()))
+            {
+                mode = modeProp.GetString()!;
+            }
+            
+            var before = payload.Value.TryGetProperty("before", out var beforeProp) ? beforeProp.GetString() : null;
+            var limit = payload.Value.TryGetProperty("limit", out var limitProp) && limitProp.TryGetInt32(out var l) ? l : 80;
+            
+            if (mode == "replace" || mode == "focus")
+            {
+                _currentSessionID = sessionID;
+                _contextSessionID = sessionID;  // Also set contextSessionID like VS Code does
+            }
+            
             var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null) return;
+            if (httpClient == null)
+            {
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
+                return;
+            }
+            
             try
             {
-                var response = await httpClient.GetJsonAsync($"/session/messages?sessionID={sessionID}");
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: loaded messages for session {sessionID}");
+                var url = $"/session/{sessionID}/message?limit={limit}";
+                if (!string.IsNullOrEmpty(before))
+                {
+                    url += $"&before={before}";
+                }
+                
+                var responseDoc = await httpClient.GetJsonAsync(url);
+                
+                if (responseDoc == null) return;
+                
+                var items = new List<object>();
+                var cursorValue = (string?)null;
+                var hasMore = false;
+                
+                if (responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in responseDoc.RootElement.EnumerateArray())
+                    {
+                        if (item.TryGetProperty("info", out var info) && info.TryGetProperty("time", out var time) && time.TryGetProperty("created", out var created))
+                        {
+                            var createdAt = DateTimeOffset.FromUnixTimeMilliseconds(created.GetInt64()).UtcDateTime.ToString("o");
+                            var partsValue = item.TryGetProperty("parts", out var parts) ? (object)parts.Clone() : Array.Empty<object>();
+                            var timeValue = item.TryGetProperty("time", out var t) ? (object?)t.Clone() : null;
+                            var costValue = item.TryGetProperty("cost", out var cost) ? (object?)cost.Clone() : null;
+                            var tokensValue = item.TryGetProperty("tokens", out var tok) ? (object?)tok.Clone() : null;
+                            var messageObj = new
+                            {
+                                id = info.TryGetProperty("id", out var id) ? id.GetString() : "",
+                                sessionID = sessionID,
+                                role = info.TryGetProperty("role", out var role) ? role.GetString() : "",
+                                parts = partsValue,
+                                createdAt = createdAt,
+                                time = timeValue,
+                                cost = costValue,
+                                tokens = tokensValue
+                            };
+                            items.Add(messageObj);
+                        }
+                    }
+                }
+                
+                if (responseDoc.RootElement.ValueKind == JsonValueKind.Object 
+                  && responseDoc.RootElement.TryGetProperty("cursor", out var cursorProp) 
+                  && cursorProp.ValueKind == JsonValueKind.String)
+                {
+                    cursorValue = cursorProp.GetString();
+                    hasMore = !string.IsNullOrEmpty(cursorValue);
+                }
+                
+                var message = new
+                {
+                    type = "messagesLoaded",
+                    sessionID = sessionID,
+                    messages = items.ToArray(),
+                    mode = mode,
+                    cursor = cursorValue,
+                    hasMore = hasMore
+                };
+                
+                _webView.PostMessage(JsonSerializer.Serialize(message));
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: loaded {items.Count} messages for session {sessionID}");
+                
+                responseDoc.Dispose();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error loading messages: {ex.Message}");
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = ex.Message, sessionID }));
             }
         }
 
@@ -1058,15 +1223,35 @@ namespace KiloVisualStudioExtension
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
             var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null) return;
+            if (httpClient == null)
+            {
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
+                return;
+            }
             try
             {
+                // Stop session processes before deleting (similar to VS Code's stopSessionProcesses)
+                // Process management would need to be implemented separately for Visual Studio
+                
                 await httpClient.PostJsonAsync($"/session/delete", new { sessionID });
                 System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: session deleted");
+                
+                // If deleting the current session, clear session state (similar to VS Code)
+                if (_currentSessionID == sessionID)
+                {
+                    _contextSessionID = null;
+                    _currentSessionID = null;
+                    _sseHelper.SetCurrentSession(null);
+                    // Focus session with undefined (similar to VS Code's focusSession(undefined))
+                }
+                
+                // Notify webview of deletion (similar to VS Code's sessionDeleted message)
+                PostMessage(JsonSerializer.Serialize(new { type = "sessionDeleted", sessionID }));
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error deleting session: {ex.Message}");
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to delete session: {ex.Message}", sessionID }));
             }
         }
 
@@ -1077,21 +1262,67 @@ namespace KiloVisualStudioExtension
             var title = payload.Value.TryGetProperty("title", out var t) ? t.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
             var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null) return;
+            if (httpClient == null)
+            {
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+                return;
+            }
             try
             {
                 await httpClient.PostJsonAsync($"/session/rename", new { sessionID, title });
                 System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: session renamed");
+                
+                // If renaming the current session, update it (similar to VS Code's setCurrentSession)
+                if (_currentSessionID == sessionID)
+                {
+                    // Send sessionUpdated message with updated title (similar to VS Code)
+                    var sessionUpdated = new 
+                    { 
+                        type = "sessionUpdated",
+                        session = new 
+                        { 
+                            id = sessionID,
+                            title = title,
+                            updated = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                            status = "idle"
+                        }
+                    };
+                    PostMessage(JsonSerializer.Serialize(sessionUpdated));
+                }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error renaming session: {ex.Message}");
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to rename session: {ex.Message}" }));
             }
         }
 
         private async Task HandleAbortAsync(JsonElement? payload)
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: abort");
+            
+            // Extract session ID from payload or use current session
+            var sessionID = payload.HasValue && payload.Value.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString())
+                ? sid.GetString()
+                : _currentSessionID;
+            
+            if (string.IsNullOrEmpty(sessionID))
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: abort - no session ID available");
+                return;
+            }
+            
+            // In VS Code, this calls stopSession() via the SDK to abort the running task
+            // For now, we log - actual abort would require SDK integration
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: aborting session {sessionID}");
+            
+            // Set session status to idle
+            var statusMessage = new { type = "sessionStatus", sessionID = sessionID, status = "idle" };
+            _webView.PostMessage(JsonSerializer.Serialize(statusMessage));
+            
+            // Flush the stream for this session
+            var turnClosedMessage = new { type = "sessionTurnClosed", sessionID = sessionID, reason = "interrupted" };
+            _webView.PostMessage(JsonSerializer.Serialize(turnClosedMessage));
         }
 
         private async Task HandleSendMessageAsync(JsonElement? payload)

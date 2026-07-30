@@ -20,7 +20,7 @@ namespace KiloVisualStudioExtension
 
         public bool IsInitialized => _initialized;
 
-        public async Task InitializeAsync(CachedHttpClient? cachedClient, HttpClientWrapper? httpClient)
+        public async Task InitializeAsync(HttpClientWrapper? httpClient)
         {
             if (_initialized) return;
 
@@ -29,7 +29,7 @@ namespace KiloVisualStudioExtension
                 if (_initialized) return;
             }
 
-            var client = cachedClient ?? new CachedHttpClient(httpClient ?? throw new InvalidOperationException("No HTTP client provided"));
+            var client = httpClient ?? throw new InvalidOperationException("No HTTP client provided");
 
             try
             {

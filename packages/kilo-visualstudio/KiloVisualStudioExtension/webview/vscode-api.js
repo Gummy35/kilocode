@@ -47,6 +47,9 @@
      * @returns {any} The current state
      */
     getState: function() {
+      if (!currentState) {
+        this.postMessage({ type: 'getState'});      
+      }
       return currentState;
     },
 
@@ -277,4 +280,8 @@
     console.log('[VSCodeAPI] acquireVsCodeApi called');
     return vscodeApi;
   };
+
+  // Request initial state from extension on page load
+  console.log('[VSCodeAPI] Requesting initial state from extension');
+  window.postMessage({ type: 'getState' }, '*');
 })();

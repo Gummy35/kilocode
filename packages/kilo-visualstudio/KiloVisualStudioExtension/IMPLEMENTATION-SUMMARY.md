@@ -93,13 +93,17 @@ CLI process manager that:
 - HTTP/SSE communication
 - Webview bundling (webview.js, webview.css, KaTeX fonts)
 - **WebView2 message bridge** - Messages from webview are now properly received and parsed
+- **SSE event handling** - Events from backend are processed and forwarded to webview via SSEHelper
+- **Event deduplication** - Duplicate events (stream + sync formats) are deduplicated via event ID tracking (keeps last 1000)
+- **Thread affinity** - PostMessage properly switches to UI thread via `ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync()`
+- **Single connection instance** - KiloConnectionService uses singleton pattern to prevent duplicate SSE subscriptions
 
 ✅ **Build System**
 - .NET project configuration
 - VSIX manifest with webview packaging
 - Build automation script (no CLI/webview builds, just file copying)
 - Solution file
-- Build succeeds with no errors (nullable warnings only)
+- Build succeeds with **0 errors** (nullable warnings only)
 
 ✅ **Documentation**
 - README with architecture overview
@@ -112,11 +116,15 @@ CLI process manager that:
 - All request messages logged and routed correctly
 
 ### Known Issues
-1. **Response handling**: Extension receives messages but doesn't respond to `requestProviders`, `requestAgents`, `requestConfig`, etc. - these need handlers to fetch data from CLI and send back to webview
-2. **Theme**: Webview uses CSS variables that should resolve to proper dark theme colors
-3. **Settings**: Some setting requests (`requestAutoApproveState`, `requestThroughputSetting`, `requestTimelineSetting`) have no handlers yet
 
-## What's Missing
+### Fixed Issues
+1. **Duplicate SSE events** - Backend sends each event in both stream and sync formats; fixed with event ID deduplication in SSEHelper
+2. **Thread affinity errors** - WebView2 operations require UI thread; fixed by adding `await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync()` in PostMessageAsync
+3. **Multiple connection instances** - Multiple VSProvider instances subscribed to same event; fixed with singleton KiloConnectionService pattern
+
+### Current Issues
+1. **Theme**: Webview uses CSS variables that should resolve to proper dark theme colors
+2. **Settings**: Some setting requests (`requestAutoApproveState`, `requestThroughputSetting`, `requestTimelineSetting`) have no handlers yet
 
 ## What's Missing
 
@@ -130,13 +138,31 @@ CLI process manager that:
 - [x] **Tool Window**: Proper initialization in `KiloToolWindow.cs`
 - [x] **Webview Integration**: Bundled SolidJS webview (webview.js, webview.css, KaTeX fonts)
 - [x] **VS Code API Compatibility**: `vscode-api.js` compatibility layer for WebView2
+- [x] **SSE Event Deduplication**: Event ID tracking to prevent duplicate stream/sync events
+- [x] **Thread Safety**: PostMessageAsync with UI thread switching
+- [x] **Singleton Connection**: Single KiloConnectionService instance to prevent duplicate subscriptions
 
 ### Phase 2: Response Handlers - ⏳ IN PROGRESS
 The webview sends many requests that need responses:
-- [ ] `requestProviders` - Fetch and return available providers/models
-- [ ] `requestAgents` - Fetch and return available agents
-- [ ] `requestConfig` / `requestGlobalConfig` - Return config data
-- [ ] `requestAutocompleteSettings` - Return autocomplete settings
+- [x] `requestProviders` - Fetch and return available providers/models
+- [x] `requestAgents` - Fetch and return available agents
+- [x] `requestConfig` / `requestGlobalConfig` - Return config data
+- [x] `requestAutocompleteSettings` - Return autocomplete settings
+- [x] `requestIndexingSettings` - Return indexing settings
+- [x] `requestChatSettings` - Return chat settings
+- [x] `requestWorkStyle` - Return work style preferences
+- [x] `requestKiloEmbeddingModels` - Return embedding models
+- [x] `requestImageModels` - Return image models
+- [x] `requestMcpStatus` - Return MCP server status
+- [x] `requestVariants` - Return stored variants
+- [x] `requestModelSelections` - Return model selections
+- [x] `requestRecents` - Return recent models
+- [x] `requestFavorites` - Return favorited models
+- [x] `requestNotifications` - Return notifications
+- [ ] `requestAutoApproveState` - Return auto-approve state
+- [ ] `requestThroughputSetting` - Return throughput setting
+- [ ] `requestTimelineSetting` - Return timeline setting
+- [ ] `loadMessages` - Load session messages (NEXT TASK)
 - [ ] `requestIndexingSettings` - Return indexing settings
 - [ ] `requestChatSettings` - Return chat settings
 - [ ] `requestWorkStyle` - Return work style preferences

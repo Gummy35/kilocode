@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="kilo-vscode">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kilo Code</title>
+    <!-- VS Code theme variables (must be loaded before kilo-ui styles) -->
+    <link rel="stylesheet" href="vscode-theme.css">
+    <!-- Kilo UI styles -->
     <link rel="stylesheet" href="webview.css">
     <style>
         /* WebView2 theme overrides - ensures proper dark theme rendering */
@@ -13,12 +16,18 @@
             height: 100% !important;
             width: 100% !important;
             overflow: hidden !important;
-            background-color: var(--background-base, #101010) !important;
-            color: var(--text-strong, rgba(255, 255, 255, 0.936)) !important;
+            background-color: var(--background-base, var(--vscode-editor-background, #1e1e1e)) !important;
+            color: var(--text-strong, var(--vscode-editor-foreground, #d4d4d4)) !important;
+            font-family: var(--vscode-font-family, "Segoe UI", Tahoma, sans-serif);
+            font-size: var(--vscode-font-size, 13px);
         }
         #root {
             width: 100% !important;
             height: 100% !important;
+        }
+        /* Apply VS Code theme bridge */
+        html[data-theme="kilo-vscode"] {
+            color-scheme: normal;
         }
     </style>
 </head>

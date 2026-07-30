@@ -489,8 +489,13 @@ namespace KiloVisualStudioExtension
             var sid = properties.GetProperty("sessionID").GetString();
             var delta = properties.GetProperty("delta").GetString();
             
+            System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: HandlePartDelta - sid={sid}, tracked={_trackedSessionIds.Contains(sid)}, deltaLen={delta?.Length ?? 0}");
+            
             if (!string.IsNullOrEmpty(sid) && !_trackedSessionIds.Contains(sid))
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Skipping part update - session not tracked");
                 return;
+            }
 
             PostMessage(new
             {

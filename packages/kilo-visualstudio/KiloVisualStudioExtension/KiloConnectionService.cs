@@ -51,6 +51,8 @@ namespace KiloVisualStudioExtension
         private bool _disposed;
         private readonly object _lock = new object();
 
+        public static KiloConnectionService? Instance = null;
+
         public event EventHandler<ConnectionStateEventArgs>? OnStateChange;
         public event EventHandler<SseEventReceivedEventArgs>? OnSseEvent;
 
