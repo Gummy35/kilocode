@@ -1,95 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using KiloVisualStudioExtension.Services;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
 {
     /// <summary>
-    /// Tests for Agent Manager initial message handling
-    /// Mirrors: agent-manager-initial-message.test.ts from VS Code
-    /// 
-    /// These tests verify the initial message and variant state creation logic
+    /// Tests for InitialMessageHandler service
     /// </summary>
     public class AgentManagerInitialMessageTests
     {
-        // Simplified message types
-        private class SendInitialMessage
-        {
-            public string Type { get; set; } = "";
-            public string SessionId { get; set; } = "";
-            public string WorktreeId { get; set; } = "";
-            public string? Text { get; set; }
-            public string? ProviderId { get; set; }
-            public string? ModelId { get; set; }
-            public string? Agent { get; set; }
-            public string? Variant { get; set; }
-        }
-
-        private class SendMessage
-        {
-            public string Type { get; set; } = "sendMessage";
-            public string? Text { get; set; }
-            public string? SessionId { get; set; }
-            public string? ProviderId { get; set; }
-            public string? ModelId { get; set; }
-            public string? Agent { get; set; }
-            public string? Variant { get; set; }
-            public object? Files { get; set; }
-        }
-
-        private class SessionVariant
-        {
-            public string SessionId { get; set; } = "";
-            public string ProviderId { get; set; } = "";
-            public string ModelId { get; set; } = "";
-            public string Agent { get; set; } = "";
-            public string Value { get; set; } = "";
-        }
-
-        /// <summary>
-        /// Creates initial sendMessage payload from SendInitialMessage
-        /// Mirrors: initialMessage() from VS Code
-        /// </summary>
-        private SendMessage? InitialMessage(SendInitialMessage msg)
-        {
-            if (string.IsNullOrEmpty(msg.Text))
-                return null;
-
-            return new SendMessage
-            {
-                Text = msg.Text,
-                SessionId = msg.SessionId,
-                ProviderId = msg.ProviderId,
-                ModelId = msg.ModelId,
-                Agent = msg.Agent,
-                Variant = msg.Variant,
-                Files = null
-            };
-        }
-
-        /// <summary>
-        /// Builds initial variant state
-        /// Mirrors: initialVariant() from VS Code
-        /// </summary>
-        private SessionVariant? InitialVariant(SendInitialMessage msg, string agent)
-        {
-            if (string.IsNullOrEmpty(msg.ProviderId) || 
-                string.IsNullOrEmpty(msg.ModelId) || 
-                string.IsNullOrEmpty(msg.Variant))
-                return null;
-
-            return new SessionVariant
-            {
-                SessionId = msg.SessionId,
-                ProviderId = msg.ProviderId,
-                ModelId = msg.ModelId,
-                Agent = agent,
-                Value = msg.Variant
-            };
-        }
-
         [Fact]
         public void Forwards_the_selected_variant_to_sendMessage()
         {
@@ -107,7 +28,7 @@ namespace KiloVisualStudioExtension.Tests
             };
 
             // Act
-            var msg = InitialMessage(input);
+            var msg = InitialMessageHandler.CreateInitialMessage(input);
 
             // Assert
             Assert.NotNull(msg);
@@ -129,11 +50,10 @@ namespace KiloVisualStudioExtension.Tests
                 Type = "agentManager.sendInitialMessage",
                 SessionId = "session-a",
                 WorktreeId = "wt-a"
-                // No text provided
             };
 
             // Act
-            var msg = InitialMessage(input);
+            var msg = InitialMessageHandler.CreateInitialMessage(input);
 
             // Assert
             Assert.Null(msg);
@@ -154,7 +74,7 @@ namespace KiloVisualStudioExtension.Tests
             };
 
             // Act
-            var state = InitialVariant(input, "code");
+            var state = InitialMessageHandler.CreateInitialVariant(input, "code");
 
             // Assert
             Assert.NotNull(state);
@@ -176,11 +96,10 @@ namespace KiloVisualStudioExtension.Tests
                 WorktreeId = "wt-a",
                 ProviderId = "anthropic",
                 ModelId = "claude-sonnet-4"
-                // No variant provided
             };
 
             // Act
-            var state = InitialVariant(input, "code");
+            var state = InitialMessageHandler.CreateInitialVariant(input, "code");
 
             // Assert
             Assert.Null(state);
@@ -189,13 +108,11 @@ namespace KiloVisualStudioExtension.Tests
 
     /// <summary>
     /// Tests for i18n split - Agent Manager keys should be separate from general locale dictionaries
-    /// Mirrors: agent-manager-i18n-split.test.ts from VS Code
     /// </summary>
     public class AgentManagerI18nSplitTests
     {
         private const string PREFIX = "agentManager.";
 
-        // Simplified locale dictionaries (in real implementation these would be loaded from JSON)
         private static readonly Dictionary<string, Dictionary<string, string>> AppLocales = new Dictionary<string, Dictionary<string, string>>
         {
             ["en"] = new Dictionary<string, string> { ["general.key"] = "General" },
@@ -225,7 +142,6 @@ namespace KiloVisualStudioExtension.Tests
         [Fact]
         public void Keeps_agent_manager_keys_out_of_general_locale_dictionaries()
         {
-            // Arrange & Act & Assert
             foreach (var locale in AppLocales)
             {
                 var hasAgentManagerKeys = locale.Value.Keys.Any(k => k.StartsWith(PREFIX));
@@ -236,7 +152,6 @@ namespace KiloVisualStudioExtension.Tests
         [Fact]
         public void Keeps_every_agent_manager_locale_dictionary_scoped_to_agentManager_keys()
         {
-            // Arrange & Act & Assert
             foreach (var locale in AgentManagerLocales)
             {
                 Assert.True(locale.Value.Count > 0, $"Locale {locale.Key} should have agent manager keys");
@@ -249,10 +164,8 @@ namespace KiloVisualStudioExtension.Tests
         [Fact]
         public void Keeps_every_agent_manager_locale_keyset_aligned_with_english()
         {
-            // Arrange
             var baseKeys = AgentManagerLocales["en"].Keys.ToHashSet();
 
-            // Act & Assert
             foreach (var locale in AgentManagerLocales)
             {
                 if (locale.Key == "en") continue;
@@ -270,7 +183,6 @@ namespace KiloVisualStudioExtension.Tests
         [Fact]
         public void Contains_required_core_keys_in_every_locale()
         {
-            // Arrange
             var required = new[]
             {
                 PREFIX + "local",
@@ -279,7 +191,6 @@ namespace KiloVisualStudioExtension.Tests
                 PREFIX + "import.failed"
             };
 
-            // Act & Assert
             foreach (var locale in AgentManagerLocales)
             {
                 foreach (var key in required)

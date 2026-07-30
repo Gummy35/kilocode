@@ -1,45 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KiloVisualStudioExtension.Services;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
 {
     /// <summary>
-    /// Tests for Agent Manager diff state management
-    /// Mirrors: agent-manager-diff-state.test.ts from VS Code
-    /// 
-    /// These tests verify the diff state merging and open file policy logic
+    /// Tests for DiffStateUtils service
     /// </summary>
     public class AgentManagerDiffStateTests
     {
-        // Simplified diff representation
-        private class WorktreeFileDiff
-        {
-            public string File { get; set; } = "";
-            public string Before { get; set; } = "";
-            public string After { get; set; } = "";
-            public string? Patch { get; set; }
-            public int Additions { get; set; }
-            public int Deletions { get; set; }
-            public string Status { get; set; } = "";
-            public bool Tracked { get; set; }
-            public bool GeneratedLike { get; set; }
-            public bool Summarized { get; set; }
-            public string Stamp { get; set; } = "";
-            public string? Kind { get; set; }
-            public ImageData? Image { get; set; }
-        }
-
-        private class ImageData
-        {
-            public string Mime { get; set; } = "";
-            public int Bytes { get; set; }
-            public string Data { get; set; } = "";
-        }
-
-        private const int EXTREME_DIFF_CHANGED_LINES = 500;
-
         private WorktreeFileDiff Diff(Dictionary<string, object>? overrides = null)
         {
             var diff = new WorktreeFileDiff
@@ -88,9 +59,6 @@ namespace KiloVisualStudioExtension.Tests
             }) };
             var next = new[] { Diff(new Dictionary<string, object> { ["summarized"] = true }) };
 
-            // Act - in real implementation, mergeWorktreeDiffs would preserve prev content
-            var result = next[0];
-
             // Assert - the detailed content should be preserved from prev
             Assert.Equal("old\n", prev[0].Before);
             Assert.Equal("new\n", prev[0].After);
@@ -110,12 +78,6 @@ namespace KiloVisualStudioExtension.Tests
             });
             prevDiff.Image = image;
             var prev = new[] { prevDiff };
-            var next = new[] { Diff(new Dictionary<string, object>
-            {
-                ["file"] = "asset.png",
-                ["kind"] = "image",
-                ["summarized"] = true
-            }) };
 
             // Assert - image data should be preserved
             Assert.Equal(image, prev[0].Image);
@@ -155,14 +117,11 @@ namespace KiloVisualStudioExtension.Tests
                 Diff(new Dictionary<string, object> { ["file"] = "node_modules/pkg/index.js", ["generatedLike"] = true, ["additions"] = 3 }),
                 Diff(new Dictionary<string, object> { ["file"] = "audio/notification.wav", ["summarized"] = false, ["additions"] = 0 }),
                 Diff(new Dictionary<string, object> { ["file"] = "assets/banner.png", ["kind"] = "image", ["summarized"] = true, ["additions"] = 0 }),
-                Diff(new Dictionary<string, object> { ["file"] = "src/huge.ts", ["additions"] = EXTREME_DIFF_CHANGED_LINES + 1 }),
+                Diff(new Dictionary<string, object> { ["file"] = "src/huge.ts", ["additions"] = DiffStateConstants.ExtremeDiffChangedLines + 1 }),
             };
 
-            // Act - initialOpenFiles should return non-binary, non-image, non-audio files
-            var openFiles = diffs
-                .Where(d => d.Kind != "image" && d.Kind != "audio" && d.Additions <= EXTREME_DIFF_CHANGED_LINES)
-                .Select(d => d.File)
-                .ToList();
+            // Act
+            var openFiles = DiffStateUtils.InitialOpenFiles(diffs);
 
             // Assert
             Assert.Contains("src/app.ts", openFiles);
@@ -181,15 +140,11 @@ namespace KiloVisualStudioExtension.Tests
                 Diff(new Dictionary<string, object> { ["file"] = "src/app.ts", ["generatedLike"] = false, ["additions"] = 3 }),
                 Diff(new Dictionary<string, object> { ["file"] = "src/generated.ts", ["generatedLike"] = true, ["additions"] = 3 }),
                 Diff(new Dictionary<string, object> { ["file"] = "assets/archive.zip", ["summarized"] = false, ["additions"] = 0 }),
-                Diff(new Dictionary<string, object> { ["file"] = "src/huge.ts", ["additions"] = EXTREME_DIFF_CHANGED_LINES + 1 }),
+                Diff(new Dictionary<string, object> { ["file"] = "src/huge.ts", ["additions"] = DiffStateConstants.ExtremeDiffChangedLines + 1 }),
             };
 
-            // Act - expandableOpenFiles includes generated and large files
-            var expandable = diffs
-                .Where(d => d.GeneratedLike || d.Additions > EXTREME_DIFF_CHANGED_LINES || 
-                           (d.Kind != "image" && d.Kind != "audio"))
-                .Select(d => d.File)
-                .ToList();
+            // Act
+            var expandable = DiffStateUtils.ExpandableOpenFiles(diffs);
 
             // Assert
             Assert.Contains("src/app.ts", expandable);
@@ -207,10 +162,10 @@ namespace KiloVisualStudioExtension.Tests
             image.Kind = "image";
             var text = Diff(new Dictionary<string, object> { ["file"] = "src/app.ts" });
 
-            // Act - isDiffExpandable
-            var audioExpandable = audio.Kind == "image";
-            var imageExpandable = image.Kind == "image";
-            var textExpandable = text.Kind != "image" && text.Kind != "audio";
+            // Act
+            var audioExpandable = DiffStateUtils.IsDiffExpandable(audio);
+            var imageExpandable = DiffStateUtils.IsDiffExpandable(image);
+            var textExpandable = DiffStateUtils.IsDiffExpandable(text);
 
             // Assert
             Assert.False(audioExpandable);
@@ -230,9 +185,8 @@ namespace KiloVisualStudioExtension.Tests
                 ["deletions"] = 5
             });
 
-            // Act - shouldVirtualizeDiff
-            var virtualize = diff.Additions > EXTREME_DIFF_CHANGED_LINES || 
-                            (diff.Before.Length > 8000 || diff.After.Length > 8000);
+            // Act
+            var virtualize = DiffStateUtils.ShouldVirtualizeDiff(diff);
 
             // Assert
             Assert.False(virtualize);
@@ -254,13 +208,13 @@ namespace KiloVisualStudioExtension.Tests
             {
                 ["file"] = "src/big.ts",
                 ["patch"] = "large",
-                ["additions"] = EXTREME_DIFF_CHANGED_LINES + 1,
+                ["additions"] = DiffStateConstants.ExtremeDiffChangedLines + 1,
                 ["deletions"] = 0
             });
 
-            // Act - shouldVirtualizeDiff
-            var virtualizeLargeContent = largeContent.Before.Length > 8000;
-            var virtualizeExtreme = extremePatch.Additions > EXTREME_DIFF_CHANGED_LINES;
+            // Act
+            var virtualizeLargeContent = DiffStateUtils.ShouldVirtualizeDiff(largeContent);
+            var virtualizeExtreme = DiffStateUtils.ShouldVirtualizeDiff(extremePatch);
 
             // Assert
             Assert.True(virtualizeLargeContent);

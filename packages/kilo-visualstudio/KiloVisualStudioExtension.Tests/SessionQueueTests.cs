@@ -1,47 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KiloVisualStudioExtension.Services;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
 {
     /// <summary>
-    /// Tests for session queue behavior
-    /// Mirrors: session-queue.test.ts from VS Code
-    /// 
-    /// These tests document the expected queue behavior for session requests
+    /// Tests for SessionQueue service
     /// </summary>
     public class SessionQueueTests
     {
-        private class QueuedRequest
-        {
-            public string SessionId { get; set; } = "";
-            public string Type { get; set; } = "";
-            public DateTime EnqueuedAt { get; set; } = DateTime.UtcNow;
-        }
-
-        private class SessionQueue
-        {
-            private readonly Queue<QueuedRequest> _queue = new Queue<QueuedRequest>();
-            public List<QueuedRequest> Processed { get; } = new List<QueuedRequest>();
-
-            public void Enqueue(QueuedRequest request) => _queue.Enqueue(request);
-
-            public bool Dequeue(out QueuedRequest? request)
-            {
-                if (_queue.Count > 0)
-                {
-                    request = _queue.Dequeue();
-                    Processed.Add(request);
-                    return true;
-                }
-                request = null;
-                return false;
-            }
-
-            public int Count => _queue.Count;
-        }
-
         [Fact]
         public void Processes_requests_in_fifo_order()
         {
@@ -98,50 +67,10 @@ namespace KiloVisualStudioExtension.Tests
     }
 
     /// <summary>
-    /// Tests for session tab switcher behavior
-    /// Mirrors: session-tab-switcher.test.ts from VS Code
+    /// Tests for TabSwitcher service
     /// </summary>
     public class SessionTabSwitcherTests
     {
-        private class TabState
-        {
-            public string SessionId { get; set; } = "";
-            public bool IsActive { get; set; }
-            public List<string> MessageIds { get; set; } = new List<string>();
-        }
-
-        private class TabSwitcher
-        {
-            private readonly Dictionary<string, TabState> _tabs = new Dictionary<string, TabState>();
-            private string? _activeTabId;
-
-            public void CreateTab(string sessionId)
-            {
-                _tabs[sessionId] = new TabState { SessionId = sessionId, IsActive = false };
-            }
-
-            public void ActivateTab(string sessionId)
-            {
-                if (_tabs.ContainsKey(sessionId))
-                {
-                    foreach (var tab in _tabs.Values)
-                        tab.IsActive = false;
-
-                    _tabs[sessionId].IsActive = true;
-                    _activeTabId = sessionId;
-                }
-            }
-
-            public TabState? GetActiveTab()
-            {
-                if (_activeTabId != null && _tabs.TryGetValue(_activeTabId, out var tab))
-                    return tab;
-                return null;
-            }
-
-            public List<string> GetTabIds() => _tabs.Keys.ToList();
-        }
-
         [Fact]
         public void Activates_correct_tab_on_switch()
         {
@@ -193,48 +122,10 @@ namespace KiloVisualStudioExtension.Tests
     }
 
     /// <summary>
-    /// Tests for session terminal manager
-    /// Mirrors: session-terminal-manager.test.ts from VS Code
+    /// Tests for TerminalManager service
     /// </summary>
     public class SessionTerminalManagerTests
     {
-        private class MockTerminal
-        {
-            public string SessionId { get; set; } = "";
-            public bool IsDisposed { get; set; }
-            public List<string> Output { get; } = new List<string>();
-
-            public void Write(string text) => Output.Add(text);
-            public void Dispose() => IsDisposed = true;
-        }
-
-        private class TerminalManager
-        {
-            private readonly Dictionary<string, MockTerminal> _terminals = new Dictionary<string, MockTerminal>();
-
-            public void CreateTerminal(string sessionId)
-            {
-                _terminals[sessionId] = new MockTerminal { SessionId = sessionId };
-            }
-
-            public void DisposeTerminal(string sessionId)
-            {
-                if (_terminals.TryGetValue(sessionId, out var terminal))
-                {
-                    terminal.Dispose();
-                    _terminals.Remove(sessionId);
-                }
-            }
-
-            public MockTerminal? GetTerminal(string sessionId)
-            {
-                _terminals.TryGetValue(sessionId, out var terminal);
-                return terminal;
-            }
-
-            public bool HasActiveTerminal() => _terminals.Count > 0;
-        }
-
         [Fact]
         public void Creates_terminal_for_session()
         {
@@ -279,6 +170,35 @@ namespace KiloVisualStudioExtension.Tests
             // Assert
             Assert.Equal(2, terminal?.Output.Count);
             Assert.Contains("Hello", terminal?.Output ?? new List<string>());
+        }
+
+        [Fact]
+        public void Tracks_multiple_terminals()
+        {
+            // Arrange
+            var manager = new TerminalManager();
+
+            // Act
+            manager.CreateTerminal("s1");
+            manager.CreateTerminal("s2");
+            manager.CreateTerminal("s3");
+
+            // Assert
+            Assert.Equal(3, manager.TerminalCount);
+        }
+
+        [Fact]
+        public void Ignores_dispose_of_nonexistent_terminal()
+        {
+            // Arrange
+            var manager = new TerminalManager();
+            manager.CreateTerminal("s1");
+
+            // Act
+            manager.DisposeTerminal("nonexistent");
+
+            // Assert
+            Assert.Equal(1, manager.TerminalCount);
         }
     }
 }
