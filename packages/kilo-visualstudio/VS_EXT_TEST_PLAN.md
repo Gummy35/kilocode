@@ -7,12 +7,30 @@ This document outlines how to adapt VS Code extension unit tests for the Visual 
 **As of 2026-07-30:**
 
 - **VS Code Tests:** 252 total
-- **VS Extension Tests:** 45 files (223 passing, 42 intentional failures)
+- **VS Extension Tests:** 45 files (213 passing, 41 intentional failures, 254 total)
 - **Critical Tests Coverage:** ~50% (35 of 71 critical tests ported)
 
 ### Latest Addition
 
+- `DiffHashTests.cs` - Diff hash computation, image detection, diff source catalog tests (refactored)
+- `MessagePageTests.cs` - Message page fetching and cursor handling tests (refactored)
 - `AgentBehaviourPatchesTests.cs` - Agent settings behaviour patch tests (text/numeric overrides, default agent clearing)
+
+### Test Files Refactored (Latest Session)
+
+The following test files were refactored to move production code from test files into the KiloVisualStudioExtension project:
+
+**Production Services Created:**
+1. `DiffHashService.cs` - Diff hash computation
+2. `DiffImageUtils.cs` - Image file detection utilities
+3. `DiffSourceCatalog.cs` - Diff source display name mapping
+4. `MessagePageFetcher.cs` - Message page fetching with cursor handling
+5. `AgentBehaviourPatches.cs` - Agent settings value mapping utilities
+
+**Test Files Updated:**
+1. `DiffHashTests.cs` - Removed embedded production code, now uses `DiffHashService`, `DiffImageUtils`, `DiffSourceCatalog`
+2. `MessagePageTests.cs` - Removed embedded production code, now uses `MessagePageFetcher`
+3. `AgentBehaviourPatchesTests.cs` - Removed embedded production code, now uses `AgentBehaviourPatches`
 
 ### Test Files Added (Latest Session)
 
