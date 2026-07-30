@@ -1013,14 +1013,11 @@ namespace KiloVisualStudioExtension
                     // Stop current session processes (if any) - similar to VS Code's stopCurrentSessionProcesses(session.id)
                     // Process management would need to be implemented separately for Visual Studio
                     
-                    // Set current session
+                    // Set current session (this also tracks the session for SSE events)
                     _currentSessionID = sessionID;
                     
                     // Set context session ID - similar to VS Code's contextSessionID = session.id
                     _contextSessionID = sessionID;
-                    
-                    // Track the session so SSE events are processed
-                    _sseHelper.SetCurrentSession(sessionID);
                     
                     // Focus session - similar to VS Code's focusSession(session.id)
                     // For Visual Studio, this would reset any session focus tracking
@@ -1052,6 +1049,9 @@ namespace KiloVisualStudioExtension
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: clearSession");
             
+            // Get the current session ID before clearing
+            var sessionID = _currentSessionID;
+            
             // Stop current session processes (if any)
             // Note: In VS Code, this calls stopCurrentSessionProcesses() which stops background processes
             // Process management would need to be implemented separately for Visual Studio
@@ -1061,6 +1061,12 @@ namespace KiloVisualStudioExtension
             
             // Clear current session (via _currentSessionID which wraps _sseHelper.CurrentSessionID)
             _currentSessionID = null;
+            
+            // Untrack the session so SSE events are no longer processed for it
+            if (!string.IsNullOrEmpty(sessionID))
+            {
+                _sseHelper.UntrackSession(sessionID);
+            }
             
             // Focus session (reset stream focus)
             // In VS Code, this calls focusSession() which resets the focused session
@@ -1241,7 +1247,8 @@ namespace KiloVisualStudioExtension
                 {
                     _contextSessionID = null;
                     _currentSessionID = null;
-                    _sseHelper.SetCurrentSession(null);
+                    // Untrack the deleted session
+                    _sseHelper.UntrackSession(sessionID);
                     // Focus session with undefined (similar to VS Code's focusSession(undefined))
                 }
                 

@@ -849,9 +849,13 @@ namespace KiloVisualStudioExtension
             return _trackedSessionIds.Contains(sessionID);
         }
 
-        public void SetCurrentSession(string sessionID)
+        public void SetCurrentSession(string? sessionID)
         {
             CurrentSessionID = sessionID;
+            if (!string.IsNullOrEmpty(sessionID))
+            {
+                _trackedSessionIds.Add(sessionID);
+            }
         }
     }
 }
