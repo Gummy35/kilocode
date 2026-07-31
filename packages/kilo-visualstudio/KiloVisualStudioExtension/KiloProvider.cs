@@ -2756,6 +2756,26 @@ namespace KiloVisualStudioExtension
             return null;
         }
 
+        public void SetProjectDirectory(string? projectDirectory)
+        {
+            // Store project directory for use in future operations
+            // Currently a no-op as we use Environment.CurrentDirectory
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: SetProjectDirectory({projectDirectory})");
+        }
+
+        public async Task PostMessageAsync(object message)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var json = System.Text.Json.JsonSerializer.Serialize(message);
+            _webView.PostMessage(json);
+        }
+
+        public void SetRemoteService(object? service)
+        {
+            // VS extension doesn't have a remote status service yet
+            // This is a no-op placeholder matching VS Code's pattern
+        }
+
         public void Dispose()
         {
             if (_disposed) return;

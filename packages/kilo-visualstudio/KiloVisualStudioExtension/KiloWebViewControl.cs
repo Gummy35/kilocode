@@ -23,6 +23,9 @@ namespace KiloVisualStudioExtension
   public class KiloWebViewControl : WebView2, IDisposable
   {
     private bool _isInitialized;
+    private static readonly string _sharedUserDataFolder = Path.Combine(
+        Path.GetTempPath(),
+        "KiloWebView");
 
     public event EventHandler<WebViewMessageEventArgs>? OnMessageReceived;
 
@@ -50,15 +53,15 @@ namespace KiloVisualStudioExtension
 
       try
       {
-        var userDataFolder = Path.Combine(
-            Path.GetTempPath(),
-            "KiloWebView",
-            Guid.NewGuid().ToString());
-
         var envOptions = new CoreWebView2EnvironmentOptions();
-        var env = await CoreWebView2Environment.CreateAsync(null, userDataFolder, envOptions);
-        await this.EnsureCoreWebView2Async(env);
-
+        var env = await CoreWebView2Environment.CreateAsync(null, _sharedUserDataFolder, envOptions);
+        try
+        {
+          await this.EnsureCoreWebView2Async(env);
+        } catch (Exception e)
+        {
+          System.Diagnostics.Debug.Write(e.Message);
+        }
         CoreWebView2.Settings.IsScriptEnabled = true;
         CoreWebView2.Settings.IsWebMessageEnabled = true;
         CoreWebView2.Settings.AreDefaultScriptDialogsEnabled = false;
