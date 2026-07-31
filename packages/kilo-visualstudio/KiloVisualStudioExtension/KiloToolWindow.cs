@@ -12,6 +12,8 @@ namespace KiloVisualStudioExtension
         private KiloConnectionService? _connectionService;
         private VSProvider? _vsProvider;
 
+        public KiloWebViewControl? WebView => _webView;
+
         public KiloToolWindow() : base(null)
         {
             Caption = "Kilo Code";

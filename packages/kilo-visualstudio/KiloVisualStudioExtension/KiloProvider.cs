@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
@@ -15,6 +17,14 @@ namespace KiloVisualStudioExtension
         private bool _disposed;
         private JsonElement? _webviewState;
         private string? _contextSessionID;
+        private readonly List<Action> _readyResolvers = new List<Action>();
+        private List<JsonElement>? _pendingReviewComments = null;
+        private bool _promptRecoveryQueued = false;
+        private Task? _promptRecovery;
+        private JsonElement? _pendingKiloModel = null;
+        private JsonElement? _cachedStats = null;
+        private bool _cachedGitRepo = false;
+        private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
 
         public VSProvider(KiloWebViewControl webView, KiloConnectionService connectionService)
         {
@@ -472,6 +482,10 @@ namespace KiloVisualStudioExtension
                         HandleRequestModelSelectorExpanded();
                         break;
 
+                    case "settingsTabChanged":
+                        HandleSettingsTabChanged(payload);
+                        break;
+
                     default:
                         System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: unhandled message type={type}");
                         break;
@@ -486,44 +500,135 @@ namespace KiloVisualStudioExtension
 
         private async Task HandleWebviewReadyAsync()
         {
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received, starting initialization");
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
             
-            // Connect to backend if not already connected
-            if (_connectionService.State != ConnectionState.Connected)
+            // 1. Set webview ready flag
+            _isWebviewReady = true;
+
+            // 2. Clear visible task streams (VS Code: this.visibleTaskStreams.clear())
+            // Note: VisibleTaskStreams is an Agent Manager feature not yet implemented in VS extension
+
+            // 3. Flush pending Kilo model
+            FlushPendingKiloModel();
+
+            // 4. Sync webview state (equivalent to VS Code's syncWebviewState)
+            await SyncWebviewStateAsync("webviewReady");
+
+            // 5. Flush pending review comments
+            FlushPendingReviewComments();
+
+            // 6. Recover pending prompts
+            RecoverPendingPrompts();
+
+            // 7. Resolve ready resolvers (VS Code: this.readyResolvers.splice(0).forEach((r) => r()))
+            ResolveReadyResolvers();
+
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady initialization complete");
+        }
+
+        private void FlushPendingKiloModel()
+        {
+            if (!_isWebviewReady || _pendingKiloModel == null) return;
+
+            var pending = _pendingKiloModel;
+            _pendingKiloModel = null;
+            
+            if (pending is JsonElement element)
             {
-                await _connectionService.ConnectAsync();
+                var message = new { type = "selectKiloModel", modelID = element.TryGetProperty("modelID", out var modelId) ? modelId.GetString() : null, agent = element.TryGetProperty("agent", out var agent) ? agent.GetString() : null };
+                _webView.PostMessage(JsonSerializer.Serialize(message));
+            }
+        }
+
+        public void SelectKiloModel(string? modelID = null, string? agent = null)
+        {
+            if (string.IsNullOrEmpty(modelID) && string.IsNullOrEmpty(agent)) return;
+            
+            _pendingKiloModel = JsonSerializer.SerializeToElement(new { modelID, agent });
+            FlushPendingKiloModel();
+        }
+
+        private async Task SyncWebviewStateAsync(string reason)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: syncWebviewState({reason})");
+            
+            // Check if webview is ready (should already be true at this point)
+            if (!_isWebviewReady)
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: syncWebviewState skipped (webview not ready)");
+                return;
             }
 
-            // Send connection state
+            // Always push connection state first
             var connState = new { type = "connectionState", state = _connectionService.State.ToString().ToLowerInvariant() };
             _webView.PostMessage(JsonSerializer.Serialize(connState));
 
-            // Create a default session if none exists
-            await HandleCreateSessionAsync();
-
-            // Fetch and send initial data in parallel
-            try
+            // Get server info
+            var serverInfo = _connectionService.GetServerInfo();
+            
+            // Re-send ready so the webview can recover after refresh
+            if (serverInfo != null)
             {
-                await Task.WhenAll(
-                    HandleRequestProvidersAsync(),
-                    HandleRequestAgentsAsync(),
-                    HandleRequestConfigAsync(),
-                    HandleRequestMcpStatusAsync(),
-                    HandleRequestSkillsAsync(),
-                    HandleRequestCommandsAsync(),
-                    HandleRequestIndexingStatusAsync(),
-                    HandleRequestNotificationsAsync(),
-                    HandleRequestWorkStyleAsync()
-                );
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error during initial data fetch: {ex.Message}");
+                // Get language from VS settings (default to "en")
+                var langConfig = GetVscodeLanguage();
+                var extensionVersion = GetExtensionVersion();
+                var readyMessage = new 
+                { 
+                    type = "ready",
+                    serverInfo,
+                    extensionVersion,
+                    vscodeLanguage = langConfig,
+                    languageOverride = (string?)null,
+                    workspaceDirectory = Environment.CurrentDirectory
+                };
+                _webView.PostMessage(JsonSerializer.Serialize(readyMessage));
             }
 
-            // Send extensionDataReady to signal all initial data is loaded
-            var extensionReady = new { type = "extensionDataReady" };
-            _webView.PostMessage(JsonSerializer.Serialize(extensionReady));
+            // If connected, fetch and push profile data
+            if (_connectionService.State == ConnectionState.Connected)
+            {
+                // Fetch profile
+                try
+                {
+                    var httpClient = _connectionService.GetHttpClient();
+                    if (httpClient != null)
+                    {
+                        var profileDoc = await httpClient.GetJsonAsync("/kilo/profile");
+                        JsonElement? profileData = null;
+                        if (profileDoc != null && profileDoc.RootElement.TryGetProperty("profile", out var profile))
+                        {
+                            profileData = profile.Clone();
+                        }
+                        profileDoc?.Dispose();
+                        
+                        var profileMessage = new { type = "profileData", data = profileData };
+                        _webView.PostMessage(JsonSerializer.Serialize(profileMessage));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error fetching profile: {ex.Message}");
+                }
+
+                // Refresh session details if current session exists
+                await RefreshSessionDetailsAsync();
+
+                // Re-send cached worktree stats and git status after webview reload
+                if (_cachedStats != null)
+                {
+                    _webView.PostMessage(JsonSerializer.Serialize(_cachedStats));
+                }
+                var gitStatusMessage = new { type = "gitStatus", repo = _cachedGitRepo };
+                _webView.PostMessage(JsonSerializer.Serialize(gitStatusMessage));
+
+                // Seed session status map so the Settings panel knows about already-running sessions
+                // Only reconcile (reset missing busy→idle) when the map is empty
+                var reconcile = _sessionStatusMap.Count == 0;
+                SeedSessionStatusMap(reconcile);
+
+                // Send remote status (no-op for now - VS extension doesn't have remote status service)
+                SendRemoteStatus();
+            }
 
             // Send saved state to webview if it exists (for webview reload recovery)
             if (_webviewState.HasValue)
@@ -533,7 +638,356 @@ namespace KiloVisualStudioExtension
                 System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: restored state to webview");
             }
 
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: initialization complete");
+            // Signal that all initial extension data has been loaded
+            // This allows webview contexts to retry their data requests if needed
+            var extensionReady = new { type = "extensionDataReady" };
+            _webView.PostMessage(JsonSerializer.Serialize(extensionReady));
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: extensionDataReady sent");
+        }
+
+        private async Task RefreshSessionDetailsAsync()
+        {
+            // Refresh details for the current session if one exists
+            if (string.IsNullOrEmpty(_currentSessionID)) return;
+
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null || !httpClient.IsConnected()) return;
+
+            try
+            {
+                var responseDoc = await httpClient.GetJsonAsync($"/session/{_currentSessionID}");
+                if (responseDoc != null)
+                {
+                    var root = responseDoc.RootElement.Clone();
+                    responseDoc.Dispose();
+                    
+                    if (root.TryGetProperty("session", out var session))
+                    {
+                        // Send sessionUpdated message to webview with refreshed details
+                        var updatedMessage = new { type = "sessionUpdated", session = session.Clone() };
+                        _webView.PostMessage(JsonSerializer.Serialize(updatedMessage));
+                    }
+                    
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error refreshing session details: {ex.Message}");
+            }
+        }
+
+        private async Task SeedSessionStatusMap(bool reconcile)
+        {
+            // Fetch session statuses from backend for tracked sessions
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null || !httpClient.IsConnected()) return;
+
+            try
+            {
+                // Get all sessions to populate status map
+                var responseDoc = await httpClient.GetJsonAsync("/session");
+                if (responseDoc != null)
+                {
+                    var root = responseDoc.RootElement.Clone();
+                    responseDoc.Dispose();
+                    
+                    if (root.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var session in root.EnumerateArray())
+                        {
+                            if (session.TryGetProperty("id", out var id) && session.TryGetProperty("status", out var status))
+                            {
+                                var sessionID = id.GetString() ?? "";
+                                var sessionStatus = status.GetString() ?? "idle";
+                                
+                                // Only reconcile (reset to idle) if map is empty and status is busy
+                                if (reconcile && sessionStatus == "busy")
+                                {
+                                    _sessionStatusMap[sessionID] = "idle";
+                                }
+                                else if (!reconcile || !_sessionStatusMap.ContainsKey(sessionID))
+                                {
+                                    _sessionStatusMap[sessionID] = sessionStatus;
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error seeding session status map: {ex.Message}");
+            }
+        }
+
+        private void SendRemoteStatus()
+        {
+            // VS extension doesn't have a remote status service yet
+            // This is a no-op placeholder matching VS Code's pattern
+        }
+
+        public void SetCachedStats(JsonElement stats)
+        {
+            _cachedStats = stats;
+        }
+
+        public void SetCachedGitRepo(bool isRepo)
+        {
+            _cachedGitRepo = isRepo;
+        }
+
+        public void UpdateSessionStatus(string sessionID, string status)
+        {
+            _sessionStatusMap[sessionID] = status;
+        }
+
+        private string GetVscodeLanguage()
+        {
+            // TODO: Integrate with Visual Studio localization settings
+            // For now, return default English
+            return "en";
+        }
+
+        private string GetExtensionVersion()
+        {
+            // TODO: Read from extension manifest (AssemblyInfo or VSIX manifest)
+            // For now, return a default version
+            return "1.0.0";
+        }
+
+        private void FlushPendingReviewComments()
+        {
+            if (!_isWebviewReady || _pendingReviewComments == null || _pendingReviewComments.Count == 0) return;
+
+            var pending = _pendingReviewComments;
+            _pendingReviewComments = null;
+
+            foreach (var entry in pending)
+            {
+                if (entry is JsonElement element)
+                {
+                    var autoSend = element.TryGetProperty("autoSend", out var autoSendProp) && autoSendProp.GetBoolean();
+                    JsonElement? comments = null;
+                    if (element.TryGetProperty("comments", out var commentsProp))
+                    {
+                        comments = commentsProp.Clone();
+                    }
+                    PostMessage(JsonSerializer.Serialize(new { type = "appendReviewComments", comments, autoSend }));
+                }
+            }
+        }
+
+        public async Task AppendReviewCommentsAsync(object comments, bool autoSend = false)
+        {
+            if (_pendingReviewComments == null)
+            {
+                _pendingReviewComments = new List<JsonElement>();
+            }
+            _pendingReviewComments.Add(JsonSerializer.SerializeToElement(new { comments, autoSend }));
+
+            if (!_isWebviewReady)
+            {
+                return;
+            }
+
+            FlushPendingReviewComments();
+        }
+
+        private void RecoverPendingPrompts()
+        {
+            _promptRecoveryQueued = true;
+            if (!_isWebviewReady) return;
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null || !httpClient.IsConnected()) return;
+            if (_promptRecovery != null) return;
+
+            _promptRecovery = FlushPendingPromptsAsync().ContinueWith(_ =>
+            {
+                _promptRecovery = null;
+                if (_promptRecoveryQueued && _isWebviewReady)
+                {
+                    RecoverPendingPrompts();
+                }
+            });
+        }
+
+        private async Task FlushPendingPromptsAsync()
+        {
+            while (_promptRecoveryQueued && _isWebviewReady)
+            {
+                var httpClient = _connectionService.GetHttpClient();
+                if (httpClient == null || !httpClient.IsConnected()) return;
+                
+                _promptRecoveryQueued = false;
+                
+                var dirs = GetRecoveryDirectories();
+                var seen = new HashSet<string>();
+
+                // Fetch pending permissions
+                foreach (var dir in dirs)
+                {
+                    try
+                    {
+                        var responseDoc = await httpClient.GetJsonAsync($"/permission?directory={Uri.EscapeDataString(dir)}");
+                        if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var perm in responseDoc.RootElement.EnumerateArray())
+                            {
+                                if (perm.TryGetProperty("id", out var id) && !seen.Contains(id.GetString() ?? ""))
+                                {
+                                    var requestId = id.GetString() ?? "";
+                                    seen.Add(requestId);
+                                    
+                                    if (perm.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString()))
+                                    {
+                                        var sessionID = sid.GetString()!;
+                                        var permission = perm.TryGetProperty("permission", out var permProp) ? permProp.GetString() : "";
+                                        JsonElement? patterns = null;
+                                        if (perm.TryGetProperty("patterns", out var patternsProp))
+                                        {
+                                            patterns = patternsProp.Clone();
+                                        }
+                                        var always = perm.TryGetProperty("always", out var alwaysProp) && alwaysProp.GetBoolean();
+                                        JsonElement? metadata = null;
+                                        if (perm.TryGetProperty("metadata", out var metaProp))
+                                        {
+                                            metadata = metaProp.Clone();
+                                        }
+                                        var tool = perm.TryGetProperty("tool", out var toolProp) ? toolProp.GetString() : "";
+
+                                        PostMessage(JsonSerializer.Serialize(new
+                                        {
+                                            type = "permissionRequest",
+                                            permission = new
+                                            {
+                                                id = requestId,
+                                                sessionID,
+                                                toolName = permission,
+                                                patterns,
+                                                always,
+                                                args = metadata,
+                                                message = $"Permission required: {permission}",
+                                                tool
+                                            }
+                                        }));
+                                    }
+                                }
+                            }
+                        }
+                        responseDoc?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error fetching permissions for {dir}: {ex.Message}");
+                    }
+                }
+
+                // Fetch pending questions
+                foreach (var dir in dirs)
+                {
+                    try
+                    {
+                        var responseDoc = await httpClient.GetJsonAsync($"/question?directory={Uri.EscapeDataString(dir)}");
+                        if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var q in responseDoc.RootElement.EnumerateArray())
+                            {
+                                if (q.TryGetProperty("id", out var id) && !seen.Contains(id.GetString() ?? ""))
+                                {
+                                    var requestId = id.GetString() ?? "";
+                                    seen.Add(requestId);
+                                    
+                                    if (q.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString()))
+                                    {
+                                        var sessionID = sid.GetString()!;
+                                        JsonElement? questions = null;
+                                        if (q.TryGetProperty("questions", out var qProp))
+                                        {
+                                            questions = qProp.Clone();
+                                        }
+                                        var blocking = q.TryGetProperty("blocking", out var blockProp) && blockProp.GetBoolean();
+                                        var tool = q.TryGetProperty("tool", out var toolProp) ? toolProp.GetString() : "";
+
+                                        PostMessage(JsonSerializer.Serialize(new
+                                        {
+                                            type = "questionRequest",
+                                            question = new
+                                            {
+                                                id = requestId,
+                                                sessionID,
+                                                questions,
+                                                blocking,
+                                                tool
+                                            }
+                                        }));
+                                    }
+                                }
+                            }
+                        }
+                        responseDoc?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error fetching questions for {dir}: {ex.Message}");
+                    }
+                }
+
+                // Fetch pending suggestions
+                foreach (var dir in dirs)
+                {
+                    try
+                    {
+                        var responseDoc = await httpClient.GetJsonAsync($"/suggestion?directory={Uri.EscapeDataString(dir)}");
+                        if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var suggestion in responseDoc.RootElement.EnumerateArray())
+                            {
+                                if (suggestion.TryGetProperty("id", out var id) && !seen.Contains(id.GetString() ?? ""))
+                                {
+                                    seen.Add(id.GetString() ?? "");
+                                    PostMessage(JsonSerializer.Serialize(new { type = "suggestionRequest", suggestion }));
+                                }
+                            }
+                        }
+                        responseDoc?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error fetching suggestions for {dir}: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private string[] GetRecoveryDirectories()
+        {
+            // Return workspace directory and any session-specific directories
+            // For now, return current directory as workspace root
+            return new[] { Environment.CurrentDirectory };
+        }
+
+        public Task WaitForReadyAsync()
+        {
+            if (_isWebviewReady)
+            {
+                return Task.CompletedTask;
+            }
+            var tcs = new TaskCompletionSource<bool>();
+            _readyResolvers.Add(() => tcs.SetResult(true));
+            return tcs.Task;
+        }
+
+        private void ResolveReadyResolvers()
+        {
+            var resolvers = _readyResolvers.ToArray();
+            _readyResolvers.Clear();
+            foreach (var resolver in resolvers)
+            {
+                resolver();
+            }
         }
 
         private void HandleStateChange(object? sender, ConnectionStateEventArgs e)
@@ -549,7 +1003,7 @@ namespace KiloVisualStudioExtension
 
         private async Task HandleRequestProvidersAsync()
         {
-            var httpClient = _connectionService.GetCachedHttpClient();
+            var httpClient = _connectionService.GetHttpClient();
             if (httpClient == null)
             {
                 await SendEmptyProvidersAsync();
@@ -567,7 +1021,8 @@ namespace KiloVisualStudioExtension
                 
                 if (responseDoc != null)
                 {
-                    var root = responseDoc.RootElement;
+                    var root = responseDoc.RootElement.Clone();
+                    responseDoc.Dispose();
                     
                     // Parse "all" array and convert to dictionary
                     if (root.TryGetProperty("all", out var all) && all.ValueKind == JsonValueKind.Array)
@@ -576,7 +1031,7 @@ namespace KiloVisualStudioExtension
                         {
                             if (provider.TryGetProperty("id", out var id))
                             {
-                                providersDict[id.GetString() ?? ""] = provider;
+                                providersDict[id.GetString() ?? ""] = provider.Clone();
                             }
                         }
                     }
@@ -601,6 +1056,8 @@ namespace KiloVisualStudioExtension
                             defaultsDict[prop.Name] = prop.Value.GetString() ?? "";
                         }
                     }
+                    
+                    
                 }
                 
                 var message = new 
@@ -614,7 +1071,6 @@ namespace KiloVisualStudioExtension
                     authStates = new Dictionary<string, object>()
                 };
                 _webView.PostMessage(JsonSerializer.Serialize(message));
-                responseDoc?.Dispose();
             }
             catch (Exception ex)
             {
@@ -640,7 +1096,7 @@ namespace KiloVisualStudioExtension
 
         private async Task HandleRequestAgentsAsync()
         {
-            var httpClient = _connectionService.GetCachedHttpClient();
+            var httpClient = _connectionService.GetHttpClient();
             if (httpClient == null)
             {
                 await SendEmptyAgentsAsync();
@@ -649,24 +1105,70 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync("/experimental/tool/ids");
+                // Use /app/agents endpoint like VS Code does (not /experimental/tool/ids)
+                var responseDoc = await httpClient.GetJsonAsync("/agent");
                 var agentsList = new List<object>();
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("agents", out var agents))
+                
+                if (responseDoc != null)
                 {
-                    foreach (var agent in agents.EnumerateArray())
+                    var root = responseDoc.RootElement.Clone();
+                    responseDoc.Dispose();
+                    
+                    if (root.ValueKind == JsonValueKind.Array)
                     {
-                        agentsList.Add(agent);
+                        foreach (var agent in root.EnumerateArray())
+                        {
+                            // Filter out hidden agents and subagent mode (matching VS Code's filterVisibleAgents)
+                            if (agent.TryGetProperty("mode", out var modeProp) && modeProp.GetString() == "subagent")
+                                continue;
+                            if (agent.TryGetProperty("hidden", out var hiddenProp) && hiddenProp.GetBoolean())
+                                continue;
+                            
+                            // Map agent to the subset of fields sent to webview (matching VS Code's mapAgent)
+                            JsonElement? permissionElement = null;
+                            if (agent.TryGetProperty("permission", out var perm))
+                            {
+                                permissionElement = perm.Clone();
+                            }
+                            
+                            var mappedAgent = new
+                            {
+                                name = agent.TryGetProperty("name", out var name) ? name.GetString() : "",
+                                //displayName = agent.TryGetProperty("displayName", out var displayName) ? displayName.GetString() : "",
+                                description = agent.TryGetProperty("description", out var desc) ? desc.GetString() : "",
+                                mode = agent.TryGetProperty("mode", out var m) ? m.GetString() : "",
+                                native = agent.TryGetProperty("native", out var nat) && nat.ValueKind == JsonValueKind.True,
+                                hidden = agent.TryGetProperty("hidden", out var h) && h.ValueKind == JsonValueKind.True,
+                                color = agent.TryGetProperty("color", out var c) ? c.GetString() : "",
+                                deprecated = agent.TryGetProperty("deprecated", out var d) && d.ValueKind == JsonValueKind.True,
+                                permission = permissionElement,
+                                model = agent.TryGetProperty("model", out var model) ? model.GetString() : ""
+                            };
+                            agentsList.Add(mappedAgent);
+                        }
                     }
                 }
+                
+                // Determine default agent (first visible agent, or "code" as fallback)
+                string defaultAgent = "code";
+                if (agentsList.Count > 0)
+                {
+                    var firstAgent = agentsList[0];
+                    if (firstAgent is System.Text.Json.JsonElement firstElement && 
+                        firstElement.TryGetProperty("name", out var nameElement))
+                    {
+                        defaultAgent = nameElement.GetString() ?? "code";
+                    }
+                }
+                
                 var message = new 
                 { 
                     type = "agentsLoaded", 
                     agents = agentsList.ToArray(),
                     allAgents = agentsList.ToArray(),
-                    defaultAgent = "ask"
+                    defaultAgent = defaultAgent
                 };
                 _webView.PostMessage(JsonSerializer.Serialize(message));
-                responseDoc?.Dispose();
             }
             catch (Exception ex)
             {
@@ -682,14 +1184,14 @@ namespace KiloVisualStudioExtension
                 type = "agentsLoaded", 
                 agents = Array.Empty<object>(),
                 allAgents = Array.Empty<object>(),
-                defaultAgent = "ask"
+                defaultAgent = "code"
             };
             _webView.PostMessage(JsonSerializer.Serialize(message));
         }
 
         private async Task HandleRequestConfigAsync()
         {
-            var httpClient = _connectionService.GetCachedHttpClient();
+            var httpClient = _connectionService.GetHttpClient();
             if (httpClient == null)
             {
                 await SendEmptyConfigAsync();
@@ -701,13 +1203,20 @@ namespace KiloVisualStudioExtension
                 var responseDoc = await httpClient.GetJsonAsync("/config");
                 JsonElement config = JsonDocument.Parse("{}").RootElement;
                 JsonElement features = JsonDocument.Parse("{}").RootElement;
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("config", out var c))
-                    config = c;
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("features", out var f))
-                    features = f;
+                if (responseDoc != null)
+                {
+                    var root = responseDoc.RootElement.Clone();
+                    responseDoc.Dispose();
+                    
+                    if (root.TryGetProperty("config", out var c))
+                        config = c.Clone();
+                    if (root.TryGetProperty("features", out var f))
+                        features = f.Clone();
+                    
+                    
+                }
                 var message = new { type = "configLoaded", config, features };
                 _webView.PostMessage(JsonSerializer.Serialize(message));
-                responseDoc?.Dispose();
             }
             catch (Exception ex)
             {
@@ -724,7 +1233,7 @@ namespace KiloVisualStudioExtension
 
         private async Task HandleRequestMcpStatusAsync()
         {
-            var httpClient = _connectionService.GetCachedHttpClient();
+            var httpClient = _connectionService.GetHttpClient();
             if (httpClient == null)
             {
                 await SendEmptyMcpStatusAsync();
@@ -735,11 +1244,18 @@ namespace KiloVisualStudioExtension
             {
                 var responseDoc = await httpClient.GetJsonAsync("/mcp");
                 JsonElement status = JsonDocument.Parse("{}").RootElement;
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("status", out var s))
-                    status = s;
+                if (responseDoc != null)
+                {
+                    var root = responseDoc.RootElement.Clone();
+                    responseDoc.Dispose();
+                    
+                    if (root.TryGetProperty("status", out var s))
+                        status = s.Clone();
+                    
+                    
+                }
                 var message = new { type = "mcpStatusLoaded", status };
                 _webView.PostMessage(JsonSerializer.Serialize(message));
-                responseDoc?.Dispose();
             }
             catch (Exception ex)
             {
@@ -840,11 +1356,23 @@ namespace KiloVisualStudioExtension
                 sessionID = _currentSessionID;
             }
 
+            // Auto-create session if none available (matching VS Code's resolveSession behavior)
             if (string.IsNullOrEmpty(sessionID))
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] KiloProvider: no valid session ID available for prompt (draftIDs are not valid session IDs)");
-                await SendErrorAsync("Prompt Error", "No active session - please create a session first");
-                return;
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: no session available, creating new session...");
+                var created = await HandleCreateSessionAsyncInternal();
+                if (!created)
+                {
+                    await SendErrorAsync("Prompt Error", "Failed to create session");
+                    return;
+                }
+                sessionID = _currentSessionID;
+                
+                if (string.IsNullOrEmpty(sessionID))
+                {
+                    await SendErrorAsync("Prompt Error", "Failed to create session");
+                    return;
+                }
             }
 
             // Extract text from payload
@@ -963,15 +1491,24 @@ namespace KiloVisualStudioExtension
         // Session management handlers
         private async Task HandleCreateSessionAsync()
         {
+            var dir = Environment.CurrentDirectory;
+            var success = await CreateSessionInternalAsync(dir);
+            if (!success)
+            {
+                PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Failed to create session" }));
+            }
+        }
+
+        private async Task<bool> CreateSessionInternalAsync(string dir)
+        {
             var httpClient = _connectionService.GetHttpClient();
             if (httpClient == null)
             {
-                PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
-                return;
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: cannot create session - no HTTP client");
+                return false;
             }
             try
             {
-                var dir = Environment.CurrentDirectory;
                 var responseDoc = await httpClient.PostJsonAsync("/session", new { directory = dir });
                 if (responseDoc != null && responseDoc.RootElement.TryGetProperty("id", out var id))
                 {
@@ -1003,14 +1540,24 @@ namespace KiloVisualStudioExtension
                         }
                     };
                     _webView.PostMessage(JsonSerializer.Serialize(sessionCreated));
+                    responseDoc?.Dispose();
+                    return true;
                 }
                 responseDoc?.Dispose();
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: session creation failed - no ID in response");
+                return false;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error creating session: {ex.Message}");
                 PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to create session: {ex.Message}" }));
+                return false;
             }
+        }
+
+        private async Task<bool> HandleCreateSessionAsyncInternal()
+        {
+            return await CreateSessionInternalAsync(Environment.CurrentDirectory);
         }
 
         private void HandleClearSession()
@@ -1352,32 +1899,377 @@ namespace KiloVisualStudioExtension
         private async Task HandleOpenSettingsPanelAsync(JsonElement? payload)
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: openSettingsPanel");
+            // VS extension uses the same webview as sidebar - navigate to settings tab
+            string? tab = null;
+            if (payload.HasValue && payload.Value.TryGetProperty("tab", out var tabProp))
+            {
+                tab = tabProp.GetString();
+            }
+            // Send navigate message to webview to open settings panel
+            var navigateMsg = new { type = "navigate", view = "settings", tab };
+            _webView.PostMessage(JsonSerializer.Serialize(navigateMsg));
+        }
+
+        private void HandleSettingsTabChanged(JsonElement? payload)
+        {
+            // Extension receives this notification from webview when tab changes
+            // No action needed - the webview manages its own tab state
+            if (payload.HasValue && payload.Value.TryGetProperty("tab", out var tabProp))
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: settingsTabChanged - tab={tabProp.GetString()}");
+            }
         }
 
         private async Task HandleOpenConfigFileAsync(JsonElement? payload)
         {
+            if (!payload.HasValue) return;
+            
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: openConfigFile");
+            
+            string scope = "global";
+            if (payload.Value.TryGetProperty("scope", out var scopeProp))
+            {
+                scope = scopeProp.GetString() ?? "global";
+            }
+            
+            // For Visual Studio, we'll open the config file using System.Diagnostics.Process
+            // The CLI backend handles the actual config file location
+            try
+            {
+                var httpClient = _connectionService.GetHttpClient();
+                if (httpClient == null) return;
+                
+                // Request config file path from backend
+                var url = $"/config/file?scope={scope}";
+                var responseDoc = await httpClient.GetJsonAsync(url);
+                
+                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("path", out var pathProp))
+                {
+                    string filePath = pathProp.GetString() ?? "";
+                    if (!string.IsNullOrEmpty(filePath))
+                    {
+                        // Open file in default editor
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = filePath,
+                            UseShellExecute = true
+                        });
+                    }
+                }
+                responseDoc?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error opening config file: {ex.Message}");
+            }
         }
 
         private async Task HandleUpdateSettingAsync(JsonElement? payload)
         {
+            if (!payload.HasValue) return;
+            
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: updateSetting");
+            
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null) return;
+            
+            try
+            {
+                await httpClient.PostJsonAsync("/config/update", payload.Value);
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: setting updated");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error updating setting: {ex.Message}");
+            }
         }
 
         private async Task HandleUpdateConfigAsync(JsonElement? payload)
         {
             if (!payload.HasValue) return;
+
             var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null) return;
+            if (httpClient == null || !_connectionService.State.Equals(ConnectionState.Connected))
+            {
+                _webView.PostMessage(JsonSerializer.Serialize(new { type = "configUpdateFailed", message = "Not connected to CLI backend" }));
+                return;
+            }
+
+            var config = payload.Value;
+            JsonElement partial = JsonDocument.Parse("{}").RootElement;
+            JsonElement project = JsonDocument.Parse("{}").RootElement;
+            JsonElement globalUnset = JsonDocument.Parse("[]").RootElement;
+            JsonElement projectUnset = JsonDocument.Parse("[]").RootElement;
+
+            if (config.TryGetProperty("config", out var partialProp))
+                partial = partialProp.Clone();
+            if (config.TryGetProperty("projectConfig", out var projectProp))
+                project = projectProp.Clone();
+            if (config.TryGetProperty("globalUnset", out var globalUnsetProp))
+                globalUnset = globalUnsetProp.Clone();
+            if (config.TryGetProperty("projectUnset", out var projectUnsetProp))
+                projectUnset = projectUnsetProp.Clone();
+
+            var refreshProviders = partial.TryGetProperty("provider", out _) ||
+                                   partial.TryGetProperty("disabled_providers", out _) ||
+                                   partial.TryGetProperty("enabled_providers", out _) ||
+                                   partial.TryGetProperty("hide_prompt_training_models", out _);
+            var refreshAgents = partial.TryGetProperty("default_agent", out _) ||
+                                partial.TryGetProperty("agent", out _) ||
+                                project.TryGetProperty("default_agent", out _) ||
+                                project.TryGetProperty("agent", out _);
+
+            var hasGlobal = !IsJsonObjectEmpty(partial) || !IsJsonArrayEmpty(globalUnset);
+            var hasProject = !IsJsonObjectEmpty(project) || !IsJsonArrayEmpty(projectUnset);
+
+            var dir = Environment.CurrentDirectory;
+
             try
             {
-                await httpClient.PostJsonAsync("/config/update", payload.Value);
-                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: config updated");
+                if (hasGlobal)
+                {
+                    var globalPayload = new
+                    {
+                        scope = "global",
+                        set = partial,
+                        unset = globalUnset,
+                        directory = dir
+                    };
+                    await httpClient.PostJsonAsync("/config/overlay-update", globalPayload);
+                }
+                if (hasProject)
+                {
+                    var projectPayload = new
+                    {
+                        scope = "project",
+                        set = project,
+                        unset = projectUnset,
+                        directory = dir
+                    };
+                    await httpClient.PostJsonAsync("/config/overlay-update", projectPayload);
+                }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error updating config: {ex.Message}");
+                PostConfigFailure(ex);
+                return;
             }
+
+            try
+            {
+                var mergedTask = httpClient.GetJsonAsync($"/config?directory={Uri.EscapeDataString(dir)}");
+                var globalTask = httpClient.GetJsonAsync("/config/global");
+                var overlayTask = httpClient.GetJsonAsync($"/config/overlay?directory={Uri.EscapeDataString(dir)}&scope=project");
+
+                await Task.WhenAll(mergedTask, globalTask, overlayTask);
+
+                JsonElement merged = JsonDocument.Parse("{}").RootElement;
+                JsonElement globalConfig = JsonDocument.Parse("{}").RootElement;
+                JsonElement overlay = JsonDocument.Parse("{}").RootElement;
+
+                if (mergedTask.Result != null)
+                {
+                    var root = mergedTask.Result.RootElement.Clone();
+                    if (root.TryGetProperty("config", out var c))
+                        merged = c.Clone();
+                    mergedTask.Result.Dispose();
+                }
+                if (globalTask.Result != null)
+                {
+                    var root = globalTask.Result.RootElement.Clone();
+                    if (root.TryGetProperty("config", out var c))
+                        globalConfig = c.Clone();
+                    globalTask.Result.Dispose();
+                }
+                if (overlayTask.Result != null)
+                {
+                    var root = overlayTask.Result.RootElement.Clone();
+                    if (root.TryGetProperty("overlay", out var o) && o.TryGetProperty("project", out var p))
+                        overlay = p.Clone();
+                    overlayTask.Result.Dispose();
+                }
+
+                var settings = new
+                {
+                    maxCost = 0,
+                    languageCommitMessage = GetCommitMessageLanguage()
+                };
+
+                var features = GetConfigFeatures(merged);
+
+                var cachedConfig = new
+                {
+                    type = "configLoaded",
+                    config = merged,
+                    globalConfig = globalConfig,
+                    projectConfig = overlay,
+                    settings = settings,
+                    features = features
+                };
+
+                _webView.PostMessage(JsonSerializer.Serialize(new
+                {
+                    type = "configUpdated",
+                    config = merged,
+                    globalConfig = globalConfig,
+                    projectConfig = overlay,
+                    settings = settings,
+                    features = features
+                }));
+
+                if (refreshProviders)
+                    await HandleRequestProvidersAsync();
+                if (refreshAgents)
+                    await HandleRequestAgentsAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: Config write succeeded but post-write refresh failed: {ex.Message}");
+                JsonElement patch;
+                if (!partial.TryGetProperty("indexing", out _) && !project.TryGetProperty("indexing", out _))
+                {
+                    patch = MergeJsonObjects(partial, project);
+                }
+                else
+                {
+                    var indexing = MergeJsonObjects(
+                        partial.TryGetProperty("indexing", out var pi) ? pi : JsonDocument.Parse("{}").RootElement,
+                        project.TryGetProperty("indexing", out var pj) ? pj : JsonDocument.Parse("{}").RootElement
+                    );
+                    patch = MergeJsonWithIndexing(partial, project, indexing);
+                }
+
+                var cached = GetCachedConfig();
+                var features = GetCachedConfigFeatures();
+                var optimistic = MergeJsonWithPatch(cached, patch);
+
+                var settings = new
+                {
+                    maxCost = 0,
+                    languageCommitMessage = GetCommitMessageLanguage()
+                };
+
+                _webView.PostMessage(JsonSerializer.Serialize(new
+                {
+                    type = "configUpdated",
+                    config = optimistic,
+                    globalConfig = GetCachedGlobalConfig(),
+                    settings = settings,
+                    features = features
+                }));
+            }
+        }
+
+        private bool IsJsonObjectEmpty(JsonElement obj)
+        {
+            return obj.ValueKind == JsonValueKind.Object && !obj.EnumerateObject().Any();
+        }
+
+        private bool IsJsonArrayEmpty(JsonElement arr)
+        {
+            return arr.ValueKind == JsonValueKind.Array && !arr.EnumerateArray().Any();
+        }
+
+        private JsonElement MergeJsonObjects(JsonElement a, JsonElement b)
+        {
+            var writer = new JsonDocumentBuilder();
+            if (a.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in a.EnumerateObject())
+                    writer.Add(prop.Name, prop.Value.Clone());
+            }
+            if (b.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in b.EnumerateObject())
+                    writer.Add(prop.Name, prop.Value.Clone());
+            }
+            return writer.Build();
+        }
+
+        private JsonElement MergeJsonWithIndexing(JsonElement partial, JsonElement project, JsonElement indexing)
+        {
+            var writer = new JsonDocumentBuilder();
+            if (partial.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in partial.EnumerateObject())
+                {
+                    if (!prop.Name.Equals("indexing"))
+                        writer.Add(prop.Name, prop.Value.Clone());
+                }
+            }
+            if (project.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in project.EnumerateObject())
+                {
+                    if (!prop.Name.Equals("indexing"))
+                        writer.Add(prop.Name, prop.Value.Clone());
+                }
+            }
+            writer.Add("indexing", indexing);
+            return writer.Build();
+        }
+
+        private JsonElement MergeJsonWithPatch(JsonElement? cached, JsonElement patch)
+        {
+            if (!cached.HasValue)
+                return patch;
+
+            var writer = new JsonDocumentBuilder();
+            var cachedObj = cached.Value;
+            if (cachedObj.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in cachedObj.EnumerateObject())
+                    writer.Add(prop.Name, prop.Value.Clone());
+            }
+            if (patch.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in patch.EnumerateObject())
+                    writer.Add(prop.Name, prop.Value.Clone());
+            }
+            return writer.Build();
+        }
+
+        private void PostConfigFailure(Exception error)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: Failed to update config: {error.Message}");
+            _webView.PostMessage(JsonSerializer.Serialize(new
+            {
+                type = "configUpdateFailed",
+                message = error.Message ?? "Failed to update config"
+            }));
+        }
+
+        private string GetCommitMessageLanguage()
+        {
+            var config = GetConfig();
+            if (config.HasValue && config.Value.TryGetProperty("language_commit_message", out var lang))
+                return lang.GetString() ?? "en";
+            return "en";
+        }
+
+        private JsonElement GetConfigFeatures(JsonElement config)
+        {
+            var writer = new JsonDocumentBuilder();
+            if (config.TryGetProperty("providers", out var providers))
+                writer.Add("providers", providers.Clone());
+            if (config.TryGetProperty("indexing", out var indexing))
+                writer.Add("indexing", indexing.Clone());
+            return writer.Build();
+        }
+
+        private JsonElement? GetCachedConfig()
+        {
+            return null;
+        }
+
+        private JsonElement GetCachedConfigFeatures()
+        {
+            return JsonDocument.Parse("{}").RootElement;
+        }
+
+        private JsonElement? GetCachedGlobalConfig()
+        {
+            return null;
         }
 
         // Additional request handlers
@@ -1581,24 +2473,42 @@ namespace KiloVisualStudioExtension
         // Settings request handlers
         private void HandleRequestBrowserSettings()
         {
-            _webView.PostMessage(JsonSerializer.Serialize(new { type = "browserSettingsLoaded", settings = new { } }));
+            var settings = new 
+            { 
+                browserPath = (string?)null,
+                launchArgs = new string[0],
+                enabled = false
+            };
+            _webView.PostMessage(JsonSerializer.Serialize(new { type = "browserSettingsLoaded", settings }));
         }
 
         private void HandleRequestClaudeCompatSetting()
         {
-            _webView.PostMessage(JsonSerializer.Serialize(new { type = "claudeCompatSettingLoaded", enabled = false }));
+            var config = GetConfig();
+            var enabled = config?.TryGetProperty("experimental", out var exp) == true 
+                && exp.TryGetProperty("claude_compat", out var compat) 
+                && compat.ValueKind == JsonValueKind.True;
+            _webView.PostMessage(JsonSerializer.Serialize(new { type = "claudeCompatSettingLoaded", enabled }));
         }
 
         private void HandleRequestNotificationSettings()
         {
-            _webView.PostMessage(JsonSerializer.Serialize(new { type = "notificationSettingsLoaded", settings = new { } }));
+            var config = GetConfig();
+            var settings = new 
+            {
+                playSound = config?.TryGetProperty("notifications", out var notif) == true 
+                    && notif.TryGetProperty("play_sound", out var sound) 
+                    && sound.ValueKind == JsonValueKind.True,
+                showPopup = config?.TryGetProperty("notifications", out var notif2) == true 
+                    && notif2.TryGetProperty("show_popup", out var popup) 
+                    && popup.ValueKind == JsonValueKind.True
+            };
+            _webView.PostMessage(JsonSerializer.Serialize(new { type = "notificationSettingsLoaded", settings }));
         }
 
         private void HandleRequestTimelineSetting()
         {
-      //_webView.PostMessage(JsonSerializer.Serialize(new { type = "timelineSettingLoaded", value = 0 }));
-
-      _webView.PostMessage(JsonSerializer.Serialize(new { type = "timelineSettingLoaded", visible = true }));
+            _webView.PostMessage(JsonSerializer.Serialize(new { type = "timelineSettingLoaded", visible = true }));
         }
 
         private async Task HandleRequestGitRemoteUrlAsync()
@@ -1691,12 +2601,52 @@ namespace KiloVisualStudioExtension
 
         private async Task HandleSetLanguageAsync(JsonElement? payload)
         {
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: setLanguage");
+            if (!payload.HasValue) return;
+            
+            string? language = null;
+            if (payload.Value.TryGetProperty("language", out var langProp))
+            {
+                language = langProp.GetString();
+            }
+            
+            if (string.IsNullOrEmpty(language)) return;
+            
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null) return;
+            
+            try
+            {
+                await httpClient.PostJsonAsync("/config/update", new { experimental = new { language } });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: language set to {language}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error setting language: {ex.Message}");
+            }
         }
 
         private async Task HandleSetOrganizationAsync(JsonElement? payload)
         {
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: setOrganization");
+            if (!payload.HasValue) return;
+            
+            string? organizationId = null;
+            if (payload.Value.TryGetProperty("organizationId", out var orgProp))
+            {
+                organizationId = orgProp.GetString();
+            }
+            
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null) return;
+            
+            try
+            {
+                await httpClient.PostJsonAsync("/kilo/set-organization", new { organizationId });
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: organization set");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error setting organization: {ex.Message}");
+            }
         }
 
         private void HandleCancelLogin()
@@ -1753,7 +2703,21 @@ namespace KiloVisualStudioExtension
 
         private async Task HandleResetAllSettingsAsync()
         {
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: resetAllSettings");
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null) return;
+            
+            try
+            {
+                await httpClient.PostAsync("/config/reset", new { });
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: all settings reset");
+                
+                // Re-fetch config after reset
+                await HandleRequestConfigAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error resetting settings: {ex.Message}");
+            }
         }
 
         private void HandleTelemetry(JsonElement? payload)
@@ -1768,7 +2732,28 @@ namespace KiloVisualStudioExtension
 
         private void HandleRequestModelSelectorExpanded()
         {
-            _webView.PostMessage(JsonSerializer.Serialize(new { type = "modelSelectorExpandedLoaded", value = true }));
+            _webView.PostMessage(JsonSerializer.Serialize(new { type = "modelSelectorExpandedLoaded", value = false }));
+        }
+
+        private JsonElement? GetConfig()
+        {
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null) return null;
+            
+            try
+            {
+                var responseDoc = httpClient.GetJsonAsync("/config").Result;
+                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("config", out var config))
+                {
+                    return config.Clone();
+                }
+                responseDoc?.Dispose();
+            }
+            catch
+            {
+                // Ignore errors
+            }
+            return null;
         }
 
         public void Dispose()
@@ -1778,6 +2763,33 @@ namespace KiloVisualStudioExtension
             _webView.OnMessageReceived -= HandleMessageReceived;
             _connectionService.OnStateChange -= HandleStateChange;
             _connectionService.OnSseEvent -= HandleSseEvent;
+        }
+    }
+
+    internal class JsonDocumentBuilder
+    {
+        private readonly Dictionary<string, JsonElement> _properties = new Dictionary<string, JsonElement>();
+
+        public void Add(string name, JsonElement value)
+        {
+            _properties[name] = value;
+        }
+
+        public JsonElement Build()
+        {
+            using var stream = new MemoryStream();
+            using var writer = new Utf8JsonWriter(stream);
+            writer.WriteStartObject();
+            foreach (var prop in _properties)
+            {
+                writer.WritePropertyName(prop.Key);
+                prop.Value.WriteTo(writer);
+            }
+            writer.WriteEndObject();
+            writer.Flush();
+            stream.Position = 0;
+            using var doc = JsonDocument.Parse(stream);
+            return doc.RootElement.Clone();
         }
     }
 }

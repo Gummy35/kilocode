@@ -42,6 +42,9 @@ namespace KiloVisualStudioExtension
             // Register command to show tool window
             await ShowKiloWindowCommand.InitializeAsync(this);
 
+            // Register command to open settings
+            await OpenSettingsCommand.InitializeAsync(this);
+
             // Start CLI backend
             _backendManager = new CliBackendManager();
             await _backendManager.StartAsync(cancellationToken);

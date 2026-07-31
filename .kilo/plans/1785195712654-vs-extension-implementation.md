@@ -1,185 +1,207 @@
-# Visual Studio Extension Implementation Plan
+# Visual Studio Extension - Native WPF UI Plan
 
 ## Goal
 
-Complete the Kilo Visual Studio extension by implementing webview request handlers that forward messages to the CLI backend and return responses to the webview.
+Port the JetBrains extension's native Swing UI architecture to Visual Studio using WPF, eliminating the webview entirely. This follows the JetBrains Model/Controller/View pattern and reuses existing backend infrastructure.
 
 ## Current State
 
-### What Works ✅
+### What Exists (VS Extension)
+- ✅ `CliBackendManager` - CLI process lifecycle
+- ✅ `HttpClientWrapper` - HTTP API client with Basic Auth  
+- ✅ `SseClient` - SSE event stream with reconnection
+- ✅ `KiloConnectionService` - Connection lifecycle management
+- ❌ `KiloWebViewControl` - WebView2 host (to be removed)
+- ❌ Webview files (index.html, vscode-api.js, webview.js) - to be removed
 
-**Extension Infrastructure:**
-- Extension loads successfully with `[ProvideAutoLoad(UIContextGuids.SolutionExists)]`
-- Menu appears at `Tools > Kilo Code > Open Kilo Code`
-- Tool window opens with WebView2 control
-- `CliBackendManager` spawns `kilo serve --port 0` and parses the port
-- `HttpClientWrapper` - HTTP client with Basic Auth (fully implemented)
-- `SseClient` - SSE event stream with reconnection and heartbeat (fully implemented)
-- `KiloConnectionService` - Connection lifecycle with health polling (fully implemented)
-- `KiloWebViewControl` - WebView2 host + request handlers (fully implemented)
-
-**Message Bridge:**
-- `vscode-api.js` - VS Code API compatibility layer with `postMessage`, `getState`, `setState`, `onMessage`
-- `onMessage` supports multiple handlers with unsubscribe functions
-- Messages broadcast to all registered handlers
-- WebView2 uses `WebMessageAsJson` for safe message parsing
-
-**Request Handlers (Implemented):**
-- `requestProviders` → `/provider` → `providersLoaded` with `all`, `connected`, `default` fields
-- `requestAgents` → `/experimental/tool/ids` → `agentsLoaded` with agent objects
-- `requestConfig` → `/config` → `configLoaded` with config and features
-- `requestMcpStatus` → `/mcp` → `mcpStatusLoaded` with status object
-- `requestRecents` → `/session` → `recentsLoaded` with session list
-- `requestFavorites` → `favoritesLoaded` (empty placeholder)
-- `requestModelSelections` → `modelSelectionsLoaded` (empty placeholder)
-- `requestVariants` → `variantsLoaded` (empty placeholder)
-- `requestNotifications` → `notificationsLoaded` (empty placeholder)
-- `webviewReady` → Triggers initial data load (config + providers)
-- `setState` → Logged for state persistence
-- `retryConnection` → Reconnects to backend
-
-**Message Formats (Match VS Code Webview):**
-- All response types use `*Loaded` suffix (e.g., `providersLoaded`, `agentsLoaded`)
-- Flat property structure (not nested `{ type, payload }`)
-- Error responses: `{ type: "error", message, code }`
-
-### What's Missing ❌
-
-**Placeholder Handlers (Return Empty Data):**
-- `requestFavorites` - No favorites API endpoint identified
-- `requestModelSelections` - No model selections API endpoint identified
-- `requestVariants` - Variants stored in extension globalState, not CLI
-- `requestNotifications` - Notifications from SSE, not REST API
-- `requestAutocompleteSettings` - Settings from VS Code extension settings
-- `requestIndexingSettings` - Settings from VS Code extension settings
-- `requestChatSettings` - Settings from VS Code extension settings
-- `requestWorkStyle` - Settings from VS Code extension settings
-- `requestKiloEmbeddingModels` - No dedicated endpoint
-- `requestImageModels` - No dedicated endpoint
-- `requestModelSelectorExpanded` - Stored in extension globalState
-
-**Settings Handlers:**
-These settings come from VS Code extension settings (not CLI), so they need to:
-1. Read from `vscode.workspace.getConfiguration('kilo-code')`
-2. Return appropriate settings objects
-
-**SSE Event Forwarding:**
-- `SseClient_OnSseEvent` forwards events to webview via `SendSseEventToWebview`
-- Events sent as `{ type: "sse", payload: { eventType, data } }`
-- Webview needs to handle SSE events
-
-**Permission/Question Handling:**
-- `permission/reply` - Already implemented, calls `/permission/:requestID/reply`
-- `question/reply` - Already implemented, calls `/question/:requestID/reply`
-- `prompt` - Already implemented, calls `/session/prompt`
+### What Exists (JetBrains - Target Pattern)
+- **Model**: `SessionModel` - Single source of truth for session state
+- **Controller**: `SessionController` - Owns model, handles RPC calls, manages SSE events
+- **View**: `SessionUi` / `SessionView` - Swing components that listen to model events
+- **Layout**: `Stack`, `Align` - Reusable layout primitives
+- **Styling**: `UiStyle`, `SessionUiStyle` - Theme-aware colors/fonts
+- **Markdown**: `MdView` - Rich text rendering (code blocks, diffs, terminals)
 
 ## Architecture
 
 ```
-Extension (C#)                              CLI Backend (child process)
-┌─────────────────────────────┐            ┌────────────────────────┐
-│ KiloConnectionService       │── HTTP/SSE─>│ kilo serve --port 0    │
-│   ├── CliBackendManager     │            │   Hono REST API        │
-│   ├── HttpClient (API)      │            │   SSE event stream     │
-│   ├── HttpClient (Health)   │            │   Session management   │
-│   └── SSE Event Parser      │            │   AI agent runtime     │
-│                             │            └────────────────────────┘
-│ KiloWebViewControl          │
-│   ├── WebView2 host         │
-│   ├── PostMessage bridge    │
-│   └── WebMessageReceived    │
-│                             │
-│ SolidJS Webview (bundled)   │
-│   ├── Chat UI               │
-│   ├── Message rendering     │
-│   └── Input handling        │
-└─────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│ Visual Studio Extension (C# + WPF)                          │
+│                                                             │
+│  KiloToolWindow                                             │
+│  └── SessionView (WPF UserControl)                         │
+│       ├── SessionHeaderPanel                               │
+│       ├── SessionMessageListPanel                          │
+│       │    └── MessageCard (per message)                   │
+│       └── PromptPanel                                      │
+│            └── PromptEditorTextField                       │
+│                                                             │
+│  SessionController (owns lifecycle)                         │
+│  ├── SessionModel (state)                                  │
+│  ├── KiloConnectionService (backend)                       │
+│  └── SSE event handlers → model updates                   │
+│                                                             │
+│  HttpClientWrapper + SseClient (existing)                  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## Implementation Status
+## Key Decisions
 
-### Phase 1: Request Handlers ✅ COMPLETE
+### UI Technology: WPF
+- Visual Studio 2022+ tool windows support WPF
+- Better text rendering than WinForms (needed for code blocks)
+- Data binding simplifies Model/View synchronization
+- Theme integration via `VsBrushes` and `VsFonts`
 
-All core request handlers implemented with correct CLI API endpoints:
+### Architecture: Model/Controller/View
+- Model fires events → View updates (no two-way binding complexity)
+- Controller owns backend connection and RPC calls
+- Clear separation of concerns, easy to test
 
-| Request | Endpoint | Response | Status |
-|---|---|---|---|
-| `requestProviders` | `/provider` | `providersLoaded` | ✅ Implemented |
-| `requestAgents` | `/experimental/tool/ids` | `agentsLoaded` | ✅ Implemented |
-| `requestConfig` | `/config` | `configLoaded` | ✅ Implemented |
-| `requestMcpStatus` | `/mcp` | `mcpStatusLoaded` | ✅ Implemented |
-| `requestRecents` | `/session` | `recentsLoaded` | ✅ Implemented |
-| `requestFavorites` | N/A | `favoritesLoaded` | ⚠️ Placeholder |
-| `requestModelSelections` | N/A | `modelSelectionsLoaded` | ⚠️ Placeholder |
-| `requestVariants` | N/A | `variantsLoaded` | ⚠️ Placeholder |
-| `requestNotifications` | N/A | `notificationsLoaded` | ⚠️ Placeholder |
-| `webviewReady` | `/config`, `/provider` | Init sequence | ✅ Implemented |
+### Markdown Rendering: Custom WPF Control
+- No WebView2 (defeats purpose of removing webview)
+- Parse markdown to AST, render as WPF elements
+- Basic syntax highlighting via regex (expand later)
 
-### Phase 2: Settings Handlers ⚠️ INCOMPLETE
+### Theme: Visual Studio Brushes
+- Use `VsBrushes.*` and `VsFonts.*` for theme integration
+- Automatic dark/light mode switching
+- Matches Visual Studio look-and-feel
 
-Settings come from VS Code extension settings, not CLI:
+## Component Mapping
 
-| Request | Source | Status |
+| JetBrains | VS Equivalent | Notes |
 |---|---|---|
-| `requestAutocompleteSettings` | VS Code settings | ❌ Not implemented |
-| `requestIndexingSettings` | VS Code settings | ❌ Not implemented |
-| `requestChatSettings` | VS Code settings | ❌ Not implemented |
-| `requestWorkStyle` | VS Code settings | ❌ Not implemented |
+| `JBLabel` | `TextBlock` | Use `VsFonts.DefaultFont()` |
+| `JBTextArea` | `TextBox` (readonly) | For prompt input |
+| `JScrollPane` | `ScrollViewer` | Standard WPF scrolling |
+| `JPanel` | `Grid` / `StackPanel` | Layout containers |
+| `Stack` | `StackPanel` | Same concept |
+| `UiStyle.Gap` | `Thickness` constants | DPI-aware spacing |
+| `UiStyle.Colors` | `VsBrushes.*` | Theme-aware colors |
+| `SessionModel` | `SessionModel` (C#) | Same structure |
+| `SessionController` | `SessionController` (C#) | Same logic |
+| `MdView` | `MarkdownView` (custom) | Markdown rendering |
 
-### Phase 3: Testing ⏳ PENDING
+## Implementation Tasks
 
-- [ ] Test extension loads in Visual Studio
-- [ ] Test webview receives `providersLoaded` message
-- [ ] Test webview receives `agentsLoaded` message
-- [ ] Test webview receives `configLoaded` message
-- [ ] Test SSE events forwarded correctly
-- [ ] Test permission/question reply flow
+### Phase 1: Foundation
 
-## Key Files
+1. **Remove WebView2 dependencies**
+   - Delete `KiloWebViewControl.cs`
+   - Delete webview files (index.html, vscode-api.js, webview.js, webview.css)
+   - Remove WebView2 package from `.csproj`
+   - Update `KiloToolWindow.cs` to use WPF content
 
-**Extension Code:**
-- `packages/kilo-visualstudio/KiloVisualStudioExtension/KiloWebViewControl.cs` - Request handlers
-- `packages/kilo-visualstudio/KiloVisualStudioExtension/HttpClientWrapper.cs` - HTTP client
-- `packages/kilo-visualstudio/KiloVisualStudioExtension/SseClient.cs` - SSE client
-- `packages/kilo-visualstudio/KiloVisualStudioExtension/KiloConnectionService.cs` - Connection manager
-- `packages/kilo-visualstudio/KiloVisualStudioExtension/CliBackendManager.cs` - CLI process manager
+2. **Create WPF Tool Window structure**
+   - Create `SessionView.xaml` - main WPF UserControl
+   - Set up XAML namespace for Visual Studio theme brushes
+   - Implement basic layout: header, message list, prompt input
 
-**Webview:**
-- `packages/kilo-visualstudio/KiloVisualStudioExtension/webview/vscode-api.js` - VS Code API compatibility
-- `packages/kilo-visualstudio/KiloVisualStudioExtension/webview/index.html` - Entry point
+3. **Implement SessionModel (C#)**
+   - Port `SessionModel.kt` to C#
+   - Define message/part/diff data structures
+   - Implement event firing mechanism
+   - Add `loadHistory()` and `clear()` methods
 
-**CLI API Reference:**
-- `packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts` - Provider endpoints
-- `packages/opencode/src/server/routes/instance/httpapi/groups/config.ts` - Config endpoints
-- `packages/opencode/src/server/routes/instance/httpapi/groups/session.ts` - Session endpoints
-- `packages/opencode/src/server/routes/instance/httpapi/groups/mcp.ts` - MCP endpoints
-- `packages/sdk/openapi.json` - Full API spec
+4. **Implement SessionController (C#)**
+   - Port `SessionController.kt` to C#
+   - Own `SessionModel` and `KiloConnectionService`
+   - Subscribe to SSE events → update model
+   - Implement `prompt()`, `replyPermission()`, `replyQuestion()`
+
+### Phase 2: Core UI Components
+
+5. **Implement SessionHeaderPanel**
+   - Show session title, model selector, agent mode picker
+   - Add timeline/activity indicators
+
+6. **Implement SessionMessageListPanel**
+   - Virtualized list of message cards
+   - Each card: role, timestamp, content, actions (copy, revert)
+
+7. **Implement MessageCard**
+   - Render message content (text, code, tool calls)
+   - Copy button, expand/collapse for long messages
+
+8. **Implement PromptPanel**
+   - Multi-line text input with mentions support
+   - Send button, attachment strip
+   - Keyboard shortcuts (Ctrl+Enter to send)
+
+### Phase 3: Markdown Rendering
+
+9. **Implement MarkdownParser**
+   - Port parsing logic from JetBrains `MdView`
+   - Parse to structured AST (text, code, inline-code, links, lists)
+
+10. **Implement MarkdownView control**
+    - Render AST to WPF elements
+    - Basic syntax highlighting for code blocks
+
+11. **Implement diff rendering**
+    - Render unified diffs with +/- indicators
+    - Add "Show Changes" button
+
+### Phase 4: Integration
+
+12. **Connect Controller to View**
+    - Wire up `SessionController` → `SessionModel` → `SessionView`
+    - Test prompt → SSE → response flow
+
+13. **Implement permission/question UI**
+    - Show approval dialogs (modal or inline)
+    - Handle user responses
+
+14. **Theme integration**
+    - Replace hardcoded colors with `VsBrushes`
+    - Replace hardcoded fonts with `VsFonts`
+    - Test dark/light mode switching
+
+15. **Error handling and loading states**
+    - Loading spinner during connection
+    - Error banners for backend errors
+    - Handle reconnection gracefully
+
+## Risks
+
+| Risk | Impact | Mitigation |
+|---|---|---|
+| WPF in VS tool windows | Medium | Test on VS 2022; verify full WPF support |
+| Markdown rendering performance | Medium | Use UI virtualization; limit rendered content |
+| Syntax highlighting complexity | High | Start with basic regex highlighting; expand later |
+| Theme brush compatibility | Low | Test all brushes on dark/light themes |
+
+## Validation
+
+### Manual Testing
+1. Build VSIX
+2. Install in Visual Studio 2022+
+3. Open tool window via `Tools > Kilo Code > Open Kilo Code`
+4. Verify UI renders without errors
+5. Test prompt → response flow
+6. Test code block rendering
+7. Test dark/light theme switching
+
+### Unit Tests
+- `SessionModel` event firing
+- `SessionController` SSE event handling
+- Markdown parsing
+
+## Open Questions
+
+1. **Syntax highlighting**: Start with regex-based for common languages (bash, python, javascript, typescript), or integrate TextMate grammar parser?
+   - **Recommendation**: Start with regex-based; add TextMate later if needed
+
+2. **Diff viewer**: Use Visual Studio's built-in `IVsDiffMerge` or implement inline diff view?
+   - **Recommendation**: Start with inline diff view; integrate VS diff viewer later
+
+3. **Mentions/attachments**: How complex is the mentions system (file paths, symbols)?
+   - **Action**: Review JetBrains `MentionNavigator` to understand scope before implementing
 
 ## Next Steps
 
-1. **Build and Test Extension:**
-   ```bash
-   dotnet build -c Debug packages/kilo-visualstudio/KiloVisualStudioExtension/KiloVisualStudioExtension.csproj
-   ```
-
-2. **Install VSIX and Test:**
-   - Install the `.vsix` file in Visual Studio
-   - Open `Tools > Kilo Code > Open Kilo Code`
-   - Open DevTools and verify messages received
-
-3. **Implement Settings Handlers:**
-   - Read VS Code extension settings
-   - Return appropriate settings objects for each request type
-
-4. **Implement Remaining Placeholders:**
-   - Favorites: Store in extension globalState
-   - Model Selections: Read from model.json
-   - Variants: Read from extension globalState
-   - Notifications: Forward from SSE events
-
-## Notes
-
-- CLI binary path: `c:\prog\kilocode\kilocode\packages\opencode\dist\@kilocode\cli-windows-x64\bin\kilo.exe`
-- CLI runs on dynamic port with password auth: `http://127.0.0.1:PORT` with `Basic kilo:{password}`
-- All message types match VS Code webview expectations (`*Loaded` suffix)
-- `onMessage` returns unsubscribe function for cleanup (SolidJS pattern)
+1. Verify WPF support in Visual Studio 2022 tool windows
+2. Start with Phase 1, Task 1 (remove WebView2)
+3. Build components in order, testing each before moving to next
+4. Defer syntax highlighting and mentions for MVP
