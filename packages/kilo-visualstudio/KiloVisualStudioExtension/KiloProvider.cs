@@ -55,11 +55,6 @@ namespace KiloVisualStudioExtension
                         await HandleWebviewReadyAsync();
                         break;
 
-                    case "webviewInitialized":
-                        System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewInitialized received, releasing data send");
-                        _webviewInitializedTcs?.TrySetResult(null);
-                        break;
-
                     case "requestProviders":
                         await HandleRequestProvidersAsync();
                         break;
@@ -489,8 +484,6 @@ namespace KiloVisualStudioExtension
             }
         }
 
-        private TaskCompletionSource<object?>? _webviewInitializedTcs;
-
         private async Task HandleWebviewReadyAsync()
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received, starting initialization");
@@ -501,34 +494,9 @@ namespace KiloVisualStudioExtension
                 await _connectionService.ConnectAsync();
             }
 
-            // Send ready message with server info
-            var serverInfo = _connectionService.GetServerInfo();
-            if (serverInfo != null)
-            {
-                var readyMessage = new
-                {
-                    type = "ready",
-                    serverInfo = new { port = serverInfo.Port },
-                    extensionVersion = "1.0.0",
-                    vscodeLanguage = "en",
-                    workspaceDirectory = Environment.CurrentDirectory
-                };
-                _webView.PostMessage(JsonSerializer.Serialize(readyMessage));
-            }
-
             // Send connection state
             var connState = new { type = "connectionState", state = _connectionService.State.ToString().ToLowerInvariant() };
             _webView.PostMessage(JsonSerializer.Serialize(connState));
-
-            // Wait for webviewInitialized signal before sending data
-            if (_webviewInitializedTcs == null)
-            {
-                _webviewInitializedTcs = new TaskCompletionSource<object?>();
-            }
-            
-            //System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: waiting for webviewInitialized...");
-            //await _webviewInitializedTcs.Task;
-            //System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewInitialized received, sending initial data");
 
             // Create a default session if none exists
             await HandleCreateSessionAsync();

@@ -141,23 +141,23 @@ namespace KiloVisualStudioExtension
                     return;
 
                 case "session.created":
-                    HandleSessionCreatedStream(properties);
+                //    HandleSessionCreatedStream(properties);
                     break;
 
                 case "session.updated":
-                    HandleSessionUpdatedStream(properties);
+                //    HandleSessionUpdatedStream(properties);
                     break;
 
                 case "session.deleted":
-                    HandleSessionDeletedStream(properties);
+                //    HandleSessionDeletedStream(properties);
                     break;
 
                 case "message.updated":
-                    HandleMessageUpdatedStream(properties);
+                //    HandleMessageUpdatedStream(properties);
                     break;
 
                 case "message.removed":
-                    HandleMessageRemovedStream(properties);
+                //    HandleMessageRemovedStream(properties);
                     break;
 
                 case "global.disposed":
@@ -173,7 +173,7 @@ namespace KiloVisualStudioExtension
                     return;
 
                 case "message.part.updated":
-                    HandlePartUpdatedStream(properties);
+                //    HandlePartUpdatedStream(properties);
                     break;
 
                 case "indexing.status":
