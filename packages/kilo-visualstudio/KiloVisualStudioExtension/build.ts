@@ -30,7 +30,7 @@ const webviewSourceDir = join(rootDir, 'packages', 'kilo-vscode', 'dist');
 if (existsSync(webviewDir)) {
   const files = readdirSync(webviewDir);
   for (const file of files) {
-    if (file !== 'index.html' && file !== 'vscode-api.js') {
+    if (file !== 'index.html' && file !== 'vscode-api.js' && file !== 'vscode-theme.css') {
       const filePath = join(webviewDir, file);
       rmSync(filePath, { recursive: true, force: true });
     }
@@ -72,6 +72,29 @@ if (existsSync(webviewJsSource)) {
 } else {
   console.log('⚠️  No VS Code webview build found at', webviewJsSource);
   console.log('   Webview will not be available until VS Code extension is built.');
+}
+
+// Copy assets folder (icons) from VS Code extension
+const assetsSourceDir = join(rootDir, 'packages', 'kilo-vscode', 'assets');
+const assetsTargetDir = join(webviewDir, 'assets');
+if (existsSync(assetsSourceDir)) {
+  console.log('Copying assets folder from VS Code extension...');
+  if (!existsSync(assetsTargetDir)) {
+    mkdirSync(assetsTargetDir, { recursive: true });
+  }
+  
+  const iconSourceDir = join(assetsSourceDir, 'icons');
+  const iconTargetDir = join(assetsTargetDir, 'icons');
+  if (existsSync(iconSourceDir)) {
+    if (!existsSync(iconTargetDir)) {
+      mkdirSync(iconTargetDir, { recursive: true });
+    }
+    const iconFiles = readdirSync(iconSourceDir);
+    for (const file of iconFiles) {
+      copyFileSync(join(iconSourceDir, file), join(iconTargetDir, file));
+    }
+    console.log('Assets copied successfully');
+  }
 }
 
 // Step 3: Build the VSIX

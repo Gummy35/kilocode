@@ -39,5 +39,15 @@ namespace KiloVisualStudioExtension
             var provider = new SettingsEditorProvider(connectionService);
             return provider;
         }
+
+        /// <summary>
+        /// Create KiloClawProvider for chat panel.
+        /// </summary>
+        public static KiloClawProvider CreateKiloClaw(Uri extensionUri)
+        {
+            var connectionService = KiloVisualStudioExtensionPackage.GetConnectionService();
+            var provider = new KiloClawProvider(extensionUri, connectionService);
+            return provider;
+        }
     }
 }
