@@ -23,7 +23,7 @@ namespace KiloVisualStudioExtension
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(KiloToolWindow), Style = VsDockStyle.Tabbed, Window = ToolWindowGuids.SolutionExplorer)]
-    [ProvideToolWindow(typeof(SettingsToolWindow), Style = VsDockStyle.Tabbed, Window = ToolWindowGuids.SolutionExplorer)]
+    [ProvideToolWindow(typeof(SettingsToolWindow), Style = VsDockStyle.MDI, Window = ToolWindowGuids.SolutionExplorer)]
     [Guid(KiloVisualStudioExtensionPackage.KiloCodePackageString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     public sealed class KiloVisualStudioExtensionPackage : AsyncPackage

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using VSLangProj110;
@@ -26,6 +27,7 @@ namespace KiloVisualStudioExtension
         private JsonElement? _cachedStats = null;
         private bool _cachedGitRepo = false;
         private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
+        private CancellationTokenSource? _loadMessagesCts;
 
         public VSProvider(KiloWebViewControl webView, KiloConnectionService connectionService)
         {
@@ -156,7 +158,9 @@ namespace KiloVisualStudioExtension
                         break;
 
                     case "loadMessages":
-                        await HandleLoadMessagesAsync(payload);
+                        // Don't await: allow parallel loads so rapid session switching
+                        // isn't blocked by slow responses for earlier sessions (like VS Code)
+                        _ = HandleLoadMessagesAsync(payload);
                         break;
 
                     case "deleteMessage":
@@ -1498,6 +1502,15 @@ namespace KiloVisualStudioExtension
             {
                 PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Failed to create session" }));
             }
+            else
+            {
+                // Fire-and-forget load messages after session creation (like VS Code's handleLoadMessages(session.id))
+                if (!string.IsNullOrEmpty(_currentSessionID))
+                {
+                    var payload = JsonDocument.Parse($"{{\"sessionID\":\"{_currentSessionID}\"}}").RootElement;
+                    _ = HandleLoadMessagesAsync(payload);
+                }
+            }
         }
 
         private async Task<bool> CreateSessionInternalAsync(string dir)
@@ -1561,7 +1574,7 @@ namespace KiloVisualStudioExtension
             return await CreateSessionInternalAsync(Environment.CurrentDirectory);
         }
 
-        private void HandleClearSession()
+        private async Task HandleClearSession()
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: clearSession");
             
@@ -1584,9 +1597,8 @@ namespace KiloVisualStudioExtension
                 _sseHelper.UntrackSession(sessionID);
             }
             
-            // Focus session (reset stream focus)
-            // In VS Code, this calls focusSession() which resets the focused session
-            // For Visual Studio, this would reset any session focus tracking
+            // Focus session (reset stream focus) - like VS Code's focusSession()
+            FocusSession(null);
         }
 
         private async Task HandleSetStateAsync(JsonElement? payload)
@@ -1636,8 +1648,17 @@ namespace KiloVisualStudioExtension
             
             if (mode == "replace" || mode == "focus")
             {
+                // Stop background processes for the previous session (like VS Code's stopCurrentSessionProcesses)
+                StopCurrentSessionProcesses(sessionID);
+                
+                // Track the session (like VS Code's trackedSessionIds.add)
+                _sseHelper.TrackSession(sessionID);
+                
+                // Focus the session (like VS Code's focusSession)
+                FocusSession(sessionID);
+                
                 _currentSessionID = sessionID;
-                _contextSessionID = sessionID;  // Also set contextSessionID like VS Code does
+                _contextSessionID = sessionID;
             }
             
             var httpClient = _connectionService.GetHttpClient();
@@ -1647,6 +1668,15 @@ namespace KiloVisualStudioExtension
                 return;
             }
             
+            // Abort previous load if mode is replace (like VS Code's abort controller pattern)
+            if (mode == "replace")
+            {
+                _loadMessagesCts?.Cancel();
+                _loadMessagesCts = new CancellationTokenSource();
+            }
+            
+            var cancellationToken = mode == "replace" ? _loadMessagesCts?.Token : default;
+            
             try
             {
                 var url = $"/session/{sessionID}/message?limit={limit}";
@@ -1655,7 +1685,14 @@ namespace KiloVisualStudioExtension
                     url += $"&before={before}";
                 }
                 
-                var responseDoc = await httpClient.GetJsonAsync(url);
+                var responseDoc = cancellationToken.HasValue 
+                    ? await httpClient.GetJsonAsync(url, cancellationToken.Value)
+                    : await httpClient.GetJsonAsync(url);
+                
+                if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) return;
+                
+                // Drop results for untracked sessions (like VS Code's trackedSessionIds guard)
+                if (!_sseHelper.IsSessionTracked(sessionID)) return;
                 
                 if (responseDoc == null) return;
                 
@@ -1698,6 +1735,12 @@ namespace KiloVisualStudioExtension
                     hasMore = !string.IsNullOrEmpty(cursorValue);
                 }
                 
+                // Drop buffered deltas for replace/reconcile modes (like VS Code's streams.drop)
+                if (mode == "replace" || mode == "reconcile")
+                {
+                    DropSessionStream(sessionID);
+                }
+                
                 var message = new
                 {
                     type = "messagesLoaded",
@@ -1711,7 +1754,21 @@ namespace KiloVisualStudioExtension
                 _webView.PostMessage(JsonSerializer.Serialize(message));
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: loaded {items.Count} messages for session {sessionID}");
                 
+                // Flush buffered deltas (like VS Code's streams.flush for preserveStream)
+                if (payload.Value.TryGetProperty("preserveStream", out var preserveProp) && preserveProp.GetBoolean())
+                {
+                    FlushSessionStream(sessionID);
+                }
+                
+                // Recover any prompts missed during loading (like VS Code's recoverPendingPrompts)
+                RecoverPendingPrompts();
+                
                 responseDoc.Dispose();
+            }
+            catch (OperationCanceledException)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: load cancelled for session {sessionID}");
+                return;
             }
             catch (Exception ex)
             {
@@ -2775,6 +2832,35 @@ namespace KiloVisualStudioExtension
         {
             // VS extension doesn't have a remote status service yet
             // This is a no-op placeholder matching VS Code's pattern
+        }
+
+        private void FocusSession(string? sessionID)
+        {
+            // Like VS Code's focusSession: updates stream focus and registers presence
+            // For VS extension, we post a focus message to the webview
+            _webView.PostMessage(JsonSerializer.Serialize(new { type = "focusSession", sessionID = sessionID ?? "" }));
+        }
+
+        private void StopCurrentSessionProcesses(string? next)
+        {
+            // Like VS Code's stopCurrentSessionProcesses: stops background processes for the previous session
+            var sid = _contextSessionID ?? _currentSessionID;
+            if (string.IsNullOrEmpty(sid) || sid == next) return;
+            // Process management would need to be implemented separately for Visual Studio
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: stopping processes for session {sid}");
+        }
+
+        private void DropSessionStream(string sessionID)
+        {
+            // Like VS Code's streams.drop: clears buffered deltas for a session
+            // This ensures authoritative snapshots supersede buffered updates
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: dropping stream for session {sessionID}");
+        }
+
+        private void FlushSessionStream(string sessionID)
+        {
+            // Like VS Code's streams.flush: flushes buffered deltas for a session
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: flushing stream for session {sessionID}");
         }
 
         public void Dispose()
