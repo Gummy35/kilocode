@@ -49,36 +49,36 @@ namespace KiloVisualStudioExtension
       {
         _connectionService = new KiloConnectionService(backendManager);
         _webView.SetConnectionService(_connectionService);
-        _vsProvider = new VSProvider(_webView, _connectionService);
+        _vsProvider = new SettingsEditorProvider(_webView, _connectionService);
         await _connectionService.ConnectAsync();
-        // Subscribe to webviewReady to send navigate message
-        _webView.OnMessageReceived += HandleMessageReceived;
+        //// Subscribe to webviewReady to send navigate message
+        //_webView.OnMessageReceived += HandleMessageReceived;
       }
 
       _initialized = true;
     }
 
-    private void HandleMessageReceived(object? sender, WebViewMessageEventArgs e)
-    {
-      if (e.Type == "webviewReady" && !string.IsNullOrEmpty(_pendingTab))
-      {
-        // Small delay to let VSProvider's own webviewReady handler finish first
-        Task.Delay(50).ContinueWith(_ =>
-        {
-          ThreadHelper.JoinableTaskFactory.Run(async () =>
-                  {
-              await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-              var message = System.Text.Json.JsonSerializer.Serialize(new
-              {
-                type = "navigate",
-                view = "settings",
-                tab = _pendingTab
-              });
-              _webView?.PostMessage(message);
-            });
-        });
-      }
-    }
+    //private void HandleMessageReceived(object? sender, WebViewMessageEventArgs e)
+    //{
+    //  if (e.Type == "webviewReady" && !string.IsNullOrEmpty(_pendingTab))
+    //  {
+    //    // Small delay to let VSProvider's own webviewReady handler finish first
+    //    Task.Delay(50).ContinueWith(_ =>
+    //    {
+    //      ThreadHelper.JoinableTaskFactory.Run(async () =>
+    //              {
+    //          await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+    //          var message = System.Text.Json.JsonSerializer.Serialize(new
+    //          {
+    //            type = "navigate",
+    //            view = "settings",
+    //            tab = _pendingTab
+    //          });
+    //          _webView?.PostMessage(message);
+    //        });
+    //    });
+    //  }
+    //}
 
     protected override void Dispose(bool disposing)
     {
@@ -86,10 +86,10 @@ namespace KiloVisualStudioExtension
       {
         if (disposing)
         {
-          if (_webView != null)
-          {
-            _webView.OnMessageReceived -= HandleMessageReceived;
-          }
+          //if (_webView != null)
+          //{
+          //  _webView.OnMessageReceived -= HandleMessageReceived;
+          //}
           _connectionService?.Dispose();
           _webView?.Dispose();
         }

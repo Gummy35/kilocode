@@ -33,7 +33,7 @@ namespace KiloVisualStudioExtension
         #region Package Members
 
         private CliBackendManager? _backendManager;
-        private SettingsEditorProvider? _settingsEditorProvider;
+       // private SettingsEditorProvider? _settingsEditorProvider;
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited.
@@ -58,15 +58,15 @@ namespace KiloVisualStudioExtension
             System.Diagnostics.Debug.WriteLine("=== CLI backend started ===");
 
             // Initialize SettingsEditorProvider after backend is running
-            _settingsEditorProvider = new SettingsEditorProvider();
+      //      _settingsEditorProvider = new SettingsEditorProvider();
             
             System.Diagnostics.Debug.WriteLine("=== KiloVisualStudioExtensionPackage InitializeAsync completed ===");
         }
 
-        public SettingsEditorProvider? GetSettingsEditorProvider()
-        {
-            return _settingsEditorProvider;
-        }
+        //public SettingsEditorProvider? GetSettingsEditorProvider()
+        //{
+        //    return _settingsEditorProvider;
+        //}
 
         public static SettingsToolWindow? FindSettingsToolWindow(AsyncPackage package, PanelView view)
         {
@@ -80,7 +80,7 @@ namespace KiloVisualStudioExtension
             if (disposing)
             {
                 _backendManager?.Dispose();
-                _settingsEditorProvider?.Dispose();
+   //             _settingsEditorProvider?.Dispose();
             }
             base.Dispose(disposing);
         }

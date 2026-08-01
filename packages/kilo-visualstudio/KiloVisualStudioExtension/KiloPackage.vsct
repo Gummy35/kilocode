@@ -21,14 +21,14 @@
       <Button guid="guidKiloCmdSet" id="cmdidShowKiloWindow" priority="0x0100" type="Button">
         <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
         <Strings>
-          <ButtonText>Open Kilo Code</ButtonText>
+          <ButtonText>Open</ButtonText>
           <Tooltip>Open Kilo Code AI assistant</Tooltip>
         </Strings>
       </Button>
       <Button guid="guidKiloCmdSet" id="cmdidOpenSettings" priority="0x0100" type="Button">
         <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
         <Strings>
-          <ButtonText>Open Kilo Code Settings</ButtonText>
+          <ButtonText>Settings</ButtonText>
           <Tooltip>Open Kilo Code AI assistant settings</Tooltip>
         </Strings>
       </Button>

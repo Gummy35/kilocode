@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
+using VSLangProj110;
 
 namespace KiloVisualStudioExtension
 {
     public class VSProvider : IDisposable
     {
-        private readonly KiloWebViewControl _webView;
-        private readonly KiloConnectionService _connectionService;
-        private readonly SSEHelper _sseHelper;
+        protected readonly KiloWebViewControl _webView;
+        protected readonly KiloConnectionService _connectionService;
+        protected readonly SSEHelper _sseHelper;
         private bool _isWebviewReady = false;
         private bool _disposed;
         private JsonElement? _webviewState;
@@ -498,7 +499,7 @@ namespace KiloVisualStudioExtension
             }
         }
 
-        private async Task HandleWebviewReadyAsync()
+        protected virtual async Task HandleWebviewReadyAsync()
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
             
