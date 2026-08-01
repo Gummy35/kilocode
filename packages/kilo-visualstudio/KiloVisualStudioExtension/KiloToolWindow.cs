@@ -9,7 +9,6 @@ namespace KiloVisualStudioExtension
     public class KiloToolWindow : ToolWindowPane
     {
         private KiloWebViewControl? _webView;
-        private KiloConnectionService? _connectionService;
         private VSProvider? _vsProvider;
 
         public KiloWebViewControl? WebView => _webView;
@@ -28,21 +27,19 @@ namespace KiloVisualStudioExtension
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             await _webView!.InitializeAsync();
             
-            var backendManager = CliBackendManager.Instance;
-            if (backendManager != null)
-            {
-                _connectionService = new KiloConnectionService(backendManager);
-                _webView.SetConnectionService(_connectionService);
-                _vsProvider = new VSProvider(_webView, _connectionService);
-                await _connectionService.ConnectAsync();
-            }
+            // Use ProviderFactory to create provider with shared connection service
+            _webView.SetConnectionService(KiloVisualStudioExtensionPackage.GetConnectionService());
+            _vsProvider = ProviderFactory.CreateSidebarProvider(_webView);
+            
+            // Connect to backend (starts lazily if not already running)
+            await KiloVisualStudioExtensionPackage.GetConnectionService().ConnectAsync();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _connectionService?.Dispose();
+                _vsProvider?.Dispose();
                 _webView?.Dispose();
             }
             base.Dispose(disposing);

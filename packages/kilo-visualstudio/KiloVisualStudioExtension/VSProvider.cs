@@ -29,12 +29,18 @@ namespace KiloVisualStudioExtension
         private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
         private CancellationTokenSource? _loadMessagesCts;
 
-        public VSProvider(KiloWebViewControl webView, KiloConnectionService connectionService)
+        /// <summary>
+        /// Constructor for factory creation (webView may be null initially)
+        /// </summary>
+        public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService)
         {
-            _webView = webView;
+            _webView = webView!;
             _connectionService = connectionService;
             _sseHelper = new SSEHelper(PostMessage);
-            _webView.OnMessageReceived += HandleMessageReceived;
+            if (webView != null)
+            {
+                webView.OnMessageReceived += HandleMessageReceived;
+            }
             _connectionService.OnStateChange += HandleStateChange;
             _connectionService.OnSseEvent += HandleSseEvent;
         }

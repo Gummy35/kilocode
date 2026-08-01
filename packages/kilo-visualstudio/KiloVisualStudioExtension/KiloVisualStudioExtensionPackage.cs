@@ -32,11 +32,49 @@ namespace KiloVisualStudioExtension
 
         #region Package Members
 
-        private CliBackendManager? _backendManager;
+        private static CliBackendManager? _backendManager;
+        private static KiloConnectionService? _connectionService;
        // private SettingsEditorProvider? _settingsEditorProvider;
 
         /// <summary>
+        /// Get the shared connection service instance.
+        /// Backend starts lazily when first provider connects.
+        /// </summary>
+        public static KiloConnectionService GetConnectionService()
+        {
+            if (_connectionService == null)
+            {
+                throw new InvalidOperationException("KiloConnectionService not initialized. Call InitializeConnectionService first.");
+            }
+            return _connectionService;
+        }
+
+        /// <summary>
+        /// Initialize the shared connection service and backend manager.
+        /// Backend starts lazily on first ConnectAsync() call.
+        /// </summary>
+        public static async Task InitializeConnectionServiceAsync(CancellationToken cancellationToken)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            
+            if (_connectionService != null)
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] Package: connection service already initialized");
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[Kilo] Package: initializing connection service");
+            
+            _backendManager = new CliBackendManager();
+            _connectionService = new KiloConnectionService(_backendManager);
+            KiloConnectionService.SetInstance(_connectionService);
+            
+            System.Diagnostics.Debug.WriteLine("[Kilo] Package: connection service initialized (backend starts on first connect)");
+        }
+
+        /// <summary>
         /// Initialization of the package; this method is called right after the package is sited.
+        /// Backend starts lazily when first provider connects.
         /// </summary>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
@@ -51,15 +89,9 @@ namespace KiloVisualStudioExtension
             // Register command to open settings
             await OpenSettingsCommand.InitializeAsync(this);
 
-            // Start CLI backend
-            _backendManager = new CliBackendManager();
-            await _backendManager.StartAsync(cancellationToken);
+            // Initialize connection service (backend starts lazily on first connect)
+            await InitializeConnectionServiceAsync(cancellationToken);
 
-            System.Diagnostics.Debug.WriteLine("=== CLI backend started ===");
-
-            // Initialize SettingsEditorProvider after backend is running
-      //      _settingsEditorProvider = new SettingsEditorProvider();
-            
             System.Diagnostics.Debug.WriteLine("=== KiloVisualStudioExtensionPackage InitializeAsync completed ===");
         }
 
@@ -79,8 +111,10 @@ namespace KiloVisualStudioExtension
         {
             if (disposing)
             {
+                _connectionService?.Dispose();
                 _backendManager?.Dispose();
-   //             _settingsEditorProvider?.Dispose();
+                _connectionService = null;
+                _backendManager = null;
             }
             base.Dispose(disposing);
         }

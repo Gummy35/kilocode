@@ -38,6 +38,11 @@ namespace KiloVisualStudioExtension
         }
     }
 
+    /// <summary>
+    /// Shared connection service for managing CLI backend connection.
+    /// Singleton pattern - one instance shared across all providers.
+    /// Matches VS Code's KiloConnectionService pattern.
+    /// </summary>
     public class KiloConnectionService : IDisposable
     {
         private readonly CliBackendManager _backendManager;
@@ -51,7 +56,10 @@ namespace KiloVisualStudioExtension
         private bool _disposed;
         private readonly object _lock = new object();
 
-        public static KiloConnectionService? Instance = null;
+        /// <summary>
+        /// Singleton instance - set by KiloVisualStudioExtensionPackage
+        /// </summary>
+        private static KiloConnectionService? _singletonInstance;
 
         public event EventHandler<ConnectionStateEventArgs>? OnStateChange;
         public event EventHandler<SseEventReceivedEventArgs>? OnSseEvent;
@@ -86,6 +94,28 @@ namespace KiloVisualStudioExtension
         {
             public string BaseUrl { get; set; } = "";
             public string Password { get; set; } = "";
+        }
+
+        /// <summary>
+        /// Get the singleton instance of KiloConnectionService.
+        /// Returns null if not initialized yet.
+        /// </summary>
+        public static KiloConnectionService? GetInstance()
+        {
+            return _singletonInstance;
+        }
+
+        /// <summary>
+        /// Set the singleton instance (called from package initialization)
+        /// </summary>
+        public static void SetInstance(KiloConnectionService instance)
+        {
+            if (_singletonInstance != null)
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] KiloConnectionService: singleton already set, ignoring");
+                return;
+            }
+            _singletonInstance = instance;
         }
 
         public KiloConnectionService(CliBackendManager backendManager)
@@ -266,6 +296,12 @@ namespace KiloVisualStudioExtension
             _disposed = true;
             Disconnect();
             _healthPollTimer?.Dispose();
+            
+            // Clear singleton instance on disposal
+            if (_singletonInstance == this)
+            {
+                _singletonInstance = null;
+            }
         }
     }
 }

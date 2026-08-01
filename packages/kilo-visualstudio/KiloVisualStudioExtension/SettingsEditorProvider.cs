@@ -11,15 +11,27 @@ namespace KiloVisualStudioExtension
   /// Opens Settings as a separate tool window, keeping the sidebar chat undisturbed.
   /// Matches the VS Code SettingsEditorProvider pattern.
   /// </summary>
-  public class SettingsEditorProvider : VSProvider
-  {
-    private SettingsToolWindow? _settingsPanel;
-    private string? _pendingTab;
-
-    public SettingsEditorProvider(KiloWebViewControl webView, KiloConnectionService connectionService, string pendingTab = "models"): base(webView, connectionService) 
+    public class SettingsEditorProvider : VSProvider
     {
-      _pendingTab = pendingTab;
-    }
+        private SettingsToolWindow? _settingsPanel;
+        private string? _pendingTab;
+
+        /// <summary>
+        /// Constructor for factory creation (without webView - will be set later)
+        /// </summary>
+        public SettingsEditorProvider(KiloConnectionService connectionService) 
+            : base(null!, connectionService) 
+        {
+        }
+
+        /// <summary>
+        /// Constructor for direct creation with webView
+        /// </summary>
+        public SettingsEditorProvider(KiloWebViewControl webView, KiloConnectionService connectionService, string pendingTab = "models") 
+            : base(webView, connectionService) 
+        {
+            _pendingTab = pendingTab;
+        }
 
 
     ///// <summary>
