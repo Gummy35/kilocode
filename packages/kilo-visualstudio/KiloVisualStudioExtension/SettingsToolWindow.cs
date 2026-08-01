@@ -13,7 +13,6 @@ namespace KiloVisualStudioExtension
   public class SettingsToolWindow : ToolWindowPane, IDisposable
   {
     private KiloWebViewControl? _webView;
-    private KiloConnectionService? _connectionService;
     private VSProvider? _vsProvider;
     private bool _disposed;
     private bool _initialized;
@@ -42,18 +41,15 @@ namespace KiloVisualStudioExtension
       if (_initialized) return;
 
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-      await _webView!.InitializeAsync();
 
-      var backendManager = CliBackendManager.Instance;
-      if (backendManager != null)
-      {
-        _connectionService = new KiloConnectionService(backendManager);
-        _webView.SetConnectionService(_connectionService);
-        _vsProvider = new SettingsEditorProvider(_webView, _connectionService);
-        await _connectionService.ConnectAsync();
-        //// Subscribe to webviewReady to send navigate message
-        //_webView.OnMessageReceived += HandleMessageReceived;
-      }
+      // Use shared connection service from package (lazy backend start)
+      var connectionService = KiloVisualStudioExtensionPackage.GetConnectionService();
+      _webView.SetConnectionService(connectionService);
+      _vsProvider = new SettingsEditorProvider(_webView, connectionService, _pendingTab ?? "models");
+
+      // Connect to backend (starts lazily if not already running)
+      await connectionService.ConnectAsync();
+      await _webView!.InitializeAsync();
 
       _initialized = true;
     }
@@ -86,11 +82,7 @@ namespace KiloVisualStudioExtension
       {
         if (disposing)
         {
-          //if (_webView != null)
-          //{
-          //  _webView.OnMessageReceived -= HandleMessageReceived;
-          //}
-          _connectionService?.Dispose();
+          _vsProvider?.Dispose();
           _webView?.Dispose();
         }
         _disposed = true;
