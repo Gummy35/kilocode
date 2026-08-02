@@ -192,7 +192,7 @@ namespace KiloVisualStudioExtension.AgentManager
         /// </summary>
         public int? ServerPort()
         {
-            return _connectionService.GetServerInfo()?.Port;
+            return _connectionService.GetServerInfo()?.port;
         }
 
         /// <summary>
