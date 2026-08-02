@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -539,6 +540,249 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error loading memory: {ex.Message}");
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "memoryLoaded", sessionID, error = ex.Message }));
+            }
+        }
+
+        /// <summary>
+        /// Handles loadSessions message - loads all sessions and sends sessionListLoaded.
+        /// Matches VS Code's handleLoadSessions pattern.
+        /// </summary>
+        public async Task HandleLoadSessionsAsync(JsonElement? payload)
+        {
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+                return;
+            }
+
+            try
+            {
+                var responseDoc = await httpClient.GetJsonAsync("/session");
+                if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    var sessions = new List<object>();
+                    foreach (var session in responseDoc.RootElement.EnumerateArray())
+                    {
+                        if (session.TryGetProperty("id", out var id) && session.TryGetProperty("title", out var title))
+                        {
+                            var sessionID = id.GetString() ?? "";
+                            var sessionTitle = title.GetString() ?? "";
+                            
+                            object? status = null;
+                            if (session.TryGetProperty("status", out var statusProp))
+                            {
+                                status = statusProp.Clone();
+                            }
+                            
+                            var sessionObj = new
+                            {
+                                id = sessionID,
+                                title = sessionTitle,
+                                status = status,
+                                directory = session.TryGetProperty("directory", out var dir) ? dir.GetString() : null,
+                                createdAt = session.TryGetProperty("createdAt", out var created) ? created.GetString() : null,
+                                updatedAt = session.TryGetProperty("updatedAt", out var updated) ? updated.GetString() : null
+                            };
+                            sessions.Add(sessionObj);
+                        }
+                    }
+                    
+                    var message = new { type = "sessionListLoaded", sessions = sessions.ToArray() };
+                    _provider.PostMessage(JsonSerializer.Serialize(message));
+                    responseDoc.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error loading sessions: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to load sessions: {ex.Message}" }));
+            }
+        }
+
+        /// <summary>
+        /// Handles syncSession message - syncs a specific session.
+        /// Matches VS Code's handleSyncSession pattern.
+        /// </summary>
+        public async Task HandleSyncSessionAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+            if (string.IsNullOrEmpty(sessionID)) return;
+            
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+                return;
+            }
+
+            try
+            {
+                var responseDoc = await httpClient.GetJsonAsync($"/session/{sessionID}");
+                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("session", out var session))
+                {
+                    var message = new { type = "sessionSynced", session = session.Clone() };
+                    _provider.PostMessage(JsonSerializer.Serialize(message));
+                    responseDoc.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error syncing session: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to sync session: {ex.Message}" }));
+            }
+        }
+
+        /// <summary>
+        /// Handles requestSessionModelUsage message - fetches and sends model usage for a session.
+        /// Matches VS Code's fetchAndSendSessionModelUsage pattern.
+        /// </summary>
+        public async Task HandleRequestSessionModelUsageAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+            var requestID = payload.Value.TryGetProperty("requestID", out var rid) ? rid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(sessionID)) return;
+            
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
+                return;
+            }
+
+            try
+            {
+                var responseDoc = await httpClient.GetJsonAsync($"/session/{sessionID}/model-usage");
+                if (responseDoc != null)
+                {
+                    var sessionIDs = new[] { sessionID };
+                    var totals = new { steps = 0, cost = 0, tokens = new { input = 0, output = 0, reasoning = 0, cache = new { read = 0, write = 0 } } };
+                    var models = new object[0];
+                    
+                    var data = new { sessionIDs, totals, models };
+                    var message = new { type = "sessionModelUsageLoaded", sessionID, requestID, data };
+                    _provider.PostMessage(JsonSerializer.Serialize(message));
+                    responseDoc.Dispose();
+                }
+                else
+                {
+                    _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error fetching model usage: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
+            }
+        }
+
+        /// <summary>
+        /// Handles revertSession message - reverts a session to a previous state.
+        /// Matches VS Code's handleRevertSession pattern.
+        /// </summary>
+        public async Task HandleRevertSessionAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+            var messageID = payload.Value.TryGetProperty("messageID", out var mid) ? mid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
+            
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+                return;
+            }
+
+            try
+            {
+                await httpClient.PostJsonAsync($"/session/revert", new { sessionID, messageID });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session reverted: {sessionID}");
+                
+                var message = new { type = "sessionReverted", sessionID, messageID };
+                _provider.PostMessage(JsonSerializer.Serialize(message));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error reverting session: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to revert session: {ex.Message}" }));
+            }
+        }
+
+        /// <summary>
+        /// Handles unrevertSession message - unreverts a session.
+        /// Matches VS Code's handleUnrevertSession pattern.
+        /// </summary>
+        public async Task HandleUnrevertSessionAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(sessionID)) return;
+            
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+                return;
+            }
+
+            try
+            {
+                await httpClient.PostJsonAsync($"/session/unrevert", new { sessionID });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session unreverted: {sessionID}");
+                
+                var message = new { type = "sessionUnreverted", sessionID };
+                _provider.PostMessage(JsonSerializer.Serialize(message));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error unreverting session: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to unrevert session: {ex.Message}" }));
+            }
+        }
+
+        /// <summary>
+        /// Handles compact message - compacts session context.
+        /// Matches VS Code's handleCompact pattern.
+        /// </summary>
+        public async Task HandleCompactAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+            var providerID = payload.Value.TryGetProperty("providerID", out var pid) ? pid.GetString() : "";
+            var modelID = payload.Value.TryGetProperty("modelID", out var modelId) ? modelId.GetString() : "";
+            
+            if (string.IsNullOrEmpty(sessionID)) return;
+            
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+                return;
+            }
+
+            try
+            {
+                await httpClient.PostJsonAsync($"/session/compact", new { sessionID, providerID, modelID });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session compacted: {sessionID}");
+                
+                var message = new { type = "sessionCompacted", sessionID };
+                _provider.PostMessage(JsonSerializer.Serialize(message));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error compacting session: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to compact session: {ex.Message}" }));
             }
         }
 

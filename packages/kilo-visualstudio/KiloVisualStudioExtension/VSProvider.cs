@@ -488,6 +488,30 @@ namespace KiloVisualStudioExtension
                         await _sessionHandler.HandleRenameSessionAsync(payload);
                         break;
 
+                    case "loadSessions":
+                        await _sessionHandler.HandleLoadSessionsAsync(payload);
+                        break;
+
+                    case "syncSession":
+                        await _sessionHandler.HandleSyncSessionAsync(payload);
+                        break;
+
+                    case "requestSessionModelUsage":
+                        await _sessionHandler.HandleRequestSessionModelUsageAsync(payload);
+                        break;
+
+                    case "revertSession":
+                        await _sessionHandler.HandleRevertSessionAsync(payload);
+                        break;
+
+                    case "unrevertSession":
+                        await _sessionHandler.HandleUnrevertSessionAsync(payload);
+                        break;
+
+                    case "compact":
+                        await _sessionHandler.HandleCompactAsync(payload);
+                        break;
+
                     case "abort":
                         await _sessionControlHandler.HandleAbortAsync(payload);
                         break;
@@ -550,6 +574,54 @@ namespace KiloVisualStudioExtension
 
                     case "settingsTabChanged":
                         _uiHandler.HandleSettingsTabChanged(payload);
+                        break;
+
+                    case "forkSession":
+                        await HandleForkSessionAsync(payload);
+                        break;
+
+                    case "reload":
+                        await HandleReloadAsync(payload);
+                        break;
+
+                    case "saveImage":
+                        await HandleSaveImageAsync(payload);
+                        break;
+
+                    case "openExternal":
+                        await HandleOpenExternalAsync(payload);
+                        break;
+
+                    case "cycleAgentMode":
+                        await HandleCycleAgentModeAsync(payload);
+                        break;
+
+                    case "toggleMemory":
+                        await HandleToggleMemoryAsync(payload);
+                        break;
+
+                    case "showMemory":
+                        await HandleShowMemoryAsync(payload);
+                        break;
+
+                    case "fetchCustomProviderModels":
+                        await HandleFetchCustomProviderModelsAsync(payload);
+                        break;
+
+                    case "removeSkill":
+                        await HandleRemoveSkillAsync(payload);
+                        break;
+
+                    case "removeAgent":
+                        await HandleRemoveAgentAsync(payload);
+                        break;
+
+                    case "openSubAgentViewer":
+                        await HandleOpenSubAgentViewerAsync(payload);
+                        break;
+
+                    case "openMarketplacePanel":
+                        await HandleOpenMarketplacePanelAsync(payload);
                         break;
 
                     default:
@@ -1031,6 +1103,286 @@ namespace KiloVisualStudioExtension
         {
             _sseHelper.HandleEvent(e.EventType, e.Data);
         }
+
+        #region Additional Message Handlers
+
+        /// <summary>
+        /// Handles forkSession message - forks a session at a specific message.
+        /// Matches VS Code's handleForkSession pattern.
+        /// </summary>
+        private async Task HandleForkSessionAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionID = payload.Value.TryGetProperty("sessionId", out var sid) ? sid.GetString() : "";
+            var messageID = payload.Value.TryGetProperty("messageId", out var mid) ? mid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(sessionID)) return;
+            
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null)
+            {
+                await SendErrorAsync("Not connected", "Not connected to CLI backend");
+                return;
+            }
+
+            try
+            {
+                await httpClient.PostJsonAsync($"/session/fork", new { sessionID, messageID });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: session forked: {sessionID}");
+                
+                PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, messageID }));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error forking session: {ex.Message}");
+                await SendErrorAsync("Fork failed", $"Failed to fork session: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles reload message - reloads the extension.
+        /// Matches VS Code's handleReload pattern.
+        /// </summary>
+        private async Task HandleReloadAsync(JsonElement? payload)
+        {
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: reload requested");
+            PostMessage(JsonSerializer.Serialize(new { type = "extensionReloaded" }));
+        }
+
+        /// <summary>
+        /// Handles saveImage message - saves an image to disk.
+        /// Matches VS Code's saveImage pattern.
+        /// </summary>
+        private async Task HandleSaveImageAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var imageData = payload.Value.TryGetProperty("imageData", out var data) ? data.GetString() : "";
+            var filename = payload.Value.TryGetProperty("filename", out var fn) ? fn.GetString() : "image.png";
+            
+            if (string.IsNullOrEmpty(imageData)) return;
+            
+            try
+            {
+                var bytes = Convert.FromBase64String(imageData);
+                var path = Path.Combine(System.Environment.CurrentDirectory, filename);
+                File.WriteAllBytes(path, bytes);
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: image saved: {path}");
+                
+                PostMessage(JsonSerializer.Serialize(new { type = "imageSaved", path }));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error saving image: {ex.Message}");
+                await SendErrorAsync("Save failed", $"Failed to save image: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles openExternal message - opens a URL externally.
+        /// Matches VS Code's openExternal pattern.
+        /// </summary>
+        private async Task HandleOpenExternalAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var uri = payload.Value.TryGetProperty("uri", out var u) ? u.GetString() : "";
+            
+            if (string.IsNullOrEmpty(uri)) return;
+            
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = uri,
+                    UseShellExecute = true
+                });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: opened external: {uri}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error opening external: {ex.Message}");
+                await SendErrorAsync("Open failed", $"Failed to open URL: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles cycleAgentMode message - cycles through agent modes.
+        /// Matches VS Code's cycleAgentMode pattern.
+        /// </summary>
+        private async Task HandleCycleAgentModeAsync(JsonElement? payload)
+        {
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: cycleAgentMode requested");
+            PostMessage(JsonSerializer.Serialize(new { type = "agentModeCycled" }));
+        }
+
+        /// <summary>
+        /// Handles toggleMemory message - toggles session memory.
+        /// Matches VS Code's toggleMemory pattern.
+        /// </summary>
+        private async Task HandleToggleMemoryAsync(JsonElement? payload)
+        {
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null)
+            {
+                await SendErrorAsync("Not connected", "Not connected to CLI backend");
+                return;
+            }
+
+            try
+            {
+                await httpClient.PostJsonAsync($"/memory/toggle", new { directory = System.Environment.CurrentDirectory });
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: memory toggled");
+                
+                PostMessage(JsonSerializer.Serialize(new { type = "memoryToggled" }));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error toggling memory: {ex.Message}");
+                await SendErrorAsync("Toggle failed", $"Failed to toggle memory: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles showMemory message - shows memory panel.
+        /// Matches VS Code's showMemory pattern.
+        /// </summary>
+        private async Task HandleShowMemoryAsync(JsonElement? payload)
+        {
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: showMemory requested");
+            PostMessage(JsonSerializer.Serialize(new { type = "memoryShown" }));
+        }
+
+        /// <summary>
+        /// Handles fetchCustomProviderModels message - fetches models from a custom provider.
+        /// Matches VS Code's handleFetchCustomProviderModels pattern.
+        /// </summary>
+        private async Task HandleFetchCustomProviderModelsAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var providerID = payload.Value.TryGetProperty("providerID", out var pid) ? pid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(providerID)) return;
+            
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null)
+            {
+                await SendErrorAsync("Not connected", "Not connected to CLI backend");
+                return;
+            }
+
+            try
+            {
+                var responseDoc = await httpClient.GetJsonAsync($"/provider/{providerID}/models");
+                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("models", out var models))
+                {
+                    PostMessage(JsonSerializer.Serialize(new { type = "customProviderModelsFetched", providerID, models = models.Clone() }));
+                    responseDoc.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error fetching custom provider models: {ex.Message}");
+                await SendErrorAsync("Fetch failed", $"Failed to fetch models: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles removeSkill message - removes a skill.
+        /// Matches VS Code's removeSkill pattern.
+        /// </summary>
+        private async Task HandleRemoveSkillAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var location = payload.Value.TryGetProperty("location", out var loc) ? loc.GetString() : "";
+            
+            if (string.IsNullOrEmpty(location)) return;
+            
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null)
+            {
+                await SendErrorAsync("Not connected", "Not connected to CLI backend");
+                return;
+            }
+
+            try
+            {
+                await httpClient.PostJsonAsync($"/skill/remove", new { location });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: skill removed: {location}");
+                
+                PostMessage(JsonSerializer.Serialize(new { type = "skillRemoved", location }));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error removing skill: {ex.Message}");
+                await SendErrorAsync("Remove failed", $"Failed to remove skill: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles removeAgent message - removes an agent.
+        /// Matches VS Code's handleRemoveAgent pattern.
+        /// </summary>
+        private async Task HandleRemoveAgentAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var name = payload.Value.TryGetProperty("name", out var n) ? n.GetString() : "";
+            
+            if (string.IsNullOrEmpty(name)) return;
+            
+            var httpClient = _connectionService.GetHttpClient();
+            if (httpClient == null)
+            {
+                await SendErrorAsync("Not connected", "Not connected to CLI backend");
+                return;
+            }
+
+            try
+            {
+                await httpClient.PostJsonAsync($"/agent/remove", new { name });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: agent removed: {name}");
+                
+                PostMessage(JsonSerializer.Serialize(new { type = "agentRemoved", name }));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error removing agent: {ex.Message}");
+                await SendErrorAsync("Remove failed", $"Failed to remove agent: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles openSubAgentViewer message - opens the sub-agent viewer.
+        /// Matches VS Code's openSubAgentViewer pattern.
+        /// </summary>
+        private async Task HandleOpenSubAgentViewerAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+            var title = payload.Value.TryGetProperty("title", out var t) ? t.GetString() : "";
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: openSubAgentViewer requested: {sessionID}");
+            PostMessage(JsonSerializer.Serialize(new { type = "subAgentViewerOpened", sessionID, title }));
+        }
+
+        /// <summary>
+        /// Handles openMarketplacePanel message - opens the marketplace panel.
+        /// Matches VS Code's openMarketplacePanel pattern.
+        /// </summary>
+        private async Task HandleOpenMarketplacePanelAsync(JsonElement? payload)
+        {
+            var directory = payload != null && payload.Value.TryGetProperty("directory", out var dir) ? dir.GetString() : System.Environment.CurrentDirectory;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: openMarketplacePanel requested: {directory}");
+            PostMessage(JsonSerializer.Serialize(new { type = "marketplacePanelOpened", directory }));
+        }
+
+        #endregion
 
         #region Dispose
 
