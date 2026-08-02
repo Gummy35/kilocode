@@ -76,13 +76,6 @@ namespace KiloVisualStudioExtension
             _cleanupTimer = new Timer(CleanupExpiredEntries, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
         }
 
-        private class CacheEntry
-        {
-            public object? Data { get; set; }
-            public DateTime ExpiresAt { get; set; }
-            public TaskCompletionSource<object?>? Pending { get; set; }
-        }
-
         /// <summary>
         /// Gets cached JSON data from the specified endpoint.
         /// Returns cached data if available and not expired, otherwise fetches from the inner client.

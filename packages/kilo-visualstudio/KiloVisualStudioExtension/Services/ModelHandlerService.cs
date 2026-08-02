@@ -1,0 +1,161 @@
+using System;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace KiloVisualStudioExtension.Services
+{
+    /// <summary>
+    /// Handles model selection related operations like requestModelSelections, persistVariant, persistRecents.
+    /// This matches the VS Code pattern where model selection handling is extracted into
+    /// kilo-provider/model-state.ts.
+    /// </summary>
+    public class ModelHandlerService : IDisposable
+    {
+        private readonly VSProvider _provider;
+        private bool _disposed;
+
+        /// <summary>
+        /// Creates a new ModelHandlerService instance.
+        /// </summary>
+        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
+        public ModelHandlerService(VSProvider provider)
+        {
+            _provider = provider;
+        }
+
+        /// <summary>
+        /// Handles the requestModelSelections message from the webview.
+        /// Sends the current model selection state to the webview.
+        /// </summary>
+        /// <param name="payload">The message payload (unused for requestModelSelections).</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public void HandleRequestModelSelections(JsonElement? payload)
+        {
+            // Send current model selection state
+            var message = new 
+            { 
+                type = "modelSelectionsLoaded",
+                providerID = (string?)null,
+                modelID = (string?)null,
+                agent = (string?)null
+            };
+            _provider.PostMessage(JsonSerializer.Serialize(message));
+        }
+
+        /// <summary>
+        /// Handles the persistVariant message from the webview.
+        /// Persists the selected variant (model/agent combination).
+        /// </summary>
+        /// <param name="payload">The message payload containing variant details.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public void HandlePersistVariant(JsonElement? payload)
+        {
+            // Persist variant to storage
+            if (payload.HasValue)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] ModelHandler: Persisting variant: {payload.Value.GetRawText()}");
+                // Persist to StateStorage or backend - placeholder for future implementation
+            }
+        }
+
+        /// <summary>
+        /// Handles the persistRecents message from the webview.
+        /// Persists recently used models.
+        /// </summary>
+        /// <param name="payload">The message payload containing recent models.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public void HandlePersistRecents(JsonElement? payload)
+        {
+            // Persist recent models to storage
+            if (payload.HasValue)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] ModelHandler: Persisting recents: {payload.Value.GetRawText()}");
+                // Persist to StateStorage or backend - placeholder for future implementation
+            }
+        }
+
+        /// <summary>
+        /// Handles the requestKiloEmbeddingModels message from the webview.
+        /// Fetches and sends the list of available Kilo embedding models.
+        /// </summary>
+        /// <param name="payload">The message payload (unused).</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task HandleRequestKiloEmbeddingModelsAsync(JsonElement? payload)
+        {
+            try
+            {
+                var httpClient = _provider.GetHttpClient();
+                if (httpClient == null)
+                {
+                    await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
+                    return;
+                }
+
+                var response = await httpClient.GetJsonAsync("/model/embedding");
+                var models = Array.Empty<object>();
+                
+                if (response != null && response.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    var modelsList = new System.Collections.Generic.List<object>();
+                    foreach (var model in response.RootElement.EnumerateArray())
+                    {
+                        modelsList.Add(model.Clone());
+                    }
+                    models = modelsList.ToArray();
+                }
+
+                await _provider.SendKiloEmbeddingModelsAsync(models);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] ModelHandler: Error fetching embedding models: {ex.Message}");
+                await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
+            }
+        }
+
+        /// <summary>
+        /// Handles the requestImageModels message from the webview.
+        /// Fetches and sends the list of available image generation models.
+        /// </summary>
+        /// <param name="payload">The message payload (unused).</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task HandleRequestImageModelsAsync(JsonElement? payload)
+        {
+            try
+            {
+                var httpClient = _provider.GetHttpClient();
+                if (httpClient == null)
+                {
+                    await _provider.SendImageModelsAsync(Array.Empty<object>());
+                    return;
+                }
+
+                var response = await httpClient.GetJsonAsync("/model/image");
+                var models = Array.Empty<object>();
+                
+                if (response != null && response.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    var modelsList = new System.Collections.Generic.List<object>();
+                    foreach (var model in response.RootElement.EnumerateArray())
+                    {
+                        modelsList.Add(model.Clone());
+                    }
+                    models = modelsList.ToArray();
+                }
+
+                await _provider.SendImageModelsAsync(models);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] ModelHandler: Error fetching image models: {ex.Message}");
+                await _provider.SendImageModelsAsync(Array.Empty<object>());
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+        }
+    }
+}
