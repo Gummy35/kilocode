@@ -190,13 +190,14 @@ namespace KiloVisualStudioExtension
 
         /// <summary>
         /// Server information containing the port number.
+        /// Matches VS Code's { port: number } structure.
         /// </summary>
         public class ServerInfo
         {
             /// <summary>
-            /// The port number the backend is listening on.
+            /// The port number the backend is listening on (lowercase to match VS Code).
             /// </summary>
-            public int Port { get; set; }
+            public int port { get; set; }
         }
 
         /// <summary>
@@ -210,7 +211,7 @@ namespace KiloVisualStudioExtension
             var port = _backendManager.GetPort();
             if (port == null)
                 return null;
-            return new ServerInfo { Port = port.Value };
+            return new ServerInfo { port = port.Value };
         }
 
         /// <summary>

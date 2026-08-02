@@ -969,16 +969,19 @@ namespace KiloVisualStudioExtension
                     _currentSessionID = sessionID;
                     _contextSessionID = sessionID;
                     
+                    var now = DateTimeOffset.UtcNow;
                     var sessionCreated = new 
                     { 
                         type = "sessionCreated",
                         session = new 
                         { 
                             id = sessionID,
-                            directory = dir,
+                            parentID = (string?)null,
                             title = "New Chat",
-                            updated = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                            status = "idle"
+                            createdAt = now.UtcDateTime.ToString("o"),
+                            updatedAt = now.UtcDateTime.ToString("o"),
+                            revert = (object?)null,
+                            summary = (object?)null
                         }
                     };
                     _webView.PostMessage(JsonSerializer.Serialize(sessionCreated));

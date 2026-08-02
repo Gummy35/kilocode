@@ -56,8 +56,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             {
                 if (!string.IsNullOrEmpty(_provider.GetCurrentSessionID()))
                 {
-                    var loadPayload = JsonDocument.Parse($"{{\"sessionID\":\"{_provider.GetCurrentSessionID()}\"}}").RootElement;
-                    _ = HandleLoadMessagesAsync(loadPayload);
+                    var sessionID = _provider.GetCurrentSessionID()!;
+                    _provider.TrackSession(sessionID);
+                    _provider.PostMessage(JsonSerializer.Serialize(new { type = "workspaceDirectoryChanged", directory = dir }));
+                    _provider.FocusSession(sessionID);
                 }
             }
         }
@@ -414,6 +416,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                 
                 _provider.RecoverPendingPrompts();
                 
+                _ = LoadMemoryAsync(sessionID);
+                
                 responseDoc.Dispose();
             }
             catch (OperationCanceledException)
@@ -462,6 +466,79 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error deleting message: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Fetches and sends session model usage data to the webview.
+        /// Matches VS Code's fetchAndSendSessionModelUsage pattern.
+        /// </summary>
+        private async Task FetchAndSendSessionModelUsageAsync(string sessionID, string requestID)
+        {
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
+                return;
+            }
+
+            try
+            {
+                var responseDoc = await httpClient.GetJsonAsync($"/session/{sessionID}/model-usage");
+                if (responseDoc != null)
+                {
+                    var sessionIDs = new[] { sessionID };
+                    var totals = new { steps = 0, cost = 0, tokens = new { input = 0, output = 0, reasoning = 0, cache = new { read = 0, write = 0 } } };
+                    var models = new object[0];
+                    
+                    var data = new { sessionIDs, totals, models };
+                    var message = new { type = "sessionModelUsageLoaded", sessionID, requestID, data };
+                    _provider.PostMessage(JsonSerializer.Serialize(message));
+                    responseDoc.Dispose();
+                }
+                else
+                {
+                    _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error fetching model usage: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
+            }
+        }
+
+        /// <summary>
+        /// Loads memory state for a session and sends memoryLoaded message.
+        /// Matches VS Code's KiloProviderMemory.load() pattern.
+        /// </summary>
+        private async Task LoadMemoryAsync(string? sessionID)
+        {
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null)
+            {
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "memoryLoaded", sessionID, error = "Not connected to CLI backend" }));
+                return;
+            }
+
+            try
+            {
+                var responseDoc = await httpClient.GetJsonAsync($"/memory/status?directory={Uri.EscapeDataString(System.Environment.CurrentDirectory)}");
+                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("status", out var status))
+                {
+                    var message = new { type = "memoryLoaded", sessionID, status = status.Clone() };
+                    _provider.PostMessage(JsonSerializer.Serialize(message));
+                    responseDoc.Dispose();
+                }
+                else
+                {
+                    _provider.PostMessage(JsonSerializer.Serialize(new { type = "memoryLoaded", sessionID, error = "Memory unavailable" }));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error loading memory: {ex.Message}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "memoryLoaded", sessionID, error = ex.Message }));
             }
         }
 
