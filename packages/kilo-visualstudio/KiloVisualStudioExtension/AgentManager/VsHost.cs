@@ -105,9 +105,7 @@ namespace KiloVisualStudioExtension.AgentManager
         /// </summary>
         public IPanelContext OpenPanel(Func<Dictionary<string, object>, Task<Dictionary<string, object>?>> onBeforeMessage, Func<string[]>? worktreeDirectories = null)
         {
-            // For now, return a placeholder - full implementation requires creating a dedicated Agent Manager tool window
-            // This will be implemented in the full AgentManagerProvider
-            throw new NotImplementedException("Agent Manager panel not yet implemented. Use AgentManagerProvider.OpenPanel() instead.");
+            return new AgentManagerPanelContext(this, onBeforeMessage, worktreeDirectories);
         }
 
         /// <summary>
@@ -280,6 +278,89 @@ namespace KiloVisualStudioExtension.AgentManager
             {
                 if (_disposed) return;
                 _disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Implementation of IPanelContext for the Agent Manager panel.
+        /// This is a simplified implementation that posts messages to the webview.
+        /// </summary>
+        private class AgentManagerPanelContext : IPanelContext, IDisposable
+        {
+            private readonly VsHost _host;
+            private readonly Func<Dictionary<string, object>, Task<Dictionary<string, object>?>> _onBeforeMessage;
+            private readonly Func<string[]>? _worktreeDirectories;
+            private bool _disposed;
+            private bool _ready;
+
+            public bool Active => true; // Simplified - always active when open
+            public bool Visible => true; // Simplified - always visible when open
+            public ISessionProvider Sessions => new DummySessionProvider();
+
+            public event Action<bool>? OnDidChangeVisibility;
+            public event Action? OnDidDispose;
+
+            public AgentManagerPanelContext(
+                VsHost host,
+                Func<Dictionary<string, object>, Task<Dictionary<string, object>?>> onBeforeMessage,
+                Func<string[]>? worktreeDirectories)
+            {
+                _host = host;
+                _onBeforeMessage = onBeforeMessage;
+                _worktreeDirectories = worktreeDirectories;
+                _ready = true;
+                
+                System.Diagnostics.Debug.WriteLine("[Kilo] AgentManagerPanelContext created");
+            }
+
+            public void PostMessage(object message)
+            {
+                // In a full implementation, this would post to a webview
+                // For now, just log the message
+                System.Diagnostics.Debug.WriteLine($"[Kilo] Agent Manager postMessage: {System.Text.Json.JsonSerializer.Serialize(message)}");
+            }
+
+            public Task WaitForReady()
+            {
+                return _ready ? Task.CompletedTask : Task.Delay(100);
+            }
+
+            public Task WaitForActive()
+            {
+                return Task.CompletedTask;
+            }
+
+            public void Reveal(bool preserveFocus = false)
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] Agent Manager panel revealed");
+            }
+
+            public void Dispose()
+            {
+                if (_disposed) return;
+                _disposed = true;
+                OnDidDispose?.Invoke();
+                System.Diagnostics.Debug.WriteLine("[Kilo] AgentManagerPanelContext disposed");
+            }
+
+            /// <summary>
+            /// Dummy session provider for now - full implementation would wire to VSProvider.
+            /// </summary>
+            private class DummySessionProvider : ISessionProvider
+            {
+                public void SetSessionDirectory(string id, string directory) { }
+                public void ClearSessionDirectory(string id) { }
+                public Dictionary<string, string> GetSessionDirectories() => new Dictionary<string, string>();
+                public void TrackSession(string id) { }
+                public void RefreshSessions() { }
+                public void RegisterSession(object session) { }
+                public void RecoverPendingPrompts() { }
+                public void OnFollowupAdopted(Action<object, string> callback) { }
+                public void AcknowledgeDraft(string draftId, string sessionId) { }
+                public Task AbortSessions(string[] ids) => Task.CompletedTask;
+                public Task ShowMemory(string? sessionId = null) => Task.CompletedTask;
+                public Task ToggleMemory(string? sessionId = null) => Task.CompletedTask;
+                public void Dispose() { }
             }
         }
     }

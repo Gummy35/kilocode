@@ -8,11 +8,27 @@ using System.Threading.Tasks;
 
 namespace KiloVisualStudioExtension
 {
+    /// <summary>
+    /// Event arguments for Server-Sent Events (SSE) received from the backend.
+    /// Contains the event type and data payload.
+    /// </summary>
     public class SseEventArgs : EventArgs
     {
+        /// <summary>
+        /// The type of SSE event (e.g., "session.created", "message.part.delta").
+        /// </summary>
         public string EventType { get; }
+        
+        /// <summary>
+        /// The event data payload as a string.
+        /// </summary>
         public string Data { get; }
 
+        /// <summary>
+        /// Creates a new instance of SseEventArgs.
+        /// </summary>
+        /// <param name="eventType">The event type.</param>
+        /// <param name="data">The event data.</param>
         public SseEventArgs(string eventType, string data)
         {
             EventType = eventType;
@@ -20,27 +36,100 @@ namespace KiloVisualStudioExtension
         }
     }
 
+    /// <summary>
+    /// SSE (Server-Sent Events) client for receiving real-time events from the Kilo backend.
+    /// Implements automatic reconnection on connection loss and heartbeat timeout detection.
+    /// 
+    /// Features:
+    /// - Connects to the /global/event endpoint using SSE protocol
+    /// - Parses event: and data: lines from the stream
+    /// - Detects heartbeat timeouts (15s no event) and triggers reconnection
+    /// - Automatic reconnection with 250ms delay on disconnect
+    /// - Basic authentication via username/password
+    /// </summary>
     public class SseClient : IDisposable
     {
+        /// <summary>
+        /// The base URL of the backend server.
+        /// </summary>
         private readonly string _baseUrl;
+        
+        /// <summary>
+        /// The password for authentication.
+        /// </summary>
         private readonly string _password;
+        
+        /// <summary>
+        /// HttpClient for making the SSE connection request.
+        /// </summary>
         private HttpClient? _httpClient;
+        
+        /// <summary>
+        /// CancellationTokenSource for cancelling the connection.
+        /// </summary>
         private CancellationTokenSource? _cts;
+        
+        /// <summary>
+        /// Task representing the read loop that processes the SSE stream.
+        /// </summary>
         private Task? _readLoop;
+        
+        /// <summary>
+        /// Flag indicating whether the object has been disposed.
+        /// </summary>
         private bool _disposed;
+        
+        /// <summary>
+        /// Lock object for thread-safe operations.
+        /// </summary>
         private readonly object _lock = new object();
 
+        /// <summary>
+        /// Event raised when an SSE event is received.
+        /// </summary>
         public event EventHandler<SseEventArgs>? OnEvent;
+        
+        /// <summary>
+        /// Event raised when the SSE connection is successfully established.
+        /// </summary>
         public event EventHandler? OnConnected;
+        
+        /// <summary>
+        /// Event raised when the SSE connection is disconnected.
+        /// </summary>
         public event EventHandler? OnDisconnected;
+        
+        /// <summary>
+        /// Event raised when an SSE connection error occurs.
+        /// </summary>
         public event EventHandler<Exception>? OnError;
 
+        /// <summary>
+        /// Heartbeat timeout in milliseconds. If no event is received within this time,
+        /// the connection is considered stale and reconnection is triggered.
+        /// </summary>
         private const int HeartbeatTimeoutMs = 15000;
+        
+        /// <summary>
+        /// Delay in milliseconds before attempting reconnection after a disconnect.
+        /// </summary>
         private const int ReconnectDelayMs = 250;
 
+        /// <summary>
+        /// Timestamp of the last received event, used for heartbeat detection.
+        /// </summary>
         private DateTime _lastEventTime;
+        
+        /// <summary>
+        /// Flag indicating whether the connection is currently established.
+        /// </summary>
         private bool _connected;
 
+        /// <summary>
+        /// Creates a new SSE client with the specified backend URL and password.
+        /// </summary>
+        /// <param name="baseUrl">The base URL of the backend server.</param>
+        /// <param name="password">The password for authentication.</param>
         public SseClient(string baseUrl, string password)
         {
             _baseUrl = baseUrl;
@@ -48,6 +137,10 @@ namespace KiloVisualStudioExtension
             _lastEventTime = DateTime.UtcNow;
         }
 
+        /// <summary>
+        /// Connects to the SSE endpoint. If already connected, does nothing.
+        /// Initiates the connection process which includes authentication and stream setup.
+        /// </summary>
         public void Connect()
         {
             if (_cts != null && !_cts.IsCancellationRequested)
@@ -59,6 +152,11 @@ namespace KiloVisualStudioExtension
             StartConnection();
         }
 
+        /// <summary>
+        /// Starts the SSE connection process. Creates an HTTP request to /global/event,
+        /// sets up authentication headers, and begins reading the event stream.
+        /// Handles connection errors by scheduling automatic reconnection.
+        /// </summary>
         private async void StartConnection()
         {
             if (_disposed) return;
@@ -118,6 +216,12 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Reads the SSE stream asynchronously. Parses event: and data: lines,
+        /// dispatches events to handlers, and detects stream closure.
+        /// </summary>
+        /// <param name="stream">The response stream to read from.</param>
+        /// <param name="token">Cancellation token for stopping the read loop.</param>
         private async Task ReadStreamAsync(Stream stream, CancellationToken token)
         {
             using var reader = new System.IO.StreamReader(stream, Encoding.UTF8, true, 8192, true);
@@ -170,6 +274,10 @@ namespace KiloVisualStudioExtension
             OnDisconnected?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Checks if the heartbeat timeout has been exceeded. If no event has been
+        /// received within HeartbeatTimeoutMs, schedules a reconnection.
+        /// </summary>
         private async Task CheckHeartbeatAsync()
         {
             var elapsed = (DateTime.UtcNow - _lastEventTime).TotalMilliseconds;
@@ -180,6 +288,10 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Schedules a reconnection attempt after ReconnectDelayMs milliseconds.
+        /// Only reconnects if the object has not been disposed and cancellation has not been requested.
+        /// </summary>
         private void ScheduleReconnect()
         {
             if (_disposed) return;
@@ -193,6 +305,12 @@ namespace KiloVisualStudioExtension
             });
         }
 
+        /// <summary>
+        /// Dispatches an SSE event to the OnEvent handler.
+        /// Updates the last event time for heartbeat detection.
+        /// </summary>
+        /// <param name="eventType">The type of the event.</param>
+        /// <param name="data">The event data payload.</param>
         private void DispatchEvent(string eventType, string data)
         {
             if (string.IsNullOrEmpty(data)) return;
@@ -202,6 +320,10 @@ namespace KiloVisualStudioExtension
             OnEvent?.Invoke(this, new SseEventArgs(eventType, trimmedData));
         }
 
+        /// <summary>
+        /// Disconnects from the SSE endpoint and releases resources.
+        /// Cancels the connection and disposes the HTTP client.
+        /// </summary>
         public void Disconnect()
         {
             _cts?.Cancel();
@@ -214,6 +336,10 @@ namespace KiloVisualStudioExtension
             OnDisconnected?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Disposes of all resources used by the SSE client.
+        /// Calls Disconnect() and disposes the cancellation token source.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;
@@ -222,6 +348,9 @@ namespace KiloVisualStudioExtension
             _cts?.Dispose();
         }
 
+        /// <summary>
+        /// Gets whether the SSE client is currently connected.
+        /// </summary>
         public bool IsConnected => _connected;
     }
 }

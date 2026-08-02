@@ -32,6 +32,97 @@
           <Tooltip>Open Kilo Code AI assistant settings</Tooltip>
         </Strings>
       </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidNewTask" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>New Task</ButtonText>
+          <Tooltip>Create a new Kilo task</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidHistory" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>History</ButtonText>
+          <Tooltip>View task history</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidAgentManager" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Agent Manager</ButtonText>
+          <Tooltip>Open Agent Manager</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidKiloClaw" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>KiloClaw</ButtonText>
+          <Tooltip>Open KiloClaw chat</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidMarketplace" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Marketplace</ButtonText>
+          <Tooltip>Open Marketplace</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidProfile" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Profile</ButtonText>
+          <Tooltip>Open Profile settings</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidSettings" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Settings</ButtonText>
+          <Tooltip>Open Settings panel</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidMarketplace" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Marketplace</ButtonText>
+          <Tooltip>Open Marketplace</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidAgentManagerShowTerminal" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Show Terminal</ButtonText>
+          <Tooltip>Show Agent Manager terminal</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidAgentManagerRunScript" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Run Script</ButtonText>
+          <Tooltip>Run setup script</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidAgentManagerNewWorktree" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>New Worktree</ButtonText>
+          <Tooltip>Create new worktree session</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidAgentManagerPreviousSession" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Previous Session</ButtonText>
+          <Tooltip>Navigate to previous session</Tooltip>
+        </Strings>
+      </Button>
+      <Button guid="guidKiloCmdSet" id="cmdidAgentManagerNextSession" priority="0x0100" type="Button">
+        <Parent guid="guidKiloCmdSet" id="KiloWindowGroup" />
+        <Strings>
+          <ButtonText>Next Session</ButtonText>
+          <Tooltip>Navigate to next session</Tooltip>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
   
@@ -42,6 +133,27 @@
       <IDSymbol name="KiloWindowGroup" value="0x1020" />
       <IDSymbol name="cmdidShowKiloWindow" value="0x0100" />
       <IDSymbol name="cmdidOpenSettings" value="0x0101" />
+      <IDSymbol name="cmdidNewTask" value="0x0102" />
+      <IDSymbol name="cmdidHistory" value="0x0103" />
+      <IDSymbol name="cmdidAgentManager" value="0x0104" />
+      <IDSymbol name="cmdidKiloClaw" value="0x0105" />
+      <IDSymbol name="cmdidMarketplace" value="0x0106" />
+      <IDSymbol name="cmdidProfile" value="0x0107" />
+      <IDSymbol name="cmdidSettings" value="0x0108" />
+      <IDSymbol name="cmdidAgentManagerShowTerminal" value="0x0109" />
+      <IDSymbol name="cmdidAgentManagerRunScript" value="0x010A" />
+      <IDSymbol name="cmdidAgentManagerToggleDiff" value="0x010B" />
+      <IDSymbol name="cmdidAgentManagerNewTab" value="0x010C" />
+      <IDSymbol name="cmdidAgentManagerCloseTab" value="0x010D" />
+      <IDSymbol name="cmdidAgentManagerNewWorktree" value="0x010E" />
+      <IDSymbol name="cmdidAgentManagerQuickWorktree" value="0x010F" />
+      <IDSymbol name="cmdidAgentManagerOpenWorktree" value="0x0110" />
+      <IDSymbol name="cmdidAgentManagerCloseWorktree" value="0x0111" />
+      <IDSymbol name="cmdidAgentManagerOpenPR" value="0x0112" />
+      <IDSymbol name="cmdidAgentManagerPreviousSession" value="0x0113" />
+      <IDSymbol name="cmdidAgentManagerNextSession" value="0x0114" />
+      <IDSymbol name="cmdidAgentManagerPreviousTab" value="0x0115" />
+      <IDSymbol name="cmdidAgentManagerNextTab" value="0x0116" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

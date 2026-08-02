@@ -10,19 +10,54 @@ using Microsoft.VisualStudio.Shell;
 namespace KiloVisualStudioExtension
 {
     /// <summary>
-    /// Manages the Kilo CLI backend process.
-    /// Spawns 'kilo serve' and tracks its port.
+    /// Manages the Kilo CLI backend process lifecycle.
+    /// Spawns 'kilo serve' command, monitors its output to extract the port,
+    /// and provides health check capabilities.
+    /// 
+    /// This class handles:
+    /// - Locating the CLI binary (bundled, development, or PATH)
+    /// - Starting the process with appropriate environment variables
+    /// - Parsing the port from stdout output
+    /// - Waiting for the backend to be ready via health endpoint
+    /// - Graceful process termination on disposal
     /// </summary>
     public class CliBackendManager : IDisposable
     {
+        /// <summary>
+        /// Singleton instance for easy access from other classes.
+        /// </summary>
         private static CliBackendManager? _instance;
+        
+        /// <summary>
+        /// The underlying CLI process.
+        /// </summary>
         private Process? _process;
+        
+        /// <summary>
+        /// The base URL where the backend is listening (e.g., "http://127.0.0.1:9999").
+        /// </summary>
         private string? _baseUrl;
+        
+        /// <summary>
+        /// Semaphore to ensure only one startup attempt at a time.
+        /// </summary>
         private readonly SemaphoreSlim _initSemaphore = new(1, 1);
+        
+        /// <summary>
+        /// Flag indicating whether the object has been disposed.
+        /// </summary>
         private bool _isDisposed;
 
+        /// <summary>
+        /// Gets the base URL where the backend is listening.
+        /// Returns null if the backend has not started yet.
+        /// </summary>
         public string? BaseUrl => _baseUrl;
 
+        /// <summary>
+        /// Extracts the port number from the base URL.
+        /// </summary>
+        /// <returns>The port number, or null if not available.</returns>
         public int? GetPort()
         {
             if (string.IsNullOrEmpty(_baseUrl))
@@ -40,12 +75,17 @@ namespace KiloVisualStudioExtension
 
         /// <summary>
         /// Static instance for easy access from other classes.
+        /// Set when StartAsync is called.
         /// </summary>
         public static CliBackendManager? Instance => _instance;
 
         /// <summary>
-        /// Start the CLI backend process.
+        /// Starts the CLI backend process asynchronously.
+        /// Locates the CLI binary, starts the process, and waits for it to be ready.
         /// </summary>
+        /// <param name="cancellationToken">Token to cancel the startup process.</param>
+        /// <returns>A task representing the asynchronous startup operation.</returns>
+        /// <exception cref="TimeoutException">Thrown if the backend fails to start within 30 seconds.</exception>
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await _initSemaphore.WaitAsync(cancellationToken);
@@ -103,6 +143,14 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Locates the Kilo CLI binary to execute.
+        /// Searches in the following order:
+        /// 1. Bundled CLI in the extension directory
+        /// 2. Development CLI in packages/opencode/dist
+        /// 3. CLI from system PATH (fallback)
+        /// </summary>
+        /// <returns>The path to the CLI binary or "kilo" for PATH lookup.</returns>
         private string GetCliBinaryPath()
         {
             // Try multiple locations:
@@ -128,6 +176,12 @@ namespace KiloVisualStudioExtension
             return "kilo";
         }
 
+        /// <summary>
+        /// Event handler for standard output data from the CLI process.
+        /// Parses the output to extract the port number from the "listening on" message.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The data received event arguments.</param>
         private void OnOutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.Data))
@@ -143,6 +197,12 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Event handler for standard error data from the CLI process.
+        /// Logs error messages for debugging.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The data received event arguments.</param>
         private void OnErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data))
@@ -151,6 +211,13 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Waits for the backend port to become available and the health endpoint to respond.
+        /// Polls the /global/health endpoint with a 30-second timeout.
+        /// </summary>
+        /// <param name="cancellationToken">Token to cancel the wait operation.</param>
+        /// <returns>A task representing the asynchronous wait operation.</returns>
+        /// <exception cref="TimeoutException">Thrown if the backend fails to start within 30 seconds.</exception>
         private async Task WaitForPortAsync(CancellationToken cancellationToken)
         {
             var timeout = TimeSpan.FromSeconds(30);
@@ -181,6 +248,10 @@ namespace KiloVisualStudioExtension
             throw new TimeoutException("Kilo backend failed to start within timeout period.");
         }
 
+        /// <summary>
+        /// Disposes of the CLI backend manager and terminates the backend process.
+        /// Kills the process if still running and cleans up resources.
+        /// </summary>
         public void Dispose()
         {
             if (_isDisposed)

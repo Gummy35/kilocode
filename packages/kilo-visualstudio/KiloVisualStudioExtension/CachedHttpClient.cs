@@ -7,17 +7,68 @@ using System.Threading.Tasks;
 namespace KiloVisualStudioExtension
 {
     /// <summary>
-    /// Cached HTTP client wrapper with 10s TTL for CLI API calls.
-    /// Prevents excessive API calls during initialization and reduces load.
+    /// Cached HTTP client wrapper with 10-second TTL for CLI API calls.
+    /// Prevents excessive API calls during initialization and reduces server load.
+    /// 
+    /// Features:
+    /// - Caches GET responses for 10 seconds
+    /// - Deduplicates concurrent requests for the same endpoint
+    /// - Automatically cleans up expired cache entries every 30 seconds
+    /// - Thread-safe cache operations using ConcurrentDictionary
     /// </summary>
     public class CachedHttpClient : IDisposable
     {
+        /// <summary>
+        /// The inner HTTP client wrapper for actual API calls.
+        /// </summary>
         private readonly HttpClientWrapper _inner;
+        
+        /// <summary>
+        /// Thread-safe cache storing responses by endpoint.
+        /// </summary>
         private readonly ConcurrentDictionary<string, CacheEntry> _cache = new();
+        
+        /// <summary>
+        /// Time-to-live for cached entries (10 seconds).
+        /// </summary>
         private readonly TimeSpan _ttl = TimeSpan.FromSeconds(10);
+        
+        /// <summary>
+        /// Timer for periodic cleanup of expired cache entries.
+        /// </summary>
         private readonly Timer _cleanupTimer;
+        
+        /// <summary>
+        /// Flag indicating whether the object has been disposed.
+        /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        /// Cache entry containing the response data, expiration time, and pending request tracker.
+        /// </summary>
+        private class CacheEntry
+        {
+            /// <summary>
+            /// The cached response data.
+            /// </summary>
+            public object? Data { get; set; }
+            
+            /// <summary>
+            /// UTC timestamp when the cache entry expires.
+            /// </summary>
+            public DateTime ExpiresAt { get; set; }
+            
+            /// <summary>
+            /// Task completion source for deduplicating concurrent requests.
+            /// </summary>
+            public TaskCompletionSource<object?>? Pending { get; set; }
+        }
+
+        /// <summary>
+        /// Creates a new CachedHttpClient wrapping the inner HTTP client.
+        /// Starts the cleanup timer automatically.
+        /// </summary>
+        /// <param name="inner">The HttpClientWrapper to wrap.</param>
         public CachedHttpClient(HttpClientWrapper inner)
         {
             _inner = inner;
@@ -32,6 +83,15 @@ namespace KiloVisualStudioExtension
             public TaskCompletionSource<object?>? Pending { get; set; }
         }
 
+        /// <summary>
+        /// Gets cached JSON data from the specified endpoint.
+        /// Returns cached data if available and not expired, otherwise fetches from the inner client.
+        /// Deduplicates concurrent requests for the same endpoint.
+        /// </summary>
+        /// <typeparam name="T">The type to deserialize to.</typeparam>
+        /// <param name="endpoint">The API endpoint.</param>
+        /// <returns>The deserialized object.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the client has been disposed.</exception>
         public async Task<T?> GetJsonAsync<T>(string endpoint)
         {
             if (_disposed)
@@ -91,6 +151,14 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Gets cached JSON data as a JsonDocument from the specified endpoint.
+        /// Returns cached data if available and not expired, otherwise fetches from the inner client.
+        /// Deduplicates concurrent requests for the same endpoint.
+        /// </summary>
+        /// <param name="endpoint">The API endpoint.</param>
+        /// <returns>The parsed JsonDocument.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the client has been disposed.</exception>
         public async Task<JsonDocument?> GetJsonAsync(string endpoint)
         {
             if (_disposed)
@@ -144,6 +212,10 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Cleans up expired cache entries. Called by the cleanup timer every 30 seconds.
+        /// </summary>
+        /// <param name="state">Unused state parameter.</param>
         private void CleanupExpiredEntries(object? state)
         {
             if (_disposed) return;
@@ -158,6 +230,10 @@ namespace KiloVisualStudioExtension
             }
         }
 
+        /// <summary>
+        /// Disposes of the cached HTTP client and clears all cache entries.
+        /// Stops the cleanup timer.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;

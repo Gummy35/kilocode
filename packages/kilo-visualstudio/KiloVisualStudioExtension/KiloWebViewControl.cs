@@ -8,11 +8,27 @@ using Microsoft.VisualStudio.Shell;
 
 namespace KiloVisualStudioExtension
 {
+  /// <summary>
+  /// Event arguments for WebView messages sent from the webview to the extension.
+  /// Contains the message type and optional JSON payload.
+  /// </summary>
   public class WebViewMessageEventArgs : EventArgs
   {
+    /// <summary>
+    /// The type of message (e.g., "prompt", "loadMessages", "sendMessage").
+    /// </summary>
     public string Type { get; }
+    
+    /// <summary>
+    /// Optional JSON payload containing message data.
+    /// </summary>
     public JsonElement? Payload { get; }
 
+    /// <summary>
+    /// Creates a new instance of WebViewMessageEventArgs.
+    /// </summary>
+    /// <param name="type">The message type identifier.</param>
+    /// <param name="payload">Optional JSON payload data.</param>
     public WebViewMessageEventArgs(string type, JsonElement? payload)
     {
       Type = type;
@@ -20,15 +36,34 @@ namespace KiloVisualStudioExtension
     }
   }
 
+  /// <summary>
+  /// WebView2 control wrapper for hosting the Kilo Code webview interface.
+  /// Manages WebView2 initialization, message handling, and communication
+  /// between the Visual Studio extension and the webview.
+  /// </summary>
   public class KiloWebViewControl : WebView2, IDisposable
   {
+    /// <summary>
+    /// Flag indicating whether the WebView2 control has been initialized.
+    /// </summary>
     private bool _isInitialized;
+    
+    /// <summary>
+    /// Shared folder for WebView2 user data (cookies, cache, etc.).
+    /// Located in the system temp directory.
+    /// </summary>
     private static readonly string _sharedUserDataFolder = Path.Combine(
         Path.GetTempPath(),
         "KiloWebView");
 
+    /// <summary>
+    /// Event raised when a message is received from the webview.
+    /// </summary>
     public event EventHandler<WebViewMessageEventArgs>? OnMessageReceived;
 
+    /// <summary>
+    /// Initializes a new instance of KiloWebViewControl with stretch layout.
+    /// </summary>
     public KiloWebViewControl()
     {
       Width = double.NaN;
@@ -38,12 +73,23 @@ namespace KiloVisualStudioExtension
       AllowExternalDrop = false;
     }
 
+    /// <summary>
+    /// Sets the connection service reference (kept for backward compatibility).
+    /// SSE handling is now managed by SSEHelper in VSProvider.
+    /// </summary>
+    /// <param name="service">The KiloConnectionService instance (not used).</param>
     public void SetConnectionService(KiloConnectionService service)
     {
       // SSE handling is now done by SSEHelper in VSProvider
       // This method is kept for backward compatibility but does nothing
     }
 
+    /// <summary>
+    /// Asynchronously initializes the WebView2 control.
+    /// Creates the WebView2 environment, configures settings, and navigates to the local webview HTML file.
+    /// Must be called on the UI thread. Idempotent - subsequent calls are ignored.
+    /// </summary>
+    /// <returns>A task representing the asynchronous initialization operation.</returns>
     public async Task InitializeAsync()
     {
       if (_isInitialized)
@@ -97,6 +143,12 @@ namespace KiloVisualStudioExtension
       _isInitialized = true;
     }
 
+    /// <summary>
+    /// Event handler for WebView2 web messages. Parses incoming JSON messages and raises
+    /// the OnMessageReceived event with the message type and payload.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The web message received event arguments.</param>
     private async void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
       try
@@ -133,6 +185,11 @@ namespace KiloVisualStudioExtension
       }
     }
 
+    /// <summary>
+    /// Posts a message to the webview. The message is sent as a JSON string.
+    /// Only works if the WebView2 control has been initialized.
+    /// </summary>
+    /// <param name="message">The JSON message string to send to the webview.</param>
     public void PostMessage(string message)
     {
       if (_isInitialized && CoreWebView2 != null)
@@ -154,6 +211,11 @@ namespace KiloVisualStudioExtension
       }
     }
 
+    /// <summary>
+    /// Releases unmanaged and managed resources used by the WebView2 control.
+    /// Unsubscribes from WebView2 events to prevent memory leaks.
+    /// </summary>
+    /// <param name="disposing">True if called from Dispose, false from finalizer.</param>
     protected override void Dispose(bool disposing)
     {
       if (disposing)
