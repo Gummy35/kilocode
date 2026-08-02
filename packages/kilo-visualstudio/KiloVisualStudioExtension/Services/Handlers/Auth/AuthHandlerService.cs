@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Auth
 {
     /// <summary>
     /// Handles authentication-related operations like login, logout, and profile refresh.
@@ -25,7 +25,20 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the login message from the webview.
-        /// Initiates the login flow with the backend.
+        /// Initiates the login flow with the backend by fetching the user profile.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/auth.ts where
+        /// handleLogin fetches /kilo/profile and sends profileData to the webview.
+        /// 
+        /// Workflow steps:
+        /// 1. Check if HTTP client is connected to backend
+        /// 2. Fetch user profile from /kilo/profile endpoint
+        /// 3. Extract profile property from response
+        /// 4. Send profileData message to webview with cloned profile data
+        /// 
+        /// Messages sent to webview:
+        /// - profileData: { profile: { email, name, id, ... } }
+        /// - error: { message: "Not connected to backend" }
         /// </summary>
         /// <param name="payload">The message payload (unused for login).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -54,7 +67,19 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the logout message from the webview.
-        /// Logs out the current user.
+        /// Logs out the current user by calling the backend logout endpoint.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/auth.ts where
+        /// handleLogout posts to /auth/logout to terminate the user session.
+        /// 
+        /// Workflow steps:
+        /// 1. Get HTTP client from provider
+        /// 2. Verify client is connected
+        /// 3. POST to /auth/logout endpoint with empty payload
+        /// 4. Log debug message on success
+        /// 
+        /// Messages sent to webview:
+        /// - No direct message sent; backend handles session termination
         /// </summary>
         /// <param name="payload">The message payload (unused for logout).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -75,7 +100,20 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the refreshProfile message from the webview.
-        /// Refreshes the user profile data from the backend.
+        /// Refreshes the user profile data from the backend and sends it to the webview.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/auth.ts where
+        /// handleRefreshProfile fetches /kilo/profile and posts profileData to webview.
+        /// 
+        /// Workflow steps:
+        /// 1. Get HTTP client from provider
+        /// 2. Verify client is connected
+        /// 3. Fetch user profile from /kilo/profile endpoint
+        /// 4. Construct message with type "profileData" and profile data
+        /// 5. Post message to webview via provider
+        /// 
+        /// Messages sent to webview:
+        /// - profileData: { data: { email, name, id, ... } }
         /// </summary>
         /// <param name="payload">The message payload (unused for refreshProfile).</param>
         /// <returns>A task representing the asynchronous operation.</returns>

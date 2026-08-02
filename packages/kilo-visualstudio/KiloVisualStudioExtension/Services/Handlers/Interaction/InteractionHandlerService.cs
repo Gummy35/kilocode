@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 {
     /// <summary>
     /// Handles user interaction operations like permission replies, question replies, and prompt handling.
@@ -24,9 +24,24 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the prompt message from the webview.
-        /// Sends a prompt to the backend for processing.
+        /// Sends a prompt to the backend for processing via the /session/{sessionID}/prompt_async endpoint.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/interaction handlers
+        /// where prompt is sent to trigger AI response via SSE.
+        /// 
+        /// Workflow steps:
+        /// 1. Check if provider is connected to backend
+        /// 2. Extract sessionID from payload or use current session
+        /// 3. If no session exists, create a new session
+        /// 4. Validate text property exists in payload
+        /// 5. Construct prompt data with text part
+        /// 6. POST to /session/{sessionID}/prompt_async endpoint
+        /// 7. Response comes back via SSE stream
+        /// 
+        /// Messages sent to webview:
+        /// - error: { message: "Not connected to CLI backend" | "Missing message text" | "Failed to create session" }
         /// </summary>
-        /// <param name="payload">The message payload containing the prompt.</param>
+        /// <param name="payload">The message payload containing sessionID and text (the prompt message).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandlePromptAsync(JsonElement? payload)
         {
@@ -113,9 +128,21 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the permission/reply message from the webview.
-        /// Processes permission approval/rejection responses.
+        /// Processes permission approval/rejection responses by forwarding to backend.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/permission-handler.ts
+        /// where permission reply is sent to /permission/{requestId}/reply endpoint.
+        /// 
+        /// Workflow steps:
+        /// 1. Extract requestId and response from payload
+        /// 2. Validate both properties exist
+        /// 3. Get HTTP client from provider
+        /// 4. POST to /permission/{requestId}/reply with response value
+        /// 
+        /// Messages sent to webview:
+        /// - None; permission response is handled silently
         /// </summary>
-        /// <param name="payload">The message payload containing permission response.</param>
+        /// <param name="payload">The message payload containing requestId and response (approve/reject).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandlePermissionReplyAsync(JsonElement? payload)
         {
@@ -151,9 +178,21 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the question/reply message from the webview.
-        /// Processes question responses from the user.
+        /// Processes question responses from the user by forwarding to backend.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/question.ts
+        /// where question reply is sent to /question/{requestId}/reply endpoint.
+        /// 
+        /// Workflow steps:
+        /// 1. Extract requestId and answers from payload
+        /// 2. Validate both properties exist
+        /// 3. Get HTTP client from provider
+        /// 4. POST to /question/{requestId}/reply with answers array
+        /// 
+        /// Messages sent to webview:
+        /// - None; question response is handled silently
         /// </summary>
-        /// <param name="payload">The message payload containing question response.</param>
+        /// <param name="payload">The message payload containing requestId and answers array.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleQuestionReplyAsync(JsonElement? payload)
         {
@@ -189,9 +228,20 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the permissionResponse message from the webview.
-        /// Processes permission response events.
+        /// Processes permission response events by forwarding to backend.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/permission-handler.ts
+        /// where permission response is posted to /permission/response endpoint.
+        /// 
+        /// Workflow steps:
+        /// 1. Get HTTP client from provider
+        /// 2. Verify client is connected
+        /// 3. POST to /permission/response with payload
+        /// 
+        /// Messages sent to webview:
+        /// - error: { message: "Not connected to backend" }
         /// </summary>
-        /// <param name="payload">The message payload.</param>
+        /// <param name="payload">The message payload containing permission response data.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandlePermissionResponseAsync(JsonElement? payload)
         {
@@ -216,9 +266,20 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the questionReject message from the webview.
-        /// Processes question rejection from the user.
+        /// Processes question rejection from the user by forwarding to backend.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/question.ts
+        /// where question reject is posted to /question/reject endpoint.
+        /// 
+        /// Workflow steps:
+        /// 1. Get HTTP client from provider
+        /// 2. Verify client is connected
+        /// 3. POST to /question/reject with payload
+        /// 
+        /// Messages sent to webview:
+        /// - error: { message: "Not connected to backend" }
         /// </summary>
-        /// <param name="payload">The message payload.</param>
+        /// <param name="payload">The message payload containing question rejection data.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleQuestionRejectAsync(JsonElement? payload)
         {

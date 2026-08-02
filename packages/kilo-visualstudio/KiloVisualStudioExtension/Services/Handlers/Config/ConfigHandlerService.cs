@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Config
 {
     /// <summary>
     /// Handles configuration-related operations like requestConfig, updateSetting, updateConfig.
@@ -26,6 +26,19 @@ namespace KiloVisualStudioExtension.Services
         /// <summary>
         /// Handles the requestConfig message from the webview.
         /// Fetches and sends the current configuration to the webview.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/config.ts
+        /// where requestConfig fetches /config and sends configLoaded to webview.
+        /// 
+        /// Workflow steps:
+        /// 1. Get HTTP client from provider
+        /// 2. If no client, send empty config with SendConfigLoadedAsync
+        /// 3. Fetch configuration from /config endpoint
+        /// 4. Extract config and features properties from response
+        /// 5. Send configLoaded message with both config and features
+        /// 
+        /// Messages sent to webview:
+        /// - configLoaded: { config: {...}, features: {...} }
         /// </summary>
         /// <param name="payload">The message payload (unused for requestConfig).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -64,7 +77,20 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the updateSetting message from the webview.
-        /// Updates a specific setting in the configuration.
+        /// Updates a specific setting in the configuration via the backend.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/config.ts
+        /// where updateSetting posts to /config with the setting update.
+        /// 
+        /// Workflow steps:
+        /// 1. Validate payload is not null
+        /// 2. Get HTTP client from provider
+        /// 3. Verify client is connected
+        /// 4. POST to /config endpoint with payload
+        /// 5. Backend applies the setting update
+        /// 
+        /// Messages sent to webview:
+        /// - error: { message: "Missing payload" | "Not connected to backend" }
         /// </summary>
         /// <param name="payload">The message payload containing setting name and value.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -95,7 +121,20 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the updateConfig message from the webview.
-        /// Updates the entire configuration.
+        /// Updates the entire configuration via the backend.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/config.ts
+        /// where updateConfig posts the full configuration to /config.
+        /// 
+        /// Workflow steps:
+        /// 1. Validate payload is not null
+        /// 2. Get HTTP client from provider
+        /// 3. Verify client is connected
+        /// 4. POST to /config endpoint with full configuration payload
+        /// 5. Backend replaces the entire configuration
+        /// 
+        /// Messages sent to webview:
+        /// - error: { message: "Missing payload" | "Not connected to backend" }
         /// </summary>
         /// <param name="payload">The message payload containing the new configuration.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -126,9 +165,22 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the openConfigFile message from the webview.
-        /// Opens the configuration file in the editor.
+        /// Opens the configuration file in the system editor.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/config.ts
+        /// where openConfigFile fetches the config file path and opens it externally.
+        /// 
+        /// Workflow steps:
+        /// 1. Extract scope from payload (default: "global")
+        /// 2. Get HTTP client from provider
+        /// 3. Fetch config file path from /config/file?scope={scope}
+        /// 4. Extract path property from response
+        /// 5. Launch system process to open the file
+        /// 
+        /// Messages sent to webview:
+        /// - No direct message; file opens in external editor
         /// </summary>
-        /// <param name="payload">The message payload containing scope.</param>
+        /// <param name="payload">The message payload containing scope (global or workspace).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleOpenConfigFileAsync(JsonElement? payload)
         {

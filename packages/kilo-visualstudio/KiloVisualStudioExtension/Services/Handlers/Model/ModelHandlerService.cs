@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Model
 {
     /// <summary>
     /// Handles model selection related operations like requestModelSelections, persistVariant, persistRecents.

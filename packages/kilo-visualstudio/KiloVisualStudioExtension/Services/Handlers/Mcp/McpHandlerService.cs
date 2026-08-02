@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 {
     /// <summary>
     /// Handles MCP (Model Context Protocol) related operations like connectMcp, disconnectMcp, authenticateMcp.
@@ -25,6 +25,19 @@ namespace KiloVisualStudioExtension.Services
         /// <summary>
         /// Handles the requestMcpStatus message from the webview.
         /// Fetches and sends the current MCP server status to the webview.
+        /// 
+        /// VS Code workflow: Matches the pattern in MCP handler modules where
+        /// MCP status is fetched from /mcp endpoint and sent to webview.
+        /// 
+        /// Workflow steps:
+        /// 1. Get HTTP client from provider
+        /// 2. If no client, send empty MCP status
+        /// 3. Fetch MCP status from /mcp endpoint
+        /// 4. Extract MCP status from response
+        /// 5. Send MCP status to webview via SendMcpStatusAsync
+        /// 
+        /// Messages sent to webview:
+        /// - mcpStatus: { servers: [...], connected: [...] }
         /// </summary>
         /// <param name="payload">The message payload (unused for requestMcpStatus).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -58,9 +71,21 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the connectMcp message from the webview.
-        /// Connects to an MCP server.
+        /// Connects to an MCP server with the provided configuration.
+        /// 
+        /// VS Code workflow: Matches the pattern in MCP handler modules where
+        /// MCP server connection is established via /mcp/connect endpoint.
+        /// 
+        /// Workflow steps:
+        /// 1. Validate payload is not null
+        /// 2. Get HTTP client from provider
+        /// 3. Verify client is connected
+        /// 4. POST to /mcp/connect with MCP server configuration
+        /// 
+        /// Messages sent to webview:
+        /// - error: { message: "Missing payload" | "Not connected to backend" }
         /// </summary>
-        /// <param name="payload">The message payload containing MCP server configuration.</param>
+        /// <param name="payload">The message payload containing MCP server configuration (serverId, type, command/url, etc.).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleConnectMcpAsync(JsonElement? payload)
         {

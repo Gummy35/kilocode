@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Settings
 {
     /// <summary>
     /// Handles settings-related operations like indexing settings, chat settings, throughput settings, autocomplete settings.

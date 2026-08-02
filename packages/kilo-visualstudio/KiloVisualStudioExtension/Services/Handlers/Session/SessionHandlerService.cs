@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Session
 {
     /// <summary>
     /// Handles session-related operations like create, delete, rename, and load messages.
@@ -27,6 +27,20 @@ namespace KiloVisualStudioExtension.Services
         /// <summary>
         /// Handles the createSession message from the webview.
         /// Creates a new session in the backend and notifies the webview.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+        /// where createSession creates a session and triggers loadMessages.
+        /// 
+        /// Workflow steps:
+        /// 1. Get current directory for session context
+        /// 2. Call CreateSessionInternalAsync to create session
+        /// 3. On success, check if session ID exists
+        /// 4. If session ID exists, call HandleLoadMessagesAsync to load messages
+        /// 5. On failure, send error message to webview
+        /// 
+        /// Messages sent to webview:
+        /// - sessionCreated: { session: { id, directory, title, updated, status } }
+        /// - error: { message: "Failed to create session" }
         /// </summary>
         /// <param name="payload">The message payload (unused for createSession).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -48,6 +62,25 @@ namespace KiloVisualStudioExtension.Services
             }
         }
 
+        /// <summary>
+        /// Creates a new session internally and sends sessionCreated message.
+        /// 
+        /// VS Code workflow: Matches the internal session creation logic in
+        /// kilo-provider/handlers/session.ts where session is created via POST /session.
+        /// 
+        /// Workflow steps:
+        /// 1. Get HTTP client from provider
+        /// 2. POST to /session with directory in payload
+        /// 3. Extract session ID from response
+        /// 4. Set current session ID in provider and context
+        /// 5. Send sessionCreated message to webview with session details
+        /// 
+        /// Messages sent to webview:
+        /// - sessionCreated: { session: { id, directory, title, updated, status } }
+        /// - error: { message: "Failed to create session: ..." }
+        /// </summary>
+        /// <param name="dir">The directory path for the session context.</param>
+        /// <returns>True if session was created successfully, false otherwise.</returns>
         private async Task<bool> CreateSessionInternalAsync(string dir)
         {
             var httpClient = _provider.GetHttpClient();
@@ -97,7 +130,16 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the clearSession message from the webview.
-        /// Clears the current session context.
+        /// Clears the current session context from the provider.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+        /// where clearSession clears the session state.
+        /// 
+        /// Workflow steps:
+        /// 1. Call provider.ClearCurrentSession() to clear session state
+        /// 
+        /// Messages sent to webview:
+        /// - None; session state is cleared internally
         /// </summary>
         /// <param name="payload">The message payload (unused for clearSession).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -108,7 +150,22 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the deleteSession message from the webview.
-        /// Deletes a session from the backend.
+        /// Deletes a session from the backend and notifies the webview.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+        /// where deleteSession posts to /session/delete and sends sessionDeleted.
+        /// 
+        /// Workflow steps:
+        /// 1. Extract sessionID from payload
+        /// 2. Validate sessionID is not empty
+        /// 3. Get HTTP client from provider
+        /// 4. POST to /session/delete with sessionID
+        /// 5. If deleted session is current, clear session state
+        /// 6. Send sessionDeleted message to webview
+        /// 
+        /// Messages sent to webview:
+        /// - sessionDeleted: { sessionID }
+        /// - error: { message: "Not connected to CLI backend" | "Failed to delete session: ..." }
         /// </summary>
         /// <param name="payload">The message payload containing sessionID.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -146,7 +203,21 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the renameSession message from the webview.
-        /// Renames a session in the backend.
+        /// Renames a session in the backend and notifies the webview.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+        /// where renameSession posts to /session/rename and sends sessionUpdated.
+        /// 
+        /// Workflow steps:
+        /// 1. Extract sessionID and title from payload
+        /// 2. Validate sessionID is not empty
+        /// 3. Get HTTP client from provider
+        /// 4. POST to /session/rename with sessionID and title
+        /// 5. If renamed session is current, send sessionUpdated message
+        /// 
+        /// Messages sent to webview:
+        /// - sessionUpdated: { session: { id, title, updated, status } }
+        /// - error: { message: "Not connected to CLI backend" | "Failed to rename session: ..." }
         /// </summary>
         /// <param name="payload">The message payload containing sessionID and title.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -194,9 +265,29 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the loadMessages message from the webview.
-        /// Loads messages for a specific session from the backend.
+        /// Loads messages for a specific session from the backend with support for pagination and stream management.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+        /// where handleLoadMessages loads messages with abort controller support and stream management.
+        /// 
+        /// Workflow steps:
+        /// 1. Extract sessionID, mode, before, limit from payload
+        /// 2. For mode=replace/focus: stop processes, track session, focus session, set current session
+        /// 3. For mode=replace: cancel previous load and create new cancellation token
+        /// 4. Build URL with limit and before parameters
+        /// 5. Fetch messages from /session/{sessionID}/message endpoint
+        /// 6. Check for cancellation and session tracking status
+        /// 7. Parse messages and extract cursor/hasMore for pagination
+        /// 8. For mode=replace/reconcile: drop session stream
+        /// 9. Send messagesLoaded message to webview
+        /// 10. If preserveStream is true, flush session stream
+        /// 11. Call RecoverPendingPrompts to resume any pending prompts
+        /// 
+        /// Messages sent to webview:
+        /// - messagesLoaded: { sessionID, messages: [...], mode, cursor, hasMore }
+        /// - error: { message: "Not connected to CLI backend" | ex.Message }
         /// </summary>
-        /// <param name="payload">The message payload containing sessionID and other options.</param>
+        /// <param name="payload">The message payload containing sessionID, mode (replace/focus/reconcile), before (cursor), and limit.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleLoadMessagesAsync(JsonElement? payload)
         {
@@ -336,7 +427,19 @@ namespace KiloVisualStudioExtension.Services
 
         /// <summary>
         /// Handles the deleteMessage message from the webview.
-        /// Deletes a message from a session.
+        /// Deletes a message from a session via the backend.
+        /// 
+        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+        /// where deleteMessage posts to /session/message/delete.
+        /// 
+        /// Workflow steps:
+        /// 1. Extract sessionID and messageID from payload
+        /// 2. Validate both IDs are not empty
+        /// 3. Get HTTP client from provider
+        /// 4. POST to /session/message/delete with sessionID and messageID
+        /// 
+        /// Messages sent to webview:
+        /// - None; deletion is handled silently
         /// </summary>
         /// <param name="payload">The message payload containing sessionID and messageID.</param>
         /// <returns>A task representing the asynchronous operation.</returns>

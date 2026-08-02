@@ -7,7 +7,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using VSLangProj110;
-using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Handlers.Auth;
+using KiloVisualStudioExtension.Services.Handlers.CloudSession;
+using KiloVisualStudioExtension.Services.Handlers.Config;
+using KiloVisualStudioExtension.Services.Handlers.ProviderRequest;
+using KiloVisualStudioExtension.Services.Handlers.AgentRequest;
+using KiloVisualStudioExtension.Services.Handlers.StateManagement;
+using KiloVisualStudioExtension.Services.Handlers.Mcp;
+using KiloVisualStudioExtension.Services.Handlers.Notification;
+using KiloVisualStudioExtension.Services.Handlers.Model;
+using KiloVisualStudioExtension.Services.Handlers.Settings;
+using KiloVisualStudioExtension.Services.Handlers.MiscRequest;
+using KiloVisualStudioExtension.Services.Handlers.Interaction;
+using KiloVisualStudioExtension.Services.Handlers.SessionControl;
+using KiloVisualStudioExtension.Services.Handlers.Ui;
+using KiloVisualStudioExtension.Services.Handlers.Session;
 
 namespace KiloVisualStudioExtension
 {

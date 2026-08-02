@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Ui
 {
     /// <summary>
     /// Handles UI and panel operations like open settings panel, open sub-agent viewer, reload, save image.

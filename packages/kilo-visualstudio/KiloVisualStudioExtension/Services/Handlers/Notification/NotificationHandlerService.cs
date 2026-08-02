@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.Notification
 {
     /// <summary>
     /// Handles notification-related operations like requestNotifications, dismissNotification, resetReadNotifications.

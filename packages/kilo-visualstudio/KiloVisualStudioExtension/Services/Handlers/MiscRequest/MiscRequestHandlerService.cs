@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
     /// <summary>
     /// Handles miscellaneous request operations like recents, favorites, variants, skills, commands.

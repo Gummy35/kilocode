@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KiloVisualStudioExtension.Services
+namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
 {
     /// <summary>
     /// Handles session control operations like abort, send message, fork session, compact, enhance prompt.
