@@ -61,6 +61,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                     _provider.TrackSession(sessionID);
                     _provider.PostMessage(JsonSerializer.Serialize(new { type = "workspaceDirectoryChanged", directory = dir }));
                     _provider.FocusSession(sessionID);
+                    
+                    // After creating and focusing the session, load messages to display the conversation
+                    // This matches VS Code's flow where loadMessages is called after session creation
+                    await HandleLoadMessagesAsync(JsonSerializer.SerializeToElement(new { sessionID, mode = "replace", limit = 80 }));
                 }
             }
         }

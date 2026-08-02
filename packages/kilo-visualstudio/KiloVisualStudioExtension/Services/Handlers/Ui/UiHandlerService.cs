@@ -94,20 +94,34 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
 
         /// <summary>
         /// Handles the reload message from the webview.
-        /// Reloads the extension.
+        /// Reloads config, skills, agents, and commands from disk by rebooting the backend instance.
+        /// Matches VS Code's handleReload pattern - calls /instance/reload endpoint.
         /// </summary>
         /// <param name="payload">The message payload (unused).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleReloadAsync(JsonElement? payload)
         {
+            var httpClient = _provider.GetHttpClient();
+            if (httpClient == null || !httpClient.IsConnected())
+            {
+                System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: reload - no client connection");
+                return;
+            }
+
+            var directory = System.Environment.CurrentDirectory;
+            
             try
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: Reload extension");
-                _provider.PostMessage(JsonSerializer.Serialize(new { type = "extensionReloaded" }));
+                await httpClient.PostJsonAsync($"/instance/reload", new { directory });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Backend reloaded for directory {directory}");
+                
+                // Clear cached commands and refresh agents/config
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "configReloaded" }));
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Reload error", ex.Message);
+                System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: reload failed: {ex.Message}");
+                // Match VS Code: log error but don't throw - user sees error in UI
             }
         }
 

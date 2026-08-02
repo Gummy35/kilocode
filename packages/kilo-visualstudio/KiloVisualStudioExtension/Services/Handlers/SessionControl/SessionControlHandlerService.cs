@@ -68,6 +68,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
         /// <summary>
         /// Handles the forkSession message from the webview.
         /// Creates a fork of the current session.
+        /// Matches VS Code's handleForkSession pattern - checks session status before forking.
         /// </summary>
         /// <param name="payload">The message payload.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -97,13 +98,33 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
 
+                // Check session status before forking - match VS Code's handleForkSession pattern
+                var statusResponse = await httpClient.GetJsonAsync($"/session/status?sessionID={sessionID}");
+                if (statusResponse != null)
+                {
+                    if (statusResponse.RootElement.TryGetProperty(sessionID, out var sessionStatus))
+                    {
+                        if (sessionStatus.TryGetProperty("type", out var typeProp))
+                        {
+                            var status = typeProp.GetString() ?? "idle";
+                            if (status != "idle")
+                            {
+                                await _provider.SendErrorAsync("Session not idle", "Wait for the session to finish before forking it.");
+                                return;
+                            }
+                        }
+                    }
+                }
+                statusResponse?.Dispose();
+
                 await httpClient.PostJsonAsync("/session/fork", new { sessionID, messageID });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: session forked: {sessionID}");
                 
-                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, messageID }));
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, forkedFromID = sessionID }));
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: fork session error: {ex.Message}");
                 await _provider.SendErrorAsync("Fork session error", ex.Message);
             }
         }
