@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
@@ -30,7 +32,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public void HandleRequestRecents(JsonElement? payload)
         {
-            var message = new { type = "recentsLoaded", recents = new object[0] };
+      var selected = new List<ModelSelection>();
+      selected.Add(new ModelSelection
+      {
+        providerID = "openrama",
+        modelID = "qwen3.5-122b"
+      });
+      var message = new { 
+              type = "recentsLoaded", 
+              recents = selected 
+            };
             _provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
@@ -42,7 +53,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public void HandleRequestFavorites(JsonElement? payload)
         {
-            var message = new { type = "favoritesLoaded", favorites = new object[0] };
+          var favorites = new List<FavoriteModel>();
+          favorites.Add(new FavoriteModel
+          {
+            providerID = "openrama",
+            modelID = "qwen3.5-122b"
+          });
+          var message = new { type = "favoritesLoaded", 
+              favorites = favorites
+          };
             _provider.PostMessage(JsonSerializer.Serialize(message));
         }
 

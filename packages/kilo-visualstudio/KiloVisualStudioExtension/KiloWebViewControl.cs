@@ -1,10 +1,12 @@
-using System;
-using System.IO;
-using System.Text.Json;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
-using Microsoft.VisualStudio.Shell;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace KiloVisualStudioExtension
 {
@@ -101,6 +103,7 @@ namespace KiloVisualStudioExtension
       {
         var envOptions = new CoreWebView2EnvironmentOptions();
         var env = await CoreWebView2Environment.CreateAsync(null, _sharedUserDataFolder, envOptions);
+        
         try
         {
           await this.EnsureCoreWebView2Async(env);
@@ -127,6 +130,9 @@ namespace KiloVisualStudioExtension
           var webviewDir = Path.Combine(assemblyDir, "webview");
           var webviewUri = new Uri(webviewDir).AbsoluteUri;
           System.Diagnostics.Debug.WriteLine($"[Kilo] Loading webview from {webviewUri}");
+          //var webViewHtml = GetHtmlForWebview(this);
+          //CoreWebView2.NavigateToString(webViewHtml);
+          
           CoreWebView2.Navigate(webviewUri + "/index.html");
         }
         else
@@ -227,5 +233,130 @@ namespace KiloVisualStudioExtension
       }
       base.Dispose(disposing);
     }
+
+
+
+    #region Webview HTML Generation
+
+    /// <summary>
+    /// Generates the HTML content for the webview, matching the VS Code _getHtmlForWebview method.
+    /// This method builds a complete HTML document with CSP headers, styles, and script references.
+    /// </summary>
+    /// <param name="webView">The WebView2 control to get the base path from.</param>
+    /// <param name="serverPort">The backend server port for CSP configuration.</param>
+    /// <returns>The complete HTML string for the webview.</returns>
+    public string GetHtmlForWebview(KiloWebViewControl webView, int? serverPort = null)
+    {
+
+      var assemblyDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".";
+      var webviewDir = Path.Combine(assemblyDir, "webview");
+      var webviewUri = ".";// new Uri(webviewDir).AbsoluteUri;
+
+
+        // Generate nonce for CSP
+        var nonce = GetNonce();
+
+      // Build CSP string (matching VS Code's buildCspString)
+      var csp = BuildCspString(nonce, serverPort);
+
+      // Get font size styles
+      var fontStyle = GetFontStyle();
+
+      var html = new StringBuilder();
+      html.AppendLine("<!DOCTYPE html>");
+      html.AppendLine("<html lang=\"en\" data-theme=\"kilo-vscode\">");
+      html.AppendLine("<head>");
+      html.AppendLine("  <meta charset=\"UTF-8\">");
+      html.AppendLine("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+   //   html.AppendLine($"  <meta http-equiv=\"Content-Security-Policy\" content=\"{csp}\">");
+      html.AppendLine($"  <link rel=\"stylesheet\" href=\"{webviewUri}/vscode-theme.css\">");
+      html.AppendLine($"  <link rel=\"stylesheet\" href=\"{webviewUri}/webview.css\">");
+      html.AppendLine("  <title>Kilo Code</title>");
+      html.AppendLine("  <style>");
+      html.AppendLine(fontStyle);
+      html.AppendLine("    html {");
+      html.AppendLine("      scrollbar-color: auto;");
+      html.AppendLine("      ::-webkit-scrollbar-thumb {");
+      html.AppendLine("        border: 3px solid transparent !important;");
+      html.AppendLine("        background-clip: padding-box !important;");
+      html.AppendLine("      }");
+      html.AppendLine("    }");
+      html.AppendLine("    html, body {");
+      html.AppendLine("      margin: 0;");
+      html.AppendLine("      padding: 0;");
+      html.AppendLine("      height: 100%;");
+      html.AppendLine("      overflow: hidden;");
+      html.AppendLine("    }");
+      html.AppendLine("    body {");
+      html.AppendLine("      background-color: var(--vscode-sideBar-background, var(--vscode-editor-background));");
+      html.AppendLine("      color: var(--vscode-foreground);");
+      html.AppendLine("      font-family: var(--vscode-font-family);");
+      html.AppendLine("    }");
+      html.AppendLine("    #root {");
+      html.AppendLine("      height: 100%;");
+      html.AppendLine("    }");
+      html.AppendLine("  </style>");
+      html.AppendLine("</head>");
+      html.AppendLine("<body>");
+      html.AppendLine("  <div id=\"root\"></div>");
+      html.AppendLine($"  <script nonce=\"{nonce}\" src=\"{webviewUri}/vscode-api.js\"></script>");
+      html.AppendLine($"  <script nonce=\"{nonce}\">window.ICONS_BASE_URI = \"{webviewUri}\"; window.KILO_SHIKI_WORKER_URI = \"{webviewUri}/shiki-worker.js\";</script>");
+      html.AppendLine($"  <script nonce=\"{nonce}\" src=\"{webviewUri}/webview.js\"></script>");
+      html.AppendLine("</body>");
+      html.AppendLine("</html>");
+
+      return html.ToString();
+    }
+
+    /// <summary>
+    /// Generates a random nonce for Content Security Policy.
+    /// Matches the VS Code getNonce() function using crypto.randomBytes.
+    /// </summary>
+    /// <returns>A 32-character hexadecimal string.</returns>
+    private static string GetNonce()
+    {
+      var bytes = new byte[16];
+      using var rng = RandomNumberGenerator.Create();
+      rng.GetBytes(bytes);
+      return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Builds the Content Security Policy string for the webview.
+    /// Matches the VS Code buildCspString function.
+    /// </summary>
+    /// <param name="nonce">The nonce value to include in script-src.</param>
+    /// <param name="port">The backend server port for localhost connections.</param>
+    /// <returns>The CSP string.</returns>
+    private static string BuildCspString(string nonce, int? port)
+    {
+      var localhost = port.HasValue
+          ? $"http://localhost:{port} http://127.0.0.1:{port} ws://localhost:{port} ws://127.0.0.1:{port}"
+          : "http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*";
+
+      return $"default-src 'none'; style-src 'unsafe-inline' file:// data:; script-src 'nonce-{nonce}' 'wasm-unsafe-eval' file://; worker-src file:// blob:; font-src file:// data:; connect-src {localhost} file:// data:; img-src file:// data: https:;";
+    }
+
+    /// <summary>
+    /// Generates font size CSS variables based on VS Code settings.
+    /// Matches the VS Code fontStyle() function.
+    /// </summary>
+    /// <returns>CSS string with font size variables.</returns>
+    private static string GetFontStyle()
+    {
+      // Default font size 13 (matching VS Code default)
+      var baseSize = 13;
+      var sizes = new[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+
+      var vars = new StringBuilder();
+      foreach (var size in sizes)
+      {
+        vars.AppendLine($"      --kilo-font-size-{size}: {(baseSize * size) / 13.0:F2}px;");
+      }
+
+      return $":root {{\n{vars}      --kilo-font-scale: {baseSize / 13.0:F2};\n      --font-size-x-small: var(--kilo-font-size-10);\n      --font-size-small: var(--kilo-font-size-11);\n      --font-size-base: var(--kilo-font-size-13);\n      --font-size-large: var(--kilo-font-size-16);\n    }}";
+    }
+
+    #endregion
   }
 }

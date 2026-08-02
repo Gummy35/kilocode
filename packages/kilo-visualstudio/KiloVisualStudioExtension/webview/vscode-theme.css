@@ -8,6 +8,107 @@
  * these with actual theme values when available.
  */
 
+@layer vscode-default {
+  html {
+    scrollbar-color: var(--vscode-scrollbarSlider-background) var(--vscode-editor-background);
+  }
+
+  body {
+    overscroll-behavior-x: none;
+    background-color: transparent;
+    color: var(--vscode-editor-foreground);
+    font-family: var(--vscode-font-family);
+    font-weight: var(--vscode-font-weight);
+    font-size: var(--vscode-font-size);
+    margin: 0;
+    padding: 0 20px;
+  }
+
+  img, video {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  a, a code {
+    color: var(--vscode-textLink-foreground);
+  }
+
+  p > a {
+    text-decoration: var(--text-link-decoration);
+  }
+
+  a:hover {
+    color: var(--vscode-textLink-activeForeground);
+  }
+
+  a:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 1px solid -webkit-focus-ring-color;
+    outline-offset: -1px;
+  }
+
+  code {
+    font-family: var(--monaco-monospace-font);
+    color: var(--vscode-textPreformat-foreground);
+    background-color: var(--vscode-textPreformat-background);
+    padding: 1px 3px;
+    border-radius: 4px;
+  }
+
+  pre code {
+    padding: 0;
+  }
+
+  blockquote {
+    background: var(--vscode-textBlockQuote-background);
+    border-color: var(--vscode-textBlockQuote-border);
+  }
+
+  kbd {
+    background-color: var(--vscode-keybindingLabel-background);
+    color: var(--vscode-keybindingLabel-foreground);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 3px;
+    border-color: var(--vscode-keybindingLabel-border);
+    border-bottom-color: var(--vscode-keybindingLabel-bottomBorder);
+    box-shadow: inset 0 -1px 0 var(--vscode-widget-shadow);
+    vertical-align: middle;
+    padding: 1px 3px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background-color: var(--vscode-editor-background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--vscode-scrollbarSlider-background);
+  }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--vscode-scrollbarSlider-hoverBackground);
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+      background-color: var(--vscode-scrollbarSlider-activeBackground);
+    }
+
+  ::highlight(find-highlight) {
+    background-color: var(--vscode-editor-findMatchHighlightBackground);
+  }
+
+  ::highlight(current-find-highlight) {
+    background-color: var(--vscode-editor-findMatchBackground);
+  }
+}
+
 :root {
   /* ===== Core Colors ===== */
   --vscode-editor-background: #1e1e1e;
@@ -18,42 +119,35 @@
   --vscode-panel-border: #3e3e42;
   --vscode-widget-background: #1e1e1e;
   --vscode-widget-border: #3e3e42;
-  
   /* ===== Typography ===== */
   --vscode-font-family: "Segoe UI", Tahoma, sans-serif;
   --vscode-font-size: 13px;
   --vscode-font-weight: normal;
-  
   /* ===== Foreground Colors ===== */
   --vscode-foreground: #cccccc;
   --vscode-descriptionForeground: #9d9d9d;
   --vscode-disabledForeground: rgba(204, 204, 204, 0.4);
-  
   /* ===== Focus & Selection ===== */
   --vscode-focusBorder: #007fd4;
   --vscode-list-activeSelectionBackground: #094771;
   --vscode-list-activeSelectionForeground: #ffffff;
   --vscode-list-inactiveSelectionBackground: #37373d;
   --vscode-list-hoverBackground: #2a2d2e;
-  
   /* ===== Buttons ===== */
   --vscode-button-background: #0e639c;
   --vscode-button-foreground: #ffffff;
   --vscode-button-hoverBackground: #1177bb;
   --vscode-button-secondaryBackground: #3a3d41;
   --vscode-button-secondaryHoverBackground: #45494e;
-  
   /* ===== Inputs ===== */
   --vscode-input-background: #3c3c3c;
   --vscode-input-foreground: #cccccc;
   --vscode-input-placeholderForeground: #9d9d9d;
   --vscode-input-border: #3c3c3c;
-  
   /* ===== Scrollbar ===== */
   --vscode-scrollbarSlider-background: rgba(100, 100, 100, 0.4);
   --vscode-scrollbarSlider-hoverBackground: rgba(100, 100, 100, 0.7);
   --vscode-scrollbarSlider-activeBackground: rgba(100, 100, 100, 0.9);
-  
   /* ===== Charts & Status ===== */
   --vscode-charts-blue: #4fc3ff;
   --vscode-charts-green: #89d185;
@@ -61,7 +155,6 @@
   --vscode-charts-orange: #f48771;
   --vscode-charts-purple: #d7ba7d;
   --vscode-charts-red: #f14c4c;
-  
   /* ===== Editor ===== */
   --vscode-editorLineNumber-foreground: #858585;
   --vscode-editorGroup-border: #444444;
@@ -70,7 +163,6 @@
   --vscode-editorWidget-border: #454545;
   --vscode-editorHoverWidget-statusBarBackground: #2a2d2e;
   --vscode-editorStickyScrollHover-background: #2a2d2e;
-  
   /* ===== Diff Editor ===== */
   --vscode-diffEditor-insertedLineBackground: rgba(155, 185, 85, 0.2);
   --vscode-diffEditor-insertedTextBackground: rgba(155, 185, 85, 0.2);
@@ -80,42 +172,33 @@
   --vscode-diffEditor-unchangedRegionForeground: #858585;
   --vscode-diffEditorGutter-insertedLineBackground: rgba(155, 185, 85, 0.2);
   --vscode-diffEditorGutter-removedLineBackground: rgba(255, 0, 0, 0.2);
-  
   /* ===== Git Decorations ===== */
   --vscode-gitDecoration-addedResourceForeground: #81b88b;
   --vscode-gitDecoration-modifiedResourceForeground: #e2c08d;
   --vscode-gitDecoration-deletedResourceForeground: #c74e39;
-  
   /* ===== Validation ===== */
   --vscode-inputValidation-errorBorder: #f14c4c;
   --vscode-inputValidation-warningBorder: #dcdcaa;
   --vscode-inputValidation-infoBorder: #4fc3ff;
-  
   /* ===== Error & Info ===== */
   --vscode-errorForeground: #f14c4c;
   --vscode-editorMarkerNavigationError-headerBackground: rgba(255, 0, 0, 0.1);
   --vscode-editorMarkerNavigationWarning-headerBackground: rgba(255, 255, 0, 0.1);
   --vscode-editorMarkerNavigationInfo-headerBackground: rgba(79, 195, 255, 0.1);
-  
   /* ===== Links ===== */
   --vscode-textLink-foreground: #3794ff;
-  
   /* ===== Menu ===== */
   --vscode-menu-background: #252526;
-  
   /* ===== Toolbar ===== */
   --vscode-toolbar-hoverBackground: rgba(90, 93, 94, 0.31);
   --vscode-toolbar-activeBackground: rgba(99, 102, 103, 0.31);
-  
   /* ===== Icon ===== */
   --vscode-icon-foreground: #c5c5c5;
-  
   /* ===== Debug ===== */
   --vscode-debugTokenExpression-string: #ce9178;
   --vscode-debugTokenExpression-number: #b5cea8;
   --vscode-debugTokenExpression-name: #9cdcfe;
   --vscode-debugTokenExpression-type: #4ec9b0;
-  
   /* ===== Contrast (high contrast) ===== */
   --vscode-contrastBorder: transparent;
   --vscode-contrastActiveBorder: transparent;

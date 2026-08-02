@@ -35,9 +35,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
             var message = new 
             { 
                 type = "modelSelectionsLoaded",
-                providerID = (string?)null,
-                modelID = (string?)null,
-                agent = (string?)null
+                selections = new {}
             };
             _provider.PostMessage(JsonSerializer.Serialize(message));
         }

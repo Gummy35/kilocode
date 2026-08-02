@@ -42,7 +42,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         /// <returns>A task representing the asynchronous operation.</returns>
         public void HandleRequestChatSettings(JsonElement? payload)
         {
-            var message = new { type = "chatSettingsLoaded", settings = new { shiftTabCyclesVariant = false } };
+            var message = new { type = "chatSettingsLoaded", settings = new { shiftTabCyclesVariant = true } };
             _provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
@@ -74,8 +74,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
                     enableAutoTrigger = false, 
                     enableSmartInlineTaskKeybinding = false, 
                     enableChatAutocomplete = false, 
-                    provider = (string?)null, 
-                    model = (string?)null 
+                    provider = (string?)"", 
+                    model = (string?)"" 
                 } 
             };
             _provider.PostMessage(JsonSerializer.Serialize(message));

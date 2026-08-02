@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +24,7 @@ using KiloVisualStudioExtension.Services.Handlers.Interaction;
 using KiloVisualStudioExtension.Services.Handlers.SessionControl;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
 using KiloVisualStudioExtension.Services.Handlers.Session;
+using KiloVisualStudioExtension.Services;
 
 namespace KiloVisualStudioExtension
 {
@@ -46,6 +49,7 @@ namespace KiloVisualStudioExtension
         protected readonly KiloWebViewControl _webView;
         protected readonly KiloConnectionService _connectionService;
         protected readonly SSEHelper _sseHelper;
+        private readonly SessionStreamScheduler _streamScheduler;
         
         private readonly SessionHandlerService _sessionHandler;
         private readonly AuthHandlerService _authHandler;
@@ -84,6 +88,10 @@ namespace KiloVisualStudioExtension
             _webView = webView!;
             _connectionService = connectionService;
             _sseHelper = new SSEHelper(PostMessage);
+            _streamScheduler = new SessionStreamScheduler((sessionID, key, update) => {
+                var message = new { type = "partUpdated", sessionID, messageID = key.Split(':')[1], part = update.Part, delta = update.TextDelta != null ? new { type = "text-delta", textDelta = update.TextDelta } : (object?)null };
+                PostMessage(JsonSerializer.Serialize(message));
+            });
             
             _sessionHandler = new SessionHandlerService(this);
             _authHandler = new AuthHandlerService(this);
@@ -272,6 +280,7 @@ namespace KiloVisualStudioExtension
 
         internal void FocusSession(string? sessionID)
         {
+            _streamScheduler.Focus(sessionID);
             _webView.PostMessage(JsonSerializer.Serialize(new { type = "focusSession", sessionID = sessionID ?? "" }));
         }
 
@@ -284,11 +293,13 @@ namespace KiloVisualStudioExtension
 
         internal void DropSessionStream(string sessionID)
         {
+            _streamScheduler.Drop(sessionID);
             System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: dropping stream for session {sessionID}");
         }
 
         internal void FlushSessionStream(string sessionID)
         {
+            _streamScheduler.Flush(sessionID);
             System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: flushing stream for session {sessionID}");
         }
 
@@ -1031,6 +1042,7 @@ namespace KiloVisualStudioExtension
             _webView.OnMessageReceived -= HandleMessageReceived;
             _connectionService.OnStateChange -= HandleStateChange;
             _connectionService.OnSseEvent -= HandleSseEvent;
+            _streamScheduler?.Dispose();
             
             _sessionHandler?.Dispose();
             _authHandler?.Dispose();
@@ -1049,6 +1061,7 @@ namespace KiloVisualStudioExtension
         }
 
         #endregion
+
     }
 
     internal class JsonDocumentBuilder
