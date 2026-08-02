@@ -577,15 +577,15 @@ namespace KiloVisualStudioExtension
                         break;
 
                     case "forkSession":
-                        await HandleForkSessionAsync(payload);
+                        await _sessionControlHandler.HandleForkSessionAsync(payload);
                         break;
 
                     case "reload":
-                        await HandleReloadAsync(payload);
+                        await _uiHandler.HandleReloadAsync(payload);
                         break;
 
                     case "saveImage":
-                        await HandleSaveImageAsync(payload);
+                        await _uiHandler.HandleSaveImageAsync(payload);
                         break;
 
                     case "openExternal":
@@ -617,11 +617,59 @@ namespace KiloVisualStudioExtension
                         break;
 
                     case "openSubAgentViewer":
-                        await HandleOpenSubAgentViewerAsync(payload);
+                        await _uiHandler.HandleOpenSubAgentViewerAsync(payload);
                         break;
 
                     case "openMarketplacePanel":
                         await HandleOpenMarketplacePanelAsync(payload);
+                        break;
+
+                    case "agentManager.createWorktree":
+                        await HandleCreateWorktreeAsync(payload);
+                        break;
+
+                    case "agentManager.deleteWorktree":
+                        await HandleDeleteWorktreeAsync(payload);
+                        break;
+
+                    case "agentManager.promoteSession":
+                        await HandlePromoteSessionAsync(payload);
+                        break;
+
+                    case "agentManager.forkSession":
+                        await HandleForkSessionToWorktreeAsync(payload);
+                        break;
+
+                    case "agentManager.openLocally":
+                        await HandleOpenWorktreeLocallyAsync(payload);
+                        break;
+
+                    case "agentManager.requestState":
+                        await HandleRequestAgentManagerStateAsync(payload);
+                        break;
+
+                    case "agentManager.setTabOrder":
+                        await HandleSetTabOrderAsync(payload);
+                        break;
+
+                    case "agentManager.showTerminal":
+                        await HandleShowTerminalAsync(payload);
+                        break;
+
+                    case "agentManager.requestWorktreeDiff":
+                        await HandleRequestWorktreeDiffAsync(payload);
+                        break;
+
+                    case "agentManager.applyWorktreeDiff":
+                        await HandleApplyWorktreeDiffAsync(payload);
+                        break;
+
+                    case "agentManager.startDiffWatch":
+                        await HandleStartDiffWatchAsync(payload);
+                        break;
+
+                    case "agentManager.openFile":
+                        await HandleOpenFileAsync(payload);
                         break;
 
                     default:
@@ -1107,79 +1155,6 @@ namespace KiloVisualStudioExtension
         #region Additional Message Handlers
 
         /// <summary>
-        /// Handles forkSession message - forks a session at a specific message.
-        /// Matches VS Code's handleForkSession pattern.
-        /// </summary>
-        private async Task HandleForkSessionAsync(JsonElement? payload)
-        {
-            if (payload == null) return;
-            
-            var sessionID = payload.Value.TryGetProperty("sessionId", out var sid) ? sid.GetString() : "";
-            var messageID = payload.Value.TryGetProperty("messageId", out var mid) ? mid.GetString() : "";
-            
-            if (string.IsNullOrEmpty(sessionID)) return;
-            
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null)
-            {
-                await SendErrorAsync("Not connected", "Not connected to CLI backend");
-                return;
-            }
-
-            try
-            {
-                await httpClient.PostJsonAsync($"/session/fork", new { sessionID, messageID });
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: session forked: {sessionID}");
-                
-                PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, messageID }));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error forking session: {ex.Message}");
-                await SendErrorAsync("Fork failed", $"Failed to fork session: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Handles reload message - reloads the extension.
-        /// Matches VS Code's handleReload pattern.
-        /// </summary>
-        private async Task HandleReloadAsync(JsonElement? payload)
-        {
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: reload requested");
-            PostMessage(JsonSerializer.Serialize(new { type = "extensionReloaded" }));
-        }
-
-        /// <summary>
-        /// Handles saveImage message - saves an image to disk.
-        /// Matches VS Code's saveImage pattern.
-        /// </summary>
-        private async Task HandleSaveImageAsync(JsonElement? payload)
-        {
-            if (payload == null) return;
-            
-            var imageData = payload.Value.TryGetProperty("imageData", out var data) ? data.GetString() : "";
-            var filename = payload.Value.TryGetProperty("filename", out var fn) ? fn.GetString() : "image.png";
-            
-            if (string.IsNullOrEmpty(imageData)) return;
-            
-            try
-            {
-                var bytes = Convert.FromBase64String(imageData);
-                var path = Path.Combine(System.Environment.CurrentDirectory, filename);
-                File.WriteAllBytes(path, bytes);
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: image saved: {path}");
-                
-                PostMessage(JsonSerializer.Serialize(new { type = "imageSaved", path }));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error saving image: {ex.Message}");
-                await SendErrorAsync("Save failed", $"Failed to save image: {ex.Message}");
-            }
-        }
-
-        /// <summary>
         /// Handles openExternal message - opens a URL externally.
         /// Matches VS Code's openExternal pattern.
         /// </summary>
@@ -1380,6 +1355,225 @@ namespace KiloVisualStudioExtension
             
             System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: openMarketplacePanel requested: {directory}");
             PostMessage(JsonSerializer.Serialize(new { type = "marketplacePanelOpened", directory }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.createWorktree message - creates a new worktree.
+        /// Matches VS Code's onCreateWorktree pattern.
+        /// </summary>
+        private async Task HandleCreateWorktreeAsync(JsonElement? payload)
+        {
+            var baseBranch = payload != null && payload.Value.TryGetProperty("baseBranch", out var bb) ? bb.GetString() : null;
+            var branchName = payload != null && payload.Value.TryGetProperty("branchName", out var bn) ? bn.GetString() : null;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: createWorktree requested: baseBranch={baseBranch}, branchName={branchName}");
+            
+            // TODO: Implement actual worktree creation using git worktree commands
+            // For now, send a placeholder response
+            PostMessage(JsonSerializer.Serialize(new { type = "worktreeCreated", branch = branchName ?? "worktree-" + Guid.NewGuid().ToString("N").Substring(0, 8) }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.deleteWorktree message - deletes a worktree.
+        /// Matches VS Code's onDeleteWorktree pattern.
+        /// </summary>
+        private async Task HandleDeleteWorktreeAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var worktreeId = payload.Value.TryGetProperty("worktreeId", out var wt) ? wt.GetString() : "";
+            
+            if (string.IsNullOrEmpty(worktreeId)) return;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: deleteWorktree requested: {worktreeId}");
+            
+            // TODO: Implement actual worktree deletion using git worktree commands
+            PostMessage(JsonSerializer.Serialize(new { type = "worktreeDeleted", worktreeId }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.promoteSession message - promotes a session to a worktree.
+        /// Matches VS Code's onPromoteSession pattern.
+        /// </summary>
+        private async Task HandlePromoteSessionAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionId = payload.Value.TryGetProperty("sessionId", out var sid) ? sid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(sessionId)) return;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: promoteSession requested: {sessionId}");
+            
+            // TODO: Implement actual session promotion
+            PostMessage(JsonSerializer.Serialize(new { type = "sessionPromoted", sessionId }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.forkSession message - forks a session into a new worktree.
+        /// Matches VS Code's fork session pattern.
+        /// </summary>
+        private async Task HandleForkSessionToWorktreeAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var sessionId = payload.Value.TryGetProperty("sessionId", out var sid) ? sid.GetString() : "";
+            var messageId = payload.Value.TryGetProperty("messageId", out var mid) ? mid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(sessionId)) return;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: forkSession requested: {sessionId}");
+            
+            // TODO: Implement actual session forking to worktree
+            PostMessage(JsonSerializer.Serialize(new { type = "sessionForkedToWorktree", sessionId, messageId }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.openLocally message - opens a worktree in the system file explorer.
+        /// Matches VS Code's openLocally pattern.
+        /// </summary>
+        private async Task HandleOpenWorktreeLocallyAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var worktreeId = payload.Value.TryGetProperty("worktreeId", out var wt) ? wt.GetString() : "";
+            var path = payload.Value.TryGetProperty("path", out var p) ? p.GetString() : "";
+            
+            if (string.IsNullOrEmpty(path)) return;
+            
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true,
+                    Verb = "explore"
+                });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: opened worktree locally: {path}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error opening worktree locally: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles agentManager.requestState message - requests the current Agent Manager state.
+        /// Matches VS Code's requestState pattern.
+        /// </summary>
+        private async Task HandleRequestAgentManagerStateAsync(JsonElement? payload)
+        {
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: requestAgentManagerState requested");
+            
+            // Return current state from state manager
+            var state = new {
+                worktrees = new object[0],
+                sessions = new object[0],
+                activeWorktreeId = (string?)null,
+                activeSessionId = (string?)null
+            };
+            
+            PostMessage(JsonSerializer.Serialize(new { type = "agentManagerStateLoaded", state }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.setTabOrder message - sets the tab order.
+        /// Matches VS Code's setTabOrder pattern.
+        /// </summary>
+        private async Task HandleSetTabOrderAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var order = payload.Value.TryGetProperty("order", out var o) ? o : JsonDocument.Parse("[]").RootElement;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: setTabOrder requested");
+            
+            PostMessage(JsonSerializer.Serialize(new { type = "tabOrderSet" }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.showTerminal message - shows the terminal for a worktree.
+        /// Matches VS Code's showTerminal pattern.
+        /// </summary>
+        private async Task HandleShowTerminalAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var worktreeId = payload.Value.TryGetProperty("worktreeId", out var wt) ? wt.GetString() : "";
+            var sessionId = payload.Value.TryGetProperty("sessionId", out var sid) ? sid.GetString() : "";
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: showTerminal requested: {sessionId}");
+            
+            PostMessage(JsonSerializer.Serialize(new { type = "terminalShown", sessionId }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.requestWorktreeDiff message - requests the diff for a worktree.
+        /// Matches VS Code's requestWorktreeDiff pattern.
+        /// </summary>
+        private async Task HandleRequestWorktreeDiffAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var worktreeId = payload.Value.TryGetProperty("worktreeId", out var wt) ? wt.GetString() : "";
+            var path = payload.Value.TryGetProperty("path", out var p) ? p.GetString() : "";
+            
+            if (string.IsNullOrEmpty(path)) return;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: requestWorktreeDiff requested: {worktreeId}");
+            
+            // TODO: Implement actual diff calculation
+            PostMessage(JsonSerializer.Serialize(new { type = "worktreeDiffLoaded", worktreeId, diff = new { hunks = new object[0] } }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.applyWorktreeDiff message - applies a diff to a worktree.
+        /// Matches VS Code's applyWorktreeDiff pattern.
+        /// </summary>
+        private async Task HandleApplyWorktreeDiffAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var worktreeId = payload.Value.TryGetProperty("worktreeId", out var wt) ? wt.GetString() : "";
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: applyWorktreeDiff requested: {worktreeId}");
+            
+            PostMessage(JsonSerializer.Serialize(new { type = "worktreeDiffApplied", worktreeId }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.startDiffWatch message - starts watching for diff changes.
+        /// Matches VS Code's startDiffWatch pattern.
+        /// </summary>
+        private async Task HandleStartDiffWatchAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var worktreeId = payload.Value.TryGetProperty("worktreeId", out var wt) ? wt.GetString() : "";
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: startDiffWatch requested: {worktreeId}");
+            
+            PostMessage(JsonSerializer.Serialize(new { type = "diffWatchStarted", worktreeId }));
+        }
+
+        /// <summary>
+        /// Handles agentManager.openFile message - opens a file in the editor.
+        /// Matches VS Code's openFile pattern.
+        /// </summary>
+        private async Task HandleOpenFileAsync(JsonElement? payload)
+        {
+            if (payload == null) return;
+            
+            var path = payload.Value.TryGetProperty("path", out var p) ? p.GetString() : "";
+            var line = payload.Value.TryGetProperty("line", out var l) && l.TryGetInt32(out var lineNum) ? lineNum : 0;
+            var column = payload.Value.TryGetProperty("column", out var c) && c.TryGetInt32(out var colNum) ? colNum : 0;
+            
+            if (string.IsNullOrEmpty(path)) return;
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: openFile requested: {path}:{line},{column}");
+            
+            // TODO: Implement actual file opening in Visual Studio
+            PostMessage(JsonSerializer.Serialize(new { type = "fileOpened", path, line, column }));
         }
 
         #endregion

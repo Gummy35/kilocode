@@ -81,6 +81,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
 
             try
             {
+                var sessionID = payload.Value.TryGetProperty("sessionId", out var sid) ? sid.GetString() : "";
+                var messageID = payload.Value.TryGetProperty("messageId", out var mid) ? mid.GetString() : "";
+                
+                if (string.IsNullOrEmpty(sessionID))
+                {
+                    await _provider.SendErrorAsync("Invalid payload", "Session ID is required");
+                    return;
+                }
+                
                 var httpClient = _provider.GetHttpClient();
                 if (httpClient == null || !httpClient.IsConnected())
                 {
@@ -88,7 +97,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
 
-                await httpClient.PostAsync("/session/fork", payload.Value);
+                await httpClient.PostJsonAsync("/session/fork", new { sessionID, messageID });
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: session forked: {sessionID}");
+                
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, messageID }));
             }
             catch (Exception ex)
             {

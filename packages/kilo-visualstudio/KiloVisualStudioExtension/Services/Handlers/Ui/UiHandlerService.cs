@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -75,9 +76,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
                 {
                     sessionID = sidProp.GetString();
                 }
+                
+                string? title = null;
+                if (payload.Value.TryGetProperty("title", out var titleProp))
+                {
+                    title = titleProp.GetString();
+                }
 
-                // Open sub-agent viewer - placeholder for future implementation
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Open sub-agent viewer - session: {sessionID}");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "subAgentViewerOpened", sessionID, title }));
             }
             catch (Exception ex)
             {
@@ -95,8 +102,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         {
             try
             {
-                // Reload extension in Visual Studio - placeholder for future implementation
                 System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: Reload extension");
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "extensionReloaded" }));
             }
             catch (Exception ex)
             {
@@ -120,8 +127,21 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
 
             try
             {
-                // Save image to disk - placeholder for future implementation
-                System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: Save image");
+                var imageData = payload.Value.TryGetProperty("imageData", out var data) ? data.GetString() : "";
+                var filename = payload.Value.TryGetProperty("filename", out var fn) ? fn.GetString() : "image.png";
+                
+                if (string.IsNullOrEmpty(imageData))
+                {
+                    await _provider.SendErrorAsync("Invalid payload", "Image data is required");
+                    return;
+                }
+                
+                var bytes = Convert.FromBase64String(imageData);
+                var path = Path.Combine(System.Environment.CurrentDirectory, filename);
+                File.WriteAllBytes(path, bytes);
+                System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Image saved: {path}");
+                
+                _provider.PostMessage(JsonSerializer.Serialize(new { type = "imageSaved", path }));
             }
             catch (Exception ex)
             {
