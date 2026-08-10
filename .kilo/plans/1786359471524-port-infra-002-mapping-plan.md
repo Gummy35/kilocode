@@ -20,7 +20,7 @@ This document establishes the evidence-based correspondence between the Kilo VS 
 
 ### 2.1 Extension Entry Point
 
-**File:** `packages/kilo-vscode/src/extension.ts`
+**File:** `packages/kilo-vscode/src/extension.ts` (666 lines)
 
 **Activation Triggers:**
 - `onStartupFinished` — Extension activates on VS Code startup
@@ -123,7 +123,7 @@ extension.ts
 |-----------------|--------------------------|--------|-------|
 | `extension.ts` | `KiloVisualStudioExtensionPackage.cs` | PARTIAL | VS Package entry point exists but lacks command registration parity |
 | `activate()` | `InitializeAsync()` | PARTIAL | Missing provider registrations, command handlers |
-| `deactivate()` | No direct equivalent | MISSING | Cleanup logic not implemented |
+| `deactivate()` | `Dispose()` | PARTIAL | Cleanup logic partially implemented |
 
 ### 4.2 Core Services
 
@@ -131,7 +131,7 @@ extension.ts
 |-----------------|--------------------------|--------|-------|
 | `KiloConnectionService` (TS) | `KiloConnectionService.cs` | ADAPTED | Similar singleton pattern, C# implementation |
 | `ServerManager` | `CliBackendManager.cs` | ADAPTED | Similar process management, different API |
-| `SdkSSEAdapter` | UNKNOWN | MISSING | SSE client implementation not found |
+| `SdkSSEAdapter` | `SseClient.cs`, `SSEHelper.cs` | ADAPTED | SSE client exists but may lack full feature parity |
 | `HttpClient` wrapper | `HttpClientWrapper.cs`, `CachedHttpClient.cs` | EXISTING | Equivalent HTTP client layer |
 
 ### 4.3 Providers
@@ -142,9 +142,9 @@ extension.ts
 | `AgentManagerProvider` | `AgentManager/AgentManagerProvider.cs` | PARTIAL | Exists but may lack feature parity |
 | `KiloClawProvider` | `KiloClawProvider.cs` | EXISTING | Direct equivalent |
 | `DiffViewerProvider` | UNKNOWN | MISSING | Not found in Visual Studio |
-| `SettingsEditorProvider` | Unknown (possibly `OpenSettingsCommand.cs`) | UNKNOWN | Needs verification |
+| `SettingsEditorProvider` | `SettingsEditorProvider.cs` | EXISTING | Direct equivalent |
 | `MarketplacePanelProvider` | UNKNOWN | MISSING | Not found |
-| `SubAgentViewerProvider` | UNKNOWN | MISSING | Not found |
+| `SubAgentViewerProvider` | `SubAgentViewerProvider.cs` | EXISTING | Direct equivalent |
 
 ### 4.4 Message Handlers (VS Code → Visual Studio)
 
@@ -175,21 +175,9 @@ extension.ts
 | VS Code Element | Visual Studio Counterpart | Status | Notes |
 |-----------------|--------------------------|--------|-------|
 | `@kilocode/sdk` client | C# HTTP client calls | ADAPTED | Visual Studio uses raw HTTP instead of SDK |
-| SSE event handling | UNKNOWN | MISSING | No SSE adapter found |
+| SSE event handling | `SseClient.cs`, `SSEHelper.cs` | ADAPTED | SSE implementation exists |
 | `connection-service.ts` | `KiloConnectionService.cs` | ADAPTED | Similar pattern, different implementation |
 | `server-manager.ts` | `CliBackendManager.cs` | ADAPTED | Similar process management |
-
-**HTTP Endpoints Used (from VS Code):**
-- `/global/health` — Health check
-- `/session` — Session CRUD
-- `/session/:id/messages` — Message retrieval
-- `/config` — Configuration
-- `/auth` — Authentication
-- `/notifications` — Notifications
-- `/permissions` — Permissions
-- `/questions` — Questions
-- `/suggestions` — Suggestions
-- `/mcp` — MCP server management
 
 ### 4.7 WebView Mapping
 
@@ -218,16 +206,13 @@ extension.ts
 
 ### 5.1 Critical Missing Components
 
-1. **SSE Event Adapter** — No equivalent to `SdkSSEAdapter.ts`
-2. **Diff Viewer Provider** — No diff viewing capability found
-3. **Marketplace Panel** — No marketplace integration found
-4. **Sub-Agent Viewer** — No sub-agent session viewer found
-5. **Settings Editor Provider** — Unclear if equivalent exists
-6. **Session Stream Scheduler** — Exists in tests but unclear if in production
-7. **Remote Status Service** — No equivalent found
-8. **Browser Automation Service** — No equivalent found
-9. **Attention Service** — No equivalent found
-10. **Autocomplete Integration** — No autocomplete provider found
+1. **Diff Viewer Provider** — No diff viewing capability found
+2. **Marketplace Panel** — No marketplace integration found
+3. **Remote Status Service** — No equivalent found
+4. **Browser Automation Service** — No equivalent found
+5. **Attention Service** — No equivalent found
+6. **Autocomplete Integration** — No autocomplete provider found
+7. **Telemetry Proxy** — Telemetry integration unclear
 
 ### 5.2 Partial Implementations
 
@@ -323,7 +308,7 @@ Both implementations use the same JSON schemas from the CLI backend:
 
 ### Phase 1: Core Infrastructure (PORT-CLI-001)
 
-1. **SSE Event Adapter** — Implement C# equivalent of `SdkSSEAdapter.ts`
+1. **SSE Event Adapter Enhancement** — Verify/complete `SseClient.cs` and `SSEHelper.cs` feature parity
 2. **Connection Service Enhancement** — Add missing event filtering, directory tracking
 3. **HTTP Client Verification** — Ensure all endpoints are accessible
 4. **Health Polling** — Implement health check polling (VS Code polls every 10s)
@@ -338,9 +323,11 @@ Both implementations use the same JSON schemas from the CLI backend:
 ### Phase 3: Core Features (PORT-CORE-001)
 
 1. **Diff Viewer** — Implement diff viewing capability
-2. **Settings Editor** — Verify/implement settings panel
+2. **Remote Status Service** — Implement remote status handling
 3. **Marketplace** — Implement marketplace integration (if required)
-4. **Sub-Agent Viewer** — Implement sub-agent session viewer (if required)
+4. **Attention Service** — Implement attention/notifications service
+5. **Browser Automation** — Implement browser automation (if required)
+6. **Autocomplete** — Implement autocomplete provider (if required)
 
 ### Phase 4: Agent Manager Completion
 
@@ -375,25 +362,24 @@ Both implementations use the same JSON schemas from the CLI backend:
 
 | File | Action | Phase |
 |------|--------|-------|
-| `Services/SdkSseAdapter.cs` | CREATE | Phase 1 |
 | `Services/RemoteStatusService.cs` | CREATE | Phase 1 |
 | `Diff/DiffViewerProvider.cs` | CREATE | Phase 3 |
 | `MarketplacePanelProvider.cs` | CREATE | Phase 3 |
-| `SubAgentViewerProvider.cs` | CREATE | Phase 3 |
+| `Services/AttentionService.cs` | CREATE | Phase 3 |
+| `Services/BrowserAutomationService.cs` | CREATE | Phase 3 |
 | `Services/AutocompleteProvider.cs` | CREATE | Phase 3 |
 
 ---
 
 ## 11. Unresolved Items (UNKNOWN)
 
-1. **Settings Editor Implementation** — Unclear if `OpenSettingsCommand.cs` provides full settings editor functionality
-2. **Session Stream Scheduler** — Tests exist but production usage unclear
-3. **CSP Configuration** — Visual Studio WebView2 CSP handling not verified
-4. **Font Loading** — Font loading mechanism not verified
-5. **Telemetry Integration** — Telemetry proxy implementation not verified
-6. **Commit Message Service** — Implementation status unclear
-7. **Code Actions** — Registration and implementation unclear
-8. **URI Handler** — Deep link handling not verified
+1. **CSP Configuration** — Visual Studio WebView2 CSP handling not verified
+2. **Font Loading** — Font loading mechanism not verified
+3. **Telemetry Integration** — Telemetry proxy implementation not verified
+4. **Commit Message Service** — Implementation status unclear
+5. **Code Actions** — Registration and implementation unclear
+6. **URI Handler** — Deep link handling not verified
+7. **Migration Handler** — Legacy migration support unclear
 
 ---
 
@@ -463,12 +449,16 @@ This plan is ready for human review. The next step is to validate the mappings a
 - `CliBackendManager.cs` — CLI process management
 - `HttpClientWrapper.cs` — HTTP client
 - `CachedHttpClient.cs` — Cached HTTP client
+- `SseClient.cs` — SSE client
+- `SSEHelper.cs` — SSE helpers
 
 **Providers:**
 - `KiloWebViewControl.cs` — WebView control
 - `KiloClawProvider.cs` — KiloClaw
 - `ProviderFactory.cs` — Provider factory
 - `AgentManager/AgentManagerProvider.cs` — Agent Manager
+- `SettingsEditorProvider.cs` — Settings editor
+- `SubAgentViewerProvider.cs` — Sub-agent viewer
 
 **Message Handlers:**
 - `Services/Handlers/Auth/AuthHandlerService.cs`
