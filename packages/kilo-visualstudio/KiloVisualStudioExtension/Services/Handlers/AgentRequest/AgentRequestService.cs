@@ -62,7 +62,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
                             hidden = agent.Hidden == true,
                             color = agent.Color ?? "",
                             deprecated = agent.Deprecated == true,
-                            permission = agent.Permission != null ? JsonSerializer.SerializeToElement(agent.Permission) : null,
+                            permission = agent.Permission != null ? JsonSerializer.SerializeToElement(agent.Permission) : (JsonElement?)null,
                             model = agent.Model?.ToString() ?? ""
                         };
                         agentsList.Add(mappedAgent);

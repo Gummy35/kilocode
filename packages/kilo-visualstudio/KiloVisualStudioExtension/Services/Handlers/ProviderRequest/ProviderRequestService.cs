@@ -67,7 +67,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
                     
                     if (response.Default != null)
                     {
-                        defaultsDict = response.Default.ToDictionary(kvp => kvp.Key, kvp => kvp.Value ?? "");
+                        defaultsDict = response.Default.ToDictionary<string, string, string>(kvp => kvp.Key, kvp => kvp.Value ?? "");
                     }
                 }
                 

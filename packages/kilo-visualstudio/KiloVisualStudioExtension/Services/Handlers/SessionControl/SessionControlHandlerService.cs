@@ -98,7 +98,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
 
-                await kiotaClient.Session[sessionID].Fork.PostAsync(new Generated.Api.Session.Item.Fork.ForkPostRequestBody { MessageId = messageID });
+                await kiotaClient.Session[sessionID].Fork.PostAsync(new Generated.Session.Item.Fork.ForkPostRequestBody { MessageID = messageID });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: session forked: {sessionID}");
                 
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, forkedFromID = sessionID }));
@@ -133,14 +133,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
 
-                var compact = JsonSerializer.Deserialize<Generated.Api.Session.Item.Compact.CompactPostRequestBody>(payload.Value.GetRawText());
-                if (compact != null)
+                var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+                if (!string.IsNullOrEmpty(sessionID))
                 {
-                    var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
-                    if (!string.IsNullOrEmpty(sessionID))
-                    {
-                        await kiotaClient.Session[sessionID].Compact.PostAsync(compact);
-                    }
+                    // Compact endpoint doesn't require a request body
+                    await kiotaClient.Api.Session[sessionID].Compact.PostAsync();
                 }
             }
             catch (Exception ex)
@@ -172,10 +169,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
 
-                var enhance = JsonSerializer.Deserialize<Generated.Models.PromptEnhance>(payload.Value.GetRawText());
-                if (enhance != null)
+                var enhance = new Generated.EnhancePrompt.EnhancePromptPostRequestBody
                 {
-                    await kiotaClient.EnhancePrompt.PostAsync(enhance);
+                    Text = payload.Value.TryGetProperty("text", out var text) ? text.GetString() : ""
+                };
+                
+                var response = await kiotaClient.EnhancePrompt.PostAsEnhancePromptPostResponseAsync(enhance);
+                if (response != null && !string.IsNullOrEmpty(response.EnhancedText))
+                {
+                    _provider.PostMessage(JsonSerializer.Serialize(new { type = "promptEnhanced", enhancedText = response.EnhancedText }));
                 }
             }
             catch (Exception ex)
@@ -186,7 +188,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
 
         /// <summary>
         /// Handles the importAndSend message from the webview.
-        /// Imports content and sends it to the session.
+        /// Imports a cloud-synced session and sends it to the session.
         /// </summary>
         /// <param name="payload">The message payload.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -207,11 +209,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
 
-                var import = JsonSerializer.Deserialize<Generated.Models.ImportSend>(payload.Value.GetRawText());
-                if (import != null)
+                var import = new Generated.Kilo.Cloud.Session.Import.ImportPostRequestBody
                 {
-                    await kiotaClient.Import.Send.PostAsync(import);
-                }
+                    SessionId = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : ""
+                };
+                
+                await kiotaClient.Kilo.Cloud.Session.Import.PostAsImportPostResponseAsync(import);
             }
             catch (Exception ex)
             {

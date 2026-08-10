@@ -98,7 +98,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             }
             try
             {
-                var response = await kiotaClient.Session.PostAsSessionPostResponseAsync(new Generated.Api.Session.SessionPostRequestBody { Directory = dir });
+                var response = await kiotaClient.Session.PostAsync(new Generated.Session.SessionPostRequestBody(), q => {
+                    q.QueryParameters.Directory = dir;
+                });
                 if (response != null && !string.IsNullOrEmpty(response.Id))
                 {
                     var sessionID = response.Id;
@@ -672,7 +674,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await kiotaClient.Session[sessionID].Revert.PostAsync(new Generated.Api.Session.Item.Revert.RevertPostRequestBody { MessageId = messageID });
+                await kiotaClient.Session[sessionID].Revert.PostAsync(new Generated.Session.Item.Revert.RevertPostRequestBody { MessageID = messageID });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session reverted: {sessionID}");
                 
                 var message = new { type = "sessionReverted", sessionID, messageID };
@@ -706,7 +708,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await kiotaClient.Session[sessionID].Unrevert.PostAsync(new Generated.Api.Session.Item.Unrevert.UnrevertPostRequestBody());
+                await kiotaClient.Session[sessionID].Unrevert.PostAsync();
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session unreverted: {sessionID}");
                 
                 var message = new { type = "sessionUnreverted", sessionID };
@@ -742,7 +744,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await kiotaClient.Session[sessionID].Compact.PostAsync(new Generated.Api.Session.Item.Compact.CompactPostRequestBody { ProviderId = providerID, ModelId = modelID });
+                // Compact endpoint doesn't require a request body
+                await kiotaClient.Api.Session[sessionID].Compact.PostAsync();
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session compacted: {sessionID}");
                 
                 var message = new { type = "sessionCompacted", sessionID };

@@ -66,39 +66,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         }
 
         /// <summary>
-        /// Handles the logout message from the webview.
-        /// Logs out the current user by calling the backend logout endpoint.
-        /// 
-        /// VS Code workflow: Matches the pattern in kilo-provider/handlers/auth.ts where
-        /// handleLogout posts to /auth/logout to terminate the user session.
-        /// 
-        /// Workflow steps:
-        /// 1. Get HTTP client from provider
-        /// 2. Verify client is connected
-        /// 3. POST to /auth/logout endpoint with empty payload
-        /// 4. Log debug message on success
-        /// 
-        /// Messages sent to webview:
-        /// - No direct message sent; backend handles session termination
-        /// </summary>
-        /// <param name="payload">The message payload (unused for logout).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task HandleLogoutAsync(JsonElement? payload)
-        {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null) return;
-            try
-            {
-                await kiotaClient.Auth.Logout.PostAsync(new Generated.Auth.Logout.LogoutPostRequestBody());
-                System.Diagnostics.Debug.WriteLine("[Kilo] AuthHandler: logout");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] AuthHandler: error logging out: {ex.Message}");
-            }
-        }
-
-        /// <summary>
         /// Handles the refreshProfile message from the webview.
         /// Refreshes the user profile data from the backend and sends it to the webview.
         /// 

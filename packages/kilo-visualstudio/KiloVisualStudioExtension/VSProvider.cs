@@ -535,10 +535,6 @@ namespace KiloVisualStudioExtension
                         await _authHandler.HandleLoginAsync(payload);
                         break;
 
-                    case "logout":
-                        await _authHandler.HandleLogoutAsync(payload);
-                        break;
-
                     case "refreshProfile":
                         await _authHandler.HandleRefreshProfileAsync(payload);
                         break;
@@ -769,7 +765,7 @@ namespace KiloVisualStudioExtension
                     if (kiotaClient != null)
                     {
                         var profile = await kiotaClient.Kilo.Profile.GetAsync();
-                        var profileData = profile != null ? JsonSerializer.SerializeToElement(profile) : null;
+                        var profileData = profile != null ? JsonSerializer.SerializeToElement(profile) : (JsonElement?)null;
                         
                         var profileMessage = new { type = "profileData", data = profileData };
                         _webView.PostMessage(JsonSerializer.Serialize(profileMessage));
@@ -955,7 +951,7 @@ namespace KiloVisualStudioExtension
                                         var patterns = perm.Patterns;
                                         var always = perm.Always?.Count > 0;
                                         var metadata = perm.Metadata;
-                                        var tool = perm.Tool != null ? JsonSerializer.SerializeToElement(perm.Tool) : null;
+                                        var tool = perm.Tool != null ? JsonSerializer.SerializeToElement(perm.Tool) : (JsonElement?)null;
 
                                         PostMessage(JsonSerializer.Serialize(new
                                         {
@@ -1004,7 +1000,7 @@ namespace KiloVisualStudioExtension
                                     {
                                         var sessionID = q.SessionID;
                                         var blocking = q.Blocking ?? false;
-                                        var tool = q.Tool != null ? JsonSerializer.SerializeToElement(q.Tool) : null;
+                                        var tool = q.Tool != null ? JsonSerializer.SerializeToElement(q.Tool) : (JsonElement?)null;
 
                                         PostMessage(JsonSerializer.Serialize(new
                                         {
@@ -1013,7 +1009,7 @@ namespace KiloVisualStudioExtension
                                             {
                                                 id = requestId,
                                                 sessionID,
-                                                questions = q.Questions != null ? JsonSerializer.SerializeToElement(q.Questions) : null,
+                                                questions = q.Questions != null ? JsonSerializer.SerializeToElement(q.Questions) : (JsonElement?)null,
                                                 blocking,
                                                 tool
                                             }
@@ -1247,7 +1243,7 @@ namespace KiloVisualStudioExtension
                     var provider = response.All.FirstOrDefault(p => p.Id == providerID);
                     if (provider != null)
                     {
-                        PostMessage(JsonSerializer.Serialize(new { type = "customProviderModelsFetched", providerID, models = JsonSerializer.SerializeToElement(provider.Models ?? new List<object>()) }));
+                        PostMessage(JsonSerializer.Serialize(new { type = "customProviderModelsFetched", providerID, models = provider.Models != null ? JsonSerializer.SerializeToElement(provider.Models) : JsonSerializer.SerializeToElement(new List<object>()) }));
                     }
                 }
             }

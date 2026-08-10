@@ -98,7 +98,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
                     return;
                 }
 
-                var status = await kiotaClient.Indexing.GetAsync();
+                var status = await kiotaClient.Indexing.Status.GetAsync();
                 var statusData = status != null ? JsonSerializer.SerializeToElement(status) : JsonDocument.Parse("{}").RootElement;
 
                 await _provider.SendIndexingStatusAsync(statusData);
@@ -112,66 +112,28 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
 
         /// <summary>
         /// Handles the requestWorkStyle message from the webview.
-        /// Sends the current work style configuration to the webview.
+        /// Work style endpoint is not available in the current API.
+        /// Sends default work style configuration.
         /// </summary>
         /// <param name="payload">The message payload (unused).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestWorkStyleAsync(JsonElement? payload)
         {
-            try
-            {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
-                {
-                    await _provider.SendWorkStyleLoadedAsync(new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
-                    return;
-                }
-
-                var style = await kiotaClient.WorkStyle.GetAsync();
-                var styleData = style != null ? new { mode = style.Mode ?? "ask", autoApprove = new { enabled = style.AutoApprove?.Enabled ?? false, limit = style.AutoApprove?.Limit ?? 0 } } : new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } };
-
-                await _provider.SendWorkStyleLoadedAsync(styleData);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] SettingsHandler: Error fetching work style: {ex.Message}");
-                await _provider.SendWorkStyleLoadedAsync(new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
-            }
+            // Work style endpoint does not exist in current API
+            await _provider.SendWorkStyleLoadedAsync(new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
         }
 
         /// <summary>
         /// Handles the applyWorkStyle message from the webview.
-        /// Applies a new work style configuration.
+        /// Work style endpoint is not available in the current API.
+        /// Returns error indicating the feature is not supported.
         /// </summary>
         /// <param name="payload">The message payload containing the new work style.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleApplyWorkStyleAsync(JsonElement? payload)
         {
-            if (payload == null)
-            {
-                await _provider.SendErrorAsync("Missing payload", "Work style configuration is required");
-                return;
-            }
-
-            try
-            {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
-                {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
-                    return;
-                }
-
-                var workStyle = JsonSerializer.Deserialize<Generated.Models.WorkStyle>(payload.Value.GetRawText());
-                if (workStyle != null)
-                {
-                    await kiotaClient.WorkStyle.PatchAsync(workStyle);
-                }
-            }
-            catch (Exception ex)
-            {
-                await _provider.SendErrorAsync("Apply work style error", ex.Message);
-            }
+            // Work style endpoint does not exist in current API
+            await _provider.SendErrorAsync("Not supported", "Work style configuration is not available in the current API");
         }
 
         public void Dispose()

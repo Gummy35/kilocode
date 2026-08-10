@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -74,36 +75,21 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
 
         /// <summary>
         /// Handles the requestKiloEmbeddingModels message from the webview.
-        /// Fetches and sends the list of available Kilo embedding models.
+        /// Embedding models endpoint is not available in the current API.
+        /// Sends empty array as placeholder.
         /// </summary>
         /// <param name="payload">The message payload (unused).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestKiloEmbeddingModelsAsync(JsonElement? payload)
         {
-            try
-            {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
-                {
-                    await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
-                    return;
-                }
-
-                var models = await kiotaClient.Model.Embedding.GetAsync();
-                var modelsList = models != null ? models.Select(m => (object)m).ToArray() : Array.Empty<object>();
-
-                await _provider.SendKiloEmbeddingModelsAsync(modelsList);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] ModelHandler: Error fetching embedding models: {ex.Message}");
-                await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
-            }
+            // Embedding models endpoint does not exist in current API
+            await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
         }
 
         /// <summary>
         /// Handles the requestImageModels message from the webview.
         /// Fetches and sends the list of available image generation models.
+        /// Uses Kilo.Models.Images endpoint from generated Kiota client.
         /// </summary>
         /// <param name="payload">The message payload (unused).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -118,7 +104,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
                     return;
                 }
 
-                var models = await kiotaClient.Model.Image.GetAsync();
+                var models = await kiotaClient.Kilo.Models.Images.GetAsync();
                 var modelsList = models != null ? models.Select(m => (object)m).ToArray() : Array.Empty<object>();
 
                 await _provider.SendImageModelsAsync(modelsList);

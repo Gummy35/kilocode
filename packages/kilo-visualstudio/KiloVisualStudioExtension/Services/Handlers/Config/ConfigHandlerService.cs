@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -60,7 +61,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                 if (configResponse != null)
                 {
                     config = JsonSerializer.SerializeToElement(configResponse);
-                    features = JsonSerializer.SerializeToElement(configResponse.Features ?? new { });
+                    // Features is not a property of Config in the generated model
+                    features = JsonDocument.Parse("{}").RootElement;
                 }
 
                 await _provider.SendConfigLoadedAsync(config, features);
@@ -198,21 +200,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                 var kiotaClient = _provider.GetKiloClient();
                 if (kiotaClient == null) return;
                 
-                var config = await kiotaClient.Config.GetAsync(q => {
-                    q.QueryParameters.Directory = scope;
-                });
+                // Config model doesn't have a Path property - use default config path
+                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "kilo", "config.json");
                 
-                if (config != null && !string.IsNullOrEmpty(config.Path))
+                if (!string.IsNullOrEmpty(filePath))
                 {
-                    string filePath = config.Path;
-                    if (!string.IsNullOrEmpty(filePath))
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                     {
-                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                        {
-                            FileName = filePath,
-                            UseShellExecute = true
-                        });
-                    }
+                        FileName = filePath,
+                        UseShellExecute = true
+                    });
                 }
             }
             catch (Exception ex)

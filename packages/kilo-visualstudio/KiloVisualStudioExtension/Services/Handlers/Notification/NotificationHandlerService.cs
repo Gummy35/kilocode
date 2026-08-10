@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -40,7 +41,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
                     return;
                 }
 
-                var notifications = await kiotaClient.Notification.GetAsync();
+                var notifications = await kiotaClient.Kilo.Notifications.GetAsync();
                 var notificationsList = notifications != null ? notifications.Select(n => (object)n).ToArray() : Array.Empty<object>();
 
                 await _provider.SendNotificationsAsync(notificationsList);
@@ -54,65 +55,26 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
 
         /// <summary>
         /// Handles the dismissNotification message from the webview.
-        /// Dismisses a specific notification.
+        /// Notification dismiss endpoint is not available in the current API.
         /// </summary>
         /// <param name="payload">The message payload containing notification ID.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleDismissNotificationAsync(JsonElement? payload)
         {
-            if (payload == null || !payload.Value.TryGetProperty("notificationId", out var notifIdProp))
-            {
-                await _provider.SendErrorAsync("Missing notificationId", "notificationId is required");
-                return;
-            }
-
-            var notificationId = notifIdProp.GetString();
-            if (string.IsNullOrEmpty(notificationId))
-            {
-                await _provider.SendErrorAsync("Invalid notificationId", "notificationId cannot be empty");
-                return;
-            }
-
-            try
-            {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
-                {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
-                    return;
-                }
-
-                await kiotaClient.Notification[notificationId].Dismiss.PostAsync(new Generated.Notification.Item.Dismiss.DismissPostRequestBody());
-            }
-            catch (Exception ex)
-            {
-                await _provider.SendErrorAsync("Dismiss notification error", ex.Message);
-            }
+            // Notification dismiss endpoint does not exist in current API
+            await _provider.SendErrorAsync("Not supported", "Notification dismiss is not available in the current API");
         }
 
         /// <summary>
         /// Handles the resetReadNotifications message from the webview.
-        /// Resets all read notifications to unread status.
+        /// Reset read notifications endpoint is not available in the current API.
         /// </summary>
         /// <param name="payload">The message payload (unused for resetReadNotifications).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleResetReadNotificationsAsync(JsonElement? payload)
         {
-            try
-            {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
-                {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
-                    return;
-                }
-
-                await kiotaClient.Notification.ResetRead.PostAsync(new Generated.Notification.ResetRead.ResetReadPostRequestBody());
-            }
-            catch (Exception ex)
-            {
-                await _provider.SendErrorAsync("Reset read notifications error", ex.Message);
-            }
+            // Reset read notifications endpoint does not exist in current API
+            await _provider.SendErrorAsync("Not supported", "Reset read notifications is not available in the current API");
         }
 
         public void Dispose()
