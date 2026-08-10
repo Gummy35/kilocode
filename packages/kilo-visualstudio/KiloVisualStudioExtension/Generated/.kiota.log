@@ -1,0 +1,146 @@
+Warning: KiotaBuilder OpenAPI warning: #/ - A servers entry (v3) or host + basePath + schemes properties (v2) was not present in the OpenAPI description. The root URL will need to be set manually with the request adapter.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema SessionStatus is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema PermissionRuleConfig is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema OutputFormat is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema AnacondaDesktopStatus is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema PermissionConfig is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema NotebookRequest is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema Auth is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema ConnectionInfo is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema FilePartSource is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema NotebookResult is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema SessionMessage is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema AgentManagerRequest is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema AgentManagerResult is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema MCPStatus is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema ToolState is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema Message is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema Part is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema Event is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder OpenAPI warning: #/ - The schema /kilo/claw/chat-credentials is a polymorphic type but does not define a discriminator. This will result in serialization errors.
+Warning: KiotaBuilder No server url found in the OpenAPI document. The base url will need to be set when using the client.
+Warning: KiotaBuilder Could not create error type for 400 in global.config.update
+Warning: KiotaBuilder Could not create error type for 400 in experimental.controlPlane.moveSession
+Warning: KiotaBuilder Could not create error type for 400 in mcp.add
+Warning: KiotaBuilder Could not create error type for 400 in permission.reply
+Warning: KiotaBuilder Could not create error type for 400 in vcs.apply
+Warning: KiotaBuilder Could not create error type for 400 in permission.allowEverything
+Warning: KiotaBuilder Could not create error type for 400 in tool.list
+Warning: KiotaBuilder Could not create error type for 400 in sync.replay
+Warning: KiotaBuilder Could not create error type for 400 in question.reply
+Warning: KiotaBuilder Could not create error type for 400 in sync.steal
+Warning: KiotaBuilder Could not create error type for 400 in tui.appendPrompt
+Warning: KiotaBuilder Could not create error type for 400 in tool.ids
+Warning: KiotaBuilder Could not create error type for 400 in mcp.auth.start
+Warning: KiotaBuilder Could not create error type for 400 in pty.create
+Warning: KiotaBuilder Could not create error type for 400 in app.log
+Warning: KiotaBuilder Could not create error type for 400 in question.reject
+Warning: KiotaBuilder Could not create error type for 400 in commitMessage.generate
+Warning: KiotaBuilder Could not create error type for 400 in worktree.list
+Warning: KiotaBuilder Could not create error type for 400 in enhancePrompt.enhance
+Warning: KiotaBuilder Could not create error type for 400 in mcp.auth.callback
+Warning: KiotaBuilder Could not create error type for 400 in worktree.create
+Warning: KiotaBuilder Could not create error type for 400 in global.upgrade
+Warning: KiotaBuilder Could not create error type for 400 in auth.set
+Warning: KiotaBuilder Could not create error type for 400 in session.create
+Warning: KiotaBuilder Could not create error type for 400 in tui.executeCommand
+Warning: KiotaBuilder Could not create error type for 400 in sync.history.list
+Warning: KiotaBuilder Could not create error type for 400 in project.update
+Warning: KiotaBuilder Could not create error type for 400 in worktree.remove
+Warning: KiotaBuilder Could not create error type for 400 in kilo.profile
+Warning: KiotaBuilder Could not create error type for 400 in mcp.auth.authenticate
+Warning: KiotaBuilder Could not create error type for 400 in pty.update
+Warning: KiotaBuilder Could not create error type for 400 in tui.publish
+Warning: KiotaBuilder Could not create error type for 400 in session.status
+Warning: KiotaBuilder Could not create error type for 400 in network.reply
+Warning: KiotaBuilder Could not create error type for 400 in worktree.reset
+Warning: KiotaBuilder Could not create error type for 400 in telemetry.capture
+Warning: KiotaBuilder Could not create error type for 400 in experimental.session.background
+Warning: KiotaBuilder Could not create error type for 400 in kilo.authStatus
+Warning: KiotaBuilder Could not create error type for 400 in kilo.fim
+Warning: KiotaBuilder Could not create error type for 400 in kilo.edit
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.heap.snapshot
+Warning: KiotaBuilder Could not create error type for 400 in worktree.diff
+Warning: KiotaBuilder Could not create error type for 400 in network.reject
+Warning: KiotaBuilder Could not create error type for 400 in provider.oauth.authorize
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.removeSkill
+Warning: KiotaBuilder Could not create error type for 400 in telemetry.setEnabled
+Warning: KiotaBuilder Could not create error type for 400 in provider.oauth.callback
+Warning: KiotaBuilder Could not create error type for 400 in suggestion.accept
+Warning: KiotaBuilder Could not create error type for 400 in tui.selectSession
+Warning: KiotaBuilder Could not create error type for 400 in kilo.audio.transcriptions
+Warning: KiotaBuilder Could not create error type for 400 in worktree.diffSummary
+Warning: KiotaBuilder Could not create error type for 400 in auth.remove
+Warning: KiotaBuilder Could not create error type for 400 in v2.projectCopy.create
+Warning: KiotaBuilder Could not create error type for 400 in memory.status
+Warning: KiotaBuilder Could not create error type for 400 in v2.projectCopy.remove
+Warning: KiotaBuilder Could not create error type for 400 in session.get
+Warning: KiotaBuilder Could not create error type for 400 in suggestion.dismiss
+Warning: KiotaBuilder Could not create error type for 400 in session.delete
+Warning: KiotaBuilder Could not create error type for 400 in v2.projectCopy.refresh
+Warning: KiotaBuilder Could not create error type for 400 in kilo.notifications
+Warning: KiotaBuilder Could not create error type for 400 in session.update
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.notebook.reply
+Warning: KiotaBuilder Could not create error type for 400 in v2.session.list
+Warning: KiotaBuilder Could not create error type for 400 in tui.config.update
+Warning: KiotaBuilder Could not create error type for 400 in experimental.workspace.create
+Warning: KiotaBuilder Could not create error type for 400 in kilo.models.images
+Warning: KiotaBuilder Could not create error type for 400 in kilo.cloudSessions
+Warning: KiotaBuilder Could not create error type for 400 in worktree.diffFile
+Warning: KiotaBuilder Could not create error type for 400 in memory.show
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.get
+Warning: KiotaBuilder Could not create error type for 400 in kilo.organization.set
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.removeAgent
+Warning: KiotaBuilder Could not create error type for 400 in experimental.workspace.remove
+Warning: KiotaBuilder Could not create error type for 400 in agentBuilder.save
+Warning: KiotaBuilder Could not create error type for 400 in memory.enable
+Warning: KiotaBuilder Could not create error type for 400 in agentBuilder.preview
+Warning: KiotaBuilder Could not create error type for 400 in experimental.workspace.warp
+Warning: KiotaBuilder Could not create error type for 400 in config.update
+Warning: KiotaBuilder Could not create error type for 400 in session.children
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.prompt
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.sessionImport.project
+Warning: KiotaBuilder Could not create error type for 400 in session.todo
+Warning: KiotaBuilder Could not create error type for 400 in memory.configure
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.sessionImport.session
+Warning: KiotaBuilder Could not create error type for 400 in memory.disable
+Warning: KiotaBuilder Could not create error type for 400 in session.viewed
+Warning: KiotaBuilder Could not create error type for 400 in memory.rebuild
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.compact
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.sessionImport.message
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.agentManager.reply
+Warning: KiotaBuilder Could not create error type for 400 in session.fork
+Warning: KiotaBuilder Could not create error type for 400 in kilo.cloud.session.import
+Warning: KiotaBuilder Could not create error type for 400 in kilocode.sessionImport.part
+Warning: KiotaBuilder Could not create error type for 400 in memory.remember
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.wait
+Warning: KiotaBuilder Could not create error type for 400 in session.abort
+Warning: KiotaBuilder Could not create error type for 400 in memory.forget
+Warning: KiotaBuilder Could not create error type for 400 in session.init
+Warning: KiotaBuilder Could not create error type for 400 in memory.correct
+Warning: KiotaBuilder Could not create error type for 400 in memory.purge
+Warning: KiotaBuilder Could not create error type for 400 in session.summarize
+Warning: KiotaBuilder Could not create error type for 400 in session.prompt_async
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.permission.list
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.permission.reply
+Warning: KiotaBuilder Could not create error type for 400 in session.unrevert
+Warning: KiotaBuilder Could not create error type for 400 in permission.respond
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.question.list
+Warning: KiotaBuilder Could not create error type for 404 in permission.respond
+Warning: KiotaBuilder Could not create error type for 400 in session.revert
+Warning: KiotaBuilder Could not create error type for 400 in v2.integration.connect.key
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.question.reply
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.question.reject
+Warning: KiotaBuilder Could not create error type for 400 in v2.integration.connect.oauth
+Warning: KiotaBuilder Could not create error type for 400 in v2.integration.attempt.complete
+Warning: KiotaBuilder Could not create error type for 400 in session.command
+Warning: KiotaBuilder Could not create error type for 400 in session.shell
+Warning: KiotaBuilder Could not create error type for 400 in session.messages
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.context
+Warning: KiotaBuilder Could not create error type for 400 in session.prompt
+Warning: KiotaBuilder Could not create error type for 400 in v2.session.messages
+Warning: KiotaBuilder Could not create error type for 404 in v2.session.messages
+Warning: KiotaBuilder Could not create error type for 400 in session.message
+Warning: KiotaBuilder Could not create error type for 400 in session.deleteMessage
+Warning: KiotaBuilder Could not create error type for 400 in part.delete
+Warning: KiotaBuilder Could not create error type for 400 in part.update

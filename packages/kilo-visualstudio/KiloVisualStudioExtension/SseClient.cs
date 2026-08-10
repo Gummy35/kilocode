@@ -111,9 +111,15 @@ namespace KiloVisualStudioExtension
         private const int HeartbeatTimeoutMs = 15000;
         
         /// <summary>
-        /// Delay in milliseconds before attempting reconnection after a disconnect.
+        /// Initial delay in milliseconds before attempting reconnection after a disconnect.
         /// </summary>
         private const int ReconnectDelayMs = 250;
+        
+        /// <summary>
+        /// Maximum reconnect delay in milliseconds.
+        /// Matches VS Code's MAX_RECONNECT_DELAY_MS.
+        /// </summary>
+        private const int MaxReconnectDelayMs = 5000;
 
         /// <summary>
         /// Timestamp of the last received event, used for heartbeat detection.
@@ -124,6 +130,11 @@ namespace KiloVisualStudioExtension
         /// Flag indicating whether the connection is currently established.
         /// </summary>
         private bool _connected;
+        
+        /// <summary>
+        /// Current reconnect delay for exponential backoff.
+        /// </summary>
+        private int _currentReconnectDelay = ReconnectDelayMs;
 
         /// <summary>
         /// Creates a new SSE client with the specified backend URL and password.
@@ -196,6 +207,7 @@ namespace KiloVisualStudioExtension
                     }
                     _connected = true;
                     _lastEventTime = DateTime.UtcNow;
+                    _currentReconnectDelay = ReconnectDelayMs;
                 }
 
                 OnConnected?.Invoke(this, EventArgs.Empty);
@@ -289,20 +301,26 @@ namespace KiloVisualStudioExtension
         }
 
         /// <summary>
-        /// Schedules a reconnection attempt after ReconnectDelayMs milliseconds.
+        /// Schedules a reconnection attempt with exponential backoff.
         /// Only reconnects if the object has not been disposed and cancellation has not been requested.
         /// </summary>
         private void ScheduleReconnect()
         {
             if (_disposed) return;
 
-            Task.Delay(ReconnectDelayMs).ContinueWith(_ =>
+            var delay = _currentReconnectDelay;
+            System.Diagnostics.Debug.WriteLine($"[Kilo] SSE: scheduling reconnect in {delay}ms");
+
+            Task.Delay(delay).ContinueWith(_ =>
             {
                 if (!_disposed && _cts != null && !_cts.IsCancellationRequested)
                 {
                     StartConnection();
                 }
             });
+
+            // Exponential backoff: double the delay for next time, capped at MaxReconnectDelayMs
+            _currentReconnectDelay = Math.Min(_currentReconnectDelay * 2, MaxReconnectDelayMs);
         }
 
         /// <summary>

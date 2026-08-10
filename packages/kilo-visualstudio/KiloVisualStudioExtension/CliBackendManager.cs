@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +41,11 @@ namespace KiloVisualStudioExtension
         private string? _baseUrl;
         
         /// <summary>
+        /// The password used for authentication.
+        /// </summary>
+        private string? _password;
+        
+        /// <summary>
         /// Semaphore to ensure only one startup attempt at a time.
         /// </summary>
         private readonly SemaphoreSlim _initSemaphore = new(1, 1);
@@ -53,6 +60,12 @@ namespace KiloVisualStudioExtension
         /// Returns null if the backend has not started yet.
         /// </summary>
         public string? BaseUrl => _baseUrl;
+
+        /// <summary>
+        /// Gets the password used for authentication.
+        /// Returns null if the backend has not started yet.
+        /// </summary>
+        public string? Password => _password;
 
         /// <summary>
         /// Extracts the port number from the base URL.
@@ -120,9 +133,19 @@ namespace KiloVisualStudioExtension
                 };
 
                 // Set environment variables
+                var password = GenerateRandomPassword();
+                _password = password;
+                startInfo.EnvironmentVariables["KILO_SERVER_PASSWORD"] = password;
+
+                // Set environment variables
                 startInfo.EnvironmentVariables["KILO_CLIENT"] = "visualstudio";
                 startInfo.EnvironmentVariables["KILO_PLATFORM"] = "visualstudio";
                 startInfo.EnvironmentVariables["KILO_APP_NAME"] = "kilo-code";
+
+                // Add CLI-functional environment variables
+                startInfo.EnvironmentVariables["KILO_PARENT_PID"] = Process.GetCurrentProcess().Id.ToString();
+                startInfo.EnvironmentVariables["MIMALLOC_PURGE_DELAY"] = "0";
+                startInfo.EnvironmentVariables["NODE_USE_SYSTEM_CA"] = "1";
 
                 _process = new Process { StartInfo = startInfo };
                 
@@ -192,8 +215,11 @@ namespace KiloVisualStudioExtension
             if (match.Success)
             {
                 var port = match.Groups[1].Value;
-                _baseUrl = $"http://127.0.0.1:{port}";
-                System.Diagnostics.Debug.WriteLine($"Kilo backend started on {_baseUrl}");
+                if (!string.IsNullOrEmpty(_password))
+                {
+                    _baseUrl = $"http://127.0.0.1:{port}";
+                    System.Diagnostics.Debug.WriteLine($"Kilo backend started on {_baseUrl}");
+                }
             }
         }
 
@@ -281,6 +307,21 @@ namespace KiloVisualStudioExtension
             }
 
             _initSemaphore.Dispose();
+        }
+
+        /// <summary>
+        /// Generates a random 32-byte hexadecimal password for CLI authentication.
+        /// Matches the VS Code implementation using crypto.randomBytes(32).toString("hex").
+        /// </summary>
+        /// <returns>A 64-character hexadecimal string.</returns>
+        private static string GenerateRandomPassword()
+        {
+            var bytes = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(bytes);
+            }
+            return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
         }
     }
 }

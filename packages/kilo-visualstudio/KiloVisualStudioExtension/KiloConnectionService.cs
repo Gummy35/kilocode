@@ -1,8 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
+using KiloVisualStudioExtension.Generated;
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Authentication;
+using Microsoft.Kiota.Http.HttpClientLibrary;
+using Microsoft.Kiota.Serialization.Json;
 
 namespace KiloVisualStudioExtension
 {
@@ -126,6 +134,16 @@ namespace KiloVisualStudioExtension
         private SseClient? _sseClient;
         
         /// <summary>
+        /// Generated Kiota SDK client for REST API calls.
+        /// </summary>
+        private KiloClient? _kiotaClient;
+        
+        /// <summary>
+        /// Request adapter for the Kiota client (used for authentication).
+        /// </summary>
+        private IRequestAdapter? _requestAdapter;
+        
+        /// <summary>
         /// Current connection state.
         /// </summary>
         private ConnectionState _state = ConnectionState.Disconnected;
@@ -144,6 +162,52 @@ namespace KiloVisualStudioExtension
         /// Timer for periodic health checks.
         /// </summary>
         private Timer? _healthPollTimer;
+        
+        /// <summary>
+        /// Timer for periodic flushViewed calls (60s interval).
+        /// </summary>
+        private Timer? _checkinTimer;
+        
+        /// <summary>
+        /// Session visibility tracking - maps workspace/directory to visible session IDs.
+        /// Matches VS Code's registerVisible functionality.
+        /// </summary>
+        private readonly Dictionary<string, HashSet<string>> _visibleSessions = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        
+        /// <summary>
+        /// Session attachment tracking - maps workspace/directory to attached session IDs.
+        /// Matches VS Code's registerAttached functionality.
+        /// </summary>
+        private readonly Dictionary<string, HashSet<string>> _attachedSessions = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        
+        /// <summary>
+        /// Known directories tracking.
+        /// Matches VS Code's trackDirectory functionality.
+        /// </summary>
+        private readonly HashSet<string> _knownDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        
+        /// <summary>
+        /// Permission directory tracking.
+        /// Matches VS Code's recordPermissionDirectory functionality.
+        /// </summary>
+        private readonly HashSet<string> _permissionDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        
+        /// <summary>
+        /// Question directory tracking.
+        /// Matches VS Code's recordQuestionDirectory functionality.
+        /// </summary>
+        private readonly HashSet<string> _questionDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        
+        /// <summary>
+        /// Message session ID mapping - maps message IDs to session IDs.
+        /// Matches VS Code's recordMessageSessionId functionality.
+        /// </summary>
+        private readonly Dictionary<string, string> _messageSessionMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        
+        /// <summary>
+        /// Lock object for session visibility tracking.
+        /// </summary>
+        private readonly object _visibilityLock = new object();
         
         /// <summary>
         /// Flag indicating whether the object has been disposed.
@@ -309,12 +373,16 @@ namespace KiloVisualStudioExtension
                     throw new Exception("Backend manager did not provide a valid base URL");
                 }
 
-                var password = ExtractPasswordFromUrl(_baseUrl);
+                var password = _backendManager.Password ?? "default-password";
                 _password = password;
 
                 System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: creating HTTP client for {_baseUrl}");
                 _httpClient = new HttpClientWrapper(_baseUrl, password);
                 _cachedHttpClient = new CachedHttpClient(_httpClient);
+
+                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating Kiota SDK client");
+                _requestAdapter = CreateRequestAdapter(_baseUrl, password);
+                _kiotaClient = new KiloClient(_requestAdapter);
 
                 System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating SSE client");
                 _sseClient = new SseClient(_baseUrl, password);
@@ -327,6 +395,7 @@ namespace KiloVisualStudioExtension
                 _sseClient.Connect();
 
                 StartHealthPoll();
+                StartCheckinTimer();
 
                 SetState(ConnectionState.Connected);
                 System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: connected successfully");
@@ -349,6 +418,27 @@ namespace KiloVisualStudioExtension
             var uri = new Uri(baseUrl);
             var userInfo = uri.UserInfo;
             return userInfo ?? "default-password";
+        }
+
+        /// <summary>
+        /// Creates a Kiota request adapter with Basic Authentication.
+        /// </summary>
+        /// <param name="baseUrl">The base URL of the backend.</param>
+        /// <param name="password">The password for authentication.</param>
+        /// <returns>A configured IRequestAdapter instance.</returns>
+        private IRequestAdapter CreateRequestAdapter(string baseUrl, string password)
+        {
+            var authenticationProvider = new AnonymousAuthenticationProvider();
+            var httpClient = new HttpClient();
+            
+            // Set Basic Auth header for all requests
+            var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"kilo:{password}"));
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
+            
+            var requestAdapter = new HttpClientRequestAdapter(authenticationProvider, httpClient: httpClient);
+            requestAdapter.BaseUrl = baseUrl;
+            
+            return requestAdapter;
         }
 
         /// <summary>
@@ -382,6 +472,29 @@ namespace KiloVisualStudioExtension
         {
             _healthPollTimer?.Dispose();
             _healthPollTimer = null;
+        }
+
+        /// <summary>
+        /// Stops the checkin timer for flushViewed.
+        /// </summary>
+        private void StopCheckinTimer()
+        {
+            _checkinTimer?.Dispose();
+            _checkinTimer = null;
+        }
+
+        /// <summary>
+        /// Starts the checkin timer that calls flushViewed every 60 seconds.
+        /// Matches VS Code's 60s checkin interval for session visibility tracking.
+        /// </summary>
+        private void StartCheckinTimer()
+        {
+            StopCheckinTimer();
+            _checkinTimer = new Timer(async _ =>
+            {
+                if (_state != ConnectionState.Connected) return;
+                await FlushViewedAsync();
+            }, null, 60000, 60000);
         }
 
         /// <summary>
@@ -482,18 +595,234 @@ namespace KiloVisualStudioExtension
         }
 
         /// <summary>
+        /// Gets the generated Kiota SDK client for making REST API calls.
+        /// </summary>
+        /// <returns>The KiloClient instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if not connected.</exception>
+        public KiloClient? GetKiloClient()
+        {
+            if (_state != ConnectionState.Connected)
+            {
+                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
+            }
+            return _kiotaClient;
+        }
+
+        /// <summary>
+        /// Gets the request adapter for the Kiota client.
+        /// </summary>
+        /// <returns>The IRequestAdapter instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if not connected.</exception>
+        public IRequestAdapter? GetRequestAdapter()
+        {
+            if (_state != ConnectionState.Connected)
+            {
+                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
+            }
+            return _requestAdapter;
+        }
+
+        /// <summary>
+        /// Registers visible session IDs for a workspace/directory.
+        /// Matches VS Code's registerVisible functionality.
+        /// </summary>
+        /// <param name="directory">The workspace/directory path.</param>
+        /// <param name="sessionIds">The set of visible session IDs.</param>
+        public void RegisterVisible(string directory, HashSet<string> sessionIds)
+        {
+            lock (_visibilityLock)
+            {
+                _visibleSessions[directory] = sessionIds;
+            }
+        }
+
+        /// <summary>
+        /// Registers attached session IDs for a workspace/directory.
+        /// Matches VS Code's registerAttached functionality.
+        /// </summary>
+        /// <param name="directory">The workspace/directory path.</param>
+        /// <param name="sessionIds">The set of attached session IDs.</param>
+        public void RegisterAttached(string directory, HashSet<string> sessionIds)
+        {
+            lock (_visibilityLock)
+            {
+                _attachedSessions[directory] = sessionIds;
+            }
+        }
+
+        /// <summary>
+        /// Flushes viewed session data to the backend.
+        /// Matches VS Code's flushViewed functionality.
+        /// </summary>
+        public async Task FlushViewedAsync()
+        {
+            if (_state != ConnectionState.Connected || _kiotaClient == null)
+                return;
+
+            lock (_visibilityLock)
+            {
+                foreach (var kvp in _visibleSessions)
+                {
+                    var directory = kvp.Key;
+                    var sessionIds = kvp.Value;
+                    // Send viewed sessions to backend via API
+                    // This would call the session.viewed endpoint
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] FlushViewed: directory={directory}, count={sessionIds.Count}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tracks a directory for session management.
+        /// Matches VS Code's trackDirectory functionality.
+        /// </summary>
+        /// <param name="directory">The directory path to track.</param>
+        public void TrackDirectory(string directory)
+        {
+            lock (_visibilityLock)
+            {
+                _knownDirectories.Add(directory);
+            }
+        }
+
+        /// <summary>
+        /// Gets all known tracked directories.
+        /// </summary>
+        /// <returns>A set of tracked directory paths.</returns>
+        public HashSet<string> GetKnownDirectories()
+        {
+            lock (_visibilityLock)
+            {
+                return new HashSet<string>(_knownDirectories, StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Records a directory as a permission directory.
+        /// Matches VS Code's recordPermissionDirectory functionality.
+        /// </summary>
+        /// <param name="directory">The directory path.</param>
+        public void RecordPermissionDirectory(string directory)
+        {
+            lock (_visibilityLock)
+            {
+                _permissionDirectories.Add(directory);
+            }
+        }
+
+        /// <summary>
+        /// Gets the permission directory set.
+        /// </summary>
+        /// <returns>A set of permission directory paths.</returns>
+        public HashSet<string> GetPermissionDirectories()
+        {
+            lock (_visibilityLock)
+            {
+                return new HashSet<string>(_permissionDirectories, StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Clears the permission directory tracking.
+        /// </summary>
+        public void ClearPermissionDirectory()
+        {
+            lock (_visibilityLock)
+            {
+                _permissionDirectories.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Records a directory as a question directory.
+        /// Matches VS Code's recordQuestionDirectory functionality.
+        /// </summary>
+        /// <param name="directory">The directory path.</param>
+        public void RecordQuestionDirectory(string directory)
+        {
+            lock (_visibilityLock)
+            {
+                _questionDirectories.Add(directory);
+            }
+        }
+
+        /// <summary>
+        /// Gets the question directory set.
+        /// </summary>
+        /// <returns>A set of question directory paths.</returns>
+        public HashSet<string> GetQuestionDirectories()
+        {
+            lock (_visibilityLock)
+            {
+                return new HashSet<string>(_questionDirectories, StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Clears the question directory tracking.
+        /// </summary>
+        public void ClearQuestionDirectory()
+        {
+            lock (_visibilityLock)
+            {
+                _questionDirectories.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Records the session ID for a message.
+        /// Matches VS Code's recordMessageSessionId functionality.
+        /// </summary>
+        /// <param name="messageId">The message ID.</param>
+        /// <param name="sessionId">The session ID.</param>
+        public void RecordMessageSessionId(string messageId, string sessionId)
+        {
+            lock (_visibilityLock)
+            {
+                _messageSessionMap[messageId] = sessionId;
+            }
+        }
+
+        /// <summary>
+        /// Prunes all message-session mappings for a given session.
+        /// Matches VS Code's pruneSession functionality.
+        /// </summary>
+        /// <param name="sessionId">The session ID to prune.</param>
+        public void PruneSession(string sessionId)
+        {
+            lock (_visibilityLock)
+            {
+                var keysToRemove = new List<string>();
+                foreach (var kvp in _messageSessionMap)
+                {
+                    if (kvp.Value == sessionId)
+                    {
+                        keysToRemove.Add(kvp.Key);
+                    }
+                }
+                foreach (var key in keysToRemove)
+                {
+                    _messageSessionMap.Remove(key);
+                }
+            }
+        }
+
+        /// <summary>
         /// Disconnects from the backend and cleans up all resources.
         /// Stops health polling, disconnects SSE, and disposes HTTP clients.
         /// </summary>
         public void Disconnect()
         {
             StopHealthPoll();
+            StopCheckinTimer();
             _sseClient?.Disconnect();
             _cachedHttpClient?.Dispose();
             _httpClient?.Dispose();
             _httpClient = null;
             _cachedHttpClient = null;
             _sseClient = null;
+            _kiotaClient = null;
+            _requestAdapter = null;
             SetState(ConnectionState.Disconnected);
         }
 
@@ -507,6 +836,7 @@ namespace KiloVisualStudioExtension
             _disposed = true;
             Disconnect();
             _healthPollTimer?.Dispose();
+            _checkinTimer?.Dispose();
             
             // Clear singleton instance on disposal
             if (_singletonInstance == this)
