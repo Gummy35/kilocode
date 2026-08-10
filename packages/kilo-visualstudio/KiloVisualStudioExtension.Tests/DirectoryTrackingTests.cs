@@ -146,20 +146,20 @@ namespace KiloVisualStudioExtension.Tests
         {
             var service = CreateService();
             
-            var providerCalled = false;
-            var lockHeldDuringProvider = true;
+            var providerCanTrackDirectory = false;
             
-            var unsubscribe = service.RegisterDirectoryProvider(() =>
+            service.RegisterDirectoryProvider(() =>
             {
-                providerCalled = true;
-                lockHeldDuringProvider = false;
+                // If the lock is held, this will block forever (or until timeout).
+                // If the lock is released, this call succeeds immediately.
+                service.TrackDirectory("C:\\test\\from-provider");
+                providerCanTrackDirectory = true;
                 return new[] { "C:\\test\\provider" };
             });
             
             var knownDirs = service.GetKnownDirectories();
             
-            Assert.True(providerCalled);
-            Assert.False(lockHeldDuringProvider, "provider callbacks should not be invoked while holding the internal lock");
+            Assert.True(providerCanTrackDirectory, "Provider should be able to call TrackDirectory, proving the lock was released before provider invocation");
         }
 
         private KiloConnectionService CreateService()
