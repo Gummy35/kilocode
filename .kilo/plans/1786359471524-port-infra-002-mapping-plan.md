@@ -208,10 +208,10 @@ extension.ts
 | `connection-service.test.ts` | `KiloConnectionService viewed sessions` | Keeps AM sessions during flush | `KiloProviderSessionRefreshTests.cs` | PARTIAL | Similar coverage, different focus |
 | `am-visible-presence.test.ts` | `AgentManagerVisiblePresence` | Tracks visible sessions | UNKNOWN | MISSING | No VS Code test found |
 | `AgentManagerProvider.spec.ts` | `SetupScriptService` | Runs setup scripts | `AgentManagerArchTests.cs` | PARTIAL | Architecture tests exist |
-| `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests.Does_not_stop_background_processes_twice` | Abort handling | `AbortAndLoadMessagesTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
-| `AbortStateTests.cs` | `AbortStateTests.Allows_retrying_an_abort` | Abort state | `AbortStateTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
-| `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests.Focus` | Stream scheduling | `SessionStreamSchedulerTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
-| `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | SSE filtering | `SSEEventFilteringTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
+| `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests.Does_not_stop_background_processes_twice` | Abort handling | UNKNOWN | MISSING | No verified VS Code source test |
+| `AbortStateTests.cs` | `AbortStateTests.Allows_retrying_an_abort` | Abort state | UNKNOWN | MISSING | No verified VS Code source test |
+| `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests.Focus` | Stream scheduling | UNKNOWN | MISSING | No verified VS Code source test |
+| `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | SSE filtering | UNKNOWN | MISSING | No verified VS Code source test |
 
 ---
 
@@ -384,37 +384,34 @@ extension.ts
 
 | VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
 |-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
-| UNKNOWN | UNKNOWN | Abort handling | `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests` | MISSING | No VS Code source test verified |
-| UNKNOWN | UNKNOWN | Session switching | `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests` | MISSING | No VS Code source test verified |
-| UNKNOWN | UNKNOWN | Abort state | `AbortStateTests.cs` | `AbortStateTests` | MISSING | No VS Code source test verified |
-| UNKNOWN | UNKNOWN | Cancellation handling | `AbortStateTests.cs` | `AbortStateTests` | MISSING | No VS Code source test verified |
+| `abort.test.ts` | `SessionAbort.stop` | Stops active owner and mapped directory | `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests` | PORTED_ADAPTED | VS Code tests abort session/directory |
+| `abort-state.test.ts` | `createAbortState` | Abort state machine | `AbortStateTests.cs` | `AbortStateTests` | PORTED_ADAPTED | VS Code tests pending prompt abort state |
 
 ### 8.4 Session Tests
 
 | VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
 |-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
-| UNKNOWN | UNKNOWN | Stream scheduling | `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests` | MISSING | No VS Code source test verified |
-| UNKNOWN | UNKNOWN | Buffer flushing | `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests` | MISSING | No VS Code source test verified |
-| UNKNOWN | UNKNOWN | Session queueing | `SessionQueueTests.cs` | `SessionQueueTests` | MISSING | No VS Code source test verified |
-| UNKNOWN | UNKNOWN | Session refresh | `KiloProviderSessionRefreshTests.cs` | `KiloProviderSessionRefreshTests` | MISSING | No VS Code source test verified |
+| `session-stream-scheduler.test.ts` | `SessionStreamScheduler` | Stream scheduling, buffer flushing | `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests` | PORTED_ADAPTED | VS Code tests coalescing, focus, drop, flush |
+| `session-queue.test.ts` | `SessionQueue` | Session queueing | UNKNOWN | UNKNOWN | MISSING | No VS Code test found |
+| `kilo-provider-session-refresh.test.ts` | `KiloProviderSessionRefresh` | Session refresh | `KiloProviderSessionRefreshTests.cs` | `KiloProviderSessionRefreshTests` | PORTED_ADAPTED | VS Code tests session switching |
 
 ### 8.5 SSE/Event Tests
 
 | VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
 |-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
-| UNKNOWN | UNKNOWN | SSE filtering | `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | MISSING | No VS Code source test verified |
+| `sdk-sse-adapter.test.ts` | `SdkSSEAdapter` | SSE filtering, reconnection | `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | PORTED_ADAPTED | VS Code tests heartbeat, reconnection, filtering |
 
 ### 8.6 Summary
 
 | Status | Count |
 |--------|-------|
 | PORTED_1_TO_1 | 0 |
-| PORTED_ADAPTED | 2 |
-| MISSING | 13 |
+| PORTED_ADAPTED | 7 |
+| MISSING | 6 |
 | NOT_APPLICABLE | 0 |
 | UNKNOWN | 0 |
 
-**Note:** The VS Code extension has a limited number of unit tests in `src/` (`connection-service.test.ts`, `am-visible-presence.test.ts`, `AgentManagerProvider.spec.ts`). The Visual Studio extension has extensive test coverage (`KiloVisualStudioExtension.Tests/` with ~273 tests), but most of these tests have no identifiable VS Code source. Per the source-of-truth rule, Visual Studio tests without verified VS Code counterparts must be classified as MISSING, not PORTED_1_TO_1. The existing Visual Studio tests may have been independently created.
+**Note:** The VS Code extension has unit tests in `tests/unit/` and `src/**/__tests__/` and `src/**/*.test.ts`. The Visual Studio extension has extensive test coverage (`KiloVisualStudioExtension.Tests/` with ~273 tests), but most of these tests have no identifiable VS Code source. Per the source-of-truth rule, Visual Studio tests without verified VS Code counterparts must be classified as MISSING, not PORTED_1_TO_1. The existing Visual Studio tests may have been independently created.
 
 ---
 
@@ -551,7 +548,7 @@ extension.ts
 - [x] Extension.ts dependency graph analyzed (complete tree documented)
 - [x] CLI/HTTP client implementation identified (`ServerManager`, `KiloConnectionService`, `SdkSSEAdapter`)
 - [x] WebView communication identified (`KiloProvider`, `KiloWebViewControl`)
-- [x] Relevant tests identified (VS Code and VS Code test files cataloged)
+- [x] Relevant tests identified (VS Code and Visual Studio test files cataloged)
 - [x] Visual Studio counterparts mapped (evidence-based with file/symbol references)
 - [x] Missing functionality listed (classified by requirement level)
 - [x] Divergent functionality documented (platform-specific adaptations noted)
@@ -560,7 +557,7 @@ extension.ts
 - [x] No upstream/fork dependency introduced (neutral repository identity)
 - [x] Implementation order justified (dependency-aware phases)
 - [x] Pre-decided implementation files removed (to be determined in Code phase)
-- [x] Test mapping established (1:1, adapted, missing, unknown categories)
+- [x] Test mapping corrected (VS Code tests verified, Visual Studio tests properly classified)
 - [x] Unknown items explicitly marked (15 unresolved items listed)
 - [x] Plan reviewed and accepted
 
@@ -572,13 +569,18 @@ extension.ts
 
 This plan is ready for human review. The next step is to validate the mappings and approve the implementation order before proceeding with PORT-CLI-001 in Code mode.
 
-**Key changes from initial plan:**
-1. All mappings now include specific VS Code and VS Code symbols with evidence
-2. CLI/HTTP analysis expanded with detailed endpoint, method, and behavior comparisons
-3. Missing functionality classified by requirement level (required/platform-specific/optional/unknown)
-4. Pre-decided implementation files removed - to be determined in Code phase
-5. Test mapping expanded with specific test classes and methods
-6. 15 unresolved items explicitly documented with resolution paths
+**Final corrections applied:**
+1. Test mapping corrected - Visual Studio C# test files removed from VS Code source column
+2. Seven VS Code → Visual Studio adapted mappings verified with actual VS Code test files
+3. Six Visual Studio-only tests classified as MISSING (no verified VS Code source)
+4. Summary counts updated: PORTED_1_TO_1 = 0, PORTED_ADAPTED = 7, MISSING = 6
+
+**Test mapping final counts:**
+- **PORTED_1_TO_1:** 0 (no exact 1:1 test mappings)
+- **PORTED_ADAPTED:** 7 (VS Code tests with semantically equivalent Visual Studio tests)
+- **MISSING:** 6 (Visual Studio tests without verified VS Code source)
+- **NOT_APPLICABLE:** 0
+- **UNKNOWN:** 0
 
 ---
 
