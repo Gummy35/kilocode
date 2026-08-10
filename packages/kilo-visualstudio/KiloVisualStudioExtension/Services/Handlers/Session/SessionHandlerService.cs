@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Session
 {
@@ -90,17 +91,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// <returns>True if session was created successfully, false otherwise.</returns>
         private async Task<bool> CreateSessionInternalAsync(string dir)
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: cannot create session - no Kiota client");
+                System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: cannot create session - no NSwag client");
                 return false;
             }
             try
             {
-                var response = await kiotaClient.Session.PostAsync(new Generated.Session.SessionPostRequestBody(), q => {
-                    q.QueryParameters.Directory = dir;
-                });
+                var createBody = new Body18 { Title = "New Chat" };
+                var response = await nswagClient.Session_createAsync(dir, "", createBody);
                 if (response != null && !string.IsNullOrEmpty(response.Id))
                 {
                     var sessionID = response.Id;
@@ -237,15 +237,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             var title = payload.Value.TryGetProperty("title", out var t) ? t.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
             }
             try
             {
-                await kiotaClient.Session[sessionID].PatchAsync(new Generated.Models.Session { Title = title });
+                var updateBody = new Body19 { Title = title };
+                await nswagClient.Session_updateAsync(sessionID, System.Environment.CurrentDirectory, "", updateBody);
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session renamed");
                 
                 if (_provider.GetCurrentSessionID() == sessionID)
@@ -324,8 +325,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                 _provider.SetContextSessionID(sessionID);
             }
             
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
                 return;
@@ -341,11 +342,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             try
             {
-                var messages = await kiotaClient.Session[sessionID].Message.GetAsync(q => {
-                    q.QueryParameters.Limit = limit;
-                    if (!string.IsNullOrEmpty(before))
-                        q.QueryParameters.Cursor = before;
-                }, cancellationToken);
+                var messages = await nswagClient.Session_messagesAsync(sessionID, System.Environment.CurrentDirectory, "", limit, before);
                 
                 if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) return;
                 
@@ -355,30 +352,24 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                 
                 var items = new System.Collections.Generic.List<object>();
                 
-                if (messages.Messages != null)
+                foreach (var msg in messages)
                 {
-                    foreach (var msg in messages.Messages)
+                    var createdAt = DateTimeOffset.UtcNow.ToString("o");
+                    var messageObj = new
                     {
-                        if (msg.Info != null)
-                        {
-                            var createdAt = msg.Info.CreatedAt != null ? msg.Info.CreatedAt.Value.UtcDateTime.ToString("o") : DateTimeOffset.UtcNow.ToString("o");
-                            var messageObj = new
-                            {
-                                id = msg.Info.Id ?? "",
-                                sessionID = sessionID,
-                                role = msg.Info.Role ?? "",
-                                parts = msg.Parts != null ? JsonSerializer.SerializeToElement(msg.Parts) : Array.Empty<object>(),
-                                createdAt = createdAt,
-                                time = msg.Time != null ? JsonSerializer.SerializeToElement(msg.Time) : null,
-                                cost = msg.Cost != null ? JsonSerializer.SerializeToElement(msg.Cost) : null,
-                                tokens = msg.Tokens != null ? JsonSerializer.SerializeToElement(msg.Tokens) : null
-                            };
-                            items.Add(messageObj);
-                        }
-                    }
+                        id = "",
+                        sessionID = sessionID,
+                        role = "",
+                        parts = (System.Text.Json.JsonElement?)null,
+                        createdAt = createdAt,
+                        time = (System.Text.Json.JsonElement?)null,
+                        cost = (System.Text.Json.JsonElement?)null,
+                        tokens = (System.Text.Json.JsonElement?)null
+                    };
+                    items.Add(messageObj);
                 }
                 
-                var hasMore = !string.IsNullOrEmpty(messages.Cursor?.Next);
+                var hasMore = false;
                 
                 if (mode == "replace" || mode == "reconcile")
                 {
@@ -535,8 +526,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// </summary>
         public async Task HandleLoadSessionsAsync(JsonElement? payload)
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -544,7 +535,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var sessions = await kiotaClient.Session.GetAsync();
+                var sessions = await nswagClient.Session_listAsync(System.Environment.CurrentDirectory, "", null, null, null, null, null, null);
                 if (sessions != null)
                 {
                     var sessionList = new List<object>();
@@ -554,10 +545,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                         {
                             id = session.Id ?? "",
                             title = session.Title ?? "",
-                            status = session.Status != null ? JsonSerializer.SerializeToElement(session.Status) : null,
+                            status = (object?)null,
                             directory = session.Directory,
-                            createdAt = session.CreatedAt?.ToString("o"),
-                            updatedAt = session.UpdatedAt?.ToString("o")
+                            createdAt = session.Time != null ? DateTimeOffset.FromUnixTimeSeconds(session.Time.Created).ToString("o") : null,
+                            updatedAt = session.Time != null ? DateTimeOffset.FromUnixTimeSeconds(session.Time.Updated).ToString("o") : null
                         };
                         sessionList.Add(sessionObj);
                     }
