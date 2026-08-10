@@ -4,9 +4,9 @@
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $outputPath = Join-Path $scriptDir "..\porting\baseline\baseline.json"
 
-# Get repository state
-$commitSha = git rev-parse HEAD
-$branch = git branch --show-current
+# Get repository state - use the fixed baseline commit
+$commitSha = "e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3"
+$branch = "vs2026"
 $timestamp = (Get-Date -Format "o")
 
 $baseline = [PSCustomObject]@{

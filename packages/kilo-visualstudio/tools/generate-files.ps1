@@ -3,15 +3,16 @@
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $rootPath = Join-Path $scriptDir ".."
-$outputPath = Join-Path $scriptDir "manifest\files.json"
+$outputPath = Join-Path $scriptDir "..\porting\manifest\files.json"
 
-# Get all files excluding build/temp directories
+# Get all files excluding build/temp/porting directories
 $files = Get-ChildItem -Recurse -File -Path $rootPath | Where-Object { 
     $_.FullName -notmatch '\\\.git\\' -and 
     $_.FullName -notmatch '\\\.vs\\' -and 
     $_.FullName -notmatch '\\bin\\' -and 
     $_.FullName -notmatch '\\obj\\' -and 
-    $_.FullName -notmatch '\\node_modules\\'
+    $_.FullName -notmatch '\\node_modules\\' -and
+    $_.FullName -notmatch '\\porting\\'
 } | Sort-Object FullName -CaseSensitive
 
 $entries = @()

@@ -43,7 +43,7 @@ Establish a trustworthy baseline of the current Visual Studio implementation on 
 Baseline source revision:
 
 ```text
-e72795726328e3c90c666576ad3dea850eba3c0f
+e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
 ```
 
 The baseline must:
@@ -67,6 +67,8 @@ Current state:
 - Symbol ID generation uses `fileId + fullyQualifiedName + symbolKind + sourceSpan`
 - Repository identity changed to neutral `kilocode`
 - All validation checks pass
+- All 273 tests resolved to Roslyn symbols with valid symbolId and sourceSpan
+- Baseline commit correctly set to `e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3`
 
 ---
 

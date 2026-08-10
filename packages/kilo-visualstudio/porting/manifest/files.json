@@ -2464,28 +2464,6 @@
         "size":  22849
     },
     {
-        "fileId":  "file-porting-generate-files-ps1",
-        "relativePath":  "porting/generate-files.ps1",
-        "sha256":  "962eb318051da3a9f01ab6db6529aa15dbbbcc7349fa23bfb382ab043c352e64",
-        "lineCount":  188,
-        "fileType":  "ps1",
-        "language":  "unknown",
-        "classification":  "other",
-        "isGenerated":  false,
-        "size":  5647
-    },
-    {
-        "fileId":  "file-porting-manifest-files-json",
-        "relativePath":  "porting/manifest/files.json",
-        "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "lineCount":  0,
-        "fileType":  "config",
-        "language":  "json",
-        "classification":  "other",
-        "isGenerated":  false,
-        "size":  0
-    },
-    {
         "fileId":  "file-SETTINGS.md-SETTINGS.md-SETTINGS.md-SETTINGS-md",
         "relativePath":  "SETTINGS.md",
         "sha256":  "55dc43ce7dace0e973f8078e57a3c128f5c40b2a96723d7c6e51f05dadbafdea",
@@ -2528,6 +2506,94 @@
         "classification":  "documentation",
         "isGenerated":  false,
         "size":  4750
+    },
+    {
+        "fileId":  "file-tools-generate-baseline-ps1",
+        "relativePath":  "tools/generate-baseline.ps1",
+        "sha256":  "c303a634a4c10e05fa213d7d5d5edf3ce2262a4511ee151af48683e26b34a668",
+        "lineCount":  43,
+        "fileType":  "ps1",
+        "language":  "unknown",
+        "classification":  "other",
+        "isGenerated":  false,
+        "size":  1449
+    },
+    {
+        "fileId":  "file-tools-generate-files-ps1",
+        "relativePath":  "tools/generate-files.ps1",
+        "sha256":  "bd09e58d9501d93650d0ee3f1952b5a0b3c1b520f7493549e9d7e07c58e5f8a4",
+        "lineCount":  189,
+        "fileType":  "ps1",
+        "language":  "unknown",
+        "classification":  "other",
+        "isGenerated":  false,
+        "size":  5711
+    },
+    {
+        "fileId":  "file-tools-generate-relationships-ps1",
+        "relativePath":  "tools/generate-relationships.ps1",
+        "sha256":  "7271cf32a18ac80eeff2aef6ed2639cb4001becda4bd36f6b0951bf9bba9970e",
+        "lineCount":  126,
+        "fileType":  "ps1",
+        "language":  "unknown",
+        "classification":  "other",
+        "isGenerated":  false,
+        "size":  5185
+    },
+    {
+        "fileId":  "file-tools-generate-tests-ps1",
+        "relativePath":  "tools/generate-tests.ps1",
+        "sha256":  "daa828c592c2ece3dbe885a6a32d5cc689d4cb6931e263cb88af51dd184b2f17",
+        "lineCount":  129,
+        "fileType":  "ps1",
+        "language":  "unknown",
+        "classification":  "other",
+        "isGenerated":  false,
+        "size":  5031
+    },
+    {
+        "fileId":  "file-tools-README-md",
+        "relativePath":  "tools/README.md",
+        "sha256":  "a863844b12a6cf681d52de9d07dfecd00b273efb6be6db6caed73edbb18efdf4",
+        "lineCount":  122,
+        "fileType":  "markdown",
+        "language":  "markdown",
+        "classification":  "documentation",
+        "isGenerated":  false,
+        "size":  4146
+    },
+    {
+        "fileId":  "file-tools-symbol-inventory-Program-cs",
+        "relativePath":  "tools/symbol-inventory/Program.cs",
+        "sha256":  "d35dc8fd8f72a1e55c6c1618ae271528cea0324f54864f02a2eae1e7655806ed",
+        "lineCount":  571,
+        "fileType":  "csharp",
+        "language":  "csharp",
+        "classification":  "other",
+        "isGenerated":  false,
+        "size":  29516
+    },
+    {
+        "fileId":  "file-tools-symbol-inventory-SymbolInventory-csproj",
+        "relativePath":  "tools/symbol-inventory/SymbolInventory.csproj",
+        "sha256":  "439a7648027cc1bf9980fbedfd1a6f6ed8e856ee7b8d3e44561a854951df0aac",
+        "lineCount":  14,
+        "fileType":  "csproj",
+        "language":  "xml",
+        "classification":  "other",
+        "isGenerated":  true,
+        "size":  510
+    },
+    {
+        "fileId":  "file-tools-validate-ps1",
+        "relativePath":  "tools/validate.ps1",
+        "sha256":  "defc143e237f6098aae6f91e2955a9061b311ad68a6b8c7f428f21533860cc50",
+        "lineCount":  210,
+        "fileType":  "ps1",
+        "language":  "unknown",
+        "classification":  "other",
+        "isGenerated":  false,
+        "size":  8127
     },
     {
         "fileId":  "file-VS_EXT_ENHANCEMENT_PLAN.md-VS_EXT_ENHANCEMENT_PLAN.md-VS_EXT_ENHANCEMENT_PLAN.md-VS_EXT_ENHANCEMENT_PLAN-md",

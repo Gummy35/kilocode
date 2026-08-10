@@ -1,94 +1,108 @@
-# Generate tests.json for PORT-INFRA-001
+﻿# Generate tests.json for PORT-INFRA-001
 # This script inventories all xUnit tests and cross-references with symbols.json
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$symbolsPath = Join-Path $scriptDir "manifest\symbols.json"
-$testProjectPath = Join-Path $scriptDir "..\KiloVisualStudioExtension.Tests"
-$outputPath = Join-Path $scriptDir "manifest\tests.json"
+$symbolsPath = Join-Path $scriptDir "..\porting\manifest\symbols.json"
+$outputPath = Join-Path $scriptDir "..\porting\manifest\tests.json"
+$rootPath = Join-Path $scriptDir ".."
 
-# Load symbols
 $symbols = Get-Content $symbolsPath | ConvertFrom-Json
 
-# Create a lookup for symbols by fullyQualifiedName
+# Create lookup by fileId -> method name -> symbol
 $symbolLookup = @{}
 foreach ($symbol in $symbols) {
-    $symbolLookup[$symbol.fullyQualifiedName] = $symbol
+    if ($symbol.symbolKind -eq 'method') {
+        if (-not $symbolLookup[$symbol.fileId]) {
+            $symbolLookup[$symbol.fileId] = @{}
+        }
+        # Extract method name from FQN (last part after the last dot)
+        $methodName = $symbol.fullyQualifiedName -replace '.*\.', ''
+        $symbolLookup[$symbol.fileId][$methodName] = $symbol
+    }
 }
 
-# Get all test files
+# Get test files only
+$testProjectPath = Join-Path $rootPath "KiloVisualStudioExtension.Tests"
 $testFiles = Get-ChildItem -Recurse -File -Path $testProjectPath -Filter "*.cs" | Sort-Object FullName -CaseSensitive
 
 $tests = @()
 
 foreach ($file in $testFiles) {
-    $relativePath = $file.FullName.Substring((Get-Item (Join-Path $scriptDir "..")).FullName.Length + 1).Replace('\', '/')
+    # Normalize path separators to forward slashes
+    $relativePath = $file.FullName.Substring($rootPath.Length + 1).Replace('\', '/')
+    
+    # Generate fileId - match the format used in generate-files.ps1
+    $pathParts = $relativePath.Split('/')
+    $project = $pathParts[0]
+    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+    $ext = $file.Extension.ToLowerInvariant().TrimStart('.')
+    if ($pathParts.Length -eq 2) {
+        $fileId = "file-{0}-{1}-{2}" -f $project, $fileName, $ext
+    } else {
+        $pathComponents = $pathParts[1..($pathParts.Length-2)] -join '-'
+        $fileId = "file-{0}-{1}-{2}-{3}" -f $project, $pathComponents, $fileName, $ext
+    }
+    
+    $className = $file.BaseName
+    
+    # Find test methods by looking for [Fact] or [Theory] in the source
     $content = Get-Content -Path $file.FullName -Raw
-    
-    # Find all [Fact] and [Theory] attributes
-    $factPattern = '\[\s*Fact\s*\]'
-    $theoryPattern = '\[\s*Theory\s*\]'
-    
-    # Match all test attributes with their following method declarations
-    $matches = [regex]::Matches($content, '(?s)(\[\s*(Fact|Theory)\s*\]\s*public\s+\w+\s+(\w+)\s*\([^)]*\)\s*\{[^}]*\})')
+    $matches = [regex]::Matches($content, '(?m)\[\s*(Fact|Theory)\s*\][\s\S]*?(?:public|private|internal)[\s\S]*?\b(\w+)\s*\(')
     
     foreach ($match in $matches) {
-        $methodBlock = $match.Value
-        $methodName = [regex]::Match($methodBlock, 'public\s+\w+\s+(\w+)\s*\(').Groups[1].Value
+        $testTypeRaw = $match.Groups[1].Value
+        $testType = if ($testTypeRaw -eq 'Theory') { '[Theory]' } else { '[Fact]' }
+        $methodName = $match.Groups[2].Value
         
-        # Extract namespace and class from file path
-        $namespace = "KiloVisualStudioExtension.Tests"
-        $className = $file.BaseName
-        
-        # Build fully qualified name
-        $fqn = "$namespace.$className.$methodName"
-        
-        # Look up symbolId
+        # Find the matching symbol using the lookup
         $symbolId = $null
-        foreach ($key in $symbolLookup.Keys) {
-            if ($key -like "*.$methodName") {
-                $symbolId = $symbolLookup[$key].symbolId
+        $fqn = $null
+        if ($symbolLookup[$fileId] -and $symbolLookup[$fileId][$methodName]) {
+            $sym = $symbolLookup[$fileId][$methodName]
+            $symbolId = $sym.symbolId
+            $fqn = $sym.fullyQualifiedName
+        }
+        
+        # Find line number
+        $lineNumber = 1
+        $lines = $content -split "`n"
+        for ($i = 0; $i -lt $lines.Length; $i++) {
+            if ($lines[$i] -match "\[\s*${testTypeRaw}\s*\]") {
+                $lineNumber = $i + 1
                 break
             }
         }
         
-        # Generate fileId
-        $pathParts = $relativePath.Split('/')
-        $project = $pathParts[0]
-        $fileName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
-        $ext = $file.Extension.ToLowerInvariant().TrimStart('.')
-        if ($pathParts.Length -eq 2) {
-            $fileId = "file-{0}-{1}-{2}" -f $project, $fileName, $ext
-        } else {
-            $pathComponents = $pathParts[1..($pathParts.Length-2)] -join '-'
-            $fileId = "file-{0}-{1}-{2}-{3}" -f $project, $pathComponents, $fileName, $ext
-        }
-        
-        # Generate testId
         $testId = "test-{0}-{1}-{2}" -f $fileId, $className, $methodName
+        $sourceSpan = "${relativePath}:${lineNumber}"
         
         $test = [PSCustomObject]@{
             testId = $testId
             fileId = $fileId
             symbolId = $symbolId
-            fullyQualifiedName = $fqn
+            fullyQualifiedName = if ($fqn) { $fqn } else { "global::KiloVisualStudioExtension.Tests.${className}.${methodName}" }
             methodName = $methodName
             className = $className
-            namespace = $namespace
-            testType = if ($methodBlock -match 'Theory') { '[Theory]' } else { '[Fact]' }
+            namespace = "KiloVisualStudioExtension.Tests"
+            testType = $testType
             status = "EXISTING_TEST"
-            sourceSpan = "$relativePath:1"
+            sourceSpan = $sourceSpan
         }
         
         $tests += $test
     }
 }
 
-# Sort by testId
 $sortedTests = $tests | Sort-Object { $_.testId } -CaseSensitive
-
-# Output JSON
 $json = $sortedTests | ConvertTo-Json -Depth 10
 $utf8NoBom = New-Object System.Text.UTF8Encoding $false
 [System.IO.File]::WriteAllText($outputPath, $json, $utf8NoBom)
 
 Write-Host "Generated tests.json with $($tests.Count) entries"
+
+$unresolved = $tests | Where-Object { $_.symbolId -eq $null }
+if ($unresolved) {
+    Write-Host "WARNING: $($unresolved.Count) tests could not be resolved to symbols" -ForegroundColor Yellow
+} else {
+    Write-Host "All tests resolved to symbols" -ForegroundColor Green
+}

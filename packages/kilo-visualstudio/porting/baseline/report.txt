@@ -2,18 +2,31 @@ PORT-INFRA-001 Baseline Inventory Report
 =========================================
 
 Repository State:
-  Commit: e72795726328e3c90c666576ad3dea850eba3c0f
+  Baseline Source Commit: e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
   Branch: vs2026
-  Timestamp: 2026-08-10T11:37:00.2656382+02:00
+  Generated on repository revision: e72795726328e3c90c666576ad3dea850eba3c0f
+  Report Timestamp: 2026-08-10T12:25:00.0000000+02:00
 
 Inventory Summary:
   Projects: 2
-  Files: 234
-    - C# source: 234 (production + test)
-    - Webview assets: included in files.json
-    - Configuration: included in files.json
-    - Documentation: included in files.json
-  Symbols: 2306 (NO deduplication - all distinct symbols preserved)
+  Files: 240
+    By language:
+      - C#: 113
+      - Font: 61
+      - JavaScript: 21
+      - Markdown: 16
+      - Unknown: 8
+      - XML: 7
+      - CSS: 7
+      - Image: 5
+      - HTML: 1
+      - TypeScript: 1
+    By classification:
+      - Production: 175
+      - Test: 48
+      - Documentation: 10
+      - Other: 7
+  Symbols: 2306 (all distinct symbols preserved - no deduplication)
     - Namespaces: 112
     - Classes: 317
     - Interfaces: 11
@@ -21,9 +34,11 @@ Inventory Summary:
     - Properties: 523
     - Fields: 283
     - Constructors: 68
-  Tests: 196
-    - [Fact]: 196
+    - Events: 11
+  Tests: 273
+    - [Fact]: 273
     - [Theory]: 0
+    - Unresolved symbols: 0
 
 Validation Results:
   JSON syntax: PASS
@@ -31,6 +46,11 @@ Validation Results:
   Reference resolution: PASS
   Determinism: PASS
   Fully qualified names: PASS (all symbols have proper FQNs)
+  Baseline commit: PASS (e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3)
+  Repository identity: PASS (kilocode)
+  No porting/ files in files.json: PASS
+  Test symbolId resolution: PASS (all 273 tests resolved)
+  Test sourceSpan: PASS (all tests have non-empty sourceSpan)
 
 Generated Files:
   - packages/kilo-visualstudio/porting/baseline/baseline.json
@@ -47,7 +67,8 @@ Notes:
   - All inventory files generated in packages/kilo-visualstudio/porting/
   - No production code or test files were modified
   - All 2306 distinct symbols preserved (no silent deduplication)
-  - Symbol fullyQualifiedName now uses proper Roslyn FQN format (e.g., global::KiloVisualStudioExtension.AgentManager.WorktreeStateManager.GetOpenWorktrees)
+  - Symbol fullyQualifiedName uses proper Roslyn FQN format (e.g., global::KiloVisualStudioExtension.AgentManager.WorktreeStateManager.GetOpenWorktrees)
+  - All 273 tests resolved to their Roslyn symbols with correct symbolId and sourceSpan
   - symbol_calls_symbol relationship is OUT OF SCOPE (will be handled by later task)
 
 Corrections Applied (Execution 3):
@@ -56,3 +77,7 @@ Corrections Applied (Execution 3):
   - Symbol ID generation now includes fileId + fullyQualifiedName + symbolKind + sourceSpan
   - Repository identity changed to neutral "kilocode" (not personal fork)
   - Updated validate.ps1 to look for output in ../porting directory
+  - Excluded porting/ directory from files.json inventory
+  - Fixed baseline commit to use e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
+  - Updated symbol-inventory tool to generate tests.json using Roslyn (detects [Fact]/[Theory] by syntax)
+  - All 273 tests now have valid symbolId references and non-empty sourceSpan

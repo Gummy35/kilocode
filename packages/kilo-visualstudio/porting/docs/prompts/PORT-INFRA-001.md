@@ -404,10 +404,10 @@ Stop after this correction.
 
 ---
 
-# Execution 3 — Final Correction
+# Execution 3 — Correction 2
 
 **Mode:** Code
-**Status:** Current
+**Status:** Completed / superseded by Execution 4 if applicable
 
 ## Prompt
 
@@ -731,3 +731,360 @@ Keep the implementation minimal.
 Do not introduce abstractions or infrastructure that are not necessary to complete `PORT-INFRA-001`.
 
 The objective is a trustworthy baseline, not a new synchronization architecture.
+
+
+# Execution 4 — Correction 3
+
+**Mode:** Code
+**Status:** Current
+
+## Prompt
+
+PORT-INFRA-001 — Targeted Correction
+
+Task: PORT-INFRA-001
+Mode: Code
+Model: Qwen3.5-122B
+Branch: vs2026
+Baseline source commit: e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
+
+Read first:
+
+    packages/kilo-visualstudio/porting/docs/SPEC.md
+
+    packages/kilo-visualstudio/porting/docs/TASKS.md
+
+    packages/kilo-visualstudio/porting/docs/prompts/PORT-INFRA-001.md
+
+You are performing a targeted correction of PORT-INFRA-001.
+
+Do NOT redesign the inventory.
+Do NOT create a new architecture.
+Do NOT start PORT-INFRA-002.
+Do NOT compare with upstream or VS Code.
+Do NOT modify production code.
+Do NOT modify existing tests.
+
+Keep the changes minimal.
+1. Fix tests.json
+
+The current tests.json contains tests with:
+
+symbolId: null
+sourceSpan: empty
+
+This is incorrect.
+
+For every [Fact] and [Theory] test:
+
+    Identify the test method using Roslyn.
+
+    Resolve its actual Roslyn IMethodSymbol.
+
+    Obtain its fully qualified name from Roslyn.
+
+    Resolve the corresponding entry in symbols.json.
+
+    Set the correct symbolId.
+
+    Set the test's sourceSpan.
+
+    Preserve the existing test classification:
+
+status: EXISTING_TEST
+
+Do not use approximate string matching if Roslyn can resolve the symbol directly.
+
+Do not silently leave unresolved tests.
+Required validation
+
+A test with any of the following must cause validation to FAIL:
+
+    symbolId == null;
+
+    missing symbolId;
+
+    unresolved symbolId;
+
+    missing/empty source span.
+
+Do not weaken the validation to make the existing inventory pass.
+2. Fix the files.json scope
+
+files.json must inventory the Visual Studio extension itself, not the porting infrastructure.
+
+Include:
+
+KiloVisualStudioExtension/
+KiloVisualStudioExtension.Tests/
+
+Include relevant files inside those directories, including WebView files/assets.
+
+Exclude completely:
+
+packages/kilo-visualstudio/porting/
+
+Therefore the inventory must NOT contain:
+
+    porting/manifest/*
+
+    porting/baseline/*
+
+    porting/docs/*
+
+    inventory scripts
+
+    generated manifests
+
+    other porting infrastructure
+
+Also continue excluding:
+
+    .git
+
+    .vs
+
+    bin
+
+    obj
+
+    node_modules
+
+    temporary files
+
+    build output
+
+Do not broaden the inventory beyond the Visual Studio extension and its tests.
+Required validation
+
+Validation must fail if any files.json entry is under:
+
+porting/
+
+Validation must also fail if files.json contains itself or another generated manifest.
+3. Regenerate dependent manifests
+
+After correcting the generators:
+
+    regenerate files.json;
+
+    regenerate symbols.json if necessary;
+
+    regenerate tests.json;
+
+    regenerate relationships.json;
+
+    regenerate baseline/report.txt.
+
+Do not manually patch generated JSON if the generator can be corrected instead.
+
+The generated files must remain reproducible.
+4. Fix the baseline revision in the report
+
+The baseline source revision is permanently:
+
+e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
+
+Do not replace it with the current HEAD merely because the repository has subsequently changed.
+
+The report must clearly identify:
+
+Baseline source revision:
+e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
+
+If you want to record the Git revision from which the report was generated, it must be a separate field such as:
+
+Generated on repository revision:
+<current HEAD>
+
+Do not confuse these two concepts.
+
+The repository identity must remain neutral:
+
+kilocode
+
+Never use:
+
+Gummy35/kilocode
+
+Do not introduce any dependency on the personal fork.
+5. Fix report statistics
+
+The current report incorrectly reports all files as C#.
+
+Generate actual counts from files.json.
+
+Report at least:
+
+Files: <total>
+
+By language:
+- C#
+- JavaScript
+- CSS
+- HTML
+- XML
+- JSON
+- Markdown
+- TypeScript
+- Other
+
+By classification:
+- Production
+- Test
+- Asset
+- Build/configuration
+- Documentation
+
+Only report categories that actually exist, but do not misclassify files.
+6. Validate relationships
+
+After regenerating relationships.json, verify:
+
+    every fileId exists;
+
+    every symbolId exists;
+
+    every testId exists;
+
+    every classSymbolId exists;
+
+    no relationship contains null identifiers.
+
+The existing relationship model does not need to be expanded.
+
+Do NOT implement call-graph analysis.
+
+Do NOT add symbol_calls_symbol.
+7. Do not modify symbol semantics unnecessarily
+
+The existing Roslyn symbol inventory has already been corrected to preserve all discovered symbols and use fully qualified names.
+
+Do not redesign it unless a change is strictly required to fix one of the issues above.
+
+In particular:
+
+    do not remove symbols;
+
+    do not deduplicate symbols;
+
+    do not introduce discovery-order IDs;
+
+    do not change the source code;
+
+    do not introduce normalized hashes merely for completeness.
+
+normalizedSourceHash may remain absent/null because deterministic syntax normalization is not currently required.
+8. Final validation
+
+Run the complete PORT-INFRA-001 validation.
+
+It must verify:
+
+    JSON validity.
+
+    Correct baseline commit.
+
+    Correct repository identity.
+
+    Valid SHA-256 hashes.
+
+    No files from porting/ in files.json.
+
+    Every symbol references an existing file.
+
+    Every symbol ID is unique.
+
+    Every test references an existing file.
+
+    Every test references an existing symbol.
+
+    Every test has a non-empty source span.
+
+    Every relationship reference resolves.
+
+    No null relationship identifiers.
+
+    Deterministic ordering.
+
+    Reproducibility from the same source revision.
+
+    Production source unchanged.
+
+    Existing tests unchanged.
+
+If any check fails, report FAIL.
+
+Do not bypass or weaken the validation.
+9. Git safety
+
+Before finishing, verify:
+
+No files under KiloVisualStudioExtension/ were modified.
+No files under KiloVisualStudioExtension.Tests/ were modified.
+
+Only porting documentation, inventory generators and generated inventory artifacts may be changed.
+10. Update task status
+
+Do NOT mark the task DONE.
+
+If all validations pass, set:
+
+PORT-INFRA-001 → REVIEW
+
+The task will be marked DONE only after human review.
+
+Do not start PORT-INFRA-002.
+Final response
+
+Return a concise report containing:
+Result
+
+PASS or FAIL
+Files
+
+    total files;
+
+    production files;
+
+    test files;
+
+    WebView/assets;
+
+    configuration/build files;
+
+    documentation.
+
+Symbols
+
+    total symbols;
+
+    symbols by kind;
+
+    remaining collisions.
+
+Tests
+
+    total tests;
+
+    Fact count;
+
+    Theory count;
+
+    unresolved symbols: must be 0.
+
+Validation
+
+Report PASS/FAIL for every validation category.
+Changed files
+
+List every modified file.
+Blockers
+
+List unresolved problems, if any.
+
+If there is a blocker, stop.
+
+Do not start another task.
+
+Important: This is a correction task, not a redesign task. Prefer the smallest change that makes the baseline accurate and trustworthy.

@@ -18,7 +18,8 @@ namespace SymbolInventory
         static async Task Main(string[] args)
         {
             string sourcePath = "packages\\kilo-visualstudio\\KiloVisualStudioExtension";
-            string outputPath = "packages\\kilo-visualstudio\\porting\\manifest\\symbols.json";
+            string symbolsOutputPath = "packages\\kilo-visualstudio\\porting\\manifest\\symbols.json";
+            string testsOutputPath = "packages\\kilo-visualstudio\\porting\\manifest\\tests.json";
             
             for (int i = 0; i < args.Length; i++)
             {
@@ -28,11 +29,16 @@ namespace SymbolInventory
                 }
                 else if (args[i] == "--output" && i + 1 < args.Length)
                 {
-                    outputPath = args[++i];
+                    symbolsOutputPath = args[++i];
+                }
+                else if (args[i] == "--tests-output" && i + 1 < args.Length)
+                {
+                    testsOutputPath = args[++i];
                 }
             }
 
             var symbols = new List<SymbolEntry>();
+            var tests = new List<TestEntry>();
             var rootDir = Directory.GetParent(Path.GetFullPath(sourcePath)).FullName;
             
             var projects = new[] { "KiloVisualStudioExtension", "KiloVisualStudioExtension.Tests" };
@@ -63,11 +69,20 @@ namespace SymbolInventory
                         var walker = new SymbolWalker(semanticModel, fileId, relativePath);
                         walker.Visit(root);
                         symbols.AddRange(walker.Symbols);
+                        
+                        // If this is a test file, also extract test methods
+                        if (project == "KiloVisualStudioExtension.Tests")
+                        {
+                            var testWalker = new TestWalker(semanticModel, fileId, relativePath);
+                            testWalker.Visit(root);
+                            tests.AddRange(testWalker.Tests);
+                        }
                     }
                 }
             }
 
             symbols.Sort((a, b) => string.Compare(a.symbolId, b.symbolId, StringComparison.Ordinal));
+            tests.Sort((a, b) => string.Compare(a.testId, b.testId, StringComparison.Ordinal));
 
             var options = new JsonSerializerOptions
             {
@@ -76,8 +91,12 @@ namespace SymbolInventory
             };
 
             var json = JsonSerializer.Serialize(symbols, options);
-            await File.WriteAllTextAsync(outputPath, json);
-            Console.WriteLine($"Generated {symbols.Count} symbols to {outputPath}");
+            await File.WriteAllTextAsync(symbolsOutputPath, json);
+            Console.WriteLine($"Generated {symbols.Count} symbols to {symbolsOutputPath}");
+            
+            json = JsonSerializer.Serialize(tests, options);
+            await File.WriteAllTextAsync(testsOutputPath, json);
+            Console.WriteLine($"Generated {tests.Count} tests to {testsOutputPath}");
         }
 
         static string GenerateFileId(string relativePath)
@@ -171,7 +190,7 @@ namespace SymbolInventory
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    var parentFqn = symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
                     var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                     containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
@@ -216,7 +235,7 @@ namespace SymbolInventory
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    var parentFqn = symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
                     var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                     containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
@@ -549,6 +568,80 @@ namespace SymbolInventory
         }
     }
 
+    class TestWalker : CSharpSyntaxWalker
+    {
+        public List<TestEntry> Tests { get; } = new List<TestEntry>();
+        private readonly SemanticModel _semanticModel;
+        private readonly string _fileId;
+        private readonly string _relativePath;
+
+        public TestWalker(SemanticModel semanticModel, string fileId, string relativePath)
+        {
+            _semanticModel = semanticModel;
+            _fileId = fileId;
+            _relativePath = relativePath;
+        }
+
+        public override void VisitMethodDeclaration(MethodDeclarationSyntax node)
+        {
+            // Check for [Fact] or [Theory] attribute by syntax (not semantic)
+            var hasFact = node.AttributeLists.Any(al => al.Attributes.Any(a => 
+                a.Name.ToString() == "Fact" || a.Name.ToString() == "FactAttribute"));
+            var hasTheory = node.AttributeLists.Any(al => al.Attributes.Any(a => 
+                a.Name.ToString() == "Theory" || a.Name.ToString() == "TheoryAttribute"));
+            
+            if (hasFact || hasTheory)
+            {
+                var symbol = _semanticModel.GetDeclaredSymbol(node);
+                string fullyQualifiedName;
+                if (symbol != null)
+                {
+                    var containingTypeFqn = GetContainingTypeFqn(symbol);
+                    fullyQualifiedName = string.IsNullOrEmpty(containingTypeFqn) 
+                        ? symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                        : $"{containingTypeFqn}.{symbol.Name}";
+                }
+                else
+                {
+                    // Fallback if symbol is null
+                    fullyQualifiedName = $"global::Unknown.{node.Identifier.Text}";
+                }
+                
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                var testType = hasTheory ? "[Theory]" : "[Fact]";
+                
+                // Generate testId
+                var className = node.Parent is TypeDeclarationSyntax typeDecl ? typeDecl.Identifier.Text : "Unknown";
+                var testId = $"test-{_fileId}-{className}-{node.Identifier.Text}";
+                
+                var entry = new TestEntry
+                {
+                    testId = testId,
+                    fileId = _fileId,
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "method", sourceSpan),
+                    fullyQualifiedName = fullyQualifiedName,
+                    methodName = node.Identifier.Text,
+                    className = className,
+                    testNamespace = "KiloVisualStudioExtension.Tests",
+                    testType = testType,
+                    status = "EXISTING_TEST",
+                    sourceSpan = sourceSpan
+                };
+                Tests.Add(entry);
+            }
+            base.VisitMethodDeclaration(node);
+        }
+
+        private static string GetContainingTypeFqn(ISymbol symbol)
+        {
+            if (symbol.ContainingType == null)
+            {
+                return null;
+            }
+            return symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        }
+    }
+
     class SymbolEntry
     {
         public string symbolId { get; set; } = "";
@@ -566,5 +659,19 @@ namespace SymbolInventory
         public string? returnType { get; set; }
         public string? type { get; set; }
         public dynamic[]? parameters { get; set; }
+    }
+
+    class TestEntry
+    {
+        public string testId { get; set; } = "";
+        public string fileId { get; set; } = "";
+        public string symbolId { get; set; } = "";
+        public string fullyQualifiedName { get; set; } = "";
+        public string methodName { get; set; } = "";
+        public string className { get; set; } = "";
+        public string testNamespace { get; set; } = "";
+        public string testType { get; set; } = "";
+        public string status { get; set; } = "";
+        public string sourceSpan { get; set; } = "";
     }
 }
