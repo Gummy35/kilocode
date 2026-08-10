@@ -48,7 +48,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
                 {
                     foreach (var agent in agents)
                     {
-                        if (agent.Mode == "subagent")
+                        if (agent.Mode == Generated.Models.Agent_mode.Subagent)
                             continue;
                         if (agent.Hidden == true)
                             continue;
@@ -57,13 +57,13 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
                         {
                             name = agent.Name ?? "",
                             description = agent.Description ?? "",
-                            mode = agent.Mode ?? "",
+                            mode = agent.Mode?.ToString() ?? "",
                             native = agent.Native == true,
                             hidden = agent.Hidden == true,
                             color = agent.Color ?? "",
                             deprecated = agent.Deprecated == true,
                             permission = agent.Permission != null ? JsonSerializer.SerializeToElement(agent.Permission) : null,
-                            model = agent.Model ?? ""
+                            model = agent.Model?.ToString() ?? ""
                         };
                         agentsList.Add(mappedAgent);
                     }

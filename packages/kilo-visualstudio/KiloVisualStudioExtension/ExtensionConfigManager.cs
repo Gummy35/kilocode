@@ -38,8 +38,8 @@ namespace KiloVisualStudioExtension
             {
                 var configTask = client.Config.GetAsync();
                 var providersTask = client.Provider.GetAsProviderGetResponseAsync();
-                var agentsTask = client.Experimental.ToolIds.GetAsync();
-                var mcpTask = client.Mcp.GetAsync();
+                var agentsTask = client.Experimental.Tool.Ids.GetAsync();
+                var mcpTask = client.Mcp.GetAsMcpGetResponseAsync();
                 var sessionsTask = client.Session.GetAsync();
 
                 await Task.WhenAll(configTask, providersTask, agentsTask, mcpTask, sessionsTask);

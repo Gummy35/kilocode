@@ -112,7 +112,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
             
             try
             {
-                await kiotaClient.Instance.Reload.PostAsync(new Generated.Instance.Reload.InstanceReloadPostRequestBody { Directory = directory });
+                await kiotaClient.Instance.Reload.PostAsync(r => r.QueryParameters.Directory = directory);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Backend reloaded for directory {directory}");
                 
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "configReloaded" }));

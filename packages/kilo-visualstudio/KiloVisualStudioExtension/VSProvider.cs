@@ -845,18 +845,12 @@ namespace KiloVisualStudioExtension
                 {
                     foreach (var session in sessions)
                     {
-                        if (!string.IsNullOrEmpty(session.Id) && !string.IsNullOrEmpty(session.Status))
+                        if (!string.IsNullOrEmpty(session.Id))
                         {
                             var sessionID = session.Id;
-                            var sessionStatus = session.Status;
-                            
-                            if (reconcile && sessionStatus == "busy")
+                            if (!reconcile || !_sessionStatusMap.ContainsKey(sessionID))
                             {
                                 _sessionStatusMap[sessionID] = "idle";
-                            }
-                            else if (!reconcile || !_sessionStatusMap.ContainsKey(sessionID))
-                            {
-                                _sessionStatusMap[sessionID] = sessionStatus;
                             }
                         }
                     }
@@ -954,14 +948,14 @@ namespace KiloVisualStudioExtension
                                     var requestId = perm.Id;
                                     seen.Add(requestId);
                                     
-                                    if (!string.IsNullOrEmpty(perm.SessionId))
+                                    if (!string.IsNullOrEmpty(perm.SessionID))
                                     {
-                                        var sessionID = perm.SessionId;
+                                        var sessionID = perm.SessionID;
                                         var permission = perm.Permission ?? "";
                                         var patterns = perm.Patterns;
-                                        var always = perm.Always ?? false;
+                                        var always = perm.Always?.Count > 0;
                                         var metadata = perm.Metadata;
-                                        var tool = perm.Tool ?? "";
+                                        var tool = perm.Tool != null ? JsonSerializer.SerializeToElement(perm.Tool) : null;
 
                                         PostMessage(JsonSerializer.Serialize(new
                                         {
@@ -1006,11 +1000,11 @@ namespace KiloVisualStudioExtension
                                     var requestId = q.Id;
                                     seen.Add(requestId);
                                     
-                                    if (!string.IsNullOrEmpty(q.SessionId))
+                                    if (!string.IsNullOrEmpty(q.SessionID))
                                     {
-                                        var sessionID = q.SessionId;
+                                        var sessionID = q.SessionID;
                                         var blocking = q.Blocking ?? false;
-                                        var tool = q.Tool ?? "";
+                                        var tool = q.Tool != null ? JsonSerializer.SerializeToElement(q.Tool) : null;
 
                                         PostMessage(JsonSerializer.Serialize(new
                                         {
@@ -1019,7 +1013,7 @@ namespace KiloVisualStudioExtension
                                             {
                                                 id = requestId,
                                                 sessionID,
-                                                questions = JsonSerializer.SerializeToElement(q.Questions ?? new object[0]),
+                                                questions = q.Questions != null ? JsonSerializer.SerializeToElement(q.Questions) : null,
                                                 blocking,
                                                 tool
                                             }
@@ -1073,7 +1067,8 @@ namespace KiloVisualStudioExtension
             }
             try
             {
-                var response = await kiotaClient.Session.PostAsSessionPostResponseAsync(new Generated.Api.Session.SessionPostRequestBody { Directory = dir });
+                var body = new Generated.Session.SessionPostRequestBody();
+                var response = await kiotaClient.Session.PostAsync(body, r => r.QueryParameters.Directory = dir);
                 if (response != null && !string.IsNullOrEmpty(response.Id))
                 {
                     var sessionID = response.Id;
@@ -1246,10 +1241,14 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var response = await kiotaClient.Provider.GetAsProviderGetResponseAsync(q => q.QueryParameters.ProviderID = providerID);
-                if (response != null && response.Models != null)
+                var response = await kiotaClient.Provider.GetAsProviderGetResponseAsync();
+                if (response?.All != null)
                 {
-                    PostMessage(JsonSerializer.Serialize(new { type = "customProviderModelsFetched", providerID, models = JsonSerializer.SerializeToElement(response.Models) }));
+                    var provider = response.All.FirstOrDefault(p => p.Id == providerID);
+                    if (provider != null)
+                    {
+                        PostMessage(JsonSerializer.Serialize(new { type = "customProviderModelsFetched", providerID, models = JsonSerializer.SerializeToElement(provider.Models ?? new List<object>()) }));
+                    }
                 }
             }
             catch (Exception ex)
@@ -1271,25 +1270,8 @@ namespace KiloVisualStudioExtension
             
             if (string.IsNullOrEmpty(location)) return;
             
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null)
-            {
-                await SendErrorAsync("Not connected", "Not connected to CLI backend");
-                return;
-            }
-
-            try
-            {
-                await kiotaClient.Skill.PostAsync(new Generated.Skill.SkillPostRequestBody { Location = location });
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: skill removed: {location}");
-                
-                PostMessage(JsonSerializer.Serialize(new { type = "skillRemoved", location }));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error removing skill: {ex.Message}");
-                await SendErrorAsync("Remove failed", $"Failed to remove skill: {ex.Message}");
-            }
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: skill remove endpoint not available in generated API: {location}");
+            await SendErrorAsync("Remove failed", "Skill remove endpoint not available");
         }
 
         /// <summary>
@@ -1304,25 +1286,8 @@ namespace KiloVisualStudioExtension
             
             if (string.IsNullOrEmpty(name)) return;
             
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null)
-            {
-                await SendErrorAsync("Not connected", "Not connected to CLI backend");
-                return;
-            }
-
-            try
-            {
-                await kiotaClient.Agent.PostAsync(new Generated.Agent.AgentPostRequestBody { Name = name });
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: agent removed: {name}");
-                
-                PostMessage(JsonSerializer.Serialize(new { type = "agentRemoved", name }));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error removing agent: {ex.Message}");
-                await SendErrorAsync("Remove failed", $"Failed to remove agent: {ex.Message}");
-            }
+            System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: agent remove endpoint not available in generated API: {name}");
+            await SendErrorAsync("Remove failed", "Agent remove endpoint not available");
         }
 
         /// <summary>
