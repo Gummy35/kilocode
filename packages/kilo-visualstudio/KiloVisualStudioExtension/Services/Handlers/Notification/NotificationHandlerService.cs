@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Notification
 {
@@ -34,14 +35,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendNotificationsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var notifications = await kiotaClient.Kilo.Notifications.GetAsync();
+                var notifications = await nswagClient.Kilo_notificationsAsync("", "");
                 var notificationsList = notifications != null ? notifications.Select(n => (object)n).ToArray() : Array.Empty<object>();
 
                 await _provider.SendNotificationsAsync(notificationsList);

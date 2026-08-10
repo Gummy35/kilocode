@@ -26,6 +26,7 @@ using KiloVisualStudioExtension.Services.Handlers.Ui;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Generated;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension
 {
@@ -71,7 +72,7 @@ namespace KiloVisualStudioExtension
         private bool _disposed;
         private JsonElement? _webviewState;
         private string? _contextSessionID;
-        private readonly List<Action> _readyResolvers = new List<Action>();
+        private readonly List<System.Action> _readyResolvers = new List<System.Action>();
         private List<JsonElement>? _pendingReviewComments = null;
         private bool _promptRecoveryQueued = false;
         private Task? _promptRecovery;
@@ -127,6 +128,11 @@ namespace KiloVisualStudioExtension
         internal KiloClient? GetKiloClient()
         {
             return _connectionService.GetKiloClient();
+        }
+
+        internal KiloApiClient? GetNswagClient()
+        {
+            return _connectionService.GetNswagClient();
         }
 
         internal bool IsConnected()

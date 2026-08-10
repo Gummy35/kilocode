@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
@@ -88,14 +89,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendSkillsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var skills = await kiotaClient.Skill.GetAsync();
+                var skills = await nswagClient.App_skillsAsync("", "");
                 var skillsList = skills != null ? skills.Select(s => (object)s).ToArray() : Array.Empty<object>();
 
                 await _provider.SendSkillsAsync(skillsList);
@@ -117,14 +118,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendCommandsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var commands = await kiotaClient.Command.GetAsync();
+                var commands = await nswagClient.Command_listAsync("", "");
                 var commandsList = commands != null ? commands.Select(c => (object)c).ToArray() : Array.Empty<object>();
 
                 await _provider.SendCommandsAsync(commandsList);
@@ -146,14 +147,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var config = await kiotaClient.Global.Config.GetAsync();
+                var config = await nswagClient.Global_config_getAsync();
                 var configData = config != null ? JsonSerializer.SerializeToElement(config) : JsonDocument.Parse("{}").RootElement;
 
                 await _provider.SendGlobalConfigAsync(configData);

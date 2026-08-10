@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using KiloVisualStudioExtension.Generated;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
 {
@@ -32,8 +32,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestProvidersAsync()
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 await SendEmptyProvidersAsync();
                 return;
@@ -41,7 +41,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
 
             try
             {
-                var response = await kiotaClient.Provider.GetAsProviderGetResponseAsync();
+                var response = await nswagClient.Provider_listAsync("", "");
                 
                 var providersDict = new Dictionary<string, object>();
                 var connectedList = new List<string>();
@@ -67,7 +67,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
                     
                     if (response.Default != null)
                     {
-                        defaultsDict = response.Default.ToDictionary<string, string, string>(kvp => kvp.Key, kvp => kvp.Value ?? "");
+                        foreach (var kvp in response.Default)
+                        {
+                            defaultsDict[kvp.Key] = kvp.Value ?? "";
+                        }
                     }
                 }
                 

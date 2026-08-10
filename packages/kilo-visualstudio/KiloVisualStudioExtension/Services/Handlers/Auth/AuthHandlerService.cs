@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Auth
 {
@@ -46,17 +47,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                var profile = await kiotaClient.Kilo.Profile.GetAsync();
-                if (profile != null)
+                var profileResponse = await nswagClient.Kilo_profileAsync("", "");
+                if (profileResponse != null)
                 {
-                    await _provider.SendProfileDataAsync(JsonSerializer.SerializeToElement(profile));
+                    await _provider.SendProfileDataAsync(JsonSerializer.SerializeToElement(profileResponse));
                 }
             }
             catch (Exception ex)
@@ -86,14 +87,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRefreshProfileAsync(JsonElement? payload)
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null) return;
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null) return;
             try
             {
-                var profile = await kiotaClient.Kilo.Profile.GetAsync();
-                if (profile != null)
+                var profileResponse = await nswagClient.Kilo_profileAsync("", "");
+                if (profileResponse != null)
                 {
-                    var message = new { type = "profileData", data = JsonSerializer.SerializeToElement(profile) };
+                    var message = new { type = "profileData", data = JsonSerializer.SerializeToElement(profileResponse) };
                     _provider.PostMessage(JsonSerializer.Serialize(message));
                 }
             }

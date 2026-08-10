@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Settings
 {
@@ -91,14 +92,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendIndexingStatusAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var status = await kiotaClient.Indexing.Status.GetAsync();
+                var status = await nswagClient.Indexing_statusAsync("", "");
                 var statusData = status != null ? JsonSerializer.SerializeToElement(status) : JsonDocument.Parse("{}").RootElement;
 
                 await _provider.SendIndexingStatusAsync(statusData);

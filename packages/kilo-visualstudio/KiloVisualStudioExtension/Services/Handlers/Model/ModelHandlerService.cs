@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Model
 {
@@ -97,14 +98,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendImageModelsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var models = await kiotaClient.Kilo.Models.Images.GetAsync();
+                var models = await nswagClient.Kilo_models_imagesAsync("", "");
                 var modelsList = models != null ? models.Select(m => (object)m).ToArray() : Array.Empty<object>();
 
                 await _provider.SendImageModelsAsync(modelsList);

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Config
 {
@@ -47,14 +48,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var configResponse = await kiotaClient.Config.GetAsync();
+                var configResponse = await nswagClient.Global_config_getAsync();
                 var config = JsonDocument.Parse("{}").RootElement;
                 var features = JsonDocument.Parse("{}").RootElement;
                 
@@ -103,15 +104,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                var config = JsonSerializer.Deserialize<Generated.Models.Config>(payload.Value.GetRawText());
-                await kiotaClient.Config.PatchAsync(config);
+                var config = JsonSerializer.Deserialize<Config>(payload.Value.GetRawText());
+                if (config != null)
+                {
+                    await nswagClient.Global_config_updateAsync(config);
+                }
             }
             catch (Exception ex)
             {
@@ -148,15 +152,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                var config = JsonSerializer.Deserialize<Generated.Models.Config>(payload.Value.GetRawText());
-                await kiotaClient.Config.PatchAsync(config);
+                var config = JsonSerializer.Deserialize<Config>(payload.Value.GetRawText());
+                if (config != null)
+                {
+                    await nswagClient.Global_config_updateAsync(config);
+                }
             }
             catch (Exception ex)
             {

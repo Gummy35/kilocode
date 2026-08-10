@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using KiloVisualStudioExtension.Generated;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
 {
@@ -32,8 +32,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestAgentsAsync()
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 await SendEmptyAgentsAsync();
                 return;
@@ -41,14 +41,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
 
             try
             {
-                var agents = await kiotaClient.Agent.GetAsync();
+                var agents = await nswagClient.App_agentsAsync("", "");
                 var agentsList = new List<object>();
                 
                 if (agents != null)
                 {
                     foreach (var agent in agents)
                     {
-                        if (agent.Mode == Generated.Models.Agent_mode.Subagent)
+                        if (agent.Mode.ToString().ToLowerInvariant() == "subagent")
                             continue;
                         if (agent.Hidden == true)
                             continue;
@@ -57,13 +57,13 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
                         {
                             name = agent.Name ?? "",
                             description = agent.Description ?? "",
-                            mode = agent.Mode?.ToString() ?? "",
+                            mode = agent.Mode.ToString().ToLowerInvariant(),
                             native = agent.Native == true,
                             hidden = agent.Hidden == true,
                             color = agent.Color ?? "",
                             deprecated = agent.Deprecated == true,
-                            permission = agent.Permission != null ? JsonSerializer.SerializeToElement(agent.Permission) : (JsonElement?)null,
-                            model = agent.Model?.ToString() ?? ""
+                            permission = agent.Permission != null && agent.Permission.Count > 0 ? JsonSerializer.SerializeToElement(agent.Permission) : (JsonElement?)null,
+                            model = agent.Model != null ? agent.Model.ToString() ?? "" : ""
                         };
                         agentsList.Add(mappedAgent);
                     }

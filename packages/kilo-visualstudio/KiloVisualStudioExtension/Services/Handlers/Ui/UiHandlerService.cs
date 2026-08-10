@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Ui
 {
@@ -101,10 +102,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleReloadAsync(JsonElement? payload)
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: reload - no Kiota client");
+                System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: reload - no NSwag client");
                 return;
             }
 
@@ -112,7 +113,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
             
             try
             {
-                await kiotaClient.Instance.Reload.PostAsync(r => r.QueryParameters.Directory = directory);
+                await nswagClient.Instance_reloadAsync(directory, "");
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Backend reloaded for directory {directory}");
                 
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "configReloaded" }));
