@@ -196,7 +196,7 @@ extension.ts
 | WebView API | `vscode.Webview`, `postMessage()` | `CoreWebView2`, `PostMessage()` | `WebMessageReceived` | ADAPTED | Platform requirement |
 | Message protocol | JSON serialization | JSON serialization | `System.Text.Json` | EXACT | Same format |
 | CSP | `contentSecurityPolicy` meta tag | UNKNOWN | UNKNOWN | UNKNOWN | Need to verify VS Code CSP |
-| Font loading | Local fonts from `assets/fonts/` | Local fonts from `webview/` | `CoreWebView2.Settings` | EXACT | Both load locally |
+| Font loading | Local fonts from `assets/fonts/` | Local fonts from `webview/` | `CoreWebView2.Settings` | ADAPTED | Both load locally, different mechanism |
 | Serializer | `registerWebviewPanelSerializer()` | UNKNOWN | UNKNOWN | MISSING | VS Code has serializers for panel restore |
 
 ### 4.8 Test Mapping
@@ -367,54 +367,54 @@ extension.ts
 
 ### 8.1 Connection Service Tests
 
-| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
-|-------------------|------------------|-----------------|--------------------|--------|-------|
-| `connection-service.test.ts` | `KiloConnectionService sandbox preference` | Uses workspace state | UNKNOWN | MISSING | No VS Code test found |
-| `connection-service.test.ts` | `KiloConnectionService clients` | Returns connected client | UNKNOWN | MISSING | No VS Code test found |
-| `connection-service.test.ts` | `KiloConnectionService viewed sessions` | Keeps AM sessions during flush | `KiloProviderSessionRefreshTests.cs` | PORTED_ADAPTED | Similar coverage, different focus |
+| VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
+|-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
+| `connection-service.test.ts` | `KiloConnectionService sandbox preference` | Uses workspace state | UNKNOWN | UNKNOWN | MISSING | No VS Code test found |
+| `connection-service.test.ts` | `KiloConnectionService clients` | Returns connected client | UNKNOWN | UNKNOWN | MISSING | No VS Code test found |
+| `connection-service.test.ts` | `KiloConnectionService viewed sessions` | Keeps AM sessions during flush | `KiloProviderSessionRefreshTests.cs` | `KiloProviderSessionRefreshTests` | PORTED_ADAPTED | Similar coverage, different focus |
 
 ### 8.2 Agent Manager Tests
 
-| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
-|-------------------|------------------|-----------------|--------------------|--------|-------|
-| `AgentManagerProvider.spec.ts` | `SetupScriptService` | Runs setup scripts | `AgentManagerArchTests.cs` | PORTED_ADAPTED | Architecture tests exist |
-| `am-visible-presence.test.ts` | `AgentManagerVisiblePresence` | Tracks visible sessions | UNKNOWN | MISSING | No VS Code test found |
+| VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
+|-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
+| `AgentManagerProvider.spec.ts` | `SetupScriptService` tests | Runs setup scripts | `AgentManagerArchTests.cs` | `AgentManagerArchTests` | PORTED_ADAPTED | Architecture tests exist |
+| `am-visible-presence.test.ts` | `AgentManagerVisiblePresence` | Tracks visible sessions | UNKNOWN | UNKNOWN | MISSING | No VS Code test found |
 
 ### 8.3 Abort/Session Tests
 
-| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
-|-------------------|------------------|-----------------|--------------------|--------|-------|
-| `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests.Does_not_stop_background_processes_twice` | Abort handling | `AbortAndLoadMessagesTests.cs` | PORTED_1_TO_1 | Direct equivalent |
-| `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests.Stops_background_processes_for_previous_session` | Session switching | `AbortAndLoadMessagesTests.cs` | PORTED_1_TO_1 | Direct equivalent |
-| `AbortStateTests.cs` | `AbortStateTests.Allows_retrying_an_abort` | Abort state | `AbortStateTests.cs` | PORTED_1_TO_1 | Direct equivalent |
-| `AbortStateTests.cs` | `AbortStateTests.Clears_cancellation_when_submission_finishes` | Cancellation | `AbortStateTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+| VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
+|-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
+| UNKNOWN | UNKNOWN | Abort handling | `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests` | MISSING | No VS Code source test verified |
+| UNKNOWN | UNKNOWN | Session switching | `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests` | MISSING | No VS Code source test verified |
+| UNKNOWN | UNKNOWN | Abort state | `AbortStateTests.cs` | `AbortStateTests` | MISSING | No VS Code source test verified |
+| UNKNOWN | UNKNOWN | Cancellation handling | `AbortStateTests.cs` | `AbortStateTests` | MISSING | No VS Code source test verified |
 
 ### 8.4 Session Tests
 
-| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
-|-------------------|------------------|-----------------|--------------------|--------|-------|
-| `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests.Focus` | Stream scheduling | `SessionStreamSchedulerTests.cs` | PORTED_1_TO_1 | Direct equivalent |
-| `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests.Flush` | Buffer flushing | `SessionStreamSchedulerTests.cs` | PORTED_1_TO_1 | Direct equivalent |
-| `SessionQueueTests.cs` | `SessionQueueTests` | Session queueing | UNKNOWN | MISSING | No VS Code test found |
-| `SessionRefreshTests.cs` | `SessionRefreshTests` | Session refresh | `KiloProviderSessionRefreshTests.cs` | PORTED_ADAPTED | Different focus |
+| VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
+|-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
+| UNKNOWN | UNKNOWN | Stream scheduling | `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests` | MISSING | No VS Code source test verified |
+| UNKNOWN | UNKNOWN | Buffer flushing | `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests` | MISSING | No VS Code source test verified |
+| UNKNOWN | UNKNOWN | Session queueing | `SessionQueueTests.cs` | `SessionQueueTests` | MISSING | No VS Code source test verified |
+| UNKNOWN | UNKNOWN | Session refresh | `KiloProviderSessionRefreshTests.cs` | `KiloProviderSessionRefreshTests` | MISSING | No VS Code source test verified |
 
 ### 8.5 SSE/Event Tests
 
-| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
-|-------------------|------------------|-----------------|--------------------|--------|-------|
-| `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | SSE filtering | `SSEEventFilteringTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+| VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Test File | Visual Studio Test Class/Method | Status | Notes |
+|-------------------|--------------------------|-----------------|------------------------|--------------------------------|--------|-------|
+| UNKNOWN | UNKNOWN | SSE filtering | `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | MISSING | No VS Code source test verified |
 
 ### 8.6 Summary
 
 | Status | Count |
 |--------|-------|
-| PORTED_1_TO_1 | ~10 |
-| PORTED_ADAPTED | ~3 |
-| MISSING | ~5 |
+| PORTED_1_TO_1 | 0 |
+| PORTED_ADAPTED | 2 |
+| MISSING | 13 |
 | NOT_APPLICABLE | 0 |
-| UNKNOWN | ~2 |
+| UNKNOWN | 0 |
 
-**Note:** The VS Code extension has a limited number of unit tests in `src/` (mostly `connection-service.test.ts`, `am-visible-presence.test.ts`, `AgentManagerProvider.spec.ts`). The majority of test coverage exists in the Visual Studio extension (`KiloVisualStudioExtension.Tests/`), suggesting tests may have been written for VS Code first or independently.
+**Note:** The VS Code extension has a limited number of unit tests in `src/` (`connection-service.test.ts`, `am-visible-presence.test.ts`, `AgentManagerProvider.spec.ts`). The Visual Studio extension has extensive test coverage (`KiloVisualStudioExtension.Tests/` with ~273 tests), but most of these tests have no identifiable VS Code source. Per the source-of-truth rule, Visual Studio tests without verified VS Code counterparts must be classified as MISSING, not PORTED_1_TO_1. The existing Visual Studio tests may have been independently created.
 
 ---
 
@@ -424,26 +424,26 @@ extension.ts
 
 | Message Type | Purpose | VS Code | Visual Studio | Status |
 |--------------|---------|---------|---------------|--------|
-| `action` | UI actions | Yes | Yes | EXACT |
-| `error` | Error display | Yes | Yes | EXACT |
-| `session.status` | Session state | Yes | Yes | EXACT |
-| `config` | Configuration | Yes | Yes | EXACT |
-| `auth.profile` | User profile | Yes | Yes | EXACT |
-| `notifications` | Notifications | Yes | Yes | EXACT |
-| `permissions` | Permissions | Yes | Yes | EXACT |
-| `questions` | Questions | Yes | Yes | EXACT |
+| `action` | UI actions | Yes | Yes | ADAPTED |
+| `error` | Error display | Yes | Yes | ADAPTED |
+| `session.status` | Session state | Yes | Yes | ADAPTED |
+| `config` | Configuration | Yes | Yes | ADAPTED |
+| `auth.profile` | User profile | Yes | Yes | ADAPTED |
+| `notifications` | Notifications | Yes | Yes | ADAPTED |
+| `permissions` | Permissions | Yes | Yes | ADAPTED |
+| `questions` | Questions | Yes | Yes | ADAPTED |
 
 ### 8.2 Webview→Extension Messages
 
 | Message Type | Purpose | VS Code | Visual Studio | Status |
 |--------------|---------|---------|---------------|--------|
-| `submit` | Send message | Yes | Yes | EXACT |
-| `abort` | Cancel session | Yes | Yes | EXACT |
-| `approve` | Approve tool | Yes | Yes | EXACT |
-| `reject` | Reject tool | Yes | Yes | EXACT |
-| `answer` | Answer question | Yes | Yes | EXACT |
-| `dismiss` | Dismiss notification | Yes | Yes | EXACT |
-| `request.*` | Request data | Yes | Yes | EXACT |
+| `submit` | Send message | Yes | Yes | ADAPTED |
+| `abort` | Cancel session | Yes | Yes | ADAPTED |
+| `approve` | Approve tool | Yes | Yes | ADAPTED |
+| `reject` | Reject tool | Yes | Yes | ADAPTED |
+| `answer` | Answer question | Yes | Yes | ADAPTED |
+| `dismiss` | Dismiss notification | Yes | Yes | ADAPTED |
+| `request.*` | Request data | Yes | Yes | ADAPTED |
 
 ---
 
