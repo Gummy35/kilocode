@@ -24,7 +24,7 @@ It is intentionally concise. Detailed requirements belong in the individual task
 
 | ID                 | Description                                                                                 | Status        | Depends On                       |
 | ------------------ | ------------------------------------------------------------------------------------------- | ------------- | -------------------------------- |
-| `PORT-INFRA-001`   | Establish a deterministic baseline inventory of the existing Visual Studio implementation   | `IN_PROGRESS` | —                                |
+| `PORT-INFRA-001`   | Establish a deterministic baseline inventory of the existing Visual Studio implementation   | `REVIEW` | —                                |
 | `PORT-INFRA-002`   | Inventory the VS Code extension and establish source-to-target mappings                     | `NOT_STARTED` | `PORT-INFRA-001`                 |
 | `PORT-CLI-001`     | Port the VS Code CLI/HTTP client and its relevant tests to Visual Studio                    | `NOT_STARTED` | `PORT-INFRA-002`                 |
 | `PORT-WEBVIEW-001` | Port the VS Code extension host/WebView integration to Visual Studio                        | `NOT_STARTED` | `PORT-INFRA-002`, `PORT-CLI-001` |
