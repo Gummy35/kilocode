@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -653,22 +654,60 @@ namespace KiloVisualStudioExtension
         /// <summary>
         /// Flushes viewed session data to the backend.
         /// Matches VS Code's flushViewed functionality.
+        /// Uses the generated Kiota client to call session.viewed endpoint.
         /// </summary>
         public async Task FlushViewedAsync()
         {
             if (_state != ConnectionState.Connected || _kiotaClient == null)
                 return;
 
+            List<string> visibleList;
+            List<string> attachedList;
+
             lock (_visibilityLock)
             {
+                // Collect all visible session IDs across all directories
+                var visibleSessions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var attachedSessions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                
                 foreach (var kvp in _visibleSessions)
                 {
-                    var directory = kvp.Key;
-                    var sessionIds = kvp.Value;
-                    // Send viewed sessions to backend via API
-                    // This would call the session.viewed endpoint
-                    System.Diagnostics.Debug.WriteLine($"[Kilo] FlushViewed: directory={directory}, count={sessionIds.Count}");
+                    foreach (var sessionId in kvp.Value)
+                    {
+                        visibleSessions.Add(sessionId);
+                    }
                 }
+                
+                foreach (var kvp in _attachedSessions)
+                {
+                    foreach (var sessionId in kvp.Value)
+                    {
+                        attachedSessions.Add(sessionId);
+                    }
+                }
+
+                // Only send if there are sessions to report
+                if (visibleSessions.Count == 0 && attachedSessions.Count == 0)
+                    return;
+
+                visibleList = visibleSessions.ToList();
+                attachedList = attachedSessions.ToList();
+            }
+
+            var body = new global::KiloVisualStudioExtension.Generated.Session.Viewed.ViewedPostRequestBody
+            {
+                Visible = visibleList,
+                Attached = attachedList
+            };
+
+            try
+            {
+                await _kiotaClient.Session.Viewed.PostAsync(body).ConfigureAwait(false);
+                System.Diagnostics.Debug.WriteLine($"[Kilo] FlushViewed: sent visible={visibleList.Count}, attached={attachedList.Count}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] FlushViewed failed: {ex.Message}");
             }
         }
 

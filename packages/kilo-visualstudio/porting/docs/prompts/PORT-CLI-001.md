@@ -82,7 +82,7 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 - `StartCheckinTimer()` - 60s interval for flushViewed
 - `RegisterVisible()` - Session visibility tracking
 - `RegisterAttached()` - Session attachment tracking
-- `FlushViewedAsync()` - Flush viewed sessions to backend
+- `FlushViewedAsync()` - Flush viewed sessions to backend via `session.viewed` endpoint
 - `TrackDirectory()` / `GetKnownDirectories()` - Directory tracking
 - `RecordPermissionDirectory()` / `GetPermissionDirectories()` / `ClearPermissionDirectory()`
 - `RecordQuestionDirectory()` / `GetQuestionDirectories()` / `ClearQuestionDirectory()`
@@ -92,6 +92,11 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 **Integration:**
 - `ConnectAsync()` now creates Kiota client using the generated `KiloClient` class
 - Authentication configured via Basic Auth header on the HttpClient
+- `FlushViewedAsync()` now calls the generated `session.viewed` endpoint with proper request body
+
+**Preserved legacy infrastructure:**
+- `HttpClientWrapper` and `CachedHttpClient` retained for use by `VSProvider` and `ExtensionConfigManager`
+- Both generated Kiota client and legacy HTTP clients coexist
 
 ### 3.4 SseClient Changes
 
@@ -112,6 +117,8 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 | Add directory tracking | ✅ | All methods implemented |
 | Add exponential backoff to SseClient | ✅ | Doubles delay, capped at 5s |
 | Port connection service tests | ⏸️ Deferred | Pre-existing test errors unrelated to this implementation |
+| Implement FlushViewedAsync | ✅ | Now calls `session.viewed` endpoint with proper request body |
+| Preserve legacy HTTP infrastructure | ✅ | `HttpClientWrapper` and `CachedHttpClient` retained for `VSProvider` and `ExtensionConfigManager` |
 
 ---
 
@@ -125,20 +132,25 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 
 4. **drainPendingPrompts**: As per plan Section 5.3, this implementation was deferred to a later task.
 
+5. **Legacy HTTP infrastructure preserved**: `HttpClientWrapper` and `CachedHttpClient` are retained because they are still used by `VSProvider` and `ExtensionConfigManager`. Both the generated Kiota client and legacy HTTP clients coexist.
+
 ---
 
 ## 6. Validation Results
 
 ### Build Status
-- ✅ Main extension builds successfully with no errors
+- ✅ Main extension builds successfully with 0 errors
 - ⚠️ Test project has pre-existing errors (unrelated to this implementation)
 
-### Files Modified
+### Files Modified (Initial Implementation)
 - `CliBackendManager.cs` - Password generation, env vars
 - `KiloConnectionService.cs` - Kiota client integration, session visibility, directory tracking
 - `SseClient.cs` - Exponential backoff
 - `KiloVisualStudioExtension.csproj` - Kiota dependencies
 - `Generated/` - New directory with generated SDK client (800+ files)
+
+### Files Modified (Corrective Pass)
+- `KiloConnectionService.cs` - Fixed `FlushViewedAsync()` to call `session.viewed` endpoint, added `System.Linq` using
 
 ### Files Not Modified (Per Plan Constraints)
 - ✅ No test files modified
@@ -196,5 +208,6 @@ dotnet add package Microsoft.Kiota.Http.HttpClientLibrary --version 2.0.0
 ---
 
 **Implementation completed:** 2026-08-10  
+**Corrective pass:** 2026-08-10  
 **Total files modified:** 3 source files + 1 project file + 800+ generated files  
-**Build status:** ✅ Success (main extension)
+**Build status:** ✅ Success (0 errors, 0 warnings)
