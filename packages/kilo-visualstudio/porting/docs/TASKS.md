@@ -186,7 +186,7 @@ It becomes `DONE` only after the implementation and relevant validation have bee
 ## Current Project State
 
 ```text
-PORT-INFRA-001   → IN_PROGRESS
+PORT-INFRA-001   → REVIEW
 PORT-INFRA-002   → NOT_STARTED
 PORT-CLI-001     → NOT_STARTED
 PORT-WEBVIEW-001 → NOT_STARTED
