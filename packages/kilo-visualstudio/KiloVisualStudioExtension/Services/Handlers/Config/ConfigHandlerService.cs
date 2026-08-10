@@ -111,7 +111,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                     return;
                 }
 
-                var config = JsonSerializer.Deserialize<Config>(payload.Value.GetRawText());
+                var config = JsonSerializer.Deserialize<KiloVisualStudioExtension.ApiClient.Config>(payload.Value.GetRawText());
                 if (config != null)
                 {
                     await nswagClient.Global_config_updateAsync(config);
@@ -159,7 +159,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                     return;
                 }
 
-                var config = JsonSerializer.Deserialize<Config>(payload.Value.GetRawText());
+                var config = JsonSerializer.Deserialize<KiloVisualStudioExtension.ApiClient.Config>(payload.Value.GetRawText());
                 if (config != null)
                 {
                     await nswagClient.Global_config_updateAsync(config);
@@ -208,7 +208,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                 if (kiotaClient == null) return;
                 
                 // Config model doesn't have a Path property - use default config path
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "kilo", "config.json");
+                string filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "kilo", "config.json");
                 
                 if (!string.IsNullOrEmpty(filePath))
                 {

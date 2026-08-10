@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 {
@@ -45,15 +46,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         {
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendMcpStatusAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var mcp = await kiotaClient.Mcp.GetAsync();
-                var mcpStatus = mcp != null ? JsonSerializer.SerializeToElement(mcp) : JsonDocument.Parse("{}").RootElement;
+                var directory = System.Environment.CurrentDirectory;
+                var mcpStatusDict = await nswagClient.Mcp_statusAsync(directory, "");
+                var mcpStatus = mcpStatusDict != null && mcpStatusDict.Count > 0 
+                    ? JsonSerializer.SerializeToElement(mcpStatusDict) 
+                    : JsonDocument.Parse("{}").RootElement;
 
                 await _provider.SendMcpStatusAsync(mcpStatus);
             }
@@ -92,17 +96,20 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                var mcpConnect = JsonSerializer.Deserialize<Generated.Models.McpConnect>(payload.Value.GetRawText());
-                if (mcpConnect != null)
+                if (payload.Value.TryGetProperty("serverId", out var serverIdProp))
                 {
-                    await kiotaClient.Mcp.Connect.PostAsync(mcpConnect);
+                    var serverId = serverIdProp.GetString();
+                    if (!string.IsNullOrEmpty(serverId))
+                    {
+                        await nswagClient.Mcp_connectAsync(serverId, System.Environment.CurrentDirectory, "");
+                    }
                 }
             }
             catch (Exception ex)
@@ -134,14 +141,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await kiotaClient.Mcp[serverId].Disconnect.PostAsync(new Generated.Mcp.Item.Disconnect.DisconnectPostRequestBody());
+                await nswagClient.Mcp_disconnectAsync(serverId, System.Environment.CurrentDirectory, "");
             }
             catch (Exception ex)
             {
@@ -157,26 +164,29 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleAuthenticateMcpAsync(JsonElement? payload)
         {
-            if (payload == null)
+            if (payload == null || !payload.Value.TryGetProperty("serverId", out var serverIdProp))
             {
-                await _provider.SendErrorAsync("Missing payload", "Authentication details are required");
+                await _provider.SendErrorAsync("Missing serverId", "serverId is required");
+                return;
+            }
+
+            var serverId = serverIdProp.GetString();
+            if (string.IsNullOrEmpty(serverId))
+            {
+                await _provider.SendErrorAsync("Invalid serverId", "serverId cannot be empty");
                 return;
             }
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                var mcpAuth = JsonSerializer.Deserialize<Generated.Models.McpAuthenticate>(payload.Value.GetRawText());
-                if (mcpAuth != null)
-                {
-                    await kiotaClient.Mcp.Authenticate.PostAsync(mcpAuth);
-                }
+                await nswagClient.Mcp_auth_authenticateAsync(serverId, System.Environment.CurrentDirectory, "");
             }
             catch (Exception ex)
             {
@@ -187,6 +197,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         /// <summary>
         /// Handles the removeMcp message from the webview.
         /// Removes an MCP server configuration.
+        /// 
+        /// NOTE: NSwag client does not have Mcp_removeAsync method. The Kiota implementation
+        /// referenced kiotaClient.Mcp[serverId].Remove.PostAsync() but this endpoint does not
+        /// exist in the generated NSwag client. This is a known limitation - MCP removal
+        /// functionality is not yet available via NSwag.
         /// </summary>
         /// <param name="payload">The message payload containing MCP server ID.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -207,14 +222,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await kiotaClient.Mcp[serverId].Remove.PostAsync(new Generated.Mcp.Item.Remove.RemovePostRequestBody());
+                // TODO: NSwag client needs Mcp_removeAsync method added
+                // await nswagClient.Mcp_removeAsync(serverId, System.Environment.CurrentDirectory, "");
+                await _provider.SendErrorAsync("Not implemented", "MCP removal is not yet supported via NSwag");
             }
             catch (Exception ex)
             {

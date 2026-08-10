@@ -150,8 +150,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
                 }
                 
                 var bytes = Convert.FromBase64String(imageData);
-                var path = Path.Combine(System.Environment.CurrentDirectory, filename);
-                File.WriteAllBytes(path, bytes);
+                var path = System.IO.Path.Combine(System.Environment.CurrentDirectory, filename);
+                System.IO.File.WriteAllBytes(path, bytes);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Image saved: {path}");
                 
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "imageSaved", path }));
