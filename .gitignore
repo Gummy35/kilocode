@@ -72,3 +72,4 @@ packages/app/.artifacts/
 packages/opencode/.artifacts/
 packages/kilo-visualstudio/KiloVisualStudioExtension.Tests/bin/
 packages/kilo-visualstudio/KiloVisualStudioExtension.Tests/obj/
+.vs/**

@@ -1,0 +1,22 @@
+{
+    "repository":  "kilocode/kilocode",
+    "branch":  "vs2026",
+    "commitSha":  "e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3",
+    "generationTimestamp":  "2026-08-10T10:48:12.3035520+02:00",
+    "inventoryTool":  "PORT-INFRA-001 baseline inventory script",
+    "inventoryScope":  "Visual Studio extension and tests only",
+    "projects":  [
+                     {
+                         "name":  "KiloVisualStudioExtension",
+                         "type":  "production",
+                         "projectFile":  "KiloVisualStudioExtension/KiloVisualStudioExtension.csproj",
+                         "targetFramework":  "net481"
+                     },
+                     {
+                         "name":  "KiloVisualStudioExtension.Tests",
+                         "type":  "test",
+                         "projectFile":  "KiloVisualStudioExtension.Tests/KiloVisualStudioExtension.Tests.csproj",
+                         "targetFramework":  "net481"
+                     }
+                 ]
+}

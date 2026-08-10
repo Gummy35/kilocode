@@ -1,0 +1,49 @@
+PORT-INFRA-001 Baseline Inventory Report
+=========================================
+
+Repository State:
+  Commit: e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
+  Branch: vs2026
+  Timestamp: 2026-08-10T10:48:12.3035520+02:00
+
+Inventory Summary:
+  Projects: 2
+  Files: 234
+    - C# source: 234 (production + test)
+    - Webview assets: included in files.json
+    - Configuration: included in files.json
+    - Documentation: included in files.json
+  Symbols: 2220
+    - Namespaces: 112
+    - Classes: 317
+    - Interfaces: 11
+    - Methods: 951
+    - Properties: 480
+    - Fields: 281
+    - Constructors: 68
+  Tests: 196
+    - [Fact]: 196
+    - [Theory]: 0
+
+Validation Results:
+  JSON syntax: PASS
+  Duplicate IDs: PASS
+  Reference resolution: PASS
+  Determinism: PASS (deduplication applied)
+
+Generated Files:
+  - packages/kilo-visualstudio/porting/baseline/baseline.json
+  - packages/kilo-visualstudio/porting/manifest/files.json
+  - packages/kilo-visualstudio/porting/manifest/symbols.json
+  - packages/kilo-visualstudio/porting/manifest/tests.json
+  - packages/kilo-visualstudio/porting/manifest/relationships.json
+
+Blockers:
+  - None
+
+Notes:
+  - Roslyn symbol inventory tool created in $env:TEMP\symbol-inventory\
+  - All inventory files generated in packages/kilo-visualstudio/porting/
+  - No production code or test files were modified
+  - Duplicate symbol IDs were deduplicated (2306 -> 2220 unique symbols)
+  - symbol_calls_symbol relationship is OUT OF SCOPE (will be handled by later task)
