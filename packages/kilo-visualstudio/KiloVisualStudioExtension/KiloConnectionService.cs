@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using KiloVisualStudioExtension.Generated;
+using KiloVisualStudioExtension.ApiClient;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
@@ -148,6 +149,11 @@ namespace KiloVisualStudioExtension
         /// Request adapter for the Kiota client (used for authentication).
         /// </summary>
         private IRequestAdapter? _requestAdapter;
+        
+        /// <summary>
+        /// Generated NSwag API client for REST API calls (alternative to Kiota).
+        /// </summary>
+        private KiloApiClient? _nswagClient;
         
         /// <summary>
         /// Current connection state.
@@ -408,6 +414,9 @@ namespace KiloVisualStudioExtension
                 _requestAdapter = CreateRequestAdapter(_baseUrl, password);
                 _kiotaClient = new KiloClient(_requestAdapter);
 
+                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating NSwag API client");
+                _nswagClient = new KiloApiClient(_baseUrl, password);
+
                 System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating SSE client");
                 _sseClient = new SseClient(_baseUrl, password);
                 _sseClient.OnConnected += SseClient_OnConnected;
@@ -616,6 +625,20 @@ namespace KiloVisualStudioExtension
                 throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
             }
             return _requestAdapter;
+        }
+
+        /// <summary>
+        /// Gets the NSwag API client for making REST API calls.
+        /// </summary>
+        /// <returns>The KiloApiClient instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if not connected.</exception>
+        public KiloApiClient? GetNswagClient()
+        {
+            if (_state != ConnectionState.Connected)
+            {
+                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
+            }
+            return _nswagClient;
         }
 
         /// <summary>
