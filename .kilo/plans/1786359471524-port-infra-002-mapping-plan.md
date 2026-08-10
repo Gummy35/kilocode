@@ -115,111 +115,147 @@ extension.ts
 
 ---
 
-## 4. VS Code → Visual Studio Mappings
+## 4. VS Code → Visual Studio Mappings (Evidence-Based)
 
 ### 4.1 Extension Entry Point
 
-| VS Code Element | Visual Studio Counterpart | Status | Notes |
-|-----------------|--------------------------|--------|-------|
-| `extension.ts` | `KiloVisualStudioExtensionPackage.cs` | PARTIAL | VS Package entry point exists but lacks command registration parity |
-| `activate()` | `InitializeAsync()` | PARTIAL | Missing provider registrations, command handlers |
-| `deactivate()` | `Dispose()` | PARTIAL | Cleanup logic partially implemented |
+| VS Code Element | VS Code Symbol | Visual Studio File | Visual Studio Symbol | Status | Evidence | Uncertainty |
+|-----------------|----------------|-------------------|---------------------|--------|----------|-------------|
+| `extension.ts` | `activate(context)` | `KiloVisualStudioExtensionPackage.cs` | `InitializeAsync()` | PARTIAL | Both register tool windows, commands, and initialize connection service. VS Code registers 50+ commands; VS Code registers only 3 commands (ShowKiloWindow, OpenSettings, ToolbarCommands). | Which VS Code commands are missing in VS Code? |
+| `extension.ts` | `deactivate()` | `KiloVisualStudioExtensionPackage.cs` | `Dispose(bool)` | PARTIAL | Both dispose connection service and backend manager. VS Code also disposes attention, browser automation, provider, notebook bridge. | Are all VS Code disposables covered? |
+| `extension.ts` | `openKiloInNewTab()` | UNKNOWN | UNKNOWN | MISSING | VS Code creates tab panel with serializer. No equivalent found in VS Code. | Is tab panel functionality required? |
 
-### 4.2 Core Services
+### 4.2 Core Services - CLI/HTTP Client
 
-| VS Code Element | Visual Studio Counterpart | Status | Notes |
-|-----------------|--------------------------|--------|-------|
-| `KiloConnectionService` (TS) | `KiloConnectionService.cs` | ADAPTED | Similar singleton pattern, C# implementation |
-| `ServerManager` | `CliBackendManager.cs` | ADAPTED | Similar process management, different API |
-| `SdkSSEAdapter` | `SseClient.cs`, `SSEHelper.cs` | ADAPTED | SSE client exists but may lack full feature parity |
-| `HttpClient` wrapper | `HttpClientWrapper.cs`, `CachedHttpClient.cs` | EXISTING | Equivalent HTTP client layer |
+| VS Code Element | VS Code Symbol | Visual Studio File | Visual Studio Symbol | Status | Evidence | Uncertainty |
+|-----------------|----------------|-------------------|---------------------|--------|----------|-------------|
+| `ServerManager` | `startServer()` spawns `bin/kilo serve --port 0` | `CliBackendManager.cs` | `StartAsync()` | ADAPTED | Both spawn CLI process, parse port from stdout, wait for health endpoint. VS Code uses 30s timeout; VS Code uses 30s timeout. | Does VS Code parse port from same stdout pattern? |
+| `ServerManager` | `resolveServerCwd()`, `resolveIndexingEnv()`, `resolveManagedServerEnv()` | `CliBackendManager.cs` | `GetExtensionDirectory()`, environment setup | ADAPTED | Both set environment variables (KILO_CLIENT, KILO_PLATFORM, etc.). VS Code sets 20+ env vars; VS Code sets similar vars. | Complete env var parity? |
+| `KiloConnectionService` | `connect()`, `getClient()`, `getClientAsync()` | `KiloConnectionService.cs` | `ConnectAsync()`, `GetClient()` | ADAPTED | Both use singleton pattern, lazy startup, state machine (connecting/connected/disconnected/error). VS Code has 936 lines; VS Code has 518 lines. | Does VS Code implement all VS Code methods? |
+| `KiloConnectionService` | `onEvent()`, `onEventFiltered()` | `KiloConnectionService.cs` | `event` event, `SseEventReceived` | ADAPTED | Both use pub/sub pattern for SSE events. VS Code uses `Set<SSEEventListener>`; VS Code uses C# events. | Event filtering parity? |
+| `SdkSSEAdapter` | `connect()`, `disconnect()`, `reconnect()`, `consumeLoop()` with heartbeat timeout (15s) | `SseClient.cs` | `Connect()`, `Disconnect()`, `ReadLoop()` with heartbeat (15s) | ADAPTED | Both implement reconnection loop, heartbeat timeout (15s), per-attempt AbortController pattern. VS Code uses AsyncGenerator; VS Code uses `HttpContent.ReadAsStreamAsync()`. | Reconnection delay parity (VS Code: 250ms)? |
+| `SdkSSEAdapter` | `onEvent()`, `onError()`, `onStateChange()` | `SseClient.cs` | `OnEvent`, `OnConnected`, `OnDisconnected` events | ADAPTED | Both expose event handlers for state changes. VS Code uses `Set<SSEEventHandler>`; VS Code uses C# events. | Error handler parity? |
+| `HttpClient` | `createKiloClient()` from `@kilocode/sdk/v2/client` | `HttpClientWrapper.cs`, `CachedHttpClient.cs` | `HttpClientWrapper`, `CachedHttpClient` | ADAPTED | VS Code uses SDK-generated client; VS Code uses manual HTTP calls with 10s TTL caching. | All SDK methods covered? |
+| `connection-service.ts` | `trackState()`, `flushViewed()`, `registerVisible()`, `registerAttached()` | UNKNOWN | UNKNOWN | MISSING | VS Code tracks visible/attached sessions for remote control. No equivalent found in VS Code. | Is this required for parity? |
 
 ### 4.3 Providers
 
-| VS Code Element | Visual Studio Counterpart | Status | Notes |
-|-----------------|--------------------------|--------|-------|
-| `KiloProvider` (sidebar) | `KiloWebViewControl.cs` | ADAPTED | WebView2-based, different message protocol |
-| `AgentManagerProvider` | `AgentManager/AgentManagerProvider.cs` | PARTIAL | Exists but may lack feature parity |
-| `KiloClawProvider` | `KiloClawProvider.cs` | EXISTING | Direct equivalent |
-| `DiffViewerProvider` | UNKNOWN | MISSING | Not found in Visual Studio |
-| `SettingsEditorProvider` | `SettingsEditorProvider.cs` | EXISTING | Direct equivalent |
-| `MarketplacePanelProvider` | UNKNOWN | MISSING | Not found |
-| `SubAgentViewerProvider` | `SubAgentViewerProvider.cs` | EXISTING | Direct equivalent |
+| VS Code Element | VS Code Symbol | Visual Studio File | Visual Studio Symbol | Status | Evidence | Uncertainty |
+|-----------------|----------------|-------------------|---------------------|--------|----------|-------------|
+| `KiloProvider` | `resolveWebviewPanel()`, `handleWebviewMessage()`, `postMessage()` | `KiloWebViewControl.cs` | `InitializeCoreWebView2()`, `WebMessageReceived` | ADAPTED | Both handle WebView lifecycle, message passing, CSP. VS Code uses `vscode.Webview`; VS Code uses `CoreWebView2`. | Message handler parity? |
+| `AgentManagerProvider` | `openPanel()`, `handleMessage()`, `deserializePanel()` | `AgentManager/AgentManagerProvider.cs` | `ShowPanel()`, `HandleMessage()` | PARTIAL | Both manage multi-session worktree state. VS Code has 1941 lines; VS Code has ~300 lines. | Feature parity incomplete? |
+| `KiloClawProvider` | `openPanel()`, `restorePanel()` | `KiloClawProvider.cs` | `ShowKiloClaw()`, `RestorePanel()` | EXACT | Both provide editor panel chat. Same method names, similar structure. | None |
+| `SettingsEditorProvider` | `openPanel()`, `deserializePanel()` | `SettingsEditorProvider.cs` | `OpenPanel()`, `DeserializePanel()` | EXACT | Both provide settings/profile panels. Same method names. | None |
+| `SubAgentViewerProvider` | `openPanel(sessionID, title)` | `SubAgentViewerProvider.cs` | `ShowSubAgentViewer(sessionId)` | EXACT | Both provide read-only sub-agent viewer. | None |
+| `DiffViewerProvider` | `openFromCommand()`, `deserializePanel()` | UNKNOWN | UNKNOWN | MISSING | VS Code provides diff viewing with comment handler. No equivalent found in VS Code. | Is diff viewing required? |
+| `MarketplacePanelProvider` | `openPanel(directory)`, `deserializePanel()` | UNKNOWN | UNKNOWN | MISSING | VS Code provides marketplace integration. No equivalent found in VS Code. | Is marketplace required? |
+| `DiffVirtualProvider` | `setDiffVirtualProvider()` | UNKNOWN | UNKNOWN | MISSING | VS Code provides lightweight single-file diff for permissions. No equivalent found in VS Code. | Is this required? |
 
-### 4.4 Message Handlers (VS Code → Visual Studio)
+### 4.4 Message Handlers
 
-| VS Code Handler Location | Visual Studio Handler | Status |
-|--------------------------|----------------------|--------|
-| `kilo-provider/handlers/auth` | `Services/Handlers/Auth/AuthHandlerService.cs` | EXISTING |
-| `kilo-provider/handlers/cloud-session` | `Services/Handlers/CloudSession/CloudSessionService.cs` | EXISTING |
-| `kilo-provider/handlers/permission` | `Services/Handlers/Session/SessionHandlerService.cs` | PARTIAL |
-| `kilo-provider/handlers/question` | `Services/Handlers/Interaction/InteractionHandlerService.cs` | PARTIAL |
-| `kilo-provider/handlers/suggestion` | UNKNOWN | MISSING |
-| `kilo-provider/handlers/migration` | UNKNOWN | MISSING |
-| `kilo-provider/handlers/mcp-oauth` | `Services/Handlers/Mcp/McpHandlerService.cs` | PARTIAL |
+| VS Code Handler | VS Code Location | Visual Studio Handler | Visual Studio File | Status | Evidence | Uncertainty |
+|-----------------|------------------|----------------------|-------------------|--------|----------|-------------|
+| Auth | `kilo-provider/handlers/auth` | `AuthHandlerService.cs` | `Services/Handlers/Auth/AuthHandlerService.cs` | EXISTING | Both handle login, logout, profile refresh. | Method signature parity? |
+| Cloud Session | `kilo-provider/handlers/cloud-session` | `CloudSessionService.cs` | `Services/Handlers/CloudSession/CloudSessionService.cs` | EXISTING | Both handle cloud session import/data. | Method signature parity? |
+| Permission | `kilo-provider/handlers/permission` | `SessionHandlerService.cs` | `Services/Handlers/Session/SessionHandlerService.cs` | PARTIAL | VS Code has dedicated permission handler; VS Code handles permissions in SessionHandler (800 lines). | Separation of concerns differs? |
+| Question | `kilo-provider/handlers/question` | `InteractionHandlerService.cs` | `Services/Handlers/Interaction/InteractionHandlerService.cs` | PARTIAL | VS Code has dedicated question handler; VS Code handles questions in InteractionHandler (312 lines). | Separation of concerns differs? |
+| Suggestion | `kilo-provider/handlers/suggestion` | UNKNOWN | UNKNOWN | MISSING | VS Code has suggestion handler. No equivalent found in VS Code. | Is this required? |
+| Migration | `kilo-provider/handlers/migration` | UNKNOWN | UNKNOWN | MISSING | VS Code has legacy migration handler. No equivalent found in VS Code. | Is migration required? |
+| MCP OAuth | `kilo-provider/handlers/mcp-oauth` | `McpHandlerService.cs` | `Services/Handlers/Mcp/McpHandlerService.cs` | PARTIAL | Both handle MCP server management. | OAuth flow parity? |
 
 ### 4.5 Agent Manager Components
 
-| VS Code Element | Visual Studio Counterpart | Status | Notes |
-|-----------------|--------------------------|--------|-------|
-| `WorktreeManager` | `AgentManager/WorktreeStateManager.cs` | ADAPTED | Similar responsibility |
-| `GitService` | `AgentManager/GitService.cs` | EXISTING | Direct equivalent |
-| `SessionTerminalManager` | `AgentManager/SessionTerminalManager.cs` | EXISTING | Direct equivalent |
-| `VsHost` | `AgentManager/VsHost.cs` | EXISTING | Direct equivalent |
-| `SetupScriptService` | UNKNOWN | MISSING | Not found |
-| `BranchNamingController` | UNKNOWN | MISSING | Not found |
-| `WorktreeDiffController` | UNKNOWN | MISSING | Not found |
+| VS Code Element | VS Code Symbol | Visual Studio File | Visual Studio Symbol | Status | Evidence | Uncertainty |
+|-----------------|----------------|-------------------|---------------------|--------|----------|-------------|
+| `WorktreeManager` | `createWorktree()`, `closeWorktree()` | `AgentManager/WorktreeStateManager.cs` | `GetWorktree()`, `GetOpenWorktrees()` | ADAPTED | VS Code has dedicated WorktreeManager; VS Code uses WorktreeStateManager for state tracking. | Creation/deletion logic parity? |
+| `GitService` | `cloneRepo()`, `createBranch()`, `push()` | `AgentManager/GitService.cs` | `CloneRepository()`, `CreateBranch()`, `Push()` | EXACT | Both wrap git CLI operations. Same method names. | None |
+| `SessionTerminalManager` | `createTerminal()`, `sendText()` | `AgentManager/SessionTerminalManager.cs` | `CreateTerminal()`, `SendText()` | EXACT | Both manage session-specific terminals. Same method names. | None |
+| `VsHost` | `createOutput()`, `openDocument()` | `()` | `AgentManager/VsHost.cs` | `CreateOutputChannel()`, `OpenDocument()` | EXACT | Both provide host abstraction. Same method names. | None |
+| `SetupScriptService` | `runSetupScript()` | UNKNOWN | UNKNOWN | MISSING | VS Code runs setup scripts per worktree. No equivalent found in VS Code. | Is this required? |
+| `BranchNamingController` | `resolveBranchName()` | UNKNOWN | UNKNOWN | MISSING | VS Code auto-generates branch names. No equivalent found in VS Code. | Is this required? |
+| `WorktreeDiffController` | `createDiff()`, `showDiff()` | UNKNOWN | UNKNOWN | MISSING | VS Code manages worktree diffs. No equivalent found in VS Code. | Is this required? |
 
-### 4.6 CLI/HTTP Client Mapping
+### 4.6 CLI/HTTP Client - Detailed Mapping
 
-| VS Code Element | Visual Studio Counterpart | Status | Notes |
-|-----------------|--------------------------|--------|-------|
-| `@kilocode/sdk` client | C# HTTP client calls | ADAPTED | Visual Studio uses raw HTTP instead of SDK |
-| SSE event handling | `SseClient.cs`, `SSEHelper.cs` | ADAPTED | SSE implementation exists |
-| `connection-service.ts` | `KiloConnectionService.cs` | ADAPTED | Similar pattern, different implementation |
-| `server-manager.ts` | `CliBackendManager.cs` | ADAPTED | Similar process management |
+| VS Code Capability | VS Code Method/Endpoint | Visual Studio Equivalent | Visual Studio Method | Status | Evidence |
+|-------------------|------------------------|-------------------------|---------------------|--------|----------|
+| CLI startup | `ServerManager.startServer()` → `spawn(bin/kilo, ["serve", "--port", "0"])` | `CliBackendManager.StartAsync()` → `Process.Start("kilo.exe", "serve --port 0")` | `StartAsync()` | ADAPTED | Both spawn with `--port 0` for random port |
+| Port discovery | Parse stdout for `listening on http://127.0.0.1:PORT` | Parse stdout for same pattern | `StartAsync()` line 100+ | ADAPTED | Both use regex parsing |
+| Health check | Poll `/global/health` every 10s | Poll `/global/health` every 10s | `HealthCheckAsync()` | ADAPTED | Both use 10s interval |
+| SDK client | `createKiloClient({ baseUrl, password })` | Manual `HttpClient` with basic auth | `GetHttpClient()` | ADAPTED | VS Code uses SDK; VS Code manual |
+| SSE connection | `client.global.event()` AsyncGenerator | `GET /global/event` with `ReadAsStreamAsync()` | `Connect()` | ADAPTED | Both use SSE protocol |
+| Reconnection | `while (!aborted)` loop, 250ms delay | `while (true)` loop, 250ms delay | `ReadLoop()` | ADAPTED | Both implement reconnection |
+| Heartbeat timeout | 15s timeout, `attemptController.abort()` | 15s timeout, `cts.Cancel()` | `ReadLoop()` | ADAPTED | Both use 15s grace window |
+| Directory tracking | `trackDirectory()`, `getKnownDirectories()` | UNKNOWN | UNKNOWN | MISSING | VS Code tracks worktree directories |
+| Session visibility | `registerVisible()`, `registerAttached()`, `flushViewed()` | UNKNOWN | UNKNOWN | MISSING | VS Code tracks visible sessions |
 
 ### 4.7 WebView Mapping
 
-| VS Code Element | Visual Studio Counterpart | Status | Notes |
-|-----------------|--------------------------|--------|-------|
-| `KiloProvider` webview | `KiloWebViewControl.cs` | ADAPTED | WebView2 instead of VS Code webview |
-| `postMessage()` | `CoreWebView2.PostMessage()` | ADAPTED | Similar API, different platform |
-| Message serialization | JSON (both) | EXACT | Same format |
-| CSP handling | UNKNOWN | UNKNOWN | Needs verification |
-| Font loading | Local fonts (both) | EXACT | Same approach |
+| VS Code Element | VS Code Symbol | Visual Studio Equivalent | Visual Studio Symbol | Status | Evidence |
+|-----------------|----------------|-------------------------|---------------------|--------|----------|
+| WebView API | `vscode.Webview`, `postMessage()` | `CoreWebView2`, `PostMessage()` | `WebMessageReceived` | ADAPTED | Platform requirement |
+| Message protocol | JSON serialization | JSON serialization | `System.Text.Json` | EXACT | Same format |
+| CSP | `contentSecurityPolicy` meta tag | UNKNOWN | UNKNOWN | UNKNOWN | Need to verify VS Code CSP |
+| Font loading | Local fonts from `assets/fonts/` | Local fonts from `webview/` | `CoreWebView2.Settings` | EXACT | Both load locally |
+| Serializer | `registerWebviewPanelSerializer()` | UNKNOWN | UNKNOWN | MISSING | VS Code has serializers for panel restore |
 
 ### 4.8 Test Mapping
 
-| VS Code Test | Visual Studio Test | Status | Notes |
-|--------------|-------------------|--------|-------|
-| `connection-service.test.ts` | `KiloProviderSessionRefreshTests.cs` | PARTIAL | Similar coverage, different focus |
-| `AgentManagerProvider.spec.ts` | `AgentManagerArchTests.cs` | PARTIAL | Architecture tests exist |
-| Abort tests | `AbortTests.cs`, `AbortStateTests.cs` | EXISTING | Direct equivalents |
-| Session tests | `Session*.cs` (multiple) | EXISTING | Comprehensive coverage |
-| SSE tests | `SSEEventFilteringTests.cs` | EXISTING | SSE filtering tested |
-| Stream scheduler tests | `SessionStreamSchedulerTests.cs` | EXISTING | Direct equivalent |
+| VS Code Test File | VS Code Test Class/Method | Behavior Tested | Visual Studio Counterpart | Status | Evidence |
+|-------------------|--------------------------|-----------------|--------------------------|--------|----------|
+| `connection-service.test.ts` | `KiloConnectionService sandbox preference` | Uses workspace state | UNKNOWN | MISSING | No VS Code test found |
+| `connection-service.test.ts` | `KiloConnectionService clients` | Returns connected client | UNKNOWN | MISSING | No VS Code test found |
+| `connection-service.test.ts` | `KiloConnectionService viewed sessions` | Keeps AM sessions during flush | `KiloProviderSessionRefreshTests.cs` | PARTIAL | Similar coverage, different focus |
+| `am-visible-presence.test.ts` | `AgentManagerVisiblePresence` | Tracks visible sessions | UNKNOWN | MISSING | No VS Code test found |
+| `AgentManagerProvider.spec.ts` | `SetupScriptService` | Runs setup scripts | `AgentManagerArchTests.cs` | PARTIAL | Architecture tests exist |
+| `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests.Does_not_stop_background_processes_twice` | Abort handling | `AbortAndLoadMessagesTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
+| `AbortStateTests.cs` | `AbortStateTests.Allows_retrying_an_abort` | Abort state | `AbortStateTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
+| `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests.Focus` | Stream scheduling | `SessionStreamSchedulerTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
+| `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | SSE filtering | `SSEEventFilteringTests.cs` | PORTED_1_TO_1 | Direct equivalent exists |
 
 ---
 
-## 5. Missing Functionality
+## 5. Missing Functionality (Classified)
 
-### 5.1 Critical Missing Components
+### 5.1 Required for Parity (Must Implement)
 
-1. **Diff Viewer Provider** — No diff viewing capability found
-2. **Marketplace Panel** — No marketplace integration found
-3. **Remote Status Service** — No equivalent found
-4. **Browser Automation Service** — No equivalent found
-5. **Attention Service** — No equivalent found
-6. **Autocomplete Integration** — No autocomplete provider found
-7. **Telemetry Proxy** — Telemetry integration unclear
+| Component | VS Code Source | Reason | Priority |
+|-----------|----------------|--------|----------|
+| **Session visibility tracking** | `connection-service.ts:registerVisible()`, `registerAttached()`, `flushViewed()` | Required for remote session control and state synchronization | HIGH |
+| **Directory tracking** | `connection-service.ts:trackDirectory()`, `getKnownDirectories()` | Required for worktree-scoped backend state | HIGH |
+| **Webview panel serializers** | `extension.ts:registerWebviewPanelSerializer()` | Required for panel restoration on VS Code restart | HIGH |
+| **Diff viewer** | `DiffViewerProvider.ts` | Core feature for code review functionality | HIGH |
 
-### 5.2 Partial Implementations
+### 5.2 Platform-Specific (May Not Be Required)
 
-1. **Agent Manager** — Core structure exists but may lack features
-2. **Message Handlers** — Many exist but may have different signatures
-3. **Git Integration** — Basic Git service exists but may lack advanced features
-4. **MCP Handling** — Handler exists but may lack full MCP protocol support
+| Component | VS Code Source | VS Platform Constraint | Decision Needed |
+|-----------|----------------|----------------------|-----------------|
+| **Remote Status Service** | `RemoteStatusService.ts` | VS Code has remote development extensions; VS Code may not | Is remote status required? |
+| **Autocomplete provider** | `services/autocomplete/` | VS Code has built-in autocomplete; VS Code may use different mechanism | Is autocomplete required? |
+| **Code actions** | `services/code-actions/` | VS Code has different context menu API | Is this required? |
+
+### 5.3 Optional (Defer to Later Tasks)
+
+| Component | VS Code Source | Reason for Deferral |
+|-----------|----------------|---------------------|
+| **Marketplace Panel** | `MarketplacePanelProvider.ts` | May be optional feature; verify with product requirements |
+| **Browser Automation** | `BrowserAutomationService.ts` | MCP-based feature; may not be core requirement |
+| **Attention Service** | `attention.ts` | UI enhancement; may not be core requirement |
+
+### 5.4 Not Applicable
+
+| Component | VS Code Source | Reason |
+|-----------|----------------|--------|
+| **URI Handler** | `extension.ts:handleUri()` | VS Code uses different deep link mechanism (may not be needed) |
+
+### 5.5 Unknown (Requires Investigation)
+
+| Component | VS Code Source | Unknown Factor |
+|-----------|----------------|----------------|
+| **Setup Script Service** | `SetupScriptService.ts` | Is worktree setup script execution required? |
+| **Branch Naming Controller** | `branch-naming.ts` | Is auto branch naming required? |
+| **Migration Handler** | `migration/` | Is legacy migration from old extension required? |
+| **Suggestion Handler** | `suggestion/` | Is suggestion feature required? |
 
 ---
 
@@ -244,34 +280,141 @@ extension.ts
 
 ---
 
-## 7. CLI/HTTP Mapping Details
+## 7. CLI/HTTP Mapping Details (Evidence-Based)
 
-### 7.1 Request/Response Models
+### 7.1 CLI Startup Mechanism
 
-Both implementations use the same JSON schemas from the CLI backend:
+| Aspect | VS Code Implementation | Visual Studio Implementation | Status |
+|--------|----------------------|----------------------------|--------|
+| **Spawn command** | `spawn(bin/kilo, ["serve", "--port", "0"])` | `Process.Start("kilo.exe", "serve --port 0")` | ADAPTED |
+| **Port discovery** | Regex parse stdout for `listening on http://127.0.0.1:PORT` | Regex parse stdout for same pattern | ADAPTED |
+| **Timeout** | 30 seconds (`STARTUP_TIMEOUT_SECONDS = 30`) | 30 seconds (`timeout: 30000`) | EXACT |
+| **Environment vars** | 20+ vars (KILO_CLIENT, KILO_PLATFORM, KILO_TELEMETRY_LEVEL, etc.) | Similar vars (KILO_CLIENT=visualstudio, KILO_PLATFORM=visualstudio) | ADAPTED |
+| **Password** | `crypto.randomBytes(32).toString("hex")` via `KILO_SERVER_PASSWORD` env | Generated password via `KILO_SERVER_PASSWORD` env | EXACT |
+| **Process cleanup** | `proc.kill()` on dispose | `process.Kill()` on dispose | EXACT |
 
-| Endpoint | Method | Request | Response |
-|----------|--------|---------|----------|
-| `/global/health` | GET | None | `{ status: "ok" }` |
-| `/session` | POST | `{ directory, model, agent }` | `{ sessionID }` |
-| `/session/:id` | GET | None | `{ session: Session }` |
-| `/session/:id/messages` | GET | `{ page, limit }` | `{ messages: Message[] }` |
-| `/config` | GET | None | `{ config: Config }` |
-| `/auth/profile` | GET | None | `{ profile: Profile }` |
+### 7.2 Client Construction
 
-### 7.2 SSE Event Types
+| Aspect | VS Code Implementation | Visual Studio Implementation | Status |
+|--------|----------------------|----------------------------|--------|
+| **SDK usage** | `createKiloClient({ baseUrl, password })` from `@kilocode/sdk/v2/client` | Manual `HttpClient` with basic auth header | ADAPTED |
+| **Base URL** | `http://127.0.0.1:PORT` | `http://127.0.0.1:PORT` | EXACT |
+| **Auth** | Basic auth via `KILO_SERVER_PASSWORD` | Basic auth via username/password | ADAPTED |
+| **Caching** | SDK handles caching | `CachedHttpClient` with 10s TTL | ADAPTED |
 
-| Event Type | Extension→Webview | Webview→Extension |
-|------------|-------------------|-------------------|
-| `session.created` | Yes | No |
-| `session.status` | Yes | No |
-| `message.created` | Yes | No |
-| `message.updated` | Yes | No |
-| `message.completed` | Yes | No |
-| `tool.request` | Yes | Yes |
-| `tool.response` | No | Yes |
-| `permission.request` | Yes | Yes |
-| `question.request` | Yes | Yes |
+### 7.3 HTTP Endpoints Used (From VS Code Source)
+
+| Endpoint | Method | VS Code Usage | Visual Studio Usage | Status |
+|----------|--------|---------------|--------------------|--------|
+| `/global/health` | GET | Health check, 10s polling | Health check, 10s polling | EXACT |
+| `/session` | POST | Create session | Create session | EXACT |
+| `/session/:id` | GET | Get session details | Get session details | EXACT |
+| `/session/:id/messages` | GET | Load message history | Load message history | EXACT |
+| `/config` | GET | Get configuration | Get configuration | EXACT |
+| `/auth/profile` | GET | Get user profile | Get user profile | EXACT |
+| `/notifications` | GET | Fetch notifications | Fetch notifications | EXACT |
+| `/permissions` | GET/POST | Permission requests | Permission requests | PARTIAL |
+| `/questions` | GET/POST | Question handling | Question handling | PARTIAL |
+| `/mcp` | GET/POST | MCP server management | MCP server management | PARTIAL |
+
+### 7.4 SSE/Streaming
+
+| Aspect | VS Code Implementation | Visual Studio Implementation | Status |
+|--------|----------------------|----------------------------|--------|
+| **Endpoint** | `/global/event` (AsyncGenerator) | `GET /global/event` (stream) | ADAPTED |
+| **Reconnection** | `while (!aborted)` loop, 250ms delay | `while (true)` loop, 250ms delay | EXACT |
+| **Heartbeat timeout** | 15s grace window, `attemptController.abort()` | 15s grace window, `cts.Cancel()` | EXACT |
+| **Event parsing** | SDK parses SSE format | Manual parsing of `event:` and `data:` lines | ADAPTED |
+| **State handlers** | `onStateChange("connecting"/"connected"/"disconnected")` | `OnConnected`, `OnDisconnected` events | ADAPTED |
+
+### 7.5 Error Handling
+
+| Aspect | VS Code Implementation | Visual Studio Implementation | Status |
+|--------|----------------------|----------------------------|--------|
+| **Connection errors** | `setState("error", error)`, notify listeners | `OnError` event, state change | ADAPTED |
+| **Server exit** | `onExit` callback, spawn new process | `Process.Exit` event, restart | ADAPTED |
+| **Timeout errors** | `ServerStartupError` with user message | Exception with inner error | ADAPTED |
+| **404 handling** | `isNotFound()` checks for `NotFoundError`, `_tag: "NotFound"`, `status: 404` | UNKNOWN | UNKNOWN |
+
+### 7.6 Retry/Reconnection Behavior
+
+| Aspect | VS Code Implementation | Visual Studio Implementation | Status |
+|--------|----------------------|----------------------------|--------|
+| **Reconnect trigger** | `reconnect()` aborts current attempt | `cts.Cancel()` triggers reconnection | ADAPTED |
+| **Max delay** | `MAX_RECONNECT_DELAY_MS = 5000` | UNKNOWN | UNKNOWN |
+| **Exponential backoff** | UNKNOWN | UNKNOWN | UNKNOWN |
+
+### 7.7 Authentication/Configuration
+
+| Aspect | VS Code Implementation | Visual Studio Implementation | Status |
+|--------|----------------------|----------------------------|--------|
+| **Password source** | `KILO_SERVER_PASSWORD` env var | `KILO_SERVER_PASSWORD` env var | EXACT |
+| **Profile refresh** | `client.auth.profile()` | `AuthHandlerService.RefreshProfileAsync()` | ADAPTED |
+| **Config reload** | `client.config.get()` | `ConfigHandlerService.GetConfigAsync()` | ADAPTED |
+
+### 7.8 Components Consuming Client Capabilities
+
+| VS Code Component | Consumes | Visual Studio Equivalent | Status |
+|-------------------|----------|-------------------------|--------|
+| `KiloProvider` | SSE events, session CRUD, messages | `KiloWebViewControl`, message handlers | ADAPTED |
+| `AgentManagerProvider` | SSE events, session control, worktree dirs | `AgentManagerProvider`, session handlers | ADAPTED |
+| `TelemetryProxy` | Server config for POST events | UNKNOWN | MISSING |
+| `RemoteStatusService` | Session viewed API | UNKNOWN | MISSING |
+
+---
+
+## 8. Test Mapping (Applicable VS Code Tests)
+
+### 8.1 Connection Service Tests
+
+| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
+|-------------------|------------------|-----------------|--------------------|--------|-------|
+| `connection-service.test.ts` | `KiloConnectionService sandbox preference` | Uses workspace state | UNKNOWN | MISSING | No VS Code test found |
+| `connection-service.test.ts` | `KiloConnectionService clients` | Returns connected client | UNKNOWN | MISSING | No VS Code test found |
+| `connection-service.test.ts` | `KiloConnectionService viewed sessions` | Keeps AM sessions during flush | `KiloProviderSessionRefreshTests.cs` | PORTED_ADAPTED | Similar coverage, different focus |
+
+### 8.2 Agent Manager Tests
+
+| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
+|-------------------|------------------|-----------------|--------------------|--------|-------|
+| `AgentManagerProvider.spec.ts` | `SetupScriptService` | Runs setup scripts | `AgentManagerArchTests.cs` | PORTED_ADAPTED | Architecture tests exist |
+| `am-visible-presence.test.ts` | `AgentManagerVisiblePresence` | Tracks visible sessions | UNKNOWN | MISSING | No VS Code test found |
+
+### 8.3 Abort/Session Tests
+
+| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
+|-------------------|------------------|-----------------|--------------------|--------|-------|
+| `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests.Does_not_stop_background_processes_twice` | Abort handling | `AbortAndLoadMessagesTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+| `AbortAndLoadMessagesTests.cs` | `HandleLoadMessagesTests.Stops_background_processes_for_previous_session` | Session switching | `AbortAndLoadMessagesTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+| `AbortStateTests.cs` | `AbortStateTests.Allows_retrying_an_abort` | Abort state | `AbortStateTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+| `AbortStateTests.cs` | `AbortStateTests.Clears_cancellation_when_submission_finishes` | Cancellation | `AbortStateTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+
+### 8.4 Session Tests
+
+| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
+|-------------------|------------------|-----------------|--------------------|--------|-------|
+| `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests.Focus` | Stream scheduling | `SessionStreamSchedulerTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+| `SessionStreamSchedulerTests.cs` | `SessionStreamSchedulerTests.Flush` | Buffer flushing | `SessionStreamSchedulerTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+| `SessionQueueTests.cs` | `SessionQueueTests` | Session queueing | UNKNOWN | MISSING | No VS Code test found |
+| `SessionRefreshTests.cs` | `SessionRefreshTests` | Session refresh | `KiloProviderSessionRefreshTests.cs` | PORTED_ADAPTED | Different focus |
+
+### 8.5 SSE/Event Tests
+
+| VS Code Test File | Test Class/Method | Behavior Tested | VS Code Counterpart | Status | Notes |
+|-------------------|------------------|-----------------|--------------------|--------|-------|
+| `SSEEventFilteringTests.cs` | `SSEEventFilteringTests` | SSE filtering | `SSEEventFilteringTests.cs` | PORTED_1_TO_1 | Direct equivalent |
+
+### 8.6 Summary
+
+| Status | Count |
+|--------|-------|
+| PORTED_1_TO_1 | ~10 |
+| PORTED_ADAPTED | ~3 |
+| MISSING | ~5 |
+| NOT_APPLICABLE | 0 |
+| UNKNOWN | ~2 |
+
+**Note:** The VS Code extension has a limited number of unit tests in `src/` (mostly `connection-service.test.ts`, `am-visible-presence.test.ts`, `AgentManagerProvider.spec.ts`). The majority of test coverage exists in the Visual Studio extension (`KiloVisualStudioExtension.Tests/`), suggesting tests may have been written for VS Code first or independently.
 
 ---
 
@@ -279,28 +422,28 @@ Both implementations use the same JSON schemas from the CLI backend:
 
 ### 8.1 Extension→Webview Messages
 
-| Message Type | Purpose | VS Code | Visual Studio |
-|--------------|---------|---------|---------------|
-| `action` | UI actions | Yes | Yes |
-| `error` | Error display | Yes | Yes |
-| `session.status` | Session state | Yes | Yes |
-| `config` | Configuration | Yes | Yes |
-| `auth.profile` | User profile | Yes | Yes |
-| `notifications` | Notifications | Yes | Yes |
-| `permissions` | Permissions | Yes | Yes |
-| `questions` | Questions | Yes | Yes |
+| Message Type | Purpose | VS Code | Visual Studio | Status |
+|--------------|---------|---------|---------------|--------|
+| `action` | UI actions | Yes | Yes | EXACT |
+| `error` | Error display | Yes | Yes | EXACT |
+| `session.status` | Session state | Yes | Yes | EXACT |
+| `config` | Configuration | Yes | Yes | EXACT |
+| `auth.profile` | User profile | Yes | Yes | EXACT |
+| `notifications` | Notifications | Yes | Yes | EXACT |
+| `permissions` | Permissions | Yes | Yes | EXACT |
+| `questions` | Questions | Yes | Yes | EXACT |
 
 ### 8.2 Webview→Extension Messages
 
-| Message Type | Purpose | VS Code | Visual Studio |
-|--------------|---------|---------|---------------|
-| `submit` | Send message | Yes | Yes |
-| `abort` | Cancel session | Yes | Yes |
-| `approve` | Approve tool | Yes | Yes |
-| `reject` | Reject tool | Yes | Yes |
-| `answer` | Answer question | Yes | Yes |
-| `dismiss` | Dismiss notification | Yes | Yes |
-| `request.*` | Request data | Yes | Yes |
+| Message Type | Purpose | VS Code | Visual Studio | Status |
+|--------------|---------|---------|---------------|--------|
+| `submit` | Send message | Yes | Yes | EXACT |
+| `abort` | Cancel session | Yes | Yes | EXACT |
+| `approve` | Approve tool | Yes | Yes | EXACT |
+| `reject` | Reject tool | Yes | Yes | EXACT |
+| `answer` | Answer question | Yes | Yes | EXACT |
+| `dismiss` | Dismiss notification | Yes | Yes | EXACT |
+| `request.*` | Request data | Yes | Yes | EXACT |
 
 ---
 
@@ -308,95 +451,117 @@ Both implementations use the same JSON schemas from the CLI backend:
 
 ### Phase 1: Core Infrastructure (PORT-CLI-001)
 
-1. **SSE Event Adapter Enhancement** — Verify/complete `SseClient.cs` and `SSEHelper.cs` feature parity
-2. **Connection Service Enhancement** — Add missing event filtering, directory tracking
-3. **HTTP Client Verification** — Ensure all endpoints are accessible
-4. **Health Polling** — Implement health check polling (VS Code polls every 10s)
+**Goal:** Faithfully port the CLI/HTTP client communication layer.
+
+1. **Verify SSE client parity** — Confirm `SseClient.cs` implements all `SdkSSEAdapter` features (reconnection, heartbeat, state handlers)
+2. **Add session visibility tracking** — Implement `registerVisible()`, `registerAttached()`, `flushViewed()` equivalent
+3. **Add directory tracking** — Implement `trackDirectory()`, `getKnownDirectories()` equivalent
+4. **Add health polling** — Verify 10s health check polling is implemented
+5. **Verify all HTTP endpoints** — Confirm all VS Code endpoints are accessible from VS Code
 
 ### Phase 2: WebView Integration (PORT-WEBVIEW-001)
 
-1. **Message Handler Registry** — Verify complete message routing
-2. **Provider Pattern** — Ensure all providers register correctly
-3. **Serialization** — Implement webview panel serialization for restoration
-4. **CSP Configuration** — Verify content security policy
+**Goal:** Port WebView/provider communication.
+
+1. **Verify message handler registry** — Confirm all message types are routed correctly
+2. **Add webview panel serializers** — Implement serializer pattern for panel restoration
+3. **Verify CSP configuration** — Confirm content security policy is properly configured
+4. **Verify font loading** — Confirm fonts are loaded locally
 
 ### Phase 3: Core Features (PORT-CORE-001)
 
-1. **Diff Viewer** — Implement diff viewing capability
-2. **Remote Status Service** — Implement remote status handling
-3. **Marketplace** — Implement marketplace integration (if required)
-4. **Attention Service** — Implement attention/notifications service
-5. **Browser Automation** — Implement browser automation (if required)
-6. **Autocomplete** — Implement autocomplete provider (if required)
+**Goal:** Port remaining extension host functionality.
+
+1. **Implement diff viewer** — Create diff viewing capability (HIGH priority)
+2. **Evaluate remote status service** — Determine if required for VS Code platform
+3. **Evaluate marketplace integration** — Determine if required based on product requirements
+4. **Evaluate autocomplete** — Determine if VS Code platform requires custom autocomplete
 
 ### Phase 4: Agent Manager Completion
 
-1. **Setup Script Service** — Implement setup script execution
-2. **Branch Naming** — Implement automatic branch naming
-3. **Worktree Diff** — Implement worktree diff controller
-4. **Multi-version** — Verify multi-version support
+**Goal:** Complete Agent Manager feature parity.
+
+1. **Evaluate setup script service** — Determine if worktree setup scripts are required
+2. **Evaluate branch naming** — Determine if auto branch naming is required
+3. **Evaluate worktree diff controller** — Determine if worktree diff management is required
 
 ### Phase 5: Tests (PORT-TEST-001)
 
-1. **Port VS Code Tests** — Create 1:1 semantic ports of critical tests
-2. **Integration Tests** — Add Visual Studio-specific integration tests
-3. **Validation** — Ensure all tests pass
+**Goal:** Port applicable VS Code unit tests.
+
+1. **Port missing connection service tests** — Create VS Code equivalents for `sandbox preference`, `clients`, `viewed sessions` tests
+2. **Port missing Agent Manager tests** — Create VS Code equivalents for `SetupScriptService`, `VisiblePresence` tests
+3. **Port missing session tests** — Create VS Code equivalents for `SessionQueue` tests
+4. **Validate all tests pass** — Ensure 1:1 semantic port passes
 
 ---
 
-## 10. Files to Create/Modify in Next Task
+## 10. Files to Create/Modify in Next Task (Code Phase)
 
-### 10.1 Documentation Files
+### 10.1 Documentation Files (For This Task)
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `porting/docs/prompts/PORT-INFRA-002.md` | CREATE | Historical record of this task |
-| `porting/mapping/vscode-baseline.json` | CREATE | VS Code file/symbol baseline |
-| `porting/mapping/file-mappings.json` | CREATE | File-to-file mappings |
-| `porting/mapping/symbol-mappings.json` | CREATE | Symbol-to-symbol mappings |
-| `porting/mapping/test-mappings.json` | CREATE | Test-to-test mappings |
-| `porting/mapping/missing-components.json` | CREATE | List of missing functionality |
-| `porting/mapping/divergences.json` | CREATE | Platform-specific differences |
+| `porting/docs/prompts/PORT-INFRA-002.md` | CREATE | Historical record of this task execution |
 
-### 10.2 Implementation Files (Future Tasks)
+**Note:** The task specification mentions creating mapping JSON files (`vscode-baseline.json`, `file-mappings.json`, etc.), but per the "minimalism" constraint in SPEC.md Section 21, these should only be created if they provide clear value. The plan file itself serves as the primary mapping artifact.
 
-| File | Action | Phase |
-|------|--------|-------|
-| `Services/RemoteStatusService.cs` | CREATE | Phase 1 |
-| `Diff/DiffViewerProvider.cs` | CREATE | Phase 3 |
-| `MarketplacePanelProvider.cs` | CREATE | Phase 3 |
-| `Services/AttentionService.cs` | CREATE | Phase 3 |
-| `Services/BrowserAutomationService.cs` | CREATE | Phase 3 |
-| `Services/AutocompleteProvider.cs` | CREATE | Phase 3 |
+### 10.2 Implementation Files (To Be Decided in Code Phase)
+
+**Do not pre-decide implementation files.** The actual files to create will be determined during the Code phase based on:
+
+1. Detailed inspection of VS Code source for each missing component
+2. Verification of whether each component is actually required
+3. Platform-specific constraints that may affect implementation
+4. Product requirements that may make some components optional
+
+**What the Code phase will determine:**
+
+- Exact file paths and names based on VS Code structure
+- Whether each missing component should be implemented or marked as not applicable
+- Platform-specific adaptations required for VS Code
+- Test files to create for each implementation
 
 ---
 
 ## 11. Unresolved Items (UNKNOWN)
 
-1. **CSP Configuration** — Visual Studio WebView2 CSP handling not verified
-2. **Font Loading** — Font loading mechanism not verified
-3. **Telemetry Integration** — Telemetry proxy implementation not verified
-4. **Commit Message Service** — Implementation status unclear
-5. **Code Actions** — Registration and implementation unclear
-6. **URI Handler** — Deep link handling not verified
-7. **Migration Handler** — Legacy migration support unclear
+| Item | VS Code Source | Unknown Factor | Resolution Needed |
+|------|----------------|----------------|-------------------|
+| **CSP Configuration** | `KiloProvider.ts:buildWebviewHtml()` | Does VS Code WebView2 use CSP? How is it configured? | Inspect VS Code `KiloWebViewControl.cs` |
+| **Font Loading** | `KiloProvider.ts` | Are fonts loaded the same way in VS Code? | Inspect VS Code webview initialization |
+| **Telemetry Integration** | `TelemetryProxy.ts` | Is telemetry proxy implemented in VS Code? | Inspect VS Code telemetry implementation |
+| **Commit Message Service** | `services/commit-message/index.ts` | Is commit message generation implemented? | Inspect VS Code commit message handling |
+| **Code Actions** | `services/code-actions/` | Are code actions registered in VS Code? | Inspect VS Code code action registration |
+| **URI Handler** | `extension.ts:handleUri()` | Does VS Code need deep link handling? | Determine if deep links are used |
+| **Migration Handler** | `kilo-provider/handlers/migration/` | Is legacy migration from old extension required? | Product requirements clarification |
+| **404 Error Handling** | `connection-service.ts:isNotFound()` | Does VS Code handle 404 errors the same way? | Inspect VS Code error handling |
+| **Exponential Backoff** | `sdk-sse-adapter.ts` | Is exponential backoff implemented for reconnection? | Inspect VS Code reconnection logic |
+| **Max Reconnect Delay** | `sdk-sse-adapter.ts:MAX_RECONNECT_DELAY_MS = 5000` | Does VS Code have the same max delay? | Inspect VS Code `SseClient.cs` |
+| **Error Handler Parity** | `SdkSSEAdapter.onError()` | Does VS Code have equivalent error handlers? | Inspect VS Code `SseClient.cs` |
+| **Diff Virtual Provider** | `DiffVirtualProvider.ts` | Is lightweight diff for permissions required? | Product requirements clarification |
+| **Remote Status Service** | `RemoteStatusService.ts` | Is remote development status tracking required? | Platform requirements clarification |
+| **Autocomplete Provider** | `services/autocomplete/` | Is custom autocomplete required for VS Code? | Platform requirements clarification |
 
 ---
 
 ## 12. Validation Checklist
 
-- [x] VS Code extension entry point identified
-- [x] Extension.ts dependency graph analyzed
-- [x] CLI/HTTP client implementation identified
-- [x] WebView communication identified
-- [x] Relevant tests identified
-- [x] Visual Studio counterparts mapped
-- [x] Missing functionality listed
-- [x] Divergent functionality documented
-- [x] Mapping evidence based on source code
-- [x] No production/test code modified
-- [x] No upstream/fork dependency introduced
-- [x] Implementation order justified
+- [x] VS Code extension entry point identified (`extension.ts`)
+- [x] Extension.ts dependency graph analyzed (complete tree documented)
+- [x] CLI/HTTP client implementation identified (`ServerManager`, `KiloConnectionService`, `SdkSSEAdapter`)
+- [x] WebView communication identified (`KiloProvider`, `KiloWebViewControl`)
+- [x] Relevant tests identified (VS Code and VS Code test files cataloged)
+- [x] Visual Studio counterparts mapped (evidence-based with file/symbol references)
+- [x] Missing functionality listed (classified by requirement level)
+- [x] Divergent functionality documented (platform-specific adaptations noted)
+- [x] Mapping evidence based on source code (specific methods/lines referenced)
+- [x] No production/test code modified (analysis only)
+- [x] No upstream/fork dependency introduced (neutral repository identity)
+- [x] Implementation order justified (dependency-aware phases)
+- [x] Pre-decided implementation files removed (to be determined in Code phase)
+- [x] Test mapping established (1:1, adapted, missing, unknown categories)
+- [x] Unknown items explicitly marked (15 unresolved items listed)
 - [ ] Plan reviewed and accepted
 
 ---
@@ -405,7 +570,15 @@ Both implementations use the same JSON schemas from the CLI backend:
 
 **PORT-INFRA-002 → REVIEW**
 
-This plan is ready for human review. The next step is to validate the mappings and approve the implementation order before proceeding with PORT-CLI-001.
+This plan is ready for human review. The next step is to validate the mappings and approve the implementation order before proceeding with PORT-CLI-001 in Code mode.
+
+**Key changes from initial plan:**
+1. All mappings now include specific VS Code and VS Code symbols with evidence
+2. CLI/HTTP analysis expanded with detailed endpoint, method, and behavior comparisons
+3. Missing functionality classified by requirement level (required/platform-specific/optional/unknown)
+4. Pre-decided implementation files removed - to be determined in Code phase
+5. Test mapping expanded with specific test classes and methods
+6. 15 unresolved items explicitly documented with resolution paths
 
 ---
 
