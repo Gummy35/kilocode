@@ -18,9 +18,12 @@ tools/
 ├── generate-relationships.ps1  # Builds relationship mappings
 ├── generate-baseline.ps1   # Creates baseline.json metadata
 ├── validate.ps1            # Validates all generated JSON files
-├── deduplicate-symbols.ps1 # Removes duplicate symbol IDs
 └── README.md               # This file
 ```
+
+## Important Notes
+
+**Symbol Deduplication**: The `deduplicate-symbols.ps1` script has been removed. Silent deduplication of distinct source symbols is NOT acceptable. If duplicate symbol IDs are detected, it indicates a problem with the ID generation algorithm that must be fixed, not worked around.
 
 ## Generated Output
 
@@ -33,7 +36,7 @@ porting/
 │   └── report.txt          # Final inventory report
 └── manifest/
     ├── files.json          # 234 files with SHA-256 hashes
-    ├── symbols.json        # 2,220 C# symbols
+    ├── symbols.json        # 2,306 C# symbols (all distinct symbols preserved)
     ├── tests.json          # 196 xUnit tests
     └── relationships.json  # File/symbol/test relationships
 ```
@@ -64,10 +67,7 @@ cd ..\..\porting
 # 5. Generate baseline.json
 .\generate-baseline.ps1
 
-# 6. Deduplicate symbols (if needed)
-.\deduplicate-symbols.ps1
-
-# 7. Validate all outputs
+# 6. Validate all outputs
 .\validate.ps1
 ```
 
@@ -95,15 +95,19 @@ Examples:
 symbol-<sha256-hash>
 ```
 
-The hash is computed from: `fileId + name + signature`
+The hash is computed from: `fileId + fullyQualifiedName + symbolKind + sourceSpan`
+
+This ensures that each distinct symbol gets a unique, deterministic ID based on its stable source information.
 
 ## Validation
 
 The `validate.ps1` script checks:
 1. JSON syntax validity
-2. No duplicate IDs (fileId, symbolId, testId)
+2. No duplicate IDs (fileId, symbolId, testId) - **FAIL if duplicates found**
 3. All references resolve to existing IDs
 4. Inventory summary counts
+
+If duplicate symbol IDs are detected, the ID generation algorithm must be corrected rather than silently removing duplicates.
 
 ## Notes
 

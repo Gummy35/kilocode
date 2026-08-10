@@ -2,7 +2,7 @@
 # This script generates the baseline metadata
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$outputPath = Join-Path $scriptDir "baseline\baseline.json"
+$outputPath = Join-Path $scriptDir "..\porting\baseline\baseline.json"
 
 # Get repository state
 $commitSha = git rev-parse HEAD
@@ -10,7 +10,7 @@ $branch = git branch --show-current
 $timestamp = (Get-Date -Format "o")
 
 $baseline = [PSCustomObject]@{
-    repository = "kilocode/kilocode"
+    repository = "kilocode"
     branch = $branch
     commitSha = $commitSha
     generationTimestamp = $timestamp

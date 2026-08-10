@@ -95,9 +95,9 @@ namespace SymbolInventory
             return $"file-{project}-{string.Join("-", pathComponents)}-{fileName}-{ext}";
         }
 
-        public static string GenerateSymbolId(string name, string signature, string fileId)
+        public static string GenerateSymbolId(string fileId, string fullyQualifiedName, string symbolKind, string sourceSpan)
         {
-            var combined = fileId + name + signature;
+            var combined = fileId + fullyQualifiedName + symbolKind + sourceSpan;
             using var sha256 = SHA256.Create();
             var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(combined));
             var fullHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
@@ -131,19 +131,19 @@ namespace SymbolInventory
             var symbol = _semanticModel.GetDeclaredSymbol(node);
             if (symbol != null)
             {
-                var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                var signature = name;
+                var fullyQualifiedName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                 var entry = new SymbolEntry
                 {
-                    symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "namespace", sourceSpan),
                     fileId = _fileId,
-                    fullyQualifiedName = name,
+                    fullyQualifiedName = fullyQualifiedName,
                     symbolKind = "namespace",
                     accessibility = null,
-                    signature = signature,
+                    signature = fullyQualifiedName,
                     rawSourceHash = Program.ComputeHash(node.ToString()),
                     containingSymbolId = null,
-                    sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}"
+                    sourceSpan = sourceSpan
                 };
                 Symbols.Add(entry);
             }
@@ -155,7 +155,7 @@ namespace SymbolInventory
             var symbol = _semanticModel.GetDeclaredSymbol(node);
             if (symbol != null)
             {
-                var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var fullyQualifiedName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 string[] baseTypes;
                 if (symbol.BaseType != null && symbol.BaseType.SpecialType != SpecialType.System_Object)
                 {
@@ -171,27 +171,32 @@ namespace SymbolInventory
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingType.Name, symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
                 else if (symbol.ContainingNamespace != null && !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingNamespace.Name, symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "namespace", parentSourceSpan);
                 }
                 else
                 {
                     containingSymbolId = null;
                 }
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                 var entry = new SymbolEntry
                 {
-                    symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "class", sourceSpan),
                     fileId = _fileId,
-                    fullyQualifiedName = name,
+                    fullyQualifiedName = fullyQualifiedName,
                     symbolKind = "class",
                     accessibility = GetAccessibilityString(symbol.DeclaredAccessibility),
                     signature = signature,
                     rawSourceHash = Program.ComputeHash(node.ToString()),
                     containingSymbolId = containingSymbolId,
-                    sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}",
+                    sourceSpan = sourceSpan,
                     modifiers = GetModifiers(node),
                     baseTypes = baseTypes
                 };
@@ -205,33 +210,38 @@ namespace SymbolInventory
             var symbol = _semanticModel.GetDeclaredSymbol(node);
             if (symbol != null)
             {
-                var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var fullyQualifiedName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 var baseTypes = symbol.Interfaces.Select(i => i.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).ToArray();
                 var signature = $"{GetAccessibility(symbol.DeclaredAccessibility)} interface {symbol.Name} : {string.Join(", ", baseTypes)}";
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingType.Name, symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
                 else if (symbol.ContainingNamespace != null && !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingNamespace.Name, symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "namespace", parentSourceSpan);
                 }
                 else
                 {
                     containingSymbolId = null;
                 }
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                 var entry = new SymbolEntry
                 {
-                    symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "interface", sourceSpan),
                     fileId = _fileId,
-                    fullyQualifiedName = name,
+                    fullyQualifiedName = fullyQualifiedName,
                     symbolKind = "interface",
                     accessibility = GetAccessibilityString(symbol.DeclaredAccessibility),
                     signature = signature,
                     rawSourceHash = Program.ComputeHash(node.ToString()),
                     containingSymbolId = containingSymbolId,
-                    sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}",
+                    sourceSpan = sourceSpan,
                     baseTypes = baseTypes
                 };
                 Symbols.Add(entry);
@@ -244,34 +254,42 @@ namespace SymbolInventory
             var symbol = _semanticModel.GetDeclaredSymbol(node);
             if (symbol != null)
             {
-                var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var containingTypeFqn = GetContainingTypeFqn(symbol);
+                var fullyQualifiedName = string.IsNullOrEmpty(containingTypeFqn) 
+                    ? symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                    : $"{containingTypeFqn}.{symbol.Name}";
                 var returnType = symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 var parameters = string.Join(", ", symbol.Parameters.Select(p => $"{p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {p.Name}"));
                 var signature = $"{GetAccessibility(symbol.DeclaredAccessibility)} {returnType} {symbol.Name}({parameters})";
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingType.Name, symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
                 else if (symbol.ContainingNamespace != null && !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingNamespace.Name, symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "namespace", parentSourceSpan);
                 }
                 else
                 {
                     containingSymbolId = null;
                 }
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                 var entry = new SymbolEntry
                 {
-                    symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "method", sourceSpan),
                     fileId = _fileId,
-                    fullyQualifiedName = name,
+                    fullyQualifiedName = fullyQualifiedName,
                     symbolKind = "method",
                     accessibility = GetAccessibilityString(symbol.DeclaredAccessibility),
                     signature = signature,
                     rawSourceHash = Program.ComputeHash(node.ToString()),
                     containingSymbolId = containingSymbolId,
-                    sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}",
+                    sourceSpan = sourceSpan,
                     modifiers = GetModifiers(node),
                     returnType = returnType,
                     parameters = symbol.Parameters.Select(p => new { p.Name, type = p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) }).ToArray()
@@ -286,33 +304,41 @@ namespace SymbolInventory
             var symbol = _semanticModel.GetDeclaredSymbol(node);
             if (symbol != null)
             {
-                var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var containingTypeFqn = GetContainingTypeFqn(symbol);
+                var fullyQualifiedName = string.IsNullOrEmpty(containingTypeFqn) 
+                    ? symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                    : $"{containingTypeFqn}.{symbol.Name}";
                 var type = symbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 var signature = $"{GetAccessibility(symbol.DeclaredAccessibility)} {type} {symbol.Name} {{ get; set; }}";
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingType.Name, symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
                 else if (symbol.ContainingNamespace != null && !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingNamespace.Name, symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "namespace", parentSourceSpan);
                 }
                 else
                 {
                     containingSymbolId = null;
                 }
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                 var entry = new SymbolEntry
                 {
-                    symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "property", sourceSpan),
                     fileId = _fileId,
-                    fullyQualifiedName = name,
+                    fullyQualifiedName = fullyQualifiedName,
                     symbolKind = "property",
                     accessibility = GetAccessibilityString(symbol.DeclaredAccessibility),
                     signature = signature,
                     rawSourceHash = Program.ComputeHash(node.ToString()),
                     containingSymbolId = containingSymbolId,
-                    sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}",
+                    sourceSpan = sourceSpan,
                     type = type
                 };
                 Symbols.Add(entry);
@@ -327,34 +353,42 @@ namespace SymbolInventory
                 var symbol = _semanticModel.GetDeclaredSymbol(variable);
                 if (symbol != null)
                 {
-                    var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var containingTypeFqn = GetContainingTypeFqn(symbol);
+                    var fullyQualifiedName = string.IsNullOrEmpty(containingTypeFqn) 
+                        ? symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                        : $"{containingTypeFqn}.{symbol.Name}";
                     var typeSymbol = symbol as IFieldSymbol;
                     var type = typeSymbol?.Type?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "unknown";
                     var signature = $"{GetAccessibility(symbol.DeclaredAccessibility)} {type} {symbol.Name}";
                     string? containingSymbolId;
                     if (symbol.ContainingType != null)
                     {
-                        containingSymbolId = Program.GenerateSymbolId(symbol.ContainingType.Name, symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                        var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
+                        var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                        containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                     }
                     else if (symbol.ContainingNamespace != null && !symbol.ContainingNamespace.IsGlobalNamespace)
                     {
-                        containingSymbolId = Program.GenerateSymbolId(symbol.ContainingNamespace.Name, symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                        var parentFqn = symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                        containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "namespace", parentSourceSpan);
                     }
                     else
                     {
                         containingSymbolId = null;
                     }
+                    var sourceSpan = $"{_relativePath}:{variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                     var entry = new SymbolEntry
                     {
-                        symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                        symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "field", sourceSpan),
                         fileId = _fileId,
-                        fullyQualifiedName = name,
+                        fullyQualifiedName = fullyQualifiedName,
                         symbolKind = "field",
                         accessibility = GetAccessibilityString(symbol.DeclaredAccessibility),
                         signature = signature,
                         rawSourceHash = Program.ComputeHash(variable.ToString()),
                         containingSymbolId = containingSymbolId,
-                        sourceSpan = $"{_relativePath}:{variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1}",
+                        sourceSpan = sourceSpan,
                         type = type
                     };
                     Symbols.Add(entry);
@@ -368,33 +402,41 @@ namespace SymbolInventory
             var symbol = _semanticModel.GetDeclaredSymbol(node);
             if (symbol != null)
             {
-                var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var containingTypeFqn = GetContainingTypeFqn(symbol);
+                var fullyQualifiedName = string.IsNullOrEmpty(containingTypeFqn) 
+                    ? symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                    : $"{containingTypeFqn}.#ctor";
                 var parameters = string.Join(", ", symbol.Parameters.Select(p => $"{p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {p.Name}"));
                 var signature = $"{GetAccessibility(symbol.DeclaredAccessibility)} {symbol.Name}({parameters})";
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingType.Name, symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
                 else if (symbol.ContainingNamespace != null && !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingNamespace.Name, symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "namespace", parentSourceSpan);
                 }
                 else
                 {
                     containingSymbolId = null;
                 }
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                 var entry = new SymbolEntry
                 {
-                    symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "constructor", sourceSpan),
                     fileId = _fileId,
-                    fullyQualifiedName = name,
+                    fullyQualifiedName = fullyQualifiedName,
                     symbolKind = "constructor",
                     accessibility = GetAccessibilityString(symbol.DeclaredAccessibility),
                     signature = signature,
                     rawSourceHash = Program.ComputeHash(node.ToString()),
                     containingSymbolId = containingSymbolId,
-                    sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}",
+                    sourceSpan = sourceSpan,
                     parameters = symbol.Parameters.Select(p => new { p.Name, type = p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) }).ToArray()
                 };
                 Symbols.Add(entry);
@@ -407,33 +449,41 @@ namespace SymbolInventory
             var symbol = _semanticModel.GetDeclaredSymbol(node);
             if (symbol != null)
             {
-                var name = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var containingTypeFqn = GetContainingTypeFqn(symbol);
+                var fullyQualifiedName = string.IsNullOrEmpty(containingTypeFqn) 
+                    ? symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                    : $"{containingTypeFqn}.{symbol.Name}";
                 var type = symbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 var signature = $"{GetAccessibility(symbol.DeclaredAccessibility)} event {type} {symbol.Name}";
                 string? containingSymbolId;
                 if (symbol.ContainingType != null)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingType.Name, symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "class", parentSourceSpan);
                 }
                 else if (symbol.ContainingNamespace != null && !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    containingSymbolId = Program.GenerateSymbolId(symbol.ContainingNamespace.Name, symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), _fileId);
+                    var parentFqn = symbol.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    var parentSourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
+                    containingSymbolId = Program.GenerateSymbolId(_fileId, parentFqn, "namespace", parentSourceSpan);
                 }
                 else
                 {
                     containingSymbolId = null;
                 }
+                var sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}";
                 var entry = new SymbolEntry
                 {
-                    symbolId = Program.GenerateSymbolId(name, signature, _fileId),
+                    symbolId = Program.GenerateSymbolId(_fileId, fullyQualifiedName, "event", sourceSpan),
                     fileId = _fileId,
-                    fullyQualifiedName = name,
+                    fullyQualifiedName = fullyQualifiedName,
                     symbolKind = "event",
                     accessibility = GetAccessibilityString(symbol.DeclaredAccessibility),
                     signature = signature,
                     rawSourceHash = Program.ComputeHash(node.ToString()),
                     containingSymbolId = containingSymbolId,
-                    sourceSpan = $"{_relativePath}:{node.GetLocation().GetLineSpan().StartLinePosition.Line + 1}",
+                    sourceSpan = sourceSpan,
                     type = type
                 };
                 Symbols.Add(entry);
@@ -457,6 +507,25 @@ namespace SymbolInventory
         private static string GetAccessibilityString(Accessibility accessibility)
         {
             return GetAccessibility(accessibility);
+        }
+
+        private static string GetContainingTypeFqn(ISymbol symbol)
+        {
+            if (symbol.ContainingType == null)
+            {
+                return null;
+            }
+            return symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        }
+
+        private static string GetContainingTypeFqn(INamedTypeSymbol symbol)
+        {
+            if (symbol.ContainingType == null)
+            {
+                return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            }
+            var parentFqn = GetContainingTypeFqn(symbol.ContainingType);
+            return $"{parentFqn}.{symbol.Name}";
         }
 
         private static string[] GetModifiers(SyntaxNode node)

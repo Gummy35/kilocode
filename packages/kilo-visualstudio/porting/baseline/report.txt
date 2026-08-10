@@ -2,9 +2,9 @@ PORT-INFRA-001 Baseline Inventory Report
 =========================================
 
 Repository State:
-  Commit: e46bcd79cb0ddbef72c6a884b128b16c5ab47cd3
+  Commit: e72795726328e3c90c666576ad3dea850eba3c0f
   Branch: vs2026
-  Timestamp: 2026-08-10T10:48:12.3035520+02:00
+  Timestamp: 2026-08-10T11:37:00.2656382+02:00
 
 Inventory Summary:
   Projects: 2
@@ -13,13 +13,13 @@ Inventory Summary:
     - Webview assets: included in files.json
     - Configuration: included in files.json
     - Documentation: included in files.json
-  Symbols: 2220
+  Symbols: 2306 (NO deduplication - all distinct symbols preserved)
     - Namespaces: 112
     - Classes: 317
     - Interfaces: 11
-    - Methods: 951
-    - Properties: 480
-    - Fields: 281
+    - Methods: 992
+    - Properties: 523
+    - Fields: 283
     - Constructors: 68
   Tests: 196
     - [Fact]: 196
@@ -27,9 +27,10 @@ Inventory Summary:
 
 Validation Results:
   JSON syntax: PASS
-  Duplicate IDs: PASS
+  Duplicate IDs: PASS (no duplicates found)
   Reference resolution: PASS
-  Determinism: PASS (deduplication applied)
+  Determinism: PASS
+  Fully qualified names: PASS (all symbols have proper FQNs)
 
 Generated Files:
   - packages/kilo-visualstudio/porting/baseline/baseline.json
@@ -42,8 +43,16 @@ Blockers:
   - None
 
 Notes:
-  - Roslyn symbol inventory tool created in $env:TEMP\symbol-inventory\
+  - Roslyn symbol inventory tool located in packages/kilo-visualstudio/tools/symbol-inventory/
   - All inventory files generated in packages/kilo-visualstudio/porting/
   - No production code or test files were modified
-  - Duplicate symbol IDs were deduplicated (2306 -> 2220 unique symbols)
+  - All 2306 distinct symbols preserved (no silent deduplication)
+  - Symbol fullyQualifiedName now uses proper Roslyn FQN format (e.g., global::KiloVisualStudioExtension.AgentManager.WorktreeStateManager.GetOpenWorktrees)
   - symbol_calls_symbol relationship is OUT OF SCOPE (will be handled by later task)
+
+Corrections Applied (Execution 3):
+  - Fixed fullyQualifiedName to use Roslyn's fully qualified format with containing type
+  - Removed silent symbol deduplication - all distinct symbols now preserved
+  - Symbol ID generation now includes fileId + fullyQualifiedName + symbolKind + sourceSpan
+  - Repository identity changed to neutral "kilocode" (not personal fork)
+  - Updated validate.ps1 to look for output in ../porting directory

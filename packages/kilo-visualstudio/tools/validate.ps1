@@ -1,5 +1,7 @@
 # Validate PORT-INFRA-001 inventory output
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Output is in ../porting directory relative to tools
+$outputDir = Join-Path $scriptDir "..\porting"
 $errors = @()
 $warnings = @()
 
@@ -17,7 +19,7 @@ $filesToCheck = @(
 )
 
 foreach ($file in $filesToCheck) {
-    $fullPath = Join-Path $scriptDir $file.Path
+    $fullPath = Join-Path $outputDir $file.Path
     try {
         $content = Get-Content $fullPath -Raw -ErrorAction Stop
         $json = $content | ConvertFrom-Json -ErrorAction Stop
@@ -34,13 +36,13 @@ Write-Host ""
 Write-Host "2. Checking for duplicate IDs..." -ForegroundColor Yellow
 $allIds = @()
 
-$files = Get-Content (Join-Path $scriptDir "manifest\files.json") | ConvertFrom-Json
+$files = Get-Content (Join-Path $outputDir "manifest\files.json") | ConvertFrom-Json
 $allIds += $files.fileId | ForEach-Object { "file:$_" }
 
-$symbols = Get-Content (Join-Path $scriptDir "manifest\symbols.json") | ConvertFrom-Json
+$symbols = Get-Content (Join-Path $outputDir "manifest\symbols.json") | ConvertFrom-Json
 $allIds += $symbols.symbolId | ForEach-Object { "symbol:$_" }
 
-$tests = Get-Content (Join-Path $scriptDir "manifest\tests.json") | ConvertFrom-Json
+$tests = Get-Content (Join-Path $outputDir "manifest\tests.json") | ConvertFrom-Json
 $allIds += $tests.testId | ForEach-Object { "test:$_" }
 
 $duplicates = $allIds | Group-Object | Where-Object { $_.Count -gt 1 }
