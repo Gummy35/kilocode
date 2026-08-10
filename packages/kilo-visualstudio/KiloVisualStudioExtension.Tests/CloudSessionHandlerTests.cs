@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Handlers.CloudSession;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests

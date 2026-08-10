@@ -13,6 +13,21 @@ using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using Microsoft.Kiota.Serialization.Json;
 
+internal class ReferenceEqualityComparer : IEqualityComparer<Func<string[]>>
+{
+    public static readonly ReferenceEqualityComparer Instance = new ReferenceEqualityComparer();
+    
+    public bool Equals(Func<string[]>? x, Func<string[]>? y)
+    {
+        return ReferenceEquals(x, y);
+    }
+    
+    public int GetHashCode(Func<string[]> obj)
+    {
+        return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
+    }
+}
+
 namespace KiloVisualStudioExtension
 {
     /// <summary>
@@ -182,10 +197,22 @@ namespace KiloVisualStudioExtension
         private readonly Dictionary<string, HashSet<string>> _attachedSessions = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
         
         /// <summary>
-        /// Known directories tracking.
-        /// Matches VS Code's trackDirectory functionality.
+        /// First tracked directory (workspace root).
+        /// Matches VS Code's rootDirectory.
         /// </summary>
-        private readonly HashSet<string> _knownDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private string? _rootDirectory;
+        
+        /// <summary>
+        /// Most recently tracked directory.
+        /// Matches VS Code's currentDirectory.
+        /// </summary>
+        private string? _currentDirectory;
+        
+        /// <summary>
+        /// Dynamic directory providers for runtime-registered sources.
+        /// Matches VS Code's directoryProviders Set.
+        /// </summary>
+        private readonly HashSet<Func<string[]>> _directoryProviders = new HashSet<Func<string[]>>(ReferenceEqualityComparer.Instance);
         
         /// <summary>
         /// Permission directory tracking.
@@ -731,26 +758,89 @@ namespace KiloVisualStudioExtension
         /// <summary>
         /// Tracks a directory for session management.
         /// Matches VS Code's trackDirectory functionality.
+        /// Sets rootDirectory on first call (first-tracked semantics).
+        /// Always updates currentDirectory to the latest directory.
         /// </summary>
         /// <param name="directory">The directory path to track.</param>
         public void TrackDirectory(string directory)
         {
+            if (string.IsNullOrEmpty(directory))
+                return;
+            
             lock (_visibilityLock)
             {
-                _knownDirectories.Add(directory);
+                _rootDirectory ??= directory;
+                _currentDirectory = directory;
             }
         }
 
         /// <summary>
-        /// Gets all known tracked directories.
+        /// Registers a callback that returns directories from a dynamic source.
+        /// Matches VS Code's registerDirectoryProvider functionality.
+        /// Returns an unsubscribe function to unregister the provider.
         /// </summary>
-        /// <returns>A set of tracked directory paths.</returns>
-        public HashSet<string> GetKnownDirectories()
+        /// <param name="provider">A callback that returns an array of directory paths.</param>
+        /// <returns>An unsubscribe function to unregister the provider.</returns>
+        public Func<bool> RegisterDirectoryProvider(Func<string[]> provider)
         {
             lock (_visibilityLock)
             {
-                return new HashSet<string>(_knownDirectories, StringComparer.OrdinalIgnoreCase);
+                _directoryProviders.Add(provider);
             }
+            return () =>
+            {
+                lock (_visibilityLock)
+                {
+                    _directoryProviders.Remove(provider);
+                }
+                return true;
+            };
+        }
+
+        /// <summary>
+        /// Gets all known tracked directories.
+        /// Returns the union of:
+        /// - rootDirectory (first tracked directory)
+        /// - currentDirectory (most recently tracked directory)
+        /// - All directories from registered directory providers
+        /// </summary>
+        /// <returns>An array of unique directory paths.</returns>
+        public string[] GetKnownDirectories()
+        {
+            string? rootDir;
+            string? currentDir;
+            Func<string[]>[] providersSnapshot;
+            
+            lock (_visibilityLock)
+            {
+                rootDir = _rootDirectory;
+                currentDir = _currentDirectory;
+                providersSnapshot = _directoryProviders.ToArray();
+            }
+            
+            var dirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (!string.IsNullOrEmpty(rootDir))
+                dirs.Add(rootDir);
+            if (!string.IsNullOrEmpty(currentDir))
+                dirs.Add(currentDir);
+            
+            foreach (var provider in providersSnapshot)
+            {
+                try
+                {
+                    foreach (var dir in provider())
+                    {
+                        if (!string.IsNullOrEmpty(dir))
+                            dirs.Add(dir);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] Directory provider threw: {ex.Message}");
+                }
+            }
+            
+            return dirs.ToArray();
         }
 
         /// <summary>
