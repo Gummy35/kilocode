@@ -46,24 +46,21 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/config");
+                var configResponse = await kiotaClient.Config.GetAsync();
                 var config = JsonDocument.Parse("{}").RootElement;
                 var features = JsonDocument.Parse("{}").RootElement;
                 
-                if (response != null)
+                if (configResponse != null)
                 {
-                    var root = response.RootElement.Clone();
-                    if (root.TryGetProperty("config", out var c))
-                        config = c.Clone();
-                    if (root.TryGetProperty("features", out var f))
-                        features = f.Clone();
+                    config = JsonSerializer.SerializeToElement(configResponse);
+                    features = JsonSerializer.SerializeToElement(configResponse.Features ?? new { });
                 }
 
                 await _provider.SendConfigLoadedAsync(config, features);
@@ -104,14 +101,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/config", payload.Value);
+                var config = JsonSerializer.Deserialize<Generated.Models.Config>(payload.Value.GetRawText());
+                await kiotaClient.Config.PatchAsync(config);
             }
             catch (Exception ex)
             {
@@ -148,14 +146,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/config", payload.Value);
+                var config = JsonSerializer.Deserialize<Generated.Models.Config>(payload.Value.GetRawText());
+                await kiotaClient.Config.PatchAsync(config);
             }
             catch (Exception ex)
             {
@@ -196,15 +195,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
             
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null) return;
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null) return;
                 
-                var url = $"/config/file?scope={scope}";
-                var responseDoc = await httpClient.GetJsonAsync(url);
+                var config = await kiotaClient.Config.GetAsync(q => {
+                    q.QueryParameters.Directory = scope;
+                });
                 
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("path", out var pathProp))
+                if (config != null && !string.IsNullOrEmpty(config.Path))
                 {
-                    string filePath = pathProp.GetString() ?? "";
+                    string filePath = config.Path;
                     if (!string.IsNullOrEmpty(filePath))
                     {
                         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
@@ -214,7 +214,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                         });
                     }
                 }
-                responseDoc?.Dispose();
             }
             catch (Exception ex)
             {

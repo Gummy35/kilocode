@@ -46,17 +46,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/kilo/profile");
-                if (response != null && response.RootElement.TryGetProperty("profile", out var profile))
+                var profile = await kiotaClient.Kilo.Profile.GetAsync();
+                if (profile != null)
                 {
-                    await _provider.SendProfileDataAsync(profile.Clone());
+                    await _provider.SendProfileDataAsync(JsonSerializer.SerializeToElement(profile));
                 }
             }
             catch (Exception ex)
@@ -85,11 +85,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleLogoutAsync(JsonElement? payload)
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null) return;
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null) return;
             try
             {
-                await httpClient.PostJsonAsync("/auth/logout", new { });
+                await kiotaClient.Auth.Logout.PostAsync(new Generated.Auth.Logout.LogoutPostRequestBody());
                 System.Diagnostics.Debug.WriteLine("[Kilo] AuthHandler: logout");
             }
             catch (Exception ex)
@@ -119,14 +119,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRefreshProfileAsync(JsonElement? payload)
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null) return;
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null) return;
             try
             {
-                var profile = await httpClient.GetJsonAsync("/kilo/profile");
+                var profile = await kiotaClient.Kilo.Profile.GetAsync();
                 if (profile != null)
                 {
-                    var message = new { type = "profileData", data = profile.RootElement };
+                    var message = new { type = "profileData", data = JsonSerializer.SerializeToElement(profile) };
                     _provider.PostMessage(JsonSerializer.Serialize(message));
                 }
             }

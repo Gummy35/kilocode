@@ -91,22 +91,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendIndexingStatusAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/indexing");
-                var status = JsonDocument.Parse("{}").RootElement;
-                
-                if (response != null)
-                {
-                    status = response.RootElement.Clone();
-                }
+                var status = await kiotaClient.Indexing.GetAsync();
+                var statusData = status != null ? JsonSerializer.SerializeToElement(status) : JsonDocument.Parse("{}").RootElement;
 
-                await _provider.SendIndexingStatusAsync(status);
+                await _provider.SendIndexingStatusAsync(statusData);
             }
             catch (Exception ex)
             {
@@ -125,30 +120,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendWorkStyleLoadedAsync(new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/workstyle");
-                var style = new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } };
-                
-                if (response != null && response.RootElement.TryGetProperty("style", out var styleProp))
-                {
-                    style = new 
-                    { 
-                        mode = styleProp.TryGetProperty("mode", out var m) ? m.GetString() : "ask",
-                        autoApprove = new 
-                        { 
-                            enabled = styleProp.TryGetProperty("autoApprove", out var ap) && ap.TryGetProperty("enabled", out var e) && e.GetBoolean(),
-                            limit = styleProp.TryGetProperty("autoApprove", out var ap2) && ap2.TryGetProperty("limit", out var l) ? l.GetInt32() : 0
-                        }
-                    };
-                }
+                var style = await kiotaClient.WorkStyle.GetAsync();
+                var styleData = style != null ? new { mode = style.Mode ?? "ask", autoApprove = new { enabled = style.AutoApprove?.Enabled ?? false, limit = style.AutoApprove?.Limit ?? 0 } } : new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } };
 
-                await _provider.SendWorkStyleLoadedAsync(style);
+                await _provider.SendWorkStyleLoadedAsync(styleData);
             }
             catch (Exception ex)
             {
@@ -173,14 +155,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/workstyle", payload.Value);
+                var workStyle = JsonSerializer.Deserialize<Generated.Models.WorkStyle>(payload.Value.GetRawText());
+                if (workStyle != null)
+                {
+                    await kiotaClient.WorkStyle.PatchAsync(workStyle);
+                }
             }
             catch (Exception ex)
             {

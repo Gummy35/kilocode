@@ -101,10 +101,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleReloadAsync(JsonElement? payload)
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null || !httpClient.IsConnected())
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: reload - no client connection");
+                System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: reload - no Kiota client");
                 return;
             }
 
@@ -112,16 +112,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
             
             try
             {
-                await httpClient.PostJsonAsync($"/instance/reload", new { directory });
+                await kiotaClient.Instance.Reload.PostAsync(new Generated.Instance.Reload.InstanceReloadPostRequestBody { Directory = directory });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Backend reloaded for directory {directory}");
                 
-                // Clear cached commands and refresh agents/config
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "configReloaded" }));
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: reload failed: {ex.Message}");
-                // Match VS Code: log error but don't throw - user sees error in UI
             }
         }
 

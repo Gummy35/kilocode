@@ -33,27 +33,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendNotificationsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/notification");
-                var notifications = Array.Empty<object>();
-                
-                if (response != null && response.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    var notificationsList = new System.Collections.Generic.List<object>();
-                    foreach (var notif in response.RootElement.EnumerateArray())
-                    {
-                        notificationsList.Add(notif.Clone());
-                    }
-                    notifications = notificationsList.ToArray();
-                }
+                var notifications = await kiotaClient.Notification.GetAsync();
+                var notificationsList = notifications != null ? notifications.Select(n => (object)n).ToArray() : Array.Empty<object>();
 
-                await _provider.SendNotificationsAsync(notifications);
+                await _provider.SendNotificationsAsync(notificationsList);
             }
             catch (Exception ex)
             {
@@ -85,14 +75,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync($"/notification/{notificationId}/dismiss", null);
+                await kiotaClient.Notification[notificationId].Dismiss.PostAsync(new Generated.Notification.Item.Dismiss.DismissPostRequestBody());
             }
             catch (Exception ex)
             {
@@ -110,14 +100,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/notification/reset-read", null);
+                await kiotaClient.Notification.ResetRead.PostAsync(new Generated.Notification.ResetRead.ResetReadPostRequestBody());
             }
             catch (Exception ex)
             {

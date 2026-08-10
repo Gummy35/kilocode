@@ -90,18 +90,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// <returns>True if session was created successfully, false otherwise.</returns>
         private async Task<bool> CreateSessionInternalAsync(string dir)
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: cannot create session - no HTTP client");
+                System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: cannot create session - no Kiota client");
                 return false;
             }
             try
             {
-                var responseDoc = await httpClient.PostJsonAsync("/session", new { directory = dir });
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("id", out var id))
+                var response = await kiotaClient.Session.PostAsSessionPostResponseAsync(new Generated.Api.Session.SessionPostRequestBody { Directory = dir });
+                if (response != null && !string.IsNullOrEmpty(response.Id))
                 {
-                    var sessionID = id.GetString() ?? "";
+                    var sessionID = response.Id;
                     System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session created: {sessionID}");
                     
                     _provider.SetCurrentSessionID(sessionID);
@@ -123,10 +123,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                         }
                     };
                     _provider.PostMessage(JsonSerializer.Serialize(sessionCreated));
-                    responseDoc?.Dispose();
                     return true;
                 }
-                responseDoc?.Dispose();
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session creation failed - no ID in response");
                 return false;
             }
@@ -184,15 +182,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             if (payload == null) return;
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
                 return;
             }
             try
             {
-                await httpClient.PostJsonAsync($"/session/delete", new { sessionID });
+                await kiotaClient.Session[sessionID].DeleteAsync();
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session deleted");
                 
                 if (_provider.GetCurrentSessionID() == sessionID)
@@ -237,15 +235,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             var title = payload.Value.TryGetProperty("title", out var t) ? t.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
             }
             try
             {
-                await httpClient.PostJsonAsync($"/session/rename", new { sessionID, title });
+                await kiotaClient.Session[sessionID].PatchAsync(new Generated.Models.Session { Title = title });
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session renamed");
                 
                 if (_provider.GetCurrentSessionID() == sessionID)
@@ -324,8 +322,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                 _provider.SetContextSessionID(sessionID);
             }
             
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
                 return;
@@ -341,60 +339,44 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             try
             {
-                var url = $"/session/{sessionID}/message?limit={limit}";
-                if (!string.IsNullOrEmpty(before))
-                {
-                    url += $"&before={before}";
-                }
-                
-                var responseDoc = cancellationToken.HasValue 
-                    ? await httpClient.GetJsonAsync(url, cancellationToken.Value)
-                    : await httpClient.GetJsonAsync(url);
+                var messages = await kiotaClient.Session[sessionID].Message.GetAsync(q => {
+                    q.QueryParameters.Limit = limit;
+                    if (!string.IsNullOrEmpty(before))
+                        q.QueryParameters.Cursor = before;
+                }, cancellationToken);
                 
                 if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) return;
                 
                 if (!_provider.IsSessionTracked(sessionID)) return;
                 
-                if (responseDoc == null) return;
+                if (messages == null) return;
                 
                 var items = new System.Collections.Generic.List<object>();
-                var cursorValue = (string?)null;
-                var hasMore = false;
                 
-                if (responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                if (messages.Messages != null)
                 {
-                    foreach (var item in responseDoc.RootElement.EnumerateArray())
+                    foreach (var msg in messages.Messages)
                     {
-                        if (item.TryGetProperty("info", out var info) && info.TryGetProperty("time", out var time) && time.TryGetProperty("created", out var created))
+                        if (msg.Info != null)
                         {
-                            var createdAt = DateTimeOffset.FromUnixTimeMilliseconds(created.GetInt64()).UtcDateTime.ToString("o");
-                            var partsValue = item.TryGetProperty("parts", out var parts) ? (object)parts.Clone() : Array.Empty<object>();
-                            var timeValue = item.TryGetProperty("time", out var t) ? (object?)t.Clone() : null;
-                            var costValue = item.TryGetProperty("cost", out var cost) ? (object?)cost.Clone() : null;
-                            var tokensValue = item.TryGetProperty("tokens", out var tok) ? (object?)tok.Clone() : null;
+                            var createdAt = msg.Info.CreatedAt != null ? msg.Info.CreatedAt.Value.UtcDateTime.ToString("o") : DateTimeOffset.UtcNow.ToString("o");
                             var messageObj = new
                             {
-                                id = info.TryGetProperty("id", out var id) ? id.GetString() : "",
+                                id = msg.Info.Id ?? "",
                                 sessionID = sessionID,
-                                role = info.TryGetProperty("role", out var role) ? role.GetString() : "",
-                                parts = partsValue,
+                                role = msg.Info.Role ?? "",
+                                parts = msg.Parts != null ? JsonSerializer.SerializeToElement(msg.Parts) : Array.Empty<object>(),
                                 createdAt = createdAt,
-                                time = timeValue,
-                                cost = costValue,
-                                tokens = tokensValue
+                                time = msg.Time != null ? JsonSerializer.SerializeToElement(msg.Time) : null,
+                                cost = msg.Cost != null ? JsonSerializer.SerializeToElement(msg.Cost) : null,
+                                tokens = msg.Tokens != null ? JsonSerializer.SerializeToElement(msg.Tokens) : null
                             };
                             items.Add(messageObj);
                         }
                     }
                 }
                 
-                if (responseDoc.RootElement.ValueKind == JsonValueKind.Object 
-                  && responseDoc.RootElement.TryGetProperty("cursor", out var cursorProp) 
-                  && cursorProp.ValueKind == JsonValueKind.String)
-                {
-                    cursorValue = cursorProp.GetString();
-                    hasMore = !string.IsNullOrEmpty(cursorValue);
-                }
+                var hasMore = !string.IsNullOrEmpty(messages.Cursor?.Next);
                 
                 if (mode == "replace" || mode == "reconcile")
                 {
@@ -422,8 +404,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                 _provider.RecoverPendingPrompts();
                 
                 _ = LoadMemoryAsync(sessionID);
-                
-                responseDoc.Dispose();
             }
             catch (OperationCanceledException)
             {
@@ -461,11 +441,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             var messageID = payload.Value.TryGetProperty("messageID", out var mid) ? mid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null) return;
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null) return;
             try
             {
-                await httpClient.PostJsonAsync($"/session/message/delete", new { sessionID, messageID });
+                await kiotaClient.Session[sessionID].Message[messageID].DeleteAsync();
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: message deleted");
             }
             catch (Exception ex)
@@ -480,8 +460,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// </summary>
         private async Task FetchAndSendSessionModelUsageAsync(string sessionID, string requestID)
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
                 return;
@@ -489,8 +469,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync($"/session/{sessionID}/model-usage");
-                if (responseDoc != null)
+                var usage = await kiotaClient.Session[sessionID].ModelUsage.GetAsync();
+                if (usage != null)
                 {
                     var sessionIDs = new[] { sessionID };
                     var totals = new { steps = 0, cost = 0, tokens = new { input = 0, output = 0, reasoning = 0, cache = new { read = 0, write = 0 } } };
@@ -499,7 +479,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                     var data = new { sessionIDs, totals, models };
                     var message = new { type = "sessionModelUsageLoaded", sessionID, requestID, data };
                     _provider.PostMessage(JsonSerializer.Serialize(message));
-                    responseDoc.Dispose();
                 }
                 else
                 {
@@ -519,8 +498,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// </summary>
         private async Task LoadMemoryAsync(string? sessionID)
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "memoryLoaded", sessionID, error = "Not connected to CLI backend" }));
                 return;
@@ -528,12 +507,13 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync($"/memory/status?directory={Uri.EscapeDataString(System.Environment.CurrentDirectory)}");
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("status", out var status))
+                var memory = await kiotaClient.Memory.Status.GetAsync(q => {
+                    q.QueryParameters.Directory = System.Environment.CurrentDirectory;
+                });
+                if (memory != null)
                 {
-                    var message = new { type = "memoryLoaded", sessionID, status = status.Clone() };
+                    var message = new { type = "memoryLoaded", sessionID, status = JsonSerializer.SerializeToElement(memory) };
                     _provider.PostMessage(JsonSerializer.Serialize(message));
-                    responseDoc.Dispose();
                 }
                 else
                 {
@@ -553,8 +533,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// </summary>
         public async Task HandleLoadSessionsAsync(JsonElement? payload)
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -562,39 +542,26 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync("/session");
-                if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                var sessions = await kiotaClient.Session.GetAsync();
+                if (sessions != null)
                 {
-                    var sessions = new List<object>();
-                    foreach (var session in responseDoc.RootElement.EnumerateArray())
+                    var sessionList = new List<object>();
+                    foreach (var session in sessions)
                     {
-                        if (session.TryGetProperty("id", out var id) && session.TryGetProperty("title", out var title))
+                        var sessionObj = new
                         {
-                            var sessionID = id.GetString() ?? "";
-                            var sessionTitle = title.GetString() ?? "";
-                            
-                            object? status = null;
-                            if (session.TryGetProperty("status", out var statusProp))
-                            {
-                                status = statusProp.Clone();
-                            }
-                            
-                            var sessionObj = new
-                            {
-                                id = sessionID,
-                                title = sessionTitle,
-                                status = status,
-                                directory = session.TryGetProperty("directory", out var dir) ? dir.GetString() : null,
-                                createdAt = session.TryGetProperty("createdAt", out var created) ? created.GetString() : null,
-                                updatedAt = session.TryGetProperty("updatedAt", out var updated) ? updated.GetString() : null
-                            };
-                            sessions.Add(sessionObj);
-                        }
+                            id = session.Id ?? "",
+                            title = session.Title ?? "",
+                            status = session.Status != null ? JsonSerializer.SerializeToElement(session.Status) : null,
+                            directory = session.Directory,
+                            createdAt = session.CreatedAt?.ToString("o"),
+                            updatedAt = session.UpdatedAt?.ToString("o")
+                        };
+                        sessionList.Add(sessionObj);
                     }
                     
-                    var message = new { type = "sessionListLoaded", sessions = sessions.ToArray() };
+                    var message = new { type = "sessionListLoaded", sessions = sessionList.ToArray() };
                     _provider.PostMessage(JsonSerializer.Serialize(message));
-                    responseDoc.Dispose();
                 }
             }
             catch (Exception ex)
@@ -615,8 +582,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -624,12 +591,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync($"/session/{sessionID}");
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("session", out var session))
+                var session = await kiotaClient.Session[sessionID].GetAsync();
+                if (session != null)
                 {
-                    var message = new { type = "sessionSynced", session = session.Clone() };
+                    var message = new { type = "sessionSynced", session = JsonSerializer.SerializeToElement(session) };
                     _provider.PostMessage(JsonSerializer.Serialize(message));
-                    responseDoc.Dispose();
                 }
             }
             catch (Exception ex)
@@ -652,8 +618,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
                 return;
@@ -661,8 +627,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync($"/session/{sessionID}/model-usage");
-                if (responseDoc != null)
+                var usage = await kiotaClient.Session[sessionID].ModelUsage.GetAsync();
+                if (usage != null)
                 {
                     var sessionIDs = new[] { sessionID };
                     var totals = new { steps = 0, cost = 0, tokens = new { input = 0, output = 0, reasoning = 0, cache = new { read = 0, write = 0 } } };
@@ -671,7 +637,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                     var data = new { sessionIDs, totals, models };
                     var message = new { type = "sessionModelUsageLoaded", sessionID, requestID, data };
                     _provider.PostMessage(JsonSerializer.Serialize(message));
-                    responseDoc.Dispose();
                 }
                 else
                 {
@@ -698,8 +663,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
             
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -707,7 +672,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await httpClient.PostJsonAsync($"/session/revert", new { sessionID, messageID });
+                await kiotaClient.Session[sessionID].Revert.PostAsync(new Generated.Api.Session.Item.Revert.RevertPostRequestBody { MessageId = messageID });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session reverted: {sessionID}");
                 
                 var message = new { type = "sessionReverted", sessionID, messageID };
@@ -732,8 +697,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -741,7 +706,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await httpClient.PostJsonAsync($"/session/unrevert", new { sessionID });
+                await kiotaClient.Session[sessionID].Unrevert.PostAsync(new Generated.Api.Session.Item.Unrevert.UnrevertPostRequestBody());
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session unreverted: {sessionID}");
                 
                 var message = new { type = "sessionUnreverted", sessionID };
@@ -768,8 +733,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -777,7 +742,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await httpClient.PostJsonAsync($"/session/compact", new { sessionID, providerID, modelID });
+                await kiotaClient.Session[sessionID].Compact.PostAsync(new Generated.Api.Session.Item.Compact.CompactPostRequestBody { ProviderId = providerID, ModelId = modelID });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session compacted: {sessionID}");
                 
                 var message = new { type = "sessionCompacted", sessionID };

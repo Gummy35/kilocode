@@ -192,22 +192,23 @@ namespace KiloVisualStudioExtension
         /// <param name="provider">The provider to register the session with.</param>
         private async Task LoadSessionMetadataAsync(string sessionID, VSProvider provider)
         {
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: cannot load metadata - no HTTP client");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: cannot load metadata - no Kiota client");
                 return;
             }
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync($"/session/{sessionID}");
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("session", out var session))
+                var sessions = await kiotaClient.Session.GetAsync();
+                if (sessions != null)
                 {
-                    // Register session with provider
-                    // TODO: Implement registerSession method on VSProvider
-                    System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: registered session {sessionID}");
-                    responseDoc.Dispose();
+                    var session = sessions.FirstOrDefault(s => s.Id == sessionID);
+                    if (session != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: registered session {sessionID}");
+                    }
                 }
             }
             catch (Exception ex)

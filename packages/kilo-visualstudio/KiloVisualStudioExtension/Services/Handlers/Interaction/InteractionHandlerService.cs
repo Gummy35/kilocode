@@ -96,28 +96,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             var len = text.Length < 50 ? text.Length : 50;
             System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: prompt received for session {sessionID}: {text.Substring(0, len)}...");
 
-            var httpClient = _provider.GetHttpClient();
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
+            {
+                await _provider.SendErrorAsync("Not Connected", "Not connected to CLI backend");
+                return;
+            }
+            
             try
             {
-                var part = new { type = "text", text };
-                var promptData = new { 
-                    parts = new[] { part }
-                };
+                var part = new Generated.Models.Part { Type = "text", Text = text };
+                var promptData = new Generated.Api.Session.Item.PromptAsync.PromptAsyncPostRequestBody { Parts = new[] { part } };
                 
-                var json = JsonSerializer.Serialize(promptData);
-                System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: sending POST to /session/{sessionID}/prompt_async with body: {json}");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: sending POST to /session/{sessionID}/prompt_async");
                 
-                var response = await httpClient.PostAsync($"/session/{sessionID}/prompt_async", promptData);
-                if (response.IsSuccessStatusCode)
-                {
-                    System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: prompt accepted, response will come via SSE");
-                }
-                else
-                {
-                    var errorBody = await response.Content.ReadAsStringAsync();
-                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: prompt failed: {(int)response.StatusCode} - {errorBody}");
-                    await _provider.SendErrorAsync("Prompt Error", $"Server returned {(int)response.StatusCode}");
-                }
+                await kiotaClient.Session[sessionID].PromptAsync.PostAsync(promptData);
+                System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: prompt accepted, response will come via SSE");
             }
             catch (Exception ex)
             {
@@ -148,25 +142,26 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         {
             if (!payload.HasValue) return;
 
-            JsonElement? requestId = null;
-            JsonElement? response = null;
+            string? requestId = null;
+            string? response = null;
 
             if (payload.Value.TryGetProperty("requestId", out var rid))
             {
-                requestId = rid;
+                requestId = rid.GetString();
             }
             if (payload.Value.TryGetProperty("response", out var resp))
             {
-                response = resp;
+                response = resp.GetString();
             }
 
-            if (requestId.HasValue && response.HasValue)
+            if (!string.IsNullOrEmpty(requestId) && !string.IsNullOrEmpty(response))
             {
-                var httpClient = _provider.GetHttpClient();
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null) return;
+                
                 try
                 {
-                    var url = $"/permission/{requestId.Value.GetString()}/reply";
-                    await httpClient.PostJsonAsync(url, new { response = response.Value.GetString() });
+                    await kiotaClient.Permission[requestId].Reply.PostAsync(new Generated.Permission.Item.Reply.ReplyPostRequestBody { Response = response });
                     System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: permission reply sent");
                 }
                 catch (Exception ex)
@@ -198,25 +193,27 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         {
             if (!payload.HasValue) return;
 
-            JsonElement? requestId = null;
+            string? requestId = null;
             JsonElement? answers = null;
 
             if (payload.Value.TryGetProperty("requestId", out var rid))
             {
-                requestId = rid;
+                requestId = rid.GetString();
             }
             if (payload.Value.TryGetProperty("answers", out var ans))
             {
                 answers = ans;
             }
 
-            if (requestId.HasValue && answers.HasValue)
+            if (!string.IsNullOrEmpty(requestId) && answers.HasValue)
             {
-                var httpClient = _provider.GetHttpClient();
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null) return;
+                
                 try
                 {
-                    var url = $"/question/{requestId.Value.GetString()}/reply";
-                    await httpClient.PostJsonAsync(url, new { answers });
+                    var answersArray = answers.Value.ValueKind == JsonValueKind.Array ? answers.Value.EnumerateArray().Select(a => a.GetString()).ToArray() : new string[] { answers.Value.GetString() };
+                    await kiotaClient.Question[requestId].Reply.PostAsync(new Generated.Question.Item.Reply.ReplyPostRequestBody { Answers = answersArray });
                     System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: question reply sent");
                 }
                 catch (Exception ex)
@@ -249,14 +246,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/permission/response", payload.Value);
+                var permissionResponse = JsonSerializer.Deserialize<Generated.Models.PermissionResponse>(payload.Value.GetRawText());
+                if (permissionResponse != null)
+                {
+                    await kiotaClient.Permission.PostAsync(permissionResponse);
+                }
             }
             catch (Exception ex)
             {
@@ -287,14 +288,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/question/reject", payload.Value);
+                var questionReject = JsonSerializer.Deserialize<Generated.Models.QuestionReject>(payload.Value.GetRawText());
+                if (questionReject != null)
+                {
+                    await kiotaClient.Question.Reject.PostAsync(questionReject);
+                }
             }
             catch (Exception ex)
             {

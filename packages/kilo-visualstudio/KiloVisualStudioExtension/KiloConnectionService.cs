@@ -135,16 +135,6 @@ namespace KiloVisualStudioExtension
         private readonly CliBackendManager _backendManager;
         
         /// <summary>
-        /// HTTP client wrapper for REST API calls.
-        /// </summary>
-        private HttpClientWrapper? _httpClient;
-        
-        /// <summary>
-        /// Cached HTTP client with 10s TTL for reducing API calls.
-        /// </summary>
-        private CachedHttpClient? _cachedHttpClient;
-        
-        /// <summary>
         /// SSE client for receiving real-time events from the backend.
         /// </summary>
         private SseClient? _sseClient;
@@ -414,10 +404,6 @@ namespace KiloVisualStudioExtension
                 var password = _backendManager.Password ?? "default-password";
                 _password = password;
 
-                System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: creating HTTP client for {_baseUrl}");
-                _httpClient = new HttpClientWrapper(_baseUrl, password);
-                _cachedHttpClient = new CachedHttpClient(_httpClient);
-
                 System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating Kiota SDK client");
                 _requestAdapter = CreateRequestAdapter(_baseUrl, password);
                 _kiotaClient = new KiloClient(_requestAdapter);
@@ -541,12 +527,12 @@ namespace KiloVisualStudioExtension
         /// <returns>True if the backend is healthy, false otherwise.</returns>
         private async Task<bool> CheckHealthAsync()
         {
-            if (_httpClient == null) return false;
+            if (_kiotaClient == null) return false;
 
             try
             {
-                var response = await _httpClient.GetAsync("/global/health");
-                return response.IsSuccessStatusCode;
+                await _kiotaClient.Global.Health.GetAsync(cancellationToken: default);
+                return true;
             }
             catch
             {
@@ -602,34 +588,6 @@ namespace KiloVisualStudioExtension
             _state = newState;
             System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: state changed to {newState}");
             OnStateChange?.Invoke(this, new ConnectionStateEventArgs(newState, errorMessage));
-        }
-
-        /// <summary>
-        /// Gets the HTTP client for making REST API calls.
-        /// </summary>
-        /// <returns>The HttpClientWrapper instance.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if not connected.</exception>
-        public HttpClientWrapper? GetHttpClient()
-        {
-            if (_state != ConnectionState.Connected)
-            {
-                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
-            }
-            return _httpClient;
-        }
-
-        /// <summary>
-        /// Gets the cached HTTP client for making REST API calls with 10s TTL caching.
-        /// </summary>
-        /// <returns>The CachedHttpClient instance.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if not connected.</exception>
-        public CachedHttpClient? GetCachedHttpClient()
-        {
-            if (_state != ConnectionState.Connected)
-            {
-                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
-            }
-            return _cachedHttpClient;
         }
 
         /// <summary>
@@ -955,17 +913,13 @@ namespace KiloVisualStudioExtension
 
         /// <summary>
         /// Disconnects from the backend and cleans up all resources.
-        /// Stops health polling, disconnects SSE, and disposes HTTP clients.
+        /// Stops health polling, disconnects SSE, and cleans up Kiota client.
         /// </summary>
         public void Disconnect()
         {
             StopHealthPoll();
             StopCheckinTimer();
             _sseClient?.Disconnect();
-            _cachedHttpClient?.Dispose();
-            _httpClient?.Dispose();
-            _httpClient = null;
-            _cachedHttpClient = null;
             _sseClient = null;
             _kiotaClient = null;
             _requestAdapter = null;

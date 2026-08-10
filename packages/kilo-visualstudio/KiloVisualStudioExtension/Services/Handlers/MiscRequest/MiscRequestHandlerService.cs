@@ -87,27 +87,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendSkillsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/skill");
-                var skills = Array.Empty<object>();
-                
-                if (response != null && response.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    var skillsList = new System.Collections.Generic.List<object>();
-                    foreach (var skill in response.RootElement.EnumerateArray())
-                    {
-                        skillsList.Add(skill.Clone());
-                    }
-                    skills = skillsList.ToArray();
-                }
+                var skills = await kiotaClient.Skill.GetAsync();
+                var skillsList = skills != null ? skills.Select(s => (object)s).ToArray() : Array.Empty<object>();
 
-                await _provider.SendSkillsAsync(skills);
+                await _provider.SendSkillsAsync(skillsList);
             }
             catch (Exception ex)
             {
@@ -126,27 +116,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendCommandsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/command");
-                var commands = Array.Empty<object>();
-                
-                if (response != null && response.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    var commandsList = new System.Collections.Generic.List<object>();
-                    foreach (var cmd in response.RootElement.EnumerateArray())
-                    {
-                        commandsList.Add(cmd.Clone());
-                    }
-                    commands = commandsList.ToArray();
-                }
+                var commands = await kiotaClient.Command.GetAsync();
+                var commandsList = commands != null ? commands.Select(c => (object)c).ToArray() : Array.Empty<object>();
 
-                await _provider.SendCommandsAsync(commands);
+                await _provider.SendCommandsAsync(commandsList);
             }
             catch (Exception ex)
             {
@@ -165,23 +145,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/config/global");
-                var config = JsonDocument.Parse("{}").RootElement;
-                
-                if (response != null && response.RootElement.TryGetProperty("config", out var c))
-                {
-                    config = c.Clone();
-                }
+                var config = await kiotaClient.Global.Config.GetAsync();
+                var configData = config != null ? JsonSerializer.SerializeToElement(config) : JsonDocument.Parse("{}").RootElement;
 
-                await _provider.SendGlobalConfigAsync(config);
-                response?.Dispose();
+                await _provider.SendGlobalConfigAsync(configData);
             }
             catch (Exception ex)
             {

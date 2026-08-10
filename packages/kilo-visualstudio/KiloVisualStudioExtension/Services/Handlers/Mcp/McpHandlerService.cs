@@ -45,20 +45,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendMcpStatusAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/mcp");
-                var mcpStatus = JsonDocument.Parse("{}").RootElement;
-                
-                if (response != null)
-                {
-                    mcpStatus = response.RootElement.Clone();
-                }
+                var mcp = await kiotaClient.Mcp.GetAsync();
+                var mcpStatus = mcp != null ? JsonSerializer.SerializeToElement(mcp) : JsonDocument.Parse("{}").RootElement;
 
                 await _provider.SendMcpStatusAsync(mcpStatus);
             }
@@ -97,14 +92,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/mcp/connect", payload.Value);
+                var mcpConnect = JsonSerializer.Deserialize<Generated.Models.McpConnect>(payload.Value.GetRawText());
+                if (mcpConnect != null)
+                {
+                    await kiotaClient.Mcp.Connect.PostAsync(mcpConnect);
+                }
             }
             catch (Exception ex)
             {
@@ -135,14 +134,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync($"/mcp/{serverId}/disconnect", null);
+                await kiotaClient.Mcp[serverId].Disconnect.PostAsync(new Generated.Mcp.Item.Disconnect.DisconnectPostRequestBody());
             }
             catch (Exception ex)
             {
@@ -166,14 +165,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/mcp/authenticate", payload.Value);
+                var mcpAuth = JsonSerializer.Deserialize<Generated.Models.McpAuthenticate>(payload.Value.GetRawText());
+                if (mcpAuth != null)
+                {
+                    await kiotaClient.Mcp.Authenticate.PostAsync(mcpAuth);
+                }
             }
             catch (Exception ex)
             {
@@ -204,14 +207,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync($"/mcp/{serverId}/remove", null);
+                await kiotaClient.Mcp[serverId].Remove.PostAsync(new Generated.Mcp.Item.Remove.RemovePostRequestBody());
             }
             catch (Exception ex)
             {

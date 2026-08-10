@@ -82,27 +82,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/model/embedding");
-                var models = Array.Empty<object>();
-                
-                if (response != null && response.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    var modelsList = new System.Collections.Generic.List<object>();
-                    foreach (var model in response.RootElement.EnumerateArray())
-                    {
-                        modelsList.Add(model.Clone());
-                    }
-                    models = modelsList.ToArray();
-                }
+                var models = await kiotaClient.Model.Embedding.GetAsync();
+                var modelsList = models != null ? models.Select(m => (object)m).ToArray() : Array.Empty<object>();
 
-                await _provider.SendKiloEmbeddingModelsAsync(models);
+                await _provider.SendKiloEmbeddingModelsAsync(modelsList);
             }
             catch (Exception ex)
             {
@@ -121,27 +111,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
         {
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null)
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendImageModelsAsync(Array.Empty<object>());
                     return;
                 }
 
-                var response = await httpClient.GetJsonAsync("/model/image");
-                var models = Array.Empty<object>();
-                
-                if (response != null && response.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    var modelsList = new System.Collections.Generic.List<object>();
-                    foreach (var model in response.RootElement.EnumerateArray())
-                    {
-                        modelsList.Add(model.Clone());
-                    }
-                    models = modelsList.ToArray();
-                }
+                var models = await kiotaClient.Model.Image.GetAsync();
+                var modelsList = models != null ? models.Select(m => (object)m).ToArray() : Array.Empty<object>();
 
-                await _provider.SendImageModelsAsync(models);
+                await _provider.SendImageModelsAsync(modelsList);
             }
             catch (Exception ex)
             {

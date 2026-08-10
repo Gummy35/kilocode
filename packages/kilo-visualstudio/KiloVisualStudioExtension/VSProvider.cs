@@ -25,6 +25,7 @@ using KiloVisualStudioExtension.Services.Handlers.SessionControl;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Generated;
 
 namespace KiloVisualStudioExtension
 {
@@ -123,15 +124,15 @@ namespace KiloVisualStudioExtension
             _webView.PostMessage(message);
         }
 
-        internal HttpClientWrapper? GetHttpClient()
+        internal KiloClient? GetKiloClient()
         {
-            return _connectionService.GetHttpClient();
+            return _connectionService.GetKiloClient();
         }
 
         internal bool IsConnected()
         {
-            var httpClient = _connectionService.GetHttpClient();
-            return httpClient != null && httpClient.IsConnected();
+            var kiotaClient = _connectionService.GetKiloClient();
+            return kiotaClient != null;
         }
 
         internal async Task SendErrorAsync(string title, string message)
@@ -307,8 +308,8 @@ namespace KiloVisualStudioExtension
         {
             _promptRecoveryQueued = true;
             if (!_isWebviewReady) return;
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null || !httpClient.IsConnected()) return;
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null) return;
             if (_promptRecovery != null) return;
 
             _promptRecovery = FlushPendingPromptsAsync().ContinueWith(_ =>
@@ -764,16 +765,11 @@ namespace KiloVisualStudioExtension
             {
                 try
                 {
-                    var httpClient = _connectionService.GetHttpClient();
-                    if (httpClient != null)
+                    var kiotaClient = _connectionService.GetKiloClient();
+                    if (kiotaClient != null)
                     {
-                        var profileDoc = await httpClient.GetJsonAsync("/kilo/profile");
-                        JsonElement? profileData = null;
-                        if (profileDoc != null && profileDoc.RootElement.TryGetProperty("profile", out var profile))
-                        {
-                            profileData = profile.Clone();
-                        }
-                        profileDoc?.Dispose();
+                        var profile = await kiotaClient.Kilo.Profile.GetAsync();
+                        var profileData = profile != null ? JsonSerializer.SerializeToElement(profile) : null;
                         
                         var profileMessage = new { type = "profileData", data = profileData };
                         _webView.PostMessage(JsonSerializer.Serialize(profileMessage));
@@ -815,20 +811,18 @@ namespace KiloVisualStudioExtension
         {
             if (string.IsNullOrEmpty(_currentSessionID)) return;
 
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null || !httpClient.IsConnected()) return;
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null) return;
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync($"/session/{_currentSessionID}");
-                if (responseDoc != null)
+                var sessions = await kiotaClient.Session.GetAsync();
+                if (sessions != null)
                 {
-                    var root = responseDoc.RootElement.Clone();
-                    responseDoc.Dispose();
-                    
-                    if (root.TryGetProperty("session", out var session))
+                    var session = sessions.FirstOrDefault(s => s.Id == _currentSessionID);
+                    if (session != null)
                     {
-                        var updatedMessage = new { type = "sessionUpdated", session = session.Clone() };
+                        var updatedMessage = new { type = "sessionUpdated", session = JsonSerializer.SerializeToElement(session) };
                         _webView.PostMessage(JsonSerializer.Serialize(updatedMessage));
                     }
                 }
@@ -841,34 +835,28 @@ namespace KiloVisualStudioExtension
 
         private async Task SeedSessionStatusMapAsync(bool reconcile)
         {
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null || !httpClient.IsConnected()) return;
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null) return;
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync("/session");
-                if (responseDoc != null)
+                var sessions = await kiotaClient.Session.GetAsync();
+                if (sessions != null)
                 {
-                    var root = responseDoc.RootElement.Clone();
-                    responseDoc.Dispose();
-                    
-                    if (root.ValueKind == JsonValueKind.Array)
+                    foreach (var session in sessions)
                     {
-                        foreach (var session in root.EnumerateArray())
+                        if (!string.IsNullOrEmpty(session.Id) && !string.IsNullOrEmpty(session.Status))
                         {
-                            if (session.TryGetProperty("id", out var id) && session.TryGetProperty("status", out var status))
+                            var sessionID = session.Id;
+                            var sessionStatus = session.Status;
+                            
+                            if (reconcile && sessionStatus == "busy")
                             {
-                                var sessionID = id.GetString() ?? "";
-                                var sessionStatus = status.GetString() ?? "idle";
-                                
-                                if (reconcile && sessionStatus == "busy")
-                                {
-                                    _sessionStatusMap[sessionID] = "idle";
-                                }
-                                else if (!reconcile || !_sessionStatusMap.ContainsKey(sessionID))
-                                {
-                                    _sessionStatusMap[sessionID] = sessionStatus;
-                                }
+                                _sessionStatusMap[sessionID] = "idle";
+                            }
+                            else if (!reconcile || !_sessionStatusMap.ContainsKey(sessionID))
+                            {
+                                _sessionStatusMap[sessionID] = sessionStatus;
                             }
                         }
                     }
@@ -941,8 +929,8 @@ namespace KiloVisualStudioExtension
         {
             while (_promptRecoveryQueued && _isWebviewReady)
             {
-                var httpClient = _connectionService.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected()) return;
+                var kiotaClient = _connectionService.GetKiloClient();
+                if (kiotaClient == null) return;
                 
                 _promptRecoveryQueued = false;
                 
@@ -953,32 +941,27 @@ namespace KiloVisualStudioExtension
                 {
                     try
                     {
-                        var responseDoc = await httpClient.GetJsonAsync($"/permission?directory={Uri.EscapeDataString(dir)}");
-                        if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                        var permissions = await kiotaClient.Permission.GetAsync(q => 
                         {
-                            foreach (var perm in responseDoc.RootElement.EnumerateArray())
+                            q.QueryParameters.Directory = dir;
+                        });
+                        if (permissions != null)
+                        {
+                            foreach (var perm in permissions)
                             {
-                                if (perm.TryGetProperty("id", out var id) && !seen.Contains(id.GetString() ?? ""))
+                                if (!string.IsNullOrEmpty(perm.Id) && !seen.Contains(perm.Id))
                                 {
-                                    var requestId = id.GetString() ?? "";
+                                    var requestId = perm.Id;
                                     seen.Add(requestId);
                                     
-                                    if (perm.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString()))
+                                    if (!string.IsNullOrEmpty(perm.SessionId))
                                     {
-                                        var sessionID = sid.GetString()!;
-                                        var permission = perm.TryGetProperty("permission", out var permProp) ? permProp.GetString() : "";
-                                        JsonElement? patterns = null;
-                                        if (perm.TryGetProperty("patterns", out var patternsProp))
-                                        {
-                                            patterns = patternsProp.Clone();
-                                        }
-                                        var always = perm.TryGetProperty("always", out var alwaysProp) && alwaysProp.GetBoolean();
-                                        JsonElement? metadata = null;
-                                        if (perm.TryGetProperty("metadata", out var metaProp))
-                                        {
-                                            metadata = metaProp.Clone();
-                                        }
-                                        var tool = perm.TryGetProperty("tool", out var toolProp) ? toolProp.GetString() : "";
+                                        var sessionID = perm.SessionId;
+                                        var permission = perm.Permission ?? "";
+                                        var patterns = perm.Patterns;
+                                        var always = perm.Always ?? false;
+                                        var metadata = perm.Metadata;
+                                        var tool = perm.Tool ?? "";
 
                                         PostMessage(JsonSerializer.Serialize(new
                                         {
@@ -999,7 +982,6 @@ namespace KiloVisualStudioExtension
                                 }
                             }
                         }
-                        responseDoc?.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -1011,26 +993,24 @@ namespace KiloVisualStudioExtension
                 {
                     try
                     {
-                        var responseDoc = await httpClient.GetJsonAsync($"/question?directory={Uri.EscapeDataString(dir)}");
-                        if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                        var questions = await kiotaClient.Question.GetAsync(q =>
                         {
-                            foreach (var q in responseDoc.RootElement.EnumerateArray())
+                            q.QueryParameters.Directory = dir;
+                        });
+                        if (questions != null)
+                        {
+                            foreach (var q in questions)
                             {
-                                if (q.TryGetProperty("id", out var id) && !seen.Contains(id.GetString() ?? ""))
+                                if (!string.IsNullOrEmpty(q.Id) && !seen.Contains(q.Id))
                                 {
-                                    var requestId = id.GetString() ?? "";
+                                    var requestId = q.Id;
                                     seen.Add(requestId);
                                     
-                                    if (q.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString()))
+                                    if (!string.IsNullOrEmpty(q.SessionId))
                                     {
-                                        var sessionID = sid.GetString()!;
-                                        JsonElement? questions = null;
-                                        if (q.TryGetProperty("questions", out var qProp))
-                                        {
-                                            questions = qProp.Clone();
-                                        }
-                                        var blocking = q.TryGetProperty("blocking", out var blockProp) && blockProp.GetBoolean();
-                                        var tool = q.TryGetProperty("tool", out var toolProp) ? toolProp.GetString() : "";
+                                        var sessionID = q.SessionId;
+                                        var blocking = q.Blocking ?? false;
+                                        var tool = q.Tool ?? "";
 
                                         PostMessage(JsonSerializer.Serialize(new
                                         {
@@ -1039,7 +1019,7 @@ namespace KiloVisualStudioExtension
                                             {
                                                 id = requestId,
                                                 sessionID,
-                                                questions,
+                                                questions = JsonSerializer.SerializeToElement(q.Questions ?? new object[0]),
                                                 blocking,
                                                 tool
                                             }
@@ -1048,7 +1028,6 @@ namespace KiloVisualStudioExtension
                                 }
                             }
                         }
-                        responseDoc?.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -1060,19 +1039,21 @@ namespace KiloVisualStudioExtension
                 {
                     try
                     {
-                        var responseDoc = await httpClient.GetJsonAsync($"/suggestion?directory={Uri.EscapeDataString(dir)}");
-                        if (responseDoc != null && responseDoc.RootElement.ValueKind == JsonValueKind.Array)
+                        var suggestions = await kiotaClient.Suggestion.GetAsync(q =>
                         {
-                            foreach (var suggestion in responseDoc.RootElement.EnumerateArray())
+                            q.QueryParameters.Directory = dir;
+                        });
+                        if (suggestions != null)
+                        {
+                            foreach (var suggestion in suggestions)
                             {
-                                if (suggestion.TryGetProperty("id", out var id) && !seen.Contains(id.GetString() ?? ""))
+                                if (!string.IsNullOrEmpty(suggestion.Id) && !seen.Contains(suggestion.Id))
                                 {
-                                    seen.Add(id.GetString() ?? "");
-                                    PostMessage(JsonSerializer.Serialize(new { type = "suggestionRequest", suggestion }));
+                                    seen.Add(suggestion.Id);
+                                    PostMessage(JsonSerializer.Serialize(new { type = "suggestionRequest", suggestion = JsonSerializer.SerializeToElement(suggestion) }));
                                 }
                             }
                         }
-                        responseDoc?.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -1084,18 +1065,18 @@ namespace KiloVisualStudioExtension
 
         private async Task<bool> CreateSessionInternalAsync(string dir)
         {
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null)
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: cannot create session - no HTTP client");
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: cannot create session - no Kiota client");
                 return false;
             }
             try
             {
-                var responseDoc = await httpClient.PostJsonAsync("/session", new { directory = dir });
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("id", out var id))
+                var response = await kiotaClient.Session.PostAsSessionPostResponseAsync(new Generated.Api.Session.SessionPostRequestBody { Directory = dir });
+                if (response != null && !string.IsNullOrEmpty(response.Id))
                 {
-                    var sessionID = id.GetString() ?? "";
+                    var sessionID = response.Id;
                     System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: session created: {sessionID}");
                     
                     _currentSessionID = sessionID;
@@ -1118,13 +1099,9 @@ namespace KiloVisualStudioExtension
                     };
                     _webView.PostMessage(JsonSerializer.Serialize(sessionCreated));
                     
-                    // Focus the session to open it in a tab (matches VS Code's focusSession pattern)
                     FocusSession(sessionID);
-                    
-                    responseDoc?.Dispose();
                     return true;
                 }
-                responseDoc?.Dispose();
                 System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: session creation failed - no ID in response");
                 return false;
             }
@@ -1260,8 +1237,8 @@ namespace KiloVisualStudioExtension
             
             if (string.IsNullOrEmpty(providerID)) return;
             
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null)
             {
                 await SendErrorAsync("Not connected", "Not connected to CLI backend");
                 return;
@@ -1269,11 +1246,10 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync($"/provider/{providerID}/models");
-                if (responseDoc != null && responseDoc.RootElement.TryGetProperty("models", out var models))
+                var response = await kiotaClient.Provider.GetAsProviderGetResponseAsync(q => q.QueryParameters.ProviderID = providerID);
+                if (response != null && response.Models != null)
                 {
-                    PostMessage(JsonSerializer.Serialize(new { type = "customProviderModelsFetched", providerID, models = models.Clone() }));
-                    responseDoc.Dispose();
+                    PostMessage(JsonSerializer.Serialize(new { type = "customProviderModelsFetched", providerID, models = JsonSerializer.SerializeToElement(response.Models) }));
                 }
             }
             catch (Exception ex)
@@ -1295,8 +1271,8 @@ namespace KiloVisualStudioExtension
             
             if (string.IsNullOrEmpty(location)) return;
             
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null)
             {
                 await SendErrorAsync("Not connected", "Not connected to CLI backend");
                 return;
@@ -1304,7 +1280,7 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                await httpClient.PostJsonAsync($"/skill/remove", new { location });
+                await kiotaClient.Skill.PostAsync(new Generated.Skill.SkillPostRequestBody { Location = location });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: skill removed: {location}");
                 
                 PostMessage(JsonSerializer.Serialize(new { type = "skillRemoved", location }));
@@ -1328,8 +1304,8 @@ namespace KiloVisualStudioExtension
             
             if (string.IsNullOrEmpty(name)) return;
             
-            var httpClient = _connectionService.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _connectionService.GetKiloClient();
+            if (kiotaClient == null)
             {
                 await SendErrorAsync("Not connected", "Not connected to CLI backend");
                 return;
@@ -1337,7 +1313,7 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                await httpClient.PostJsonAsync($"/agent/remove", new { name });
+                await kiotaClient.Agent.PostAsync(new Generated.Agent.AgentPostRequestBody { Name = name });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: agent removed: {name}");
                 
                 PostMessage(JsonSerializer.Serialize(new { type = "agentRemoved", name }));

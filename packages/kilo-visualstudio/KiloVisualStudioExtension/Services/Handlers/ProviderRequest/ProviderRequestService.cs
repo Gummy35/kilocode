@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.Generated;
 
 namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
 {
@@ -30,8 +32,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestProvidersAsync()
         {
-            var httpClient = _provider.GetHttpClient();
-            if (httpClient == null)
+            var kiotaClient = _provider.GetKiloClient();
+            if (kiotaClient == null)
             {
                 await SendEmptyProvidersAsync();
                 return;
@@ -39,49 +41,33 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
 
             try
             {
-                var responseDoc = await httpClient.GetJsonAsync("/provider");
+                var response = await kiotaClient.Provider.GetAsProviderGetResponseAsync();
                 
-                // Convert providers array to Record<string, Provider> format
                 var providersDict = new Dictionary<string, object>();
                 var connectedList = new List<string>();
                 var defaultsDict = new Dictionary<string, string>();
                 
-                if (responseDoc != null)
+                if (response != null)
                 {
-                    var root = responseDoc.RootElement.Clone();
-                    responseDoc.Dispose();
-                    
-                    // Parse "all" array and convert to dictionary
-                    if (root.TryGetProperty("all", out var all) && all.ValueKind == JsonValueKind.Array)
+                    if (response.All != null)
                     {
-                        foreach (var provider in all.EnumerateArray())
+                        foreach (var provider in response.All)
                         {
-                            if (provider.TryGetProperty("id", out var id))
+                            if (provider.Id != null)
                             {
-                                providersDict[id.GetString() ?? ""] = provider.Clone();
+                                providersDict[provider.Id] = JsonSerializer.SerializeToElement(provider);
                             }
                         }
                     }
                     
-                    // Parse "connected" array
-                    if (root.TryGetProperty("connected", out var connected) && connected.ValueKind == JsonValueKind.Array)
+                    if (response.Connected != null)
                     {
-                        foreach (var item in connected.EnumerateArray())
-                        {
-                            if (item.ValueKind == JsonValueKind.String)
-                            {
-                                connectedList.Add(item.GetString() ?? "");
-                            }
-                        }
+                        connectedList.AddRange(response.Connected.Where(s => !string.IsNullOrEmpty(s)));
                     }
                     
-                    // Parse "default" object
-                    if (root.TryGetProperty("default", out var defaults) && defaults.ValueKind == JsonValueKind.Object)
+                    if (response.Default != null)
                     {
-                        foreach (var prop in defaults.EnumerateObject())
-                        {
-                            defaultsDict[prop.Name] = prop.Value.GetString() ?? "";
-                        }
+                        defaultsDict = response.Default.ToDictionary(kvp => kvp.Key, kvp => kvp.Value ?? "");
                     }
                 }
                 

@@ -91,33 +91,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
                 
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                // Check session status before forking - match VS Code's handleForkSession pattern
-                var statusResponse = await httpClient.GetJsonAsync($"/session/status?sessionID={sessionID}");
-                if (statusResponse != null)
-                {
-                    if (statusResponse.RootElement.TryGetProperty(sessionID, out var sessionStatus))
-                    {
-                        if (sessionStatus.TryGetProperty("type", out var typeProp))
-                        {
-                            var status = typeProp.GetString() ?? "idle";
-                            if (status != "idle")
-                            {
-                                await _provider.SendErrorAsync("Session not idle", "Wait for the session to finish before forking it.");
-                                return;
-                            }
-                        }
-                    }
-                }
-                statusResponse?.Dispose();
-
-                await httpClient.PostJsonAsync("/session/fork", new { sessionID, messageID });
+                await kiotaClient.Session[sessionID].Fork.PostAsync(new Generated.Api.Session.Item.Fork.ForkPostRequestBody { MessageId = messageID });
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: session forked: {sessionID}");
                 
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, forkedFromID = sessionID }));
@@ -145,14 +126,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/session/compact", payload.Value);
+                var compact = JsonSerializer.Deserialize<Generated.Api.Session.Item.Compact.CompactPostRequestBody>(payload.Value.GetRawText());
+                if (compact != null)
+                {
+                    var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+                    if (!string.IsNullOrEmpty(sessionID))
+                    {
+                        await kiotaClient.Session[sessionID].Compact.PostAsync(compact);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -176,14 +165,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/prompt/enhance", payload.Value);
+                var enhance = JsonSerializer.Deserialize<Generated.Models.PromptEnhance>(payload.Value.GetRawText());
+                if (enhance != null)
+                {
+                    await kiotaClient.EnhancePrompt.PostAsync(enhance);
+                }
             }
             catch (Exception ex)
             {
@@ -207,14 +200,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
 
             try
             {
-                var httpClient = _provider.GetHttpClient();
-                if (httpClient == null || !httpClient.IsConnected())
+                var kiotaClient = _provider.GetKiloClient();
+                if (kiotaClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                await httpClient.PostAsync("/import/send", payload.Value);
+                var import = JsonSerializer.Deserialize<Generated.Models.ImportSend>(payload.Value.GetRawText());
+                if (import != null)
+                {
+                    await kiotaClient.Import.Send.PostAsync(import);
+                }
             }
             catch (Exception ex)
             {
