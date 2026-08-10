@@ -7,12 +7,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
-using KiloVisualStudioExtension.Generated;
 using KiloVisualStudioExtension.ApiClient;
-using Microsoft.Kiota.Abstractions;
-using Microsoft.Kiota.Abstractions.Authentication;
-using Microsoft.Kiota.Http.HttpClientLibrary;
-using Microsoft.Kiota.Serialization.Json;
+using ViewedRequest = KiloVisualStudioExtension.ApiClient.Body29;
+using ViewerModel = KiloVisualStudioExtension.ApiClient.Viewer;
+
 
 internal class ReferenceEqualityComparer : IEqualityComparer<Func<string[]>>
 {
@@ -141,14 +139,7 @@ namespace KiloVisualStudioExtension
         private SseClient? _sseClient;
         
         /// <summary>
-        /// Generated Kiota SDK client for REST API calls.
-        /// </summary>
-        private KiloClient? _kiotaClient;
-        
-        /// <summary>
-        /// Request adapter for the Kiota client (used for authentication).
-        /// </summary>
-        private IRequestAdapter? _requestAdapter;
+
         
         /// <summary>
         /// Generated NSwag API client for REST API calls (alternative to Kiota).
@@ -410,10 +401,6 @@ namespace KiloVisualStudioExtension
                 var password = _backendManager.Password ?? "default-password";
                 _password = password;
 
-                System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating Kiota SDK client");
-                _requestAdapter = CreateRequestAdapter(_baseUrl, password);
-                _kiotaClient = new KiloClient(_requestAdapter);
-
                 System.Diagnostics.Debug.WriteLine("[Kilo] ConnectionService: creating NSwag API client");
                 _nswagClient = new KiloApiClient(_baseUrl, password);
 
@@ -454,25 +441,6 @@ namespace KiloVisualStudioExtension
         }
 
         /// <summary>
-        /// Creates a Kiota request adapter with Basic Authentication.
-        /// </summary>
-        /// <param name="baseUrl">The base URL of the backend.</param>
-        /// <param name="password">The password for authentication.</param>
-        /// <returns>A configured IRequestAdapter instance.</returns>
-        private IRequestAdapter CreateRequestAdapter(string baseUrl, string password)
-        {
-            var authenticationProvider = new AnonymousAuthenticationProvider();
-            var httpClient = new HttpClient();
-            
-            // Set Basic Auth header for all requests
-            var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"kilo:{password}"));
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
-            
-            var requestAdapter = new HttpClientRequestAdapter(authenticationProvider, httpClient: httpClient);
-            requestAdapter.BaseUrl = baseUrl;
-            
-            return requestAdapter;
-        }
 
         /// <summary>
         /// Starts the health polling timer that checks backend connectivity every 10 seconds.
@@ -536,11 +504,11 @@ namespace KiloVisualStudioExtension
         /// <returns>True if the backend is healthy, false otherwise.</returns>
         private async Task<bool> CheckHealthAsync()
         {
-            if (_kiotaClient == null) return false;
+            if (_nswagClient == null) return false;
 
             try
             {
-                await _kiotaClient.Global.Health.GetAsync(cancellationToken: default);
+                await _nswagClient.Global_healthAsync();
                 return true;
             }
             catch
@@ -600,34 +568,6 @@ namespace KiloVisualStudioExtension
         }
 
         /// <summary>
-        /// Gets the generated Kiota SDK client for making REST API calls.
-        /// </summary>
-        /// <returns>The KiloClient instance.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if not connected.</exception>
-        public KiloClient? GetKiloClient()
-        {
-            if (_state != ConnectionState.Connected)
-            {
-                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
-            }
-            return _kiotaClient;
-        }
-
-        /// <summary>
-        /// Gets the request adapter for the Kiota client.
-        /// </summary>
-        /// <returns>The IRequestAdapter instance.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if not connected.</exception>
-        public IRequestAdapter? GetRequestAdapter()
-        {
-            if (_state != ConnectionState.Connected)
-            {
-                throw new InvalidOperationException("Not connected. Call ConnectAsync() first.");
-            }
-            return _requestAdapter;
-        }
-
-        /// <summary>
         /// Gets the NSwag API client for making REST API calls.
         /// </summary>
         /// <returns>The KiloApiClient instance.</returns>
@@ -672,11 +612,11 @@ namespace KiloVisualStudioExtension
         /// <summary>
         /// Flushes viewed session data to the backend.
         /// Matches VS Code's flushViewed functionality.
-        /// Uses the generated Kiota client to call session.viewed endpoint.
+        /// Uses the NSwag client to call session.viewed endpoint.
         /// </summary>
         public async Task FlushViewedAsync()
         {
-            if (_state != ConnectionState.Connected || _kiotaClient == null)
+            if (_state != ConnectionState.Connected || _nswagClient == null)
                 return;
 
             List<string> visibleList;
@@ -684,7 +624,6 @@ namespace KiloVisualStudioExtension
 
             lock (_visibilityLock)
             {
-                // Collect all visible session IDs across all directories
                 var visibleSessions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var attachedSessions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 
@@ -693,7 +632,6 @@ namespace KiloVisualStudioExtension
                     foreach (var sessionId in kvp.Value)
                     {
                         visibleSessions.Add(sessionId);
-                        // Visible sessions are also attached (matches VS Code behavior)
                         attachedSessions.Add(sessionId);
                     }
                 }
@@ -706,7 +644,6 @@ namespace KiloVisualStudioExtension
                     }
                 }
 
-                // Only send if there are sessions to report
                 if (visibleSessions.Count == 0 && attachedSessions.Count == 0)
                     return;
 
@@ -714,11 +651,11 @@ namespace KiloVisualStudioExtension
                 attachedList = attachedSessions.ToList();
             }
 
-            var body = new global::KiloVisualStudioExtension.Generated.Session.Viewed.ViewedPostRequestBody
+            var body = new ViewedRequest
             {
                 Visible = visibleList,
                 Attached = attachedList,
-                Viewer = new global::KiloVisualStudioExtension.Generated.Session.Viewed.ViewedPostRequestBody_viewer
+                Viewer = new ViewerModel
                 {
                     Id = _viewerId,
                     Active = _active
@@ -727,7 +664,7 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                await _kiotaClient.Session.Viewed.PostAsync(body).ConfigureAwait(false);
+                await _nswagClient.Session_viewedAsync(System.Environment.CurrentDirectory, "", body).ConfigureAwait(false);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] FlushViewed: sent visible={visibleList.Count}, attached={attachedList.Count}");
             }
             catch (Exception ex)
@@ -936,7 +873,7 @@ namespace KiloVisualStudioExtension
 
         /// <summary>
         /// Disconnects from the backend and cleans up all resources.
-        /// Stops health polling, disconnects SSE, and cleans up Kiota client.
+        /// Stops health polling, disconnects SSE, and cleans up NSwag client.
         /// </summary>
         public void Disconnect()
         {
@@ -944,8 +881,7 @@ namespace KiloVisualStudioExtension
             StopCheckinTimer();
             _sseClient?.Disconnect();
             _sseClient = null;
-            _kiotaClient = null;
-            _requestAdapter = null;
+            _nswagClient = null;
             SetState(ConnectionState.Disconnected);
         }
 

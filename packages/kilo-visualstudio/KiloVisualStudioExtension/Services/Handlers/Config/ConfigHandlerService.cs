@@ -204,8 +204,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
             
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null) return;
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null) return;
                 
                 // Config model doesn't have a Path property - use default config path
                 string filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "kilo", "config.json");

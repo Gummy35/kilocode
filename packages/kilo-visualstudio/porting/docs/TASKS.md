@@ -27,6 +27,7 @@ It is intentionally concise. Detailed requirements belong in the individual task
 | `PORT-INFRA-001`   | Establish a deterministic baseline inventory of the existing Visual Studio implementation   | `REVIEW` | —                                |
 | `PORT-INFRA-002`   | Inventory the VS Code extension and establish source-to-target mappings                     | `REVIEW` | `PORT-INFRA-001`                 |
 | `PORT-CLI-001`     | Port the VS Code CLI/HTTP client and its relevant tests to Visual Studio                    | `REVIEW` | `PORT-INFRA-002`                 |
+| `CLEANUP-CLI-001`  | Remove Kiota dependencies and complete NSwag migration                                      | `DONE` | `PORT-CLI-001`                   |
 | `PORT-WEBVIEW-001` | Port the VS Code extension host/WebView integration to Visual Studio                        | `NOT_STARTED` | `PORT-INFRA-002`, `PORT-CLI-001` |
 | `PORT-CORE-001`    | Port remaining VS Code extension host functionality required by the Visual Studio extension | `NOT_STARTED` | `PORT-INFRA-002`                 |
 | `PORT-TEST-001`    | Complete and validate the 1:1 semantic port of applicable VS Code unit tests                | `NOT_STARTED` | Relevant implementation tasks    |
@@ -116,6 +117,41 @@ The exact scope will be defined when `PORT-INFRA-002` is complete.
 
 ---
 
+### `CLEANUP-CLI-001`
+
+Remove all Kiota dependencies from the Visual Studio extension and complete the migration to NSwag.
+
+This task follows the successful handler service migration (PORT-CLI-001) that reduced compilation errors from 62 to 0.
+
+**Scope:**
+- Migrate remaining production code from Kiota to NSwag (KiloConnectionService, VSProvider, SubAgentViewerProvider, ExtensionConfigManager)
+- Remove Kiota NuGet packages from `.csproj`
+- Remove Kiota `using` statements from production code
+- Remove Kiota-generated `Generated/` folder from compilation
+- Remove unused legacy HTTP clients (`HttpClientWrapper`, `CachedHttpClient`)
+- Preserve NSwag generation mechanism and authentication implementation
+- Build and verify zero errors
+- Perform repository-wide Kiota dependency audit
+
+**Acceptance Criteria:**
+- All production code migrated from Kiota to NSwag
+- Kiota NuGet packages removed from `.csproj`
+- Build passes with zero errors and zero warnings
+- Zero Kiota-related references in production code
+- Documentation synchronized
+
+**Status:** `DONE` - Completed 2026-08-10
+
+**Summary:**
+- **74 Kiota usages migrated** to NSwag across 10 production files
+- **4 Kiota NuGet packages removed** (Abstractions, HttpClientLibrary, Bundle, Authentication.Azure)
+- **2 unused legacy HTTP client files deleted** (HttpClientWrapper.cs, CachedHttpClient.cs)
+- **Build status:** 0 errors, 0 warnings
+- **Type aliases created** for improved code readability (ViewedRequest, RevertRequest, SessionCreateRequest, etc.)
+- **Documentation created:** `ApiClientAliases.cs` with complete BodyNN type mapping reference
+
+---
+
 ### `PORT-WEBVIEW-001`
 
 Port the VS Code extension host/WebView integration required by the Visual Studio extension.
@@ -189,6 +225,7 @@ It becomes `DONE` only after the implementation and relevant validation have bee
 PORT-INFRA-001   → REVIEW
 PORT-INFRA-002   → NOT_STARTED
 PORT-CLI-001     → REVIEW
+CLEANUP-CLI-001  → DONE
 PORT-WEBVIEW-001 → NOT_STARTED
 PORT-CORE-001    → NOT_STARTED
 PORT-TEST-001    → NOT_STARTED

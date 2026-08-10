@@ -2,8 +2,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using KiloVisualStudioExtension.Generated;
-using KiloVisualStudioExtension.Generated.Models;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension
 {
@@ -23,7 +22,7 @@ namespace KiloVisualStudioExtension
 
         public bool IsInitialized => _initialized;
 
-        public async Task InitializeAsync(KiloClient? kiotaClient)
+        public async Task InitializeAsync(KiloApiClient? nswagClient)
         {
             if (_initialized) return;
 
@@ -32,15 +31,15 @@ namespace KiloVisualStudioExtension
                 if (_initialized) return;
             }
 
-            var client = kiotaClient ?? throw new InvalidOperationException("No Kiota client provided");
+            var client = nswagClient ?? throw new InvalidOperationException("No NSwag client provided");
 
             try
             {
-                var configTask = client.Config.GetAsync();
-                var providersTask = client.Provider.GetAsProviderGetResponseAsync();
-                var agentsTask = client.Experimental.Tool.Ids.GetAsync();
-                var mcpTask = client.Mcp.GetAsMcpGetResponseAsync();
-                var sessionsTask = client.Session.GetAsync();
+                var configTask = client.Global_config_getAsync();
+                var providersTask = client.Provider_listAsync(System.Environment.CurrentDirectory, "");
+                var agentsTask = client.App_agentsAsync(System.Environment.CurrentDirectory, "");
+                var mcpTask = client.Mcp_statusAsync(System.Environment.CurrentDirectory, "");
+                var sessionsTask = client.Session_listAsync(System.Environment.CurrentDirectory, "", null, "", null, null, null, null);
 
                 await Task.WhenAll(configTask, providersTask, agentsTask, mcpTask, sessionsTask);
 
@@ -48,7 +47,7 @@ namespace KiloVisualStudioExtension
                 {
                     _config = JsonSerializer.SerializeToElement(configTask.Result);
                     _providers = JsonSerializer.SerializeToElement(providersTask.Result);
-                    _agents = agentsTask.Result?.ToArray();
+                    _agents = agentsTask.Result?.Select(a => a.Name ?? "").ToArray();
                     _mcpStatus = JsonSerializer.SerializeToElement(mcpTask.Result);
                     _sessions = sessionsTask.Result?.Select(s => JsonSerializer.SerializeToElement(s)).ToArray();
                     _initialized = true;

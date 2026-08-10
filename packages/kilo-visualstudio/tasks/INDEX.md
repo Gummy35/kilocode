@@ -3,6 +3,8 @@
 ## Status
 
 - `PORT-INFRA-001` — READY
+- `PORT-CLI-001` — READY (implementation complete, awaiting review)
+- `CLEANUP-CLI-001` — DONE (Kiota removal complete, 0 errors, 0 warnings)
 
 ## Task rules
 

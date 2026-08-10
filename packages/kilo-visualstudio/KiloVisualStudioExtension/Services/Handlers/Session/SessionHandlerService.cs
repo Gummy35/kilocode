@@ -4,6 +4,9 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
+using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
+using SessionUpdateRequest = KiloVisualStudioExtension.ApiClient.Body19;
+using RevertRequest = KiloVisualStudioExtension.ApiClient.Body27;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Session
 {
@@ -99,7 +102,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             }
             try
             {
-                var createBody = new Body18 { Title = "New Chat" };
+                var createBody = new SessionCreateRequest { Title = "New Chat" };
                 var response = await nswagClient.Session_createAsync(dir, "", createBody);
                 if (response != null && !string.IsNullOrEmpty(response.Id))
                 {
@@ -184,15 +187,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             if (payload == null) return;
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
                 return;
             }
             try
             {
-                await kiotaClient.Session[sessionID].DeleteAsync();
+                await nswagClient.Session_deleteAsync(sessionID, System.Environment.CurrentDirectory, "");
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session deleted");
                 
                 if (_provider.GetCurrentSessionID() == sessionID)
@@ -245,7 +248,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             }
             try
             {
-                var updateBody = new Body19 { Title = title };
+                var updateBody = new SessionUpdateRequest { Title = title };
                 await nswagClient.Session_updateAsync(sessionID, System.Environment.CurrentDirectory, "", updateBody);
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session renamed");
                 
@@ -434,11 +437,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             var messageID = payload.Value.TryGetProperty("messageID", out var mid) ? mid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null) return;
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null) return;
             try
             {
-                await kiotaClient.Session[sessionID].Message[messageID].DeleteAsync();
+                await nswagClient.Session_deleteMessageAsync(sessionID, messageID, System.Environment.CurrentDirectory, "");
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: message deleted");
             }
             catch (Exception ex)
@@ -453,8 +456,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// </summary>
         private async Task FetchAndSendSessionModelUsageAsync(string sessionID, string requestID)
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
                 return;
@@ -462,7 +465,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var usage = await kiotaClient.Session[sessionID].ModelUsage.GetAsync();
+                var usage = await nswagClient.Kilocode_sessionModelUsageAsync(sessionID, System.Environment.CurrentDirectory, "");
                 if (usage != null)
                 {
                     var sessionIDs = new[] { sessionID };
@@ -491,8 +494,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
         /// </summary>
         private async Task LoadMemoryAsync(string? sessionID)
         {
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "memoryLoaded", sessionID, error = "Not connected to CLI backend" }));
                 return;
@@ -500,9 +503,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var memory = await kiotaClient.Memory.Status.GetAsync(q => {
-                    q.QueryParameters.Directory = System.Environment.CurrentDirectory;
-                });
+                var memory = await nswagClient.Memory_statusAsync(System.Environment.CurrentDirectory, "");
                 if (memory != null)
                 {
                     var message = new { type = "memoryLoaded", sessionID, status = JsonSerializer.SerializeToElement(memory) };
@@ -575,8 +576,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -584,7 +585,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var session = await kiotaClient.Session[sessionID].GetAsync();
+                var session = await nswagClient.Session_getAsync(sessionID, System.Environment.CurrentDirectory, "");
                 if (session != null)
                 {
                     var message = new { type = "sessionSynced", session = JsonSerializer.SerializeToElement(session) };
@@ -611,8 +612,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionModelUsageLoaded", sessionID, requestID }));
                 return;
@@ -620,7 +621,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var usage = await kiotaClient.Session[sessionID].ModelUsage.GetAsync();
+                var usage = await nswagClient.Kilocode_sessionModelUsageAsync(sessionID, System.Environment.CurrentDirectory, "");
                 if (usage != null)
                 {
                     var sessionIDs = new[] { sessionID };
@@ -656,8 +657,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
             
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -665,7 +666,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await kiotaClient.Session[sessionID].Revert.PostAsync(new Generated.Session.Item.Revert.RevertPostRequestBody { MessageID = messageID });
+                var revertBody = new RevertRequest { MessageID = messageID, PartID = null };
+                await nswagClient.Session_revertAsync(sessionID, System.Environment.CurrentDirectory, "", revertBody);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session reverted: {sessionID}");
                 
                 var message = new { type = "sessionReverted", sessionID, messageID };
@@ -690,8 +692,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -699,7 +701,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await kiotaClient.Session[sessionID].Unrevert.PostAsync();
+                await nswagClient.Session_unrevertAsync(sessionID, System.Environment.CurrentDirectory, "");
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session unreverted: {sessionID}");
                 
                 var message = new { type = "sessionUnreverted", sessionID };
@@ -726,8 +728,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             if (string.IsNullOrEmpty(sessionID)) return;
             
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 _provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
                 return;
@@ -735,8 +737,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                // Compact endpoint doesn't require a request body
-                await kiotaClient.Api.Session[sessionID].Compact.PostAsync();
+                await nswagClient.V2_session_compactAsync(sessionID);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session compacted: {sessionID}");
                 
                 var message = new { type = "sessionCompacted", sessionID };

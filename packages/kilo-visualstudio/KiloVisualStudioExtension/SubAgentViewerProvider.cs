@@ -192,16 +192,16 @@ namespace KiloVisualStudioExtension
         /// <param name="provider">The provider to register the session with.</param>
         private async Task LoadSessionMetadataAsync(string sessionID, VSProvider provider)
         {
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _connectionService.GetNswagClient();
+            if (nswagClient == null)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: cannot load metadata - no Kiota client");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: cannot load metadata - no NSwag client");
                 return;
             }
 
             try
             {
-                var sessions = await kiotaClient.Session.GetAsync();
+                var sessions = await nswagClient.Session_listAsync(System.Environment.CurrentDirectory, "", null, "", null, null, null, null);
                 if (sessions != null)
                 {
                     var session = sessions.FirstOrDefault(s => s.Id == sessionID);

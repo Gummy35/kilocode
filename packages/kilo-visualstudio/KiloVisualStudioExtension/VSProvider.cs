@@ -25,8 +25,8 @@ using KiloVisualStudioExtension.Services.Handlers.SessionControl;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using KiloVisualStudioExtension.Services;
-using KiloVisualStudioExtension.Generated;
 using KiloVisualStudioExtension.ApiClient;
+using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
 
 namespace KiloVisualStudioExtension
 {
@@ -125,11 +125,6 @@ namespace KiloVisualStudioExtension
             _webView.PostMessage(message);
         }
 
-        internal KiloClient? GetKiloClient()
-        {
-            return _connectionService.GetKiloClient();
-        }
-
         internal KiloApiClient? GetNswagClient()
         {
             return _connectionService.GetNswagClient();
@@ -137,8 +132,8 @@ namespace KiloVisualStudioExtension
 
         internal bool IsConnected()
         {
-            var kiotaClient = _connectionService.GetKiloClient();
-            return kiotaClient != null;
+            var nswagClient = _connectionService.GetNswagClient();
+            return nswagClient != null;
         }
 
         internal async Task SendErrorAsync(string title, string message)
@@ -314,8 +309,8 @@ namespace KiloVisualStudioExtension
         {
             _promptRecoveryQueued = true;
             if (!_isWebviewReady) return;
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null) return;
+            var nswagClient = _connectionService.GetNswagClient();
+            if (nswagClient == null) return;
             if (_promptRecovery != null) return;
 
             _promptRecovery = FlushPendingPromptsAsync().ContinueWith(_ =>
@@ -767,10 +762,10 @@ namespace KiloVisualStudioExtension
             {
                 try
                 {
-                    var kiotaClient = _connectionService.GetKiloClient();
-                    if (kiotaClient != null)
+                    var nswagClient = _connectionService.GetNswagClient();
+                    if (nswagClient != null)
                     {
-                        var profile = await kiotaClient.Kilo.Profile.GetAsync();
+                        var profile = await nswagClient.Kilo_profileAsync(System.Environment.CurrentDirectory, "");
                         var profileData = profile != null ? JsonSerializer.SerializeToElement(profile) : (JsonElement?)null;
                         
                         var profileMessage = new { type = "profileData", data = profileData };
@@ -813,12 +808,12 @@ namespace KiloVisualStudioExtension
         {
             if (string.IsNullOrEmpty(_currentSessionID)) return;
 
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null) return;
+            var nswagClient = _connectionService.GetNswagClient();
+            if (nswagClient == null) return;
 
             try
             {
-                var sessions = await kiotaClient.Session.GetAsync();
+                var sessions = await nswagClient.Session_listAsync(System.Environment.CurrentDirectory, "", null, "", null, null, null, null);
                 if (sessions != null)
                 {
                     var session = sessions.FirstOrDefault(s => s.Id == _currentSessionID);
@@ -837,12 +832,12 @@ namespace KiloVisualStudioExtension
 
         private async Task SeedSessionStatusMapAsync(bool reconcile)
         {
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null) return;
+            var nswagClient = _connectionService.GetNswagClient();
+            if (nswagClient == null) return;
 
             try
             {
-                var sessions = await kiotaClient.Session.GetAsync();
+                var sessions = await nswagClient.Session_listAsync(System.Environment.CurrentDirectory, "", null, "", null, null, null, null);
                 if (sessions != null)
                 {
                     foreach (var session in sessions)
@@ -925,8 +920,8 @@ namespace KiloVisualStudioExtension
         {
             while (_promptRecoveryQueued && _isWebviewReady)
             {
-                var kiotaClient = _connectionService.GetKiloClient();
-                if (kiotaClient == null) return;
+                var nswagClient = _connectionService.GetNswagClient();
+                if (nswagClient == null) return;
                 
                 _promptRecoveryQueued = false;
                 
@@ -937,10 +932,7 @@ namespace KiloVisualStudioExtension
                 {
                     try
                     {
-                        var permissions = await kiotaClient.Permission.GetAsync(q => 
-                        {
-                            q.QueryParameters.Directory = dir;
-                        });
+                        var permissions = await nswagClient.Permission_listAsync(dir, "");
                         if (permissions != null)
                         {
                             foreach (var perm in permissions)
@@ -989,10 +981,7 @@ namespace KiloVisualStudioExtension
                 {
                     try
                     {
-                        var questions = await kiotaClient.Question.GetAsync(q =>
-                        {
-                            q.QueryParameters.Directory = dir;
-                        });
+                        var questions = await nswagClient.Question_listAsync(dir, "");
                         if (questions != null)
                         {
                             foreach (var q in questions)
@@ -1005,7 +994,7 @@ namespace KiloVisualStudioExtension
                                     if (!string.IsNullOrEmpty(q.SessionID))
                                     {
                                         var sessionID = q.SessionID;
-                                        var blocking = q.Blocking ?? false;
+                                        var blocking = q.Blocking;
                                         var tool = q.Tool != null ? JsonSerializer.SerializeToElement(q.Tool) : (JsonElement?)null;
 
                                         PostMessage(JsonSerializer.Serialize(new
@@ -1035,10 +1024,7 @@ namespace KiloVisualStudioExtension
                 {
                     try
                     {
-                        var suggestions = await kiotaClient.Suggestion.GetAsync(q =>
-                        {
-                            q.QueryParameters.Directory = dir;
-                        });
+                        var suggestions = await nswagClient.Suggestion_listAsync(dir, "");
                         if (suggestions != null)
                         {
                             foreach (var suggestion in suggestions)
@@ -1061,16 +1047,16 @@ namespace KiloVisualStudioExtension
 
         private async Task<bool> CreateSessionInternalAsync(string dir)
         {
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _connectionService.GetNswagClient();
+            if (nswagClient == null)
             {
-                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: cannot create session - no Kiota client");
+                System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: cannot create session - no NSwag client");
                 return false;
             }
             try
             {
-                var body = new Generated.Session.SessionPostRequestBody();
-                var response = await kiotaClient.Session.PostAsync(body, r => r.QueryParameters.Directory = dir);
+                var body = new SessionCreateRequest();
+                var response = await nswagClient.Session_createAsync(dir, "", body);
                 if (response != null && !string.IsNullOrEmpty(response.Id))
                 {
                     var sessionID = response.Id;
@@ -1234,8 +1220,8 @@ namespace KiloVisualStudioExtension
             
             if (string.IsNullOrEmpty(providerID)) return;
             
-            var kiotaClient = _connectionService.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _connectionService.GetNswagClient();
+            if (nswagClient == null)
             {
                 await SendErrorAsync("Not connected", "Not connected to CLI backend");
                 return;
@@ -1243,7 +1229,7 @@ namespace KiloVisualStudioExtension
 
             try
             {
-                var response = await kiotaClient.Provider.GetAsProviderGetResponseAsync();
+                var response = await nswagClient.Provider_listAsync(System.Environment.CurrentDirectory, "");
                 if (response?.All != null)
                 {
                     var provider = response.All.FirstOrDefault(p => p.Id == providerID);
