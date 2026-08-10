@@ -1,9 +1,10 @@
-# PORT-CLI-001 — Directory Tracking Mapping Plan
+# PORT-CLI-001 — Directory Tracking Mapping Plan (Revised)
 
 **Task:** PORT-CLI-001  
 **Mode:** Plan  
 **Date:** 2026-08-10  
-**Model:** Qwen3.5-122B
+**Model:** Qwen3.5-122B  
+**Status:** Revised per feedback — directoryProviders in scope, locking strategy corrected
 
 ---
 
@@ -274,9 +275,9 @@ public string[] GetKnownDirectories()
 }
 ```
 
-#### 4.1.3 Add Directory Provider Registration
+#### 4.1.3 Add Directory Provider Registration (In Scope for Parity)
 
-**Required for Agent Manager parity:**
+**Required for VS Code parity — the mechanism must be ported even if no current Visual Studio consumer exists:**
 
 ```csharp
 private readonly HashSet<Func<string[]>> _directoryProviders = new();
@@ -297,19 +298,33 @@ public Func<bool> RegisterDirectoryProvider(Func<string[]> provider)
 }
 ```
 
-Update `GetKnownDirectories()` to include provider directories:
+**Critical: Do NOT invoke provider callbacks while holding the lock.** VS Code does not hold any lock during provider invocation. The correct synchronization strategy:
 
 ```csharp
 public string[] GetKnownDirectories()
 {
+    // Step 1: Snapshot internal state and provider collection under lock
+    string? rootDir;
+    string? currentDir;
+    Func<string[]>[] providersSnapshot;
+    
     lock (_visibilityLock)
     {
-        var dirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (!string.IsNullOrEmpty(_rootDirectory))
-            dirs.Add(_rootDirectory);
-        if (!string.IsNullOrEmpty(_currentDirectory))
-            dirs.Add(_currentDirectory);
-        foreach (var provider in _directoryProviders)
+        rootDir = _rootDirectory;
+        currentDir = _currentDirectory;
+        providersSnapshot = _directoryProviders.ToArray();
+    }
+    
+    // Step 2: Invoke providers outside the lock (may throw, may be slow)
+    var dirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    if (!string.IsNullOrEmpty(rootDir))
+        dirs.Add(rootDir);
+    if (!string.IsNullOrEmpty(currentDir))
+        dirs.Add(currentDir);
+    
+    foreach (var provider in providersSnapshot)
+    {
+        try
         {
             foreach (var dir in provider())
             {
@@ -317,10 +332,23 @@ public string[] GetKnownDirectories()
                     dirs.Add(dir);
             }
         }
-        return dirs.ToArray();
+        catch
+        {
+            // VS Code does not catch provider exceptions — they propagate.
+            // For safety in C#, log but continue with other providers.
+            System.Diagnostics.Debug.WriteLine($"[Kilo] Directory provider threw: {Exception}");
+        }
     }
+    
+    return dirs.ToArray();
 }
 ```
+
+**Rationale for snapshot pattern:**
+- VS Code iterates `this.directoryProviders` directly without any lock (TypeScript is single-threaded)
+- Holding a lock while invoking external callbacks risks deadlocks or reentrancy issues
+- Snapshotting the provider collection under lock ensures thread-safe iteration
+- Provider exceptions are logged but do not corrupt the result (defensive C# choice; VS Code would propagate)
 
 ### 4.2 Useful Robustness/Performance Behavior
 
@@ -339,15 +367,27 @@ private string NormalizePath(string path)
 
 **Decision:** Defer unless a specific use case emerges in Visual Studio.
 
-### 4.3 Unrelated VS Code Behavior (Out of Scope)
+### 4.3 Existing `_knownDirectories` Field Analysis
 
-The following VS Code features are **not required** for this port:
+**Current state:** The `_knownDirectories` HashSet is defined but **never called** anywhere in the Visual Studio extension source code.
 
-1. **`sessionDirectories` Map in `KiloProvider`**: This is VS Code-specific session tracking that doesn't have a direct equivalent in the current Visual Studio architecture. The Visual Studio extension uses a different session management approach.
+**Decision:** The field is unused and can be safely replaced with the VS Code model (`_rootDirectory` + `_currentDirectory` + `_directoryProviders`). No compatibility transition is needed because no existing code depends on the accumulating-set behavior.
 
-2. **Permission/Question directory tracking**: While methods exist (`RecordPermissionDirectory`, `RecordQuestionDirectory`), they are not actively used in the current Visual Studio implementation and should remain as-is.
+**Verification:** Search confirmed no callers of `TrackDirectory()` or `GetKnownDirectories()` exist in the Visual Studio extension source.
 
-3. **`drainPendingPrompts()`**: Deferred in PORT-CLI-001 implementation (see Section 5.3 of the main plan).
+### 4.3 Out of Scope
+
+The following behaviors are explicitly **out of scope** for this port:
+
+1. **`KiloProvider.sessionDirectories` per-session tracking**: The Visual Studio extension doesn't have an equivalent to `KiloProvider`. Session tracking would need to be designed separately.
+
+2. **Path normalization with `Path.GetFullPath()`**: VS Code uses this to compare directories, but the Visual Studio extension may not need this level of normalization. Add only if a specific use case emerges.
+
+3. **Permission/Question directory pruning**: The `prunePermissionDirectories()` and `pruneQuestionDirectories()` methods exist in VS Code but are not actively used in the current Visual Studio implementation.
+
+4. **NotebookBridge integration**: The Visual Studio extension doesn't currently have notebook support.
+
+5. **Agent Manager worktree directory providers**: If Agent Manager worktree support is added in the future, this would require calling `RegisterDirectoryProvider()` from the Agent Manager provider. **The **API/mechanism** is in scope; implementing the consumer is not.
 
 ---
 
@@ -377,9 +417,16 @@ The following VS Code features are **not required** for this port:
 
 1. **TrackDirectory first-tracked semantics**: Verify `_rootDirectory` is set on first call and not changed on subsequent calls
 2. **TrackDirectory current tracking**: Verify `_currentDirectory` is updated on every call
-3. **GetKnownDirectories deduplication**: Verify root and current are deduplicated when they're the same value
-4. **RegisterDirectoryProvider lifecycle**: Verify provider directories are included in `GetKnownDirectories()` and excluded after unregister
-5. **Thread safety**: Verify concurrent calls to `TrackDirectory()` and `GetKnownDirectories()` don't cause race conditions
+3. **TrackDirectory null/empty handling**: Verify null/empty directories are ignored
+4. **GetKnownDirectories deduplication**: Verify root and current are deduplicated when they're the same value
+5. **RegisterDirectoryProvider lifecycle**: Verify provider directories are included in `GetKnownDirectories()` and excluded after unregister
+6. **Multiple providers**: Verify multiple registered providers all contribute directories
+7. **Provider null/empty results**: Verify providers returning null/empty arrays don't corrupt the result
+8. **Provider exceptions**: Verify a provider that throws doesn't prevent other providers from being evaluated (defensive C# choice)
+9. **Thread safety - concurrent TrackDirectory**: Verify concurrent calls to `TrackDirectory()` don't cause race conditions
+10. **Thread safety - concurrent GetKnownDirectories**: Verify concurrent calls to `GetKnownDirectories()` don't cause race conditions
+11. **Thread safety - mixed operations**: Verify `TrackDirectory()` during `GetKnownDirectories()` invocation is safe
+12. **Provider invoked outside lock**: Verify that provider callbacks can be invoked without holding `_visibilityLock` (design validation, not a runtime test)
 
 ### 6.2 Integration Tests
 
@@ -387,23 +434,53 @@ None required at this stage. Directory tracking is a supporting feature for Note
 
 ---
 
-## 7. Out of Scope
+## 7. In Scope vs Out of Scope Summary
 
-The following behaviors are explicitly **out of scope** for this port:
+### In Scope (Required for Parity)
 
-1. **`KiloProvider.sessionDirectories` per-session tracking**: The Visual Studio extension doesn't have an equivalent to `KiloProvider`. Session tracking would need to be designed separately.
+- `rootDirectory` - first tracked directory
+- `currentDirectory` - most recently tracked directory
+- `directoryProviders` - dynamic directory source mechanism
+- `RegisterDirectoryProvider()` - registration API
+- Provider disposal/unregistration (returned unsubscribe function)
+- `GetKnownDirectories()` - returns union of root, current, and provider directories
+- Exact VS Code behavior: first-tracked semantics, latest-tracked semantics, deduplication
+- Thread-safe snapshot pattern for provider invocation outside lock
 
-2. **Path normalization with `Path.GetFullPath()`**: VS Code uses this to compare directories, but the Visual Studio extension may not need this level of normalization. Add only if a specific use case emerges.
+### Out of Scope (Not Required for This Port)
 
-3. **Permission/Question directory pruning**: The `prunePermissionDirectories()` and `pruneQuestionDirectories()` methods exist in VS Code but are not actively used in the current Visual Studio implementation.
-
-4. **NotebookBridge integration**: The Visual Studio extension doesn't currently have notebook support.
-
-5. **Agent Manager worktree directory providers**: If Agent Manager worktree support is added in the future, this would require implementing `RegisterDirectoryProvider()` and calling it from the Agent Manager provider.
+- `KiloProvider.sessionDirectories` per-session tracking (no VS equivalent)
+- Path normalization with `Path.GetFullPath()` (deferred)
+- Permission/Question directory pruning (not actively used)
+- NotebookBridge integration (not present in VS)
+- Agent Manager worktree directory provider **consumer** (API is in scope; implementing the consumer is not)
+- Implementing new directory providers that don't currently exist in Visual Studio
+- Implementing missing Visual Studio Agent Manager functionality
+- Implementing Notebook support
+- Adding new workspace architecture
+- Redesigning `KiloConnectionService` beyond the directory-tracking changes
 
 ---
 
-## 8. Implementation Checklist
+## 8. Files Requiring Modification
+
+### 8.1 Primary Changes
+
+| File | Changes | Lines Affected |
+|------|---------|----------------|
+| `KiloConnectionService.cs` | Update `TrackDirectory()`, `GetKnownDirectories()`, add `RegisterDirectoryProvider()`, remove `_knownDirectories` | ~188, ~736-760 |
+
+### 8.2 Potential Future Changes (Not Required Now)
+
+| File | When Needed | Purpose |
+|------|-------------|---------|
+| `AgentManagerProvider.cs` | If Agent Manager worktree support is added | Register directory provider for worktree paths |
+| `VSProvider.cs` | If session tracking is implemented | Call `TrackDirectory()` on session creation |
+| `SessionCreatorService.cs` | If session tracking is implemented | Call `TrackDirectory()` on session init |
+
+---
+
+## 9. Implementation Checklist
 
 - [ ] Update `TrackDirectory()` to use `_rootDirectory` / `_currentDirectory` pattern
 - [ ] Update `GetKnownDirectories()` to return union of root, current, and provider directories
@@ -414,27 +491,41 @@ The following behaviors are explicitly **out of scope** for this port:
 
 ---
 
-## 9. Decision Log
+## 10. Decision Log
 
 | Decision | Rationale |
 |----------|-----------|
 | Use `_rootDirectory ??= directory` pattern | Matches VS Code's first-tracked semantics |
 | Always update `_currentDirectory` | Matches VS Code's latest-tracked semantics |
-| Add `RegisterDirectoryProvider()` | Required for future Agent Manager worktree support |
+| Add `RegisterDirectoryProvider()` | Required for VS Code parity (mechanism in scope even without current consumer) |
+| Snapshot provider collection under lock, invoke outside lock | Prevents deadlocks/reentrancy; VS Code has no lock (single-threaded) |
+| Log provider exceptions but continue | Defensive C# choice; VS Code would propagate (no lock to protect) |
 | Defer path normalization | No current use case; can add later if needed |
 | Keep permission/question tracking as-is | Not actively used; no changes required |
+| Remove `_knownDirectories` HashSet | Unused field; no existing callers depend on it |
 
 ---
 
-## 10. Validation Steps
+## 11. Validation Steps
 
 1. **Build verification**: `dotnet build` should succeed with 0 errors
 2. **Code review**: Verify changes match VS Code semantics
 3. **API compatibility**: Ensure `TrackDirectory()` and `GetKnownDirectories()` signatures remain compatible with existing callers (currently none)
 4. **Thread safety**: Verify lock usage is consistent with existing patterns in `KiloConnectionService`
+5. **Provider invocation**: Verify provider callbacks are invoked outside the lock (design validation)
+
+---
+
+## 12. Remaining Uncertainties
+
+None. All architectural questions resolved:
+- `directoryProviders` mechanism is in scope for parity (even without current consumer)
+- Locking strategy clarified: snapshot under lock, invoke outside
+- `_knownDirectories` confirmed unused and safe to replace
+- Test coverage requirements specified for all edge cases
 
 ---
 
 **Plan status:** Ready for Code execution  
-**Estimated effort:** Small (1 file, ~30 lines changed)  
+**Estimated effort:** Small (1 file, ~50 lines changed)  
 **Risk level:** Low (no active callers, backward-compatible API)
