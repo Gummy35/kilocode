@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 {
@@ -96,8 +98,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             var len = text.Length < 50 ? text.Length : 50;
             System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: prompt received for session {sessionID}: {text.Substring(0, len)}...");
 
-            var kiotaClient = _provider.GetKiloClient();
-            if (kiotaClient == null)
+            var nswagClient = _provider.GetNswagClient();
+            if (nswagClient == null)
             {
                 await _provider.SendErrorAsync("Not Connected", "Not connected to CLI backend");
                 return;
@@ -105,12 +107,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             
             try
             {
-                var part = new Generated.Models.Part { Type = "text", Text = text };
-                var promptData = new Generated.Api.Session.Item.PromptAsync.PromptAsyncPostRequestBody { Parts = new[] { part } };
+                var part = new Parts2();
+                part.AdditionalProperties["type"] = "text";
+                part.AdditionalProperties["text"] = text;
+                
+                var promptBody = new Body24 
+                { 
+                    Parts = new System.Collections.Generic.List<Parts2> { part } 
+                };
                 
                 System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: sending POST to /session/{sessionID}/prompt_async");
                 
-                await kiotaClient.Session[sessionID].PromptAsync.PostAsync(promptData);
+                await nswagClient.Session_prompt_asyncAsync(sessionID, System.Environment.CurrentDirectory, "", promptBody);
                 System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: prompt accepted, response will come via SSE");
             }
             catch (Exception ex)
@@ -156,12 +164,25 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             if (!string.IsNullOrEmpty(requestId) && !string.IsNullOrEmpty(response))
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null) return;
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null) return;
                 
                 try
                 {
-                    await kiotaClient.Permission[requestId].Reply.PostAsync(new Generated.Permission.Item.Reply.ReplyPostRequestBody { Response = response });
+                    var reply = response.ToLowerInvariant() switch
+                    {
+                        "approve" or "allow" => Body13Reply.Once,
+                        "always" => Body13Reply.Always,
+                        "reject" or "deny" => Body13Reply.Reject,
+                        _ => Body13Reply.Once
+                    };
+                    
+                    var replyBody = new Body13 
+                    { 
+                        Reply = reply,
+                        Message = response 
+                    };
+                    await nswagClient.Permission_replyAsync(requestId, System.Environment.CurrentDirectory, "", replyBody);
                     System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: permission reply sent");
                 }
                 catch (Exception ex)
@@ -207,13 +228,28 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             if (!string.IsNullOrEmpty(requestId) && answers.HasValue)
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null) return;
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null) return;
                 
                 try
                 {
-                    var answersArray = answers.Value.ValueKind == JsonValueKind.Array ? answers.Value.EnumerateArray().Select(a => a.GetString()).ToArray() : new string[] { answers.Value.GetString() };
-                    await kiotaClient.Question[requestId].Reply.PostAsync(new Generated.Question.Item.Reply.ReplyPostRequestBody { Answers = answersArray });
+                    var answersArray = answers.Value.ValueKind == JsonValueKind.Array 
+                        ? answers.Value.EnumerateArray().Select(a => a.GetString()).ToArray() 
+                        : new string[] { answers.Value.GetString() };
+                    
+                    var questionAnswerList = new System.Collections.Generic.List<QuestionAnswer>();
+                    foreach (var answer in answersArray)
+                    {
+                        var qa = new QuestionAnswer();
+                        if (!string.IsNullOrEmpty(answer))
+                        {
+                            qa.Add(answer);
+                        }
+                        questionAnswerList.Add(qa);
+                    }
+                    
+                    var replyBody = new Body12 { Answers = questionAnswerList };
+                    await nswagClient.Question_replyAsync(requestId, System.Environment.CurrentDirectory, "", replyBody);
                     System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: question reply sent");
                 }
                 catch (Exception ex)
@@ -226,6 +262,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         /// <summary>
         /// Handles the permissionResponse message from the webview.
         /// Processes permission response events by forwarding to backend.
+        /// 
+        /// NOTE: NSwag client does not have a Permission_PostAsync method. The Kiota implementation
+        /// referenced kiotaClient.Permission.PostAsync(permissionResponse) but this endpoint does not
+        /// exist in the generated NSwag client. This is a known limitation - permission response
+        /// posting is not yet available via NSwag.
         /// 
         /// VS Code workflow: Matches the pattern in kilo-provider/handlers/permission-handler.ts
         /// where permission response is posted to /permission/response endpoint.
@@ -246,18 +287,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
-                {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
-                    return;
-                }
-
-                var permissionResponse = JsonSerializer.Deserialize<Generated.Models.PermissionResponse>(payload.Value.GetRawText());
-                if (permissionResponse != null)
-                {
-                    await kiotaClient.Permission.PostAsync(permissionResponse);
-                }
+                // TODO: NSwag client needs Permission_PostAsync method added
+                // var nswagClient = _provider.GetNswagClient();
+                // if (nswagClient == null)
+                // {
+                //     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                //     return;
+                // }
+                // var permissionResponse = JsonSerializer.Deserialize<...>(payload.Value.GetRawText());
+                // await nswagClient.Permission_PostAsync(permissionResponse);
+                
+                await _provider.SendErrorAsync("Not implemented", "Permission response posting is not yet supported via NSwag");
             }
             catch (Exception ex)
             {
@@ -288,17 +328,20 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             try
             {
-                var kiotaClient = _provider.GetKiloClient();
-                if (kiotaClient == null)
+                var nswagClient = _provider.GetNswagClient();
+                if (nswagClient == null)
                 {
                     await _provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
-                var questionReject = JsonSerializer.Deserialize<Generated.Models.QuestionReject>(payload.Value.GetRawText());
-                if (questionReject != null)
+                if (payload.Value.TryGetProperty("requestId", out var rid))
                 {
-                    await kiotaClient.Question.Reject.PostAsync(questionReject);
+                    var requestId = rid.GetString();
+                    if (!string.IsNullOrEmpty(requestId))
+                    {
+                        await nswagClient.Question_rejectAsync(requestId, System.Environment.CurrentDirectory, "");
+                    }
                 }
             }
             catch (Exception ex)
