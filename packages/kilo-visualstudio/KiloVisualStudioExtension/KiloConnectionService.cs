@@ -211,6 +211,16 @@ namespace KiloVisualStudioExtension
         private readonly object _visibilityLock = new object();
         
         /// <summary>
+        /// Viewer ID for flushViewed tracking (matches VS Code's viewerId).
+        /// </summary>
+        private readonly Guid _viewerId = Guid.NewGuid();
+        
+        /// <summary>
+        /// Indicates whether the window/focus is currently active (matches VS Code's active).
+        /// </summary>
+        private bool _active = true;
+        
+        /// <summary>
         /// Flag indicating whether the object has been disposed.
         /// </summary>
         private bool _disposed;
@@ -675,6 +685,8 @@ namespace KiloVisualStudioExtension
                     foreach (var sessionId in kvp.Value)
                     {
                         visibleSessions.Add(sessionId);
+                        // Visible sessions are also attached (matches VS Code behavior)
+                        attachedSessions.Add(sessionId);
                     }
                 }
                 
@@ -697,7 +709,12 @@ namespace KiloVisualStudioExtension
             var body = new global::KiloVisualStudioExtension.Generated.Session.Viewed.ViewedPostRequestBody
             {
                 Visible = visibleList,
-                Attached = attachedList
+                Attached = attachedList,
+                Viewer = new global::KiloVisualStudioExtension.Generated.Session.Viewed.ViewedPostRequestBody_viewer
+                {
+                    Id = _viewerId,
+                    Active = _active
+                }
             };
 
             try
