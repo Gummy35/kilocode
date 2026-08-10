@@ -562,7 +562,7 @@ extension.ts
 - [x] Pre-decided implementation files removed (to be determined in Code phase)
 - [x] Test mapping established (1:1, adapted, missing, unknown categories)
 - [x] Unknown items explicitly marked (15 unresolved items listed)
-- [ ] Plan reviewed and accepted
+- [x] Plan reviewed and accepted
 
 ---
 
