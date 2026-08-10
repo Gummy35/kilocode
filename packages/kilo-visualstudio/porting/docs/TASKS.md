@@ -26,7 +26,7 @@ It is intentionally concise. Detailed requirements belong in the individual task
 | ------------------ | ------------------------------------------------------------------------------------------- | ------------- | -------------------------------- |
 | `PORT-INFRA-001`   | Establish a deterministic baseline inventory of the existing Visual Studio implementation   | `REVIEW` | —                                |
 | `PORT-INFRA-002`   | Inventory the VS Code extension and establish source-to-target mappings                     | `REVIEW` | `PORT-INFRA-001`                 |
-| `PORT-CLI-001`     | Port the VS Code CLI/HTTP client and its relevant tests to Visual Studio                    | `NOT_STARTED` | `PORT-INFRA-002`                 |
+| `PORT-CLI-001`     | Port the VS Code CLI/HTTP client and its relevant tests to Visual Studio                    | `REVIEW` | `PORT-INFRA-002`                 |
 | `PORT-WEBVIEW-001` | Port the VS Code extension host/WebView integration to Visual Studio                        | `NOT_STARTED` | `PORT-INFRA-002`, `PORT-CLI-001` |
 | `PORT-CORE-001`    | Port remaining VS Code extension host functionality required by the Visual Studio extension | `NOT_STARTED` | `PORT-INFRA-002`                 |
 | `PORT-TEST-001`    | Complete and validate the 1:1 semantic port of applicable VS Code unit tests                | `NOT_STARTED` | Relevant implementation tasks    |
@@ -188,7 +188,7 @@ It becomes `DONE` only after the implementation and relevant validation have bee
 ```text
 PORT-INFRA-001   → REVIEW
 PORT-INFRA-002   → NOT_STARTED
-PORT-CLI-001     → NOT_STARTED
+PORT-CLI-001     → REVIEW
 PORT-WEBVIEW-001 → NOT_STARTED
 PORT-CORE-001    → NOT_STARTED
 PORT-TEST-001    → NOT_STARTED

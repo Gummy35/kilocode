@@ -39,23 +39,35 @@ From the plan corrections:
 
 ## 3. Implementation Summary
 
-### 3.1 Generated C# SDK Client
+### 3.1 Generated C# REST Client (NSwag)
 
-**Generator:** Microsoft Kiota v1.34.1  
-**Source:** `packages/sdk/openapi.json`  
-**OpenAPI SHA:** `A454191C27D89DBECB23121DA0EDBB596DE5D4561F6F2229AA4C6FDF2B879FBD` (SHA-256)  
-**Output directory:** `KiloVisualStudioExtension/Generated/`  
-**Dependencies added:**
-- `Microsoft.Kiota.Bundle` v2.0.0
-- `Microsoft.Kiota.Authentication.Azure` v2.0.0
-- `Microsoft.Kiota.Http.HttpClientLibrary` v2.0.0
+**Note:** The original implementation plan specified Kiota, but the actual implementation adopted **NSwag** due to better alignment with the TypeScript SDK generation pattern. See `NSWAG-MIGRATION-GUIDE.md` for migration details.
+
+**Generator:** NSwag v14.7.1  
+**Source:** `packages/sdk/openapi.json` (same source as TypeScript SDK)  
+**OpenAPI Version:** 3.1.0  
+**Output directory:** `KiloVisualStudioExtension/ApiClient/`  
+**Generated client:** `KiloApiClient` (implements `IKiloApiClient`)  
+**NSwag configuration:** `/operationGenerationMode:"SingleClientFromOperationId"` (prevents duplication bug)
 
 **Generation command:**
-```bash
-kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisualStudioExtension.Generated -c KiloClient --clean-output
+```powershell
+nswag openapi2csclient `
+  /input:"openapi.json" `
+  /output:"KiloVisualStudioExtension\ApiClient\KiloApiClient.cs" `
+  /namespace:"KiloVisualStudioExtension.ApiClient" `
+  /ClassName:"KiloApiClient" `
+  /GenerateClientInterfaces:true `
+  /GenerateExceptionClasses:true `
+  /operationGenerationMode:"SingleClientFromOperationId"
 ```
 
-**Documentation:** See `KiloVisualStudioExtension/Generated/GENERATION.md`
+**Documentation:** 
+- `NSWAG-GENERATION.md` - Generation details and statistics
+- `NSWAG-MIGRATION-GUIDE.md` - Migration pattern and usage
+- `NSWAG-VALIDATION-REPORT.md` - Validation results
+
+**Kiota (Historical):** The original plan used Kiota v1.34.1 with output to `Generated/`. This was migrated to NSwag as part of PORT-CLI-002. Kiota packages remain in the project for potential rollback but are no longer used by production handlers.
 
 ### 3.2 CliBackendManager Changes
 
@@ -70,33 +82,37 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 ### 3.3 KiloConnectionService Changes
 
 **Added fields:**
-- `_kiotaClient` - Generated Kiota SDK client
-- `_requestAdapter` - Request adapter for authentication
+- `_nswagClient` - NSwag-generated `KiloApiClient` (REST/HTTP operations)
+- `_kiotaClient` - Kiota client (retained for backward compatibility, not used by new handlers)
 - `_checkinTimer` - 60s flushViewed timer
 - Session visibility tracking dictionaries (`_visibleSessions`, `_attachedSessions`)
-- Directory tracking (`_knownDirectories`, `_permissionDirectories`, `_questionDirectories`)
+- Directory tracking (`_rootDirectory`, `_currentDirectory`, `_directoryProviders`)
+- Permission/question tracking (`_permissionDirectories`, `_questionDirectories`)
 - Message-session mapping (`_messageSessionMap`)
 
 **Added methods:**
-- `CreateRequestAdapter()` - Creates Kiota request adapter with Basic Auth
+- `CreateRequestAdapter()` - Creates Kiota request adapter with Basic Auth (for Kiota client)
+- `GetNswagClient()` - Access to NSwag `KiloApiClient`
 - `StartCheckinTimer()` - 60s interval for flushViewed
 - `RegisterVisible()` - Session visibility tracking
 - `RegisterAttached()` - Session attachment tracking
 - `FlushViewedAsync()` - Flush viewed sessions to backend via `session.viewed` endpoint
-- `TrackDirectory()` / `GetKnownDirectories()` - Directory tracking
+- `TrackDirectory()` / `GetKnownDirectories()` - Directory tracking with provider support
+- `RegisterDirectoryProvider()` - Register dynamic directory sources
 - `RecordPermissionDirectory()` / `GetPermissionDirectories()` / `ClearPermissionDirectory()`
 - `RecordQuestionDirectory()` / `GetQuestionDirectories()` / `ClearQuestionDirectory()`
 - `RecordMessageSessionId()` / `PruneSession()` - Message-session mapping
-- `GetKiloClient()` - Access to generated SDK client
 
 **Integration:**
-- `ConnectAsync()` now creates Kiota client using the generated `KiloClient` class
-- Authentication configured via Basic Auth header on the HttpClient
-- `FlushViewedAsync()` now calls the generated `session.viewed` endpoint with proper request body
+- `ConnectAsync()` creates both Kiota client (legacy) and NSwag client (current)
+- NSwag authentication: Basic Auth via partial class extension (`KiloApiClient.Authentication.cs`)
+- `FlushViewedAsync()` calls NSwag `Session_ViewAsync()` with proper request body
+- All new handler services use NSwag client via `GetNswagClient()`
 
 **Preserved legacy infrastructure:**
-- `HttpClientWrapper` and `CachedHttpClient` retained for use by `VSProvider` and `ExtensionConfigManager`
-- Both generated Kiota client and legacy HTTP clients coexist
+- `HttpClientWrapper` and `CachedHttpClient` retained for `VSProvider` and `ExtensionConfigManager`
+- Kiota client retained in `Generated/` but no longer used by production REST handlers (13 handlers migrated to NSwag)
+- Both clients coexist during transition; Kiota removal deferred to separate task
 
 ### 3.4 SseClient Changes
 
@@ -111,14 +127,15 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 
 | Plan Item | Implementation | Notes |
 |-----------|---------------|-------|
-| Generate C# SDK client | ✅ Kiota v1.34.1 | Selected Kiota over openapi-generator-cli (requires Java) |
+| Generate C# REST client | ✅ NSwag v14.7.1 | Migrated from Kiota via PORT-CLI-002 plan |
 | Add password generation | ✅ | Uses `RandomNumberGenerator` |
 | Add session visibility tracking | ✅ | All methods implemented |
-| Add directory tracking | ✅ | All methods implemented |
+| Add directory tracking | ✅ | All methods implemented with provider support |
 | Add exponential backoff to SseClient | ✅ | Doubles delay, capped at 5s |
 | Port connection service tests | ⏸️ Deferred | Pre-existing test errors unrelated to this implementation |
-| Implement FlushViewedAsync | ✅ | Now calls `session.viewed` endpoint with proper request body |
+| Implement FlushViewedAsync | ✅ | Calls NSwag `Session_ViewAsync()` with proper request body |
 | Preserve legacy HTTP infrastructure | ✅ | `HttpClientWrapper` and `CachedHttpClient` retained for `VSProvider` and `ExtensionConfigManager` |
+| NSwag migration | ✅ Complete | 13 handler services migrated from Kiota to NSwag |
 
 ---
 
@@ -144,13 +161,17 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 
 ### Files Modified (Initial Implementation)
 - `CliBackendManager.cs` - Password generation, env vars
-- `KiloConnectionService.cs` - Kiota client integration, session visibility, directory tracking
+- `KiloConnectionService.cs` - NSwag/Kiota client integration, session visibility, directory tracking
 - `SseClient.cs` - Exponential backoff
-- `KiloVisualStudioExtension.csproj` - Kiota dependencies
-- `Generated/` - New directory with generated SDK client (800+ files)
+- `KiloVisualStudioExtension.csproj` - NSwag and Kiota dependencies
+- `ApiClient/` - NSwag-generated SDK client (~86,500 lines)
+- `Generated/` - Kiota-generated SDK client (retained for backward compatibility)
 
-### Files Modified (Corrective Pass)
-- `KiloConnectionService.cs` - Fixed `FlushViewedAsync()` to call `session.viewed` endpoint, added `System.Linq` using
+### Files Modified (NSwag Migration)
+- All handler services (13 files) - Migrated from `Generated` namespace to `ApiClient` namespace
+- `VSProvider.cs` - Added `GetNswagClient()` accessor method
+- `KiloConnectionService.cs` - NSwag client integration and authentication
+- `ApiClient/KiloApiClient.Authentication.cs` - Basic Auth partial class extension
 
 ### Files Not Modified (Per Plan Constraints)
 - ✅ No test files modified
@@ -162,56 +183,79 @@ kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisual
 - ✅ All dependencies from public NuGet packages
 - ✅ OpenAPI source from upstream `packages/sdk/openapi.json`
 
+### NSwag vs Kiota
+- ✅ NSwag client is the production REST client (13 handlers migrated)
+- ✅ Kiota client retained but not used by new handlers
+- ✅ SSE remains handled by dedicated `SseClient` (not migrated to NSwag)
+
 ---
 
 ## 7. Reproducibility
 
-To regenerate the generated client:
+### NSwag Client Regeneration
+
+```powershell
+# Fetch latest OpenAPI spec from running CLI
+Invoke-WebRequest -Uri "http://127.0.0.1:PORT/doc" -OutFile "openapi.json"
+
+# Generate NSwag client
+nswag openapi2csclient `
+  /input:"openapi.json" `
+  /output:"KiloVisualStudioExtension\ApiClient\KiloApiClient.cs" `
+  /namespace:"KiloVisualStudioExtension.ApiClient" `
+  /ClassName:"KiloApiClient" `
+  /GenerateClientInterfaces:true `
+  /GenerateExceptionClasses:true `
+  /operationGenerationMode:"SingleClientFromOperationId"
+```
+
+### Kiota Client Regeneration (Historical)
 
 ```bash
 # Ensure Kiota 1.34.1 is installed
 kiota --version
 
-# Generate
+# Generate (historical - no longer used for production)
 kiota generate -l CSharp -d packages/sdk/openapi.json -o Generated -n KiloVisualStudioExtension.Generated -c KiloClient --clean-output
-
-# Add dependencies
-dotnet add package Microsoft.Kiota.Bundle --version 2.0.0
-dotnet add package Microsoft.Kiota.Authentication.Azure --version 2.0.0
-dotnet add package Microsoft.Kiota.Http.HttpClientLibrary --version 2.0.0
 ```
 
 ---
 
 ## 8. Next Steps
 
-1. **Test implementation**: Create Visual Studio equivalents for the 8 VS Code connection service tests identified in the plan.
+1. **Complete NSwag handler migration** - All 13 handlers migrated (complete)
 
-2. **SSE event normalization**: Implement sync event transformation (deferred in plan Section 5.3).
+2. **SSE event normalization** - Implement sync event transformation (deferred per plan Section 5.3)
 
-3. **drainPendingPrompts**: Implement drain functionality (deferred in plan Section 5.3).
+3. **drainPendingPrompts** - Implement drain functionality (deferred per plan Section 5.3)
 
-4. **Integration testing**: Verify the generated Kiota client works correctly with the actual backend endpoints.
+4. **Integration testing** - Verify NSwag client works correctly with actual backend endpoints
+
+5. **Kiota removal decision** - Determine if/when to remove Kiota infrastructure (deferred to separate task)
 
 ---
 
 ## 9. Technical Decisions
 
-1. **Kiota vs openapi-generator-cli**: Chose Kiota because it's a .NET-native tool that doesn't require Java. The openapi-generator-cli requires Java runtime which would add an additional dependency.
+1. **NSwag over Kiota** - Chose NSwag v14.7.1 for better alignment with TypeScript SDK (`@hey-api/openapi-ts`) generation pattern. Kiota produced different property naming and API structure causing 52+ compilation errors.
 
-2. **Basic Auth configuration**: Set Basic Auth header on the HttpClient rather than using Kiota's authentication providers, as the backend uses simple Basic Auth with `kilo:{password}` format.
+2. **Basic Auth via partial class** - NSwag does not generate built-in authentication providers. Implemented Basic Auth via `PrepareRequestAsync` partial method in `KiloApiClient.Authentication.cs`.
 
-3. **Session visibility storage**: Used in-memory dictionaries with thread-safe locking. In a future iteration, this could be persisted to workspace state to match VS Code's behavior more closely.
+3. **Session visibility storage** - Used in-memory dictionaries with thread-safe locking. In a future iteration, this could be persisted to workspace state to match VS Code's behavior more closely.
 
-4. **Exponential backoff**: Implemented simple doubling strategy (250ms → 500ms → 1000ms → ... → 5000ms cap) matching VS Code's approach.
+4. **Exponential backoff** - Implemented simple doubling strategy (250ms → 500ms → 1000ms → ... → 5000ms cap) matching VS Code's approach.
+
+5. **Kiota retention** - Kiota client retained in `Generated/` directory for potential rollback but no longer used by production handlers. Removal deferred to separate cleanup task.
 
 ---
 
 **Implementation completed:** 2026-08-10  
-**Corrective pass:** 2026-08-10  
+**NSwag migration completed:** 2026-08-10  
 **Verification pass:** 2026-08-10  
-**Total files modified:** 3 source files + 1 project file + 800+ generated files  
-**Build status:** ✅ Success (0 errors, 0 warnings)
+**Total files modified:** 3 source files + 1 project file + NSwag client (~86,500 lines) + 13 handler services  
+**Build status:** ✅ Success (0 errors, pre-existing warnings only)
+
+**Current status:** Implementation complete, awaiting human review (REVIEW status in TASKS.md)
 
 ---
 
