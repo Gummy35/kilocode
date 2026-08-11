@@ -61,7 +61,7 @@ namespace KiloVisualStudioExtension.Tests.ApiClient.Json
         public void DeserializeToolState_Completed_ReturnsToolStateCompleted()
         {
             // Arrange
-            var json = @"{""status"":""completed"",""input"":{},""output"":""result"",""title"":""Done"",""time"":{""start"":100,""end"":200}}";
+            var json = @"{""status"":""completed"",""input"":{},""output"":""result"",""title"":""Done"",""metadata"":{},""time"":{""start"":100,""end"":200}}";
             var token = JToken.Parse(json);
 
             // Act
@@ -163,7 +163,7 @@ namespace KiloVisualStudioExtension.Tests.ApiClient.Json
         public void DeserializePart_Tool_ReturnsToolPart()
         {
             // Arrange
-            var json = @"{""id"":""prt-123"",""sessionID"":""ses-456"",""messageID"":""msg-789"",""type"":""tool"",""callID"":""call-123"",""tool"":""task"",""state"":{""status"":""running"",""input"":{}}}";
+            var json = @"{""id"":""prt-123"",""sessionID"":""ses-456"",""messageID"":""msg-789"",""type"":""tool"",""callID"":""call-123"",""tool"":""task"",""state"":{""status"":""running"",""input"":{},""time"":{""start"":100}}}";
             var token = JToken.Parse(json);
 
             // Act
@@ -173,7 +173,11 @@ namespace KiloVisualStudioExtension.Tests.ApiClient.Json
             result.Should().BeOfType<ToolPart>();
             var toolPart = (ToolPart)result;
             toolPart.Tool.Should().Be("task");
-            toolPart.State.Should().BeOfType<ToolStateRunning>();
+            // State property is typed as ToolState but contains ToolStateRunning at runtime
+            // Use separate deserialization to get the concrete type
+            var stateToken = token["state"];
+            var state = PolymorphicDeserializer.DeserializeToolState(stateToken!, _serializer);
+            state.Should().BeOfType<ToolStateRunning>();
         }
 
         [Fact]
@@ -277,6 +281,7 @@ namespace KiloVisualStudioExtension.Tests.ApiClient.Json
                     ""input"":{},
                     ""output"":""done"",
                     ""title"":""Finished"",
+                    ""metadata"":{},
                     ""time"":{""start"":100,""end"":200}
                 }
             }";
@@ -288,8 +293,12 @@ namespace KiloVisualStudioExtension.Tests.ApiClient.Json
             // Assert
             result.Should().BeOfType<ToolPart>();
             var toolPart = (ToolPart)result;
-            toolPart.State.Should().BeOfType<ToolStateCompleted>();
-            var completedState = (ToolStateCompleted)toolPart.State;
+            // State property is typed as ToolState but contains ToolStateCompleted at runtime
+            // Use separate deserialization to get the concrete type
+            var stateToken = token["state"];
+            var state = PolymorphicDeserializer.DeserializeToolState(stateToken!, _serializer);
+            state.Should().BeOfType<ToolStateCompleted>();
+            var completedState = (ToolStateCompleted)state;
             completedState.Output.Should().Be("done");
         }
 

@@ -28,7 +28,7 @@ dotnet tool install --global NSwag.ConsoleCore
 
 ```powershell
 nswag openapi2csclient `
-  /input:"C:\Users\RFHP2615\AppData\Local\Temp\kilo\openapi.json" `
+  /input:"packages\kilo-visualstudio\porting\docs\openapi-spec.json" `
   /output:"packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\KiloApiClient.cs" `
   /namespace:"KiloVisualStudioExtension.ApiClient" `
   /ClassName:"KiloApiClient" `
@@ -58,12 +58,13 @@ nswag openapi2csclient `
 
 ```
 packages/kilo-visualstudio/KiloVisualStudioExtension/ApiClient/
-└── KiloApiClient.cs (~36,600 lines after extraction)
+├── KiloApiClient.cs (~86,500 lines)
+└── ApiClientInheritance.cs (~60 lines)
 ```
 
 ### Statistics
 
-- **Total Lines**: ~86,500
+- **Total Lines**: ~86,560
 - **Total Types**: ~1,500
 - **API Endpoints**: 236
 - **Client Interface**: `IKiloApiClient`
@@ -96,6 +97,14 @@ All server-sent event types are generated as separate classes:
 - Agent Manager types
 - Notebook types
 - VCS types
+
+#### Inheritance Declarations
+`ApiClientInheritance.cs` contains partial class declarations that restore inheritance relationships defined in the OpenAPI spec using `anyOf`/`oneOf`:
+- `ToolState` hierarchy: `ToolStatePending`, `ToolStateRunning`, `ToolStateCompleted`, `ToolStateError`
+- `Part` hierarchy: `TextPart`, `ReasoningPart`, `FilePart`, `ToolPart`, `StepStartPart`, `StepFinishPart`, `SnapshotPart`, `PatchPart`, `AgentPart`, `RetryPart`, `CompactionPart`, `SubtaskPart`
+- `FilePartSource` hierarchy: `FileSource`, `SymbolSource`, `ResourceSource`
+- `SessionMessage` hierarchy: `SessionMessageAgentSwitched`, `SessionMessageModelSwitched`, `SessionMessageUser`, `SessionMessageSynthetic`, `SessionMessageSystem`, `SessionMessageShell`, `SessionMessageAssistant`, `SessionMessageCompaction`
+- `OutputFormat` hierarchy: `OutputFormatText`, `OutputFormatJsonSchema`
 
 ## Comparison with TypeScript SDK
 
@@ -190,17 +199,64 @@ To regenerate the client when the API changes:
 
 1. **Fetch latest OpenAPI spec**:
    ```powershell
-   Invoke-WebRequest -Uri "http://127.0.0.1:56631/doc" -OutFile "openapi.json"
+   Invoke-WebRequest -Uri "http://127.0.0.1:56631/doc" -OutFile "packages\kilo-visualstudio\porting\docs\openapi-spec.json"
    ```
 
 2. **Run NSwag with operationGenerationMode**:
    ```powershell
-   nswag openapi2csclient /input:"openapi.json" /output:"packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\KiloApiClient.cs" [all options] /operationGenerationMode:"SingleClientFromOperationId"
+   nswag openapi2csclient /input:"packages\kilo-visualstudio\porting\docs\openapi-spec.json" /output:"packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\KiloApiClient.cs" [all options] /operationGenerationMode:"SingleClientFromOperationId"
    ```
 
-4. **Record generation metadata**:
+3. **Regenerate inheritance declarations**:
+   Run the following PowerShell script to analyze the OpenAPI spec and regenerate `ApiClientInheritance.cs`:
+   ```powershell
+   .\script\generate-inheritance.ps1 `
+     -OpenApiSpec "packages\kilo-visualstudio\porting\docs\openapi-spec.json" `
+     -Output "packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\ApiClientInheritance.cs"
+   ```
+
+4. **Update PolymorphicDeserializer if needed**:
+   If new polymorphic types are added, update `PolymorphicDeserializer.cs` to handle nested deserialization for those types.
+
+5. **Run tests**:
+   ```powershell
+   dotnet test packages\kilo-visualstudio\KiloVisualStudioExtension.Tests\KiloVisualStudioExtension.Tests.csproj `
+     --filter "FullyQualifiedName~NswagPolymorphicModelTests|FullyQualifiedName~PolymorphicDeserializerTests"
+   ```
+
+6. **Record generation metadata**:
    - Update this document with new Git SHA
    - Update generation date
+
+## Inheritance Generation Script
+
+The `script\generate-inheritance.ps1` script analyzes the OpenAPI spec and generates `ApiClientInheritance.cs` with partial class declarations that restore inheritance relationships.
+
+### How It Works
+
+1. Parses the OpenAPI spec JSON
+2. Finds all schemas with `anyOf` or `oneOf` definitions
+3. For each polymorphic schema:
+   - Identifies the base type name
+   - Identifies all derived type references
+   - Generates `public partial class DerivedType : BaseType { }` declarations
+4. Writes the inheritance declarations to `ApiClientInheritance.cs`
+
+### Supported Polymorphic Patterns
+
+The script handles these OpenAPI patterns:
+- `"ToolState": { "anyOf": [ToolStatePending, ToolStateRunning, ...] }`
+- `"Part": { "anyOf": [TextPart, ToolPart, ...] }`
+- `"FilePartSource": { "anyOf": [FileSource, SymbolSource, ...] }`
+- `"SessionMessage": { "anyOf": [SessionMessageUser, SessionMessageAssistant, ...] }`
+- `"OutputFormat": { "anyOf": [OutputFormatText, OutputFormatJsonSchema] }`
+
+### Manual Updates
+
+If the script needs to be updated for new patterns, edit `script\generate-inheritance.ps1` to:
+1. Add new pattern detection logic
+2. Update the type mapping if needed
+3. Regenerate and verify tests pass
 
 ## Notes
 

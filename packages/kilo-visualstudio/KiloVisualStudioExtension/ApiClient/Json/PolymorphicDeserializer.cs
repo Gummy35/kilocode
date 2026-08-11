@@ -11,12 +11,13 @@ namespace KiloVisualStudioExtension.ApiClient.Json
     /// for actual deserialization of concrete types.
     /// 
     /// This approach avoids JsonConverter inheritance issues with C# 14 + Newtonsoft 13.0.3
-    /// while providing strongly-typed deserialization for Part, ToolState, and Message.
+    /// while providing strongly-typed deserialization for Part, ToolState, Message, and nested polymorphic properties.
     /// </summary>
     public static class PolymorphicDeserializer
     {
     /// <summary>
     /// Deserializes a Part token to the appropriate concrete type based on the 'type' discriminator.
+    /// Also handles nested polymorphic properties like ToolPart.State.
     /// Returns object because NSwag generates independent classes (no common base).
     /// Caller should cast to the expected concrete type (TextPart, ToolPart, etc.).
     /// </summary>
@@ -34,12 +35,12 @@ namespace KiloVisualStudioExtension.ApiClient.Json
             if (string.IsNullOrEmpty(type))
                 throw new JsonSerializationException("Part 'type' field is empty");
 
-            return type switch
+            object result = type switch
             {
                 "text" => obj.ToObject<TextPart>(serializer)!,
                 "reasoning" => obj.ToObject<ReasoningPart>(serializer)!,
-                "file" => obj.ToObject<FilePart>(serializer)!,
-                "tool" => obj.ToObject<ToolPart>(serializer)!,
+                "file" => DeserializeFilePart(obj, serializer),
+                "tool" => DeserializeToolPart(obj, serializer),
                 "step-start" => obj.ToObject<StepStartPart>(serializer)!,
                 "step-finish" => obj.ToObject<StepFinishPart>(serializer)!,
                 "snapshot" => obj.ToObject<SnapshotPart>(serializer)!,
@@ -50,6 +51,27 @@ namespace KiloVisualStudioExtension.ApiClient.Json
                 "subtask" => obj.ToObject<SubtaskPart>(serializer)!,
                 _ => throw new JsonSerializationException($"Unknown Part type '{type}'")
             };
+
+            return result;
+        }
+
+    /// <summary>
+    /// Deserializes a ToolPart with proper handling of the nested State polymorphic property.
+    /// </summary>
+    private static object DeserializeToolPart(JObject obj, JsonSerializer serializer)
+        {
+            var toolPart = obj.ToObject<ToolPart>(serializer);
+            if (toolPart == null)
+                throw new JsonSerializationException("Failed to deserialize ToolPart");
+
+            // Deserialize nested State polymorphically
+            var stateToken = obj["state"];
+            if (stateToken != null && stateToken.Type != JTokenType.Null)
+            {
+                toolPart.State = (ToolState)DeserializeToolState(stateToken, serializer);
+            }
+
+            return toolPart;
         }
 
     /// <summary>
@@ -127,10 +149,34 @@ namespace KiloVisualStudioExtension.ApiClient.Json
 
             return type switch
             {
-                "file" => obj.ToObject<FilePartSource>(serializer)!,
+                "file" => obj.ToObject<FileSource>(serializer)!,
                 "symbol" => obj.ToObject<SymbolSource>(serializer)!,
+                "resource" => obj.ToObject<ResourceSource>(serializer)!,
                 _ => throw new JsonSerializationException($"Unknown FilePartSource type '{type}'")
             };
+        }
+
+        /// <summary>
+        /// Deserializes a FilePart with proper handling of the nested Source polymorphic property.
+        /// </summary>
+        public static object DeserializeFilePart(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for FilePart");
+            var filePart = obj.ToObject<FilePart>(serializer);
+            if (filePart == null)
+                throw new JsonSerializationException("Failed to deserialize FilePart");
+
+            // Deserialize nested Source polymorphically
+            var sourceToken = obj["source"];
+            if (sourceToken != null && sourceToken.Type != JTokenType.Null)
+            {
+                filePart.Source = (FilePartSource)DeserializeFilePartSource(sourceToken, serializer);
+            }
+
+            return filePart;
         }
     }
 }

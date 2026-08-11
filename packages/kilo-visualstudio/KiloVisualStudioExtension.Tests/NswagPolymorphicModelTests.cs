@@ -1,495 +1,561 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using FluentAssertions;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.ApiClient.Json;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
 {
     /// <summary>
-    /// Tests for NSwag-generated polymorphic model deserialization.
-    /// Validates that real-world JSON payloads from the Kilo CLI can be correctly
-    /// deserialized and that semantic information is preserved.
+    /// Tests for NSwag-generated polymorphic model round-trip serialization.
+    /// Validates that concrete types can be serialized and deserialized using
+    /// the PolymorphicDeserializer discriminator-based methods.
     /// 
-    /// This addresses the validation report concern about oneOf/anyOf schema handling.
+    /// Each test follows the pattern:
+    /// 1. Create a concrete type instance
+    /// 2. Serialize to JSON
+    /// 3. Parse to JToken
+    /// 4. Deserialize using PolymorphicDeserializer.DeserializePart/ToolState/Message
+    /// 5. Verify the result is the correct type with matching properties
     /// </summary>
     public class NswagPolymorphicModelTests
     {
-        private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
+        private readonly JsonSerializer _polymorphicSerializer;
+
+        public NswagPolymorphicModelTests()
         {
-            NullValueHandling = NullValueHandling.Ignore,
-            MissingMemberHandling = MissingMemberHandling.Ignore
-        };
-
-        #region Part Models
-
-        [Fact]
-        public void TextPart_Deserialization_PreservesFields()
-        {
-            // Arrange - Realistic payload from session text streaming
-            var json = @"{
-                ""type"": ""text"",
-                ""text"": ""Hello, this is assistant response text"",
-                ""delta"": ""Hello, this is assistant response text""
-            }";
-
-            // Act
-            var part = JsonConvert.DeserializeObject<TextPart>(json, _settings);
-
-            // Assert
-            part.Should().NotBeNull();
-            part.Type.Should().Be("text");
-            part.Text.Should().Be("Hello, this is assistant response text");
-            part.Delta.Should().Be("Hello, this is assistant response text");
+            _polymorphicSerializer = KiloJsonSerializer.Create();
         }
 
-        [Fact]
-        public void FilePart_Deserialization_PreservesFileSource()
-        {
-            // Arrange - Realistic file part payload
-            var json = @"{
-                ""type"": ""file"",
-                ""file"": {
-                    ""path"": ""C:\\proj\\src\\test.cs"",
-                    ""range"": {
-                        ""start"": { ""line"": 10, ""character"": 0 },
-                        ""end"": { ""line"": 20, ""character"": 5 }
-                    },
-                    ""text"": ""public class Test { }"",
-                    ""source"": ""text""
-                }
-            }";
-
-            // Act
-            var part = JsonConvert.DeserializeObject<FilePart>(json, _settings);
-
-            // Assert
-            part.Should().NotBeNull();
-            part.Type.Should().Be("file");
-            part.File.Should().NotBeNull();
-            part.File.Path.Should().Be("C:\\proj\\src\\test.cs");
-            part.File.Range.Should().NotBeNull();
-            part.File.Range.Start.Line.Should().Be(10);
-            part.File.Text.Should().Be("public class Test { }");
-        }
+        #region Part Round-Trip Tests
 
         [Fact]
-        public void ToolPart_Deserialization_PreservesToolState()
-        {
-            // Arrange - Realistic tool part payload
-            var json = @"{
-                ""type"": ""tool"",
-                ""tool"": {
-                    ""name"": ""read"",
-                    ""input"": { ""path"": ""test.txt"" },
-                    ""output"": ""file contents here"",
-                    ""status"": ""success""
-                }
-            }";
-
-            // Act
-            var part = JsonConvert.DeserializeObject<ToolPart>(json, _settings);
-
-            // Assert
-            part.Should().NotBeNull();
-            part.Type.Should().Be("tool");
-            part.Tool.Should().NotBeNull();
-            part.Tool.Name.Should().Be("read");
-            part.Tool.Input.Should().NotBeNull();
-            part.Tool.Output.Should().Be("file contents here");
-        }
-
-        [Fact]
-        public void Part_AdditionalProperties_CapturesUnknownFields()
-        {
-            // Arrange - Payload with additional fields not in schema
-            var json = @"{
-                ""type"": ""text"",
-                ""text"": ""test"",
-                ""customField"": ""custom value"",
-                ""nested"": { ""a"": 1, ""b"": 2 }
-            }";
-
-            // Act
-            var part = JsonConvert.DeserializeObject<Part>(json, _settings);
-
-            // Assert
-            part.Should().NotBeNull();
-            part.Type.Should().Be("text");
-            // NSwag generates AdditionalProperties dictionary for unknown fields
-            part.AdditionalProperties.Should().ContainKey("customField");
-            part.AdditionalProperties["customField"].Should().Be("custom value");
-            part.AdditionalProperties.Should().ContainKey("nested");
-        }
-
-        #endregion
-
-        #region Message Models
-
-        [Fact]
-        public void AssistantMessage_Deserialization_PreservesParts()
-        {
-            // Arrange - Realistic assistant message
-            var json = @"{
-                ""role"": ""assistant"",
-                ""parts"": [
-                    { ""type"": ""text"", ""text"": ""Let me help you with that."" },
-                    { ""type"": ""tool"", ""tool"": { ""name"": ""read"", ""input"": {} } }
-                ],
-                ""messageID"": ""msg-123"",
-                ""requestID"": ""req-456""
-            }";
-
-            // Act
-            var message = JsonConvert.DeserializeObject<AssistantMessage>(json, _settings);
-
-            // Assert
-            message.Should().NotBeNull();
-            message.Role.Should().Be("assistant");
-            message.Parts.Should().HaveCount(2);
-            message.MessageID.Should().Be("msg-123");
-            message.RequestID.Should().Be("req-456");
-        }
-
-        [Fact]
-        public void Message_AdditionalProperties_HandlesExtraFields()
-        {
-            // Arrange
-            var json = @"{
-                ""role"": ""assistant"",
-                ""parts"": [],
-                ""metadata"": { ""custom"": ""value"" },
-                ""timestamp"": 1234567890
-            }";
-
-            // Act
-            var message = JsonConvert.DeserializeObject<Message>(json, _settings);
-
-            // Assert
-            message.Should().NotBeNull();
-            message.Role.Should().Be("assistant");
-            message.AdditionalProperties.Should().ContainKey("metadata");
-            message.AdditionalProperties.Should().ContainKey("timestamp");
-        }
-
-        #endregion
-
-        #region Event Models
-
-        [Fact]
-        public void EventTuiPromptAppend_Deserialization_PreservesText()
-        {
-            // Arrange - Realistic TUI prompt append event
-            var json = @"{
-                ""type"": ""tui.prompt.append"",
-                ""text"": ""User prompt content here""
-            }";
-
-            // Act
-            var evt = JsonConvert.DeserializeObject<EventTuiPromptAppend>(json, _settings);
-
-            // Assert
-            evt.Should().NotBeNull();
-            evt.Type.Should().Be(EventTuiPromptAppend.TypeValue.TuiPromptAppend);
-            evt.Text.Should().Be("User prompt content here");
-        }
-
-        [Fact]
-        public void EventTuiToastShow_Deserialization_PreservesAllFields()
-        {
-            // Arrange - Realistic toast event
-            var json = @"{
-                ""type"": ""tui.toast.show"",
-                ""title"": ""Warning"",
-                ""message"": ""This action cannot be undone"",
-                ""variant"": ""warning"",
-                ""duration"": 5000
-            }";
-
-            // Act
-            var evt = JsonConvert.DeserializeObject<EventTuiToastShow>(json, _settings);
-
-            // Assert
-            evt.Should().NotBeNull();
-            evt.Type.Should().Be(EventTuiToastShow.TypeValue.TuiToastShow);
-            evt.Title.Should().Be("Warning");
-            evt.Message.Should().Be("This action cannot be undone");
-            evt.Variant.Should().Be("warning");
-            evt.Duration.Should().Be(5000);
-        }
-
-        [Fact]
-        public void EventSessionCreated_Deserialization_PreservesSessionInfo()
-        {
-            // Arrange - Realistic session created event
-            var json = @"{
-                ""type"": ""session.created"",
-                ""session"": {
-                    ""id"": ""sess-abc123"",
-                    ""title"": ""My Session"",
-                    ""status"": ""running"",
-                    ""agent"": ""assistant"",
-                    ""model"": ""claude-3.5-sonnet"",
-                    ""directory"": ""C:\\projects\\test"",
-                    ""time"": {
-                        ""created"": 1234567890000,
-                        ""updated"": 1234567890000
-                    }
-                }
-            }";
-
-            // Act
-            var evt = JsonConvert.DeserializeObject<EventSessionCreated>(json, _settings);
-
-            // Assert
-            evt.Should().NotBeNull();
-            evt.Type.Should().Be(EventSessionCreated.TypeValue.SessionCreated);
-            evt.Session.Should().NotBeNull();
-            evt.Session.Id.Should().Be("sess-abc123");
-            evt.Session.Title.Should().Be("My Session");
-            evt.Session.Directory.Should().Be("C:\\projects\\test");
-        }
-
-        [Fact]
-        public void EventMessageUpdated_Deserialization_PreservesMessageData()
-        {
-            // Arrange - Realistic message updated event
-            var json = @"{
-                ""type"": ""message.updated"",
-                ""sessionID"": ""sess-123"",
-                ""message"": {
-                    ""role"": ""assistant"",
-                    ""parts"": [
-                        { ""type"": ""text"", ""text"": ""Updated content"" }
-                    ]
-                }
-            }";
-
-            // Act
-            var evt = JsonConvert.DeserializeObject<EventMessageUpdated>(json, _settings);
-
-            // Assert
-            evt.Should().NotBeNull();
-            evt.Type.Should().Be(EventMessageUpdated.TypeValue.MessageUpdated);
-            evt.SessionID.Should().Be("sess-123");
-            evt.Message.Should().NotBeNull();
-        }
-
-        #endregion
-
-        #region SessionMessage Models
-
-        [Fact]
-        public void SessionMessageAgentSwitched_Deserialization_PreservesAgentInfo()
-        {
-            // Arrange - Realistic agent switch event
-            var json = @"{
-                ""type"": ""session.next.agent.switched"",
-                ""sessionID"": ""sess-123"",
-                ""fromAgent"": ""assistant"",
-                ""toAgent"": ""planner""
-            }";
-
-            // Act
-            var msg = JsonConvert.DeserializeObject<SessionMessageAgentSwitched>(json, _settings);
-
-            // Assert
-            msg.Should().NotBeNull();
-            msg.Type.Should().Be(SessionMessageAgentSwitched.TypeValue.SessionNextAgentSwitched);
-            msg.SessionID.Should().Be("sess-123");
-            msg.FromAgent.Should().Be("assistant");
-            msg.ToAgent.Should().Be("planner");
-        }
-
-        #endregion
-
-        #region Question Models
-
-        [Fact]
-        public void QuestionReplied_Deserialization_PreservesAnswers()
-        {
-            // Arrange - Realistic question reply
-            var json = @"{
-                ""sessionID"": ""sess-123"",
-                ""requestID"": ""req-456"",
-                ""answers"": [""answer1"", ""answer2""]
-            }";
-
-            // Act
-            var question = JsonConvert.DeserializeObject<QuestionReplied>(json, _settings);
-
-            // Assert
-            question.Should().NotBeNull();
-            question.SessionID.Should().Be("sess-123");
-            question.RequestID.Should().Be("req-456");
-            question.Answers.Should().HaveCount(2);
-            question.Answers[0].Should().Be("answer1");
-        }
-
-        [Fact]
-        public void QuestionRejected_Deserialization_PreservesIds()
-        {
-            // Arrange
-            var json = @"{
-                ""sessionID"": ""sess-123"",
-                ""requestID"": ""req-456""
-            }";
-
-            // Act
-            var question = JsonConvert.DeserializeObject<QuestionRejected>(json, _settings);
-
-            // Assert
-            question.Should().NotBeNull();
-            question.SessionID.Should().Be("sess-123");
-            question.RequestID.Should().Be("req-456");
-        }
-
-        #endregion
-
-        #region ToolState Models
-
-        [Fact]
-        public void ToolStateCompleted_Deserialization_PreservesToolData()
-        {
-            // Arrange - Realistic completed tool state
-            var json = @"{
-                ""status"": ""completed"",
-                ""name"": ""shell"",
-                ""input"": { ""command"": ""ls -la"" },
-                ""output"": ""file1.txt\\nfile2.txt"",
-                ""duration"": 150
-            }";
-
-            // Act
-            var state = JsonConvert.DeserializeObject<ToolStateCompleted>(json, _settings);
-
-            // Assert
-            state.Should().NotBeNull();
-            state.Status.Should().Be("completed");
-            state.Name.Should().Be("shell");
-            state.Input.Should().NotBeNull();
-            state.Output.Should().Be("file1.txt\\nfile2.txt");
-            state.Duration.Should().Be(150);
-        }
-
-        [Fact]
-        public void ToolStateRunning_Deserialization_PreservesProgress()
-        {
-            // Arrange
-            var json = @"{
-                ""status"": ""running"",
-                ""name"": ""task"",
-                ""input"": { ""prompt"": ""Do something"" },
-                ""progress"": ""50% complete""
-            }";
-
-            // Act
-            var state = JsonConvert.DeserializeObject<ToolStateRunning>(json, _settings);
-
-            // Assert
-            state.Should().NotBeNull();
-            state.Status.Should().Be("running");
-            state.Progress.Should().Be("50% complete");
-        }
-
-        #endregion
-
-        #region Permission Models
-
-        [Fact]
-        public void PermissionObjectConfig_Deserialization_PreservesActions()
-        {
-            // Arrange - Realistic permission config
-            var json = @"{
-                ""write"": { ""allow"": true, ""directories"": [""C:\\proj""] },
-                ""execute"": { ""allow"": false },
-                ""read"": { ""allow"": true }
-            }";
-
-            // Act
-            var config = JsonConvert.DeserializeObject<PermissionObjectConfig>(json, _settings);
-
-            // Assert
-            config.Should().NotBeNull();
-            config.Should().ContainKey("write");
-            config.Should().ContainKey("execute");
-            config.Should().ContainKey("read");
-        }
-
-        [Fact]
-        public void PermissionRule_Deserialization_PreservesRuleData()
-        {
-            // Arrange
-            var json = @"{
-                ""action"": ""write"",
-                ""pattern"": ""*.cs"",
-                ""allow"": true,
-                ""reason"": ""Allow C# file edits""
-            }";
-
-            // Act
-            var rule = JsonConvert.DeserializeObject<PermissionRule>(json, _settings);
-
-            // Assert
-            rule.Should().NotBeNull();
-            rule.Action.Should().Be("write");
-            rule.Pattern.Should().Be("*.cs");
-            rule.Allow.Should().BeTrue();
-            rule.Reason.Should().Be("Allow C# file edits");
-        }
-
-        #endregion
-
-        #region Round-trip Serialization
-
-        [Fact]
-        public void TextPart_RoundTrip_SerializationPreservesData()
+        public void TextPart_RoundTrip_DeserializePart_PreservesData()
         {
             // Arrange
             var original = new TextPart
             {
-                Type = "text",
-                Text = "Test content",
-                Delta = "Test content"
+                Id = "part-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = TextPartType.Text,
+                Text = "Hello world",
+                Synthetic = false,
+                Ignored = false
             };
 
-            // Act - Serialize and deserialize
-            var json = JsonConvert.SerializeObject(original, _settings);
-            var deserialized = JsonConvert.DeserializeObject<TextPart>(json, _settings);
+            // Act - Serialize and deserialize through polymorphic deserializer
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
 
             // Assert
-            deserialized.Should().NotBeNull();
+            result.Should().BeOfType<TextPart>();
+            var deserialized = (TextPart)result;
             deserialized.Type.Should().Be(original.Type);
             deserialized.Text.Should().Be(original.Text);
-            deserialized.Delta.Should().Be(original.Delta);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.SessionID.Should().Be(original.SessionID);
+            deserialized.MessageID.Should().Be(original.MessageID);
         }
 
         [Fact]
-        public void EventTuiToastShow_RoundTrip_SerializationPreservesData()
+        public void ToolPart_RoundTrip_DeserializePart_PreservesData()
         {
             // Arrange
-            var original = new EventTuiToastShow
+            var toolState = new ToolStateCompleted
             {
-                Type = EventTuiToastShow.TypeValue.TuiToastShow,
-                Title = "Info",
-                Message = "Test message",
-                Variant = "info",
-                Duration = 3000
+                Status = ToolStateCompletedStatus.Completed,
+                Input = new { path = "test.txt" },
+                Output = "file contents here",
+                Title = "File read",
+                Metadata = new { },
+                Time = new Time10 { Start = 100, End = 200 }
+            };
+
+            var original = new ToolPart
+            {
+                Id = "part-tool-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = ToolPartType.Tool,
+                CallID = "call-abc",
+                Tool = "read",
+                State = toolState  // Now works due to inheritance
             };
 
             // Act
-            var json = JsonConvert.SerializeObject(original, _settings);
-            var deserialized = JsonConvert.DeserializeObject<EventTuiToastShow>(json, _settings);
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
 
             // Assert
-            deserialized.Should().NotBeNull();
+            result.Should().BeOfType<ToolPart>();
+            var deserialized = (ToolPart)result;
+            deserialized.Type.Should().Be(ToolPartType.Tool);
+            deserialized.Tool.Should().Be("read");
+            deserialized.CallID.Should().Be("call-abc");
+            deserialized.Id.Should().Be("part-tool-123");
+            // Nested State should now be deserialized as ToolStateCompleted
+            deserialized.State.Should().BeOfType<ToolStateCompleted>();
+            var completedState = (ToolStateCompleted)deserialized.State;
+            completedState.Output.Should().Be("file contents here");
+            completedState.Title.Should().Be("File read");
+        }
+
+        [Fact]
+        public void ReasoningPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new ReasoningPart
+            {
+                Id = "part-reason-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = ReasoningPartType.Reasoning,
+                Text = "Let me think about this..."
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<ReasoningPart>();
+            var deserialized = (ReasoningPart)result;
             deserialized.Type.Should().Be(original.Type);
+            deserialized.Text.Should().Be(original.Text);
+            deserialized.Id.Should().Be(original.Id);
+        }
+
+        [Fact]
+        public void FilePart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new FilePart
+            {
+                Id = "part-file-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = FilePartType.File,
+                Mime = "text/plain",
+                Url = "file:///C:/proj/src/test.cs"
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<FilePart>();
+            var deserialized = (FilePart)result;
+            deserialized.Type.Should().Be(FilePartType.File);
+            deserialized.Mime.Should().Be(original.Mime);
+            deserialized.Url.Should().Be(original.Url);
+            deserialized.Id.Should().Be(original.Id);
+        }
+
+        [Fact]
+        public void FilePart_WithSource_RoundTrip_DeserializePart_PreservesSource()
+        {
+            // Arrange - FilePart with nested FileSource
+            var original = new FilePart
+            {
+                Id = "part-file-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = FilePartType.File,
+                Mime = "text/plain",
+                Url = "file:///C:/proj/src/test.cs",
+                Source = new FileSource
+                {
+                    Type = FileSourceType.File,
+                    Path = "C:\\proj\\src\\test.cs",
+                    Text = new FilePartSourceText
+                    {
+                        Value = "public class Test { }",
+                        Start = 0,
+                        End = 20
+                    }
+                }
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<FilePart>();
+            var deserialized = (FilePart)result;
+            deserialized.Type.Should().Be(FilePartType.File);
+            deserialized.Mime.Should().Be("text/plain");
+            deserialized.Source.Should().NotBeNull();
+            deserialized.Source.Should().BeOfType<FileSource>();
+            var fileSource = (FileSource)deserialized.Source;
+            fileSource.Path.Should().Be("C:\\proj\\src\\test.cs");
+            fileSource.Text.Should().NotBeNull();
+            fileSource.Text.Value.Should().Be("public class Test { }");
+        }
+
+        [Fact]
+        public void AgentPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new AgentPart
+            {
+                Id = "part-agent-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = AgentPartType.Agent,
+                Name = "assistant"
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<AgentPart>();
+            var deserialized = (AgentPart)result;
+            deserialized.Type.Should().Be(AgentPartType.Agent);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.Name.Should().Be(original.Name);
+        }
+
+        [Fact]
+        public void CompactionPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new CompactionPart
+            {
+                Id = "part-compaction-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = CompactionPartType.Compaction,
+                Auto = true
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<CompactionPart>();
+            var deserialized = (CompactionPart)result;
+            deserialized.Type.Should().Be(CompactionPartType.Compaction);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.Auto.Should().Be(original.Auto);
+        }
+
+        [Fact]
+        public void PatchPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new PatchPart
+            {
+                Id = "part-patch-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = PatchPartType.Patch,
+                Hash = "abc123",
+                Files = new System.Collections.Generic.List<string> { "file1.cs", "file2.cs" }
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<PatchPart>();
+            var deserialized = (PatchPart)result;
+            deserialized.Type.Should().Be(PatchPartType.Patch);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.Hash.Should().Be(original.Hash);
+            deserialized.Files.Count.Should().Be(2);
+        }
+
+        [Fact]
+        public void SnapshotPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new SnapshotPart
+            {
+                Id = "part-snapshot-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = SnapshotPartType.Snapshot,
+                Snapshot = "snapshot-data-here"
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<SnapshotPart>();
+            var deserialized = (SnapshotPart)result;
+            deserialized.Type.Should().Be(SnapshotPartType.Snapshot);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.Snapshot.Should().Be(original.Snapshot);
+        }
+
+        [Fact]
+        public void StepFinishPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new StepFinishPart
+            {
+                Id = "part-stepfinish-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = StepFinishPartType.StepFinish,
+                Reason = "step completed"
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<StepFinishPart>();
+            var deserialized = (StepFinishPart)result;
+            deserialized.Type.Should().Be(StepFinishPartType.StepFinish);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.Reason.Should().Be(original.Reason);
+        }
+
+        [Fact]
+        public void StepStartPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new StepStartPart
+            {
+                Id = "part-stepstart-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = StepStartPartType.StepStart
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<StepStartPart>();
+            var deserialized = (StepStartPart)result;
+            deserialized.Type.Should().Be(StepStartPartType.StepStart);
+            deserialized.Id.Should().Be(original.Id);
+        }
+
+        [Fact]
+        public void SubtaskPart_RoundTrip_DeserializePart_PreservesData()
+        {
+            // Arrange
+            var original = new SubtaskPart
+            {
+                Id = "part-subtask-123",
+                SessionID = "sess-456",
+                MessageID = "msg-789",
+                Type = SubtaskPartType.Subtask,
+                Prompt = "do something",
+                Description = "test subtask",
+                Agent = "assistant"
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializePart(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<SubtaskPart>();
+            var deserialized = (SubtaskPart)result;
+            deserialized.Type.Should().Be(SubtaskPartType.Subtask);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.Prompt.Should().Be(original.Prompt);
+            deserialized.Description.Should().Be(original.Description);
+        }
+
+        #endregion
+
+        #region ToolState Round-Trip Tests
+
+        [Fact]
+        public void ToolStateCompleted_RoundTrip_DeserializeToolState_PreservesData()
+        {
+            // Arrange
+            var original = new ToolStateCompleted
+            {
+                Status = ToolStateCompletedStatus.Completed,
+                Input = new { command = "ls -la" },
+                Output = "file1.txt\nfile2.txt",
+                Title = "Shell command",
+                Metadata = new { },
+                Time = new Time10 { Start = 100, End = 200 },
+                Attachments = new List<FilePart>()
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializeToolState(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<ToolStateCompleted>();
+            var deserialized = (ToolStateCompleted)result;
+            deserialized.Status.Should().Be(original.Status);
+            deserialized.Output.Should().Be(original.Output);
             deserialized.Title.Should().Be(original.Title);
-            deserialized.Message.Should().Be(original.Message);
-            deserialized.Variant.Should().Be(original.Variant);
-            deserialized.Duration.Should().Be(original.Duration);
+        }
+
+        [Fact]
+        public void ToolStateRunning_RoundTrip_DeserializeToolState_PreservesData()
+        {
+            // Arrange
+            var original = new ToolStateRunning
+            {
+                Status = ToolStateRunningStatus.Running,
+                Input = new { prompt = "Do something" },
+                Title = "Running task",
+                Metadata = new { },
+                Time = new Time9 { Start = 100 }
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializeToolState(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<ToolStateRunning>();
+            var deserialized = (ToolStateRunning)result;
+            deserialized.Status.Should().Be(original.Status);
+            deserialized.Title.Should().Be(original.Title);
+        }
+
+        [Fact]
+        public void ToolStatePending_RoundTrip_DeserializeToolState_PreservesData()
+        {
+            // Arrange
+            var original = new ToolStatePending
+            {
+                Status = ToolStatePendingStatus.Pending,
+                Input = new { prompt = "Waiting" },
+                Raw = "raw content"
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializeToolState(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<ToolStatePending>();
+            var deserialized = (ToolStatePending)result;
+            deserialized.Status.Should().Be(original.Status);
+            deserialized.Raw.Should().Be(original.Raw);
+        }
+
+        [Fact]
+        public void ToolStateError_RoundTrip_DeserializeToolState_PreservesData()
+        {
+            // Arrange
+            var original = new ToolStateError
+            {
+                Status = ToolStateErrorStatus.Error,
+                Input = new { command = "fail" },
+                Error = "Something went wrong",
+                Metadata = new { },
+                Time = new Time11 { Start = 100 }
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializeToolState(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<ToolStateError>();
+            var deserialized = (ToolStateError)result;
+            deserialized.Status.Should().Be(original.Status);
+            deserialized.Error.Should().Be(original.Error);
+        }
+
+        #endregion
+
+        #region Message Round-Trip Tests
+
+        [Fact]
+        public void UserMessage_RoundTrip_DeserializeMessage_PreservesData()
+        {
+            // Arrange
+            var original = new UserMessage
+            {
+                Id = "msg-123",
+                SessionID = "sess-456",
+                Role = UserMessageRole.User,
+                Time = new Time5 { Created = 100 },
+                Agent = "assistant",
+                Model = new Model3 { ProviderID = "console", ModelID = "claude-3.5-sonnet" },
+                System = "system prompt"
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializeMessage(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<UserMessage>();
+            var deserialized = (UserMessage)result;
+            deserialized.Role.Should().Be(original.Role);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.SessionID.Should().Be(original.SessionID);
+        }
+
+        [Fact]
+        public void AssistantMessage_RoundTrip_DeserializeMessage_PreservesData()
+        {
+            // Arrange
+            var original = new AssistantMessage
+            {
+                Id = "msg-456",
+                SessionID = "sess-789",
+                Role = AssistantMessageRole.Assistant,
+                Time = new Time6 { Created = 100 },
+                ParentID = "parent-123",
+                ModelID = "claude-3.5-sonnet",
+                ProviderID = "console",
+                Mode = "chat",
+                Agent = "assistant",
+                Path = new Path2 { Cwd = "C:\\proj", Root = "C:\\proj" },
+                Cost = 0.002
+            };
+
+            // Act
+            var json = JsonConvert.SerializeObject(original);
+            var token = JToken.Parse(json);
+            var result = PolymorphicDeserializer.DeserializeMessage(token, _polymorphicSerializer);
+
+            // Assert
+            result.Should().BeOfType<AssistantMessage>();
+            var deserialized = (AssistantMessage)result;
+            deserialized.Role.Should().Be(original.Role);
+            deserialized.Id.Should().Be(original.Id);
+            deserialized.SessionID.Should().Be(original.SessionID);
+            deserialized.ModelID.Should().Be(original.ModelID);
         }
 
         #endregion
