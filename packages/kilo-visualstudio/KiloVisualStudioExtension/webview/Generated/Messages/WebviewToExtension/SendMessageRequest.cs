@@ -23,25 +23,36 @@ public class SendMessageRequest
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("messageID")]
-    public object? MessageID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? MessageID { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
     [JsonProperty("draftID")]
-    public object? DraftID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? DraftID { get; set; }
     [JsonProperty("providerID")]
-    public object? ProviderID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ProviderID { get; set; }
     [JsonProperty("modelID")]
-    public object? ModelID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ModelID { get; set; }
     [JsonProperty("agent")]
-    public object? Agent { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Agent { get; set; }
     [JsonProperty("variant")]
-    public object? Variant { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Variant { get; set; }
     [JsonProperty("files")]
-    public object? Files { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Files { get; set; }
     [JsonProperty("review")]
-    public object? Review { get; set; }
+    // Original TypeScript type: undefined | ReviewMessageData
+    public ReviewMessageData? Review { get; set; }
     [JsonProperty("agentManagerContext")]
-    public object? AgentManagerContext { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? AgentManagerContext { get; set; }
     [JsonProperty("contextDirectory")]
-    public object? ContextDirectory { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ContextDirectory { get; set; }
 }

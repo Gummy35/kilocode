@@ -22,7 +22,8 @@ public class EncodedAudioChunk
     [JsonProperty("byteLength")]
     public double ByteLength { get; set; }
     [JsonProperty("duration")]
-    public object Duration { get; set; }
+    // Original TypeScript type: null | number
+    public double? Duration { get; set; }
     [JsonProperty("timestamp")]
     public double Timestamp { get; set; }
     public string Type { get; set; }

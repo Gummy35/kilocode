@@ -20,20 +20,25 @@ using Newtonsoft.Json;
 public class MutationRecord
 {
     [JsonProperty("addedNodes")]
-    public object AddedNodes { get; set; }
+    public NodeList AddedNodes { get; set; }
     [JsonProperty("attributeName")]
-    public object AttributeName { get; set; }
+    // Original TypeScript type: null | string
+    public string? AttributeName { get; set; }
     [JsonProperty("attributeNamespace")]
-    public object AttributeNamespace { get; set; }
+    // Original TypeScript type: null | string
+    public string? AttributeNamespace { get; set; }
     [JsonProperty("nextSibling")]
-    public object NextSibling { get; set; }
+    // Original TypeScript type: null | Node
+    public Node? NextSibling { get; set; }
     [JsonProperty("oldValue")]
-    public object OldValue { get; set; }
+    // Original TypeScript type: null | string
+    public string? OldValue { get; set; }
     [JsonProperty("previousSibling")]
-    public object PreviousSibling { get; set; }
+    // Original TypeScript type: null | Node
+    public Node? PreviousSibling { get; set; }
     [JsonProperty("removedNodes")]
-    public object RemovedNodes { get; set; }
+    public NodeList RemovedNodes { get; set; }
     [JsonProperty("target")]
-    public object Target { get; set; }
+    public Node Target { get; set; }
     public string Type { get; set; }
 }

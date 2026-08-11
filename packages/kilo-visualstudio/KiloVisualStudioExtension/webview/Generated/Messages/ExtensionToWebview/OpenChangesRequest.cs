@@ -21,5 +21,6 @@ public class OpenChangesRequest
 {
     public string Type { get; set; }
     [JsonProperty("turnId")]
-    public object? TurnId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? TurnId { get; set; }
 }

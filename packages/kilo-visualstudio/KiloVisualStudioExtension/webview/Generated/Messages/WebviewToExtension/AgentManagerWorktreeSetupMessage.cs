@@ -25,11 +25,15 @@ public class AgentManagerWorktreeSetupMessage
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("sessionId")]
-    public object? SessionId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionId { get; set; }
     [JsonProperty("branch")]
-    public object? Branch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Branch { get; set; }
     [JsonProperty("worktreeId")]
-    public object? WorktreeId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? WorktreeId { get; set; }
     [JsonProperty("errorCode")]
+    // Original TypeScript type: undefined | "git_not_found" | "not_git_repo" | "lfs_missing"
     public object? ErrorCode { get; set; }
 }

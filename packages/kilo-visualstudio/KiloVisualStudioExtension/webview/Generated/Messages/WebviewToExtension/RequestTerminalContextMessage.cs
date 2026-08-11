@@ -23,5 +23,6 @@ public class RequestTerminalContextMessage
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
 }

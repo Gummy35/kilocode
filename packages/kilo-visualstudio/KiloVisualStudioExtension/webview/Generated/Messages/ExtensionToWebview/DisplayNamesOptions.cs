@@ -20,12 +20,16 @@ using Newtonsoft.Json;
 public class DisplayNamesOptions
 {
     [JsonProperty("localeMatcher")]
+    // Original TypeScript type: undefined | "lookup" | "best fit"
     public object? LocaleMatcher { get; set; }
     [JsonProperty("style")]
+    // Original TypeScript type: undefined | "long" | "short" | "narrow"
     public object? Style { get; set; }
     public string Type { get; set; }
     [JsonProperty("languageDisplay")]
+    // Original TypeScript type: undefined | "standard" | "dialect"
     public object? LanguageDisplay { get; set; }
     [JsonProperty("fallback")]
+    // Original TypeScript type: undefined | "code" | "none"
     public object? Fallback { get; set; }
 }

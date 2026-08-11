@@ -22,6 +22,7 @@ public class ScreenOrientation
     [JsonProperty("angle")]
     public double Angle { get; set; }
     [JsonProperty("onchange")]
-    public object Onchange { get; set; }
+    // Original TypeScript type: null | __type
+    public object? Onchange { get; set; }
     public string Type { get; set; }
 }

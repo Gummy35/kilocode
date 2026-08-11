@@ -25,5 +25,5 @@ public class CloudSessionDataLoadedMessage
     [JsonProperty("title")]
     public string Title { get; set; }
     [JsonProperty("messages")]
-    public List<object> Messages { get; set; }
+    public List<Message> Messages { get; set; }
 }

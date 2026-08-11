@@ -21,5 +21,6 @@ public class PartDelta
 {
     public string Type { get; set; }
     [JsonProperty("textDelta")]
-    public object? TextDelta { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? TextDelta { get; set; }
 }

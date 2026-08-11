@@ -25,5 +25,6 @@ public class RevertSessionRequest
     [JsonProperty("messageID")]
     public string MessageID { get; set; }
     [JsonProperty("partID")]
-    public object? PartID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? PartID { get; set; }
 }

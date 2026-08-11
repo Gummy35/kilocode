@@ -23,5 +23,6 @@ public class NavigateMessage
     [JsonProperty("view")]
     public string View { get; set; }
     [JsonProperty("tab")]
-    public object? Tab { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Tab { get; set; }
 }

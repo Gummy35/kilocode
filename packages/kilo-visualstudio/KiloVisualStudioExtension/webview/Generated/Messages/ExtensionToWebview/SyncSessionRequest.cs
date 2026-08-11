@@ -23,5 +23,6 @@ public class SyncSessionRequest
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("parentSessionID")]
-    public object? ParentSessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ParentSessionID { get; set; }
 }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 public class MediaDecodingConfiguration
 {
     [JsonProperty("keySystemConfiguration")]
-    public object? KeySystemConfiguration { get; set; }
+    // Original TypeScript type: undefined | MediaCapabilitiesKeySystemConfiguration
+    public MediaCapabilitiesKeySystemConfiguration? KeySystemConfiguration { get; set; }
     public string Type { get; set; }
 }

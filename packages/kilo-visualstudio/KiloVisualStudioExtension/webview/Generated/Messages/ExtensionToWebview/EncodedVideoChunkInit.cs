@@ -20,9 +20,11 @@ using Newtonsoft.Json;
 public class EncodedVideoChunkInit
 {
     [JsonProperty("data")]
-    public object Data { get; set; }
+    // Original TypeScript type: ArrayBuffer | SharedArrayBuffer | ArrayBufferView
+    public object? Data { get; set; }
     [JsonProperty("duration")]
-    public object? Duration { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Duration { get; set; }
     [JsonProperty("timestamp")]
     public double Timestamp { get; set; }
     public string Type { get; set; }

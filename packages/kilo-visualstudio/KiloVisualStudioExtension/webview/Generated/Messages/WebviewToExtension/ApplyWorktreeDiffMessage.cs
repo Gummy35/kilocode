@@ -23,5 +23,6 @@ public class ApplyWorktreeDiffMessage
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }
     [JsonProperty("selectedFiles")]
-    public object? SelectedFiles { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? SelectedFiles { get; set; }
 }

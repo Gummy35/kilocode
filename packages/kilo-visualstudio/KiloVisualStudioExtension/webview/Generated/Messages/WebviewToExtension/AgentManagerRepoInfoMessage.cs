@@ -23,5 +23,6 @@ public class AgentManagerRepoInfoMessage
     [JsonProperty("branch")]
     public string Branch { get; set; }
     [JsonProperty("defaultBranch")]
-    public object? DefaultBranch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? DefaultBranch { get; set; }
 }

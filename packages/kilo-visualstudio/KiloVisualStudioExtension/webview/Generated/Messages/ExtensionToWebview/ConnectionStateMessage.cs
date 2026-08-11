@@ -23,9 +23,12 @@ public class ConnectionStateMessage
     [JsonProperty("state")]
     public string State { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
     [JsonProperty("userMessage")]
-    public object? UserMessage { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? UserMessage { get; set; }
     [JsonProperty("userDetails")]
-    public object? UserDetails { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? UserDetails { get; set; }
 }

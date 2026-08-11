@@ -21,5 +21,6 @@ public class SetDefaultBaseBranchRequest
 {
     public string Type { get; set; }
     [JsonProperty("branch")]
-    public object? Branch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Branch { get; set; }
 }

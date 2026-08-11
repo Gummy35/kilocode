@@ -21,7 +21,7 @@ public class SessionSearchResultMessage
 {
     public string Type { get; set; }
     [JsonProperty("sessions")]
-    public List<object> Sessions { get; set; }
+    public List<SessionSearchItem> Sessions { get; set; }
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
 }

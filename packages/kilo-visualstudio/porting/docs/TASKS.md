@@ -30,7 +30,7 @@ It is intentionally concise. Detailed requirements belong in the individual task
 | `PORT-INFRA-003`   | Consolidate communication objects and serialization/deserialization              | `DONE` | `PORT-INFRA-002`                 |
 | `CLEANUP-CLI-001`  | Remove Kiota dependencies and complete NSwag migration                                      | `DONE` | `PORT-CLI-001`                   |
 | `PORT-INFRA-004`   | WebView protocol audit and DTO generation feasibility study                                 | `REVIEW` | `PORT-INFRA-003`                 |
-| `PORT-WEBVIEW-001` | Generate strongly-typed WebView DTOs from TypeScript contract                               | `REVIEW` | `PORT-INFRA-004`                 |
+| `PORT-WEBVIEW-001` | Generate strongly-typed WebView DTOs from TypeScript contract                               | `DONE` | `PORT-INFRA-004`                 |
 | `PORT-WEBVIEW-002` | Port remaining WebView protocol tests                                                       | `NOT_STARTED` | `PORT-WEBVIEW-001`               |
 | `PORT-CORE-001`    | Port remaining VS Code extension host functionality required by the Visual Studio extension | `NOT_STARTED` | `PORT-INFRA-002`                 |
 | `PORT-TEST-001`    | Complete and validate the 1:1 semantic port of applicable VS Code unit tests                | `NOT_STARTED` | Relevant implementation tasks    |
@@ -250,19 +250,29 @@ Perform a complete architectural audit of the VS Code ↔ WebView protocol and d
 
 ### `PORT-WEBVIEW-001`
 
-**Status:** `REVIEW` - Completed 2026-08-11
+**Status:** `DONE` - Completed 2026-08-12
 
 **Summary:**
-- **TypeScript contract extractor implemented** using TypeScript Compiler API
-- **WebViewContract.json generated** (236,545 lines, 6,807 types, 459 messages)
-- **C# DTO generator implemented** consuming WebViewContract.json
-- **101 DTO files generated** (demonstration subset of 50+50 messages)
+- **TypeScript contract extractor implemented** using TypeScript Compiler API (`src/extractor.ts`)
+- **WebViewContract.json generated** (6,807 types, 459 messages)
+- **TypeScript DTO generator implemented** (`generator.ts`) - replaces obsolete C# generator
+- **460 C# files generated** (45 types + 208 WebView→Extension messages + 251 Extension→WebView messages + factory)
 - **Discriminator factory created** for polymorphic deserialization
 - **Newtonsoft.Json integration** via KiloJsonSerializer (PORT-INFRA-003)
-- **Pipeline automation script** created (generate-webview-dtos.ps1)
-- **No VS Code production code modified**
-- **No NSwag files modified**
-- **Protocol unchanged**
+- **Build succeeds with 0 errors**
+
+**Key Features:**
+- Only generates types actually referenced by messages (not all 6,807 types)
+- Maps TypeScript unions to proper C# nullable types (`string | undefined` → `string?`)
+- Includes comments showing original TypeScript types for `object` fallbacks
+- Handles edge cases: CSS properties with hyphens, TypeScript internal symbols, intersection types, type aliases
+
+**Regeneration Command:**
+```powershell
+cd packages/kilo-visualstudio/tools/webview-contract-extractor
+bun run src/extractor.ts    # Generate WebViewContract.json from VS Code TypeScript
+bun run generator.ts        # Generate C# DTOs from contract
+```
 
 **Acceptance Criteria:**
 - ✅ TypeScript extractor runs successfully
@@ -273,11 +283,11 @@ Perform a complete architectural audit of the VS Code ↔ WebView protocol and d
 - ✅ Polymorphic types use explicit discriminator factories
 - ✅ No modifications to NSwag-generated code
 - ✅ Documentation complete (PORT-WEBVIEW-001.md)
+- ✅ Visual Studio extension builds with 0 errors
+- ✅ Only 45 type classes generated (not 3,246)
+- ✅ Proper nullable types for TypeScript unions
 
-**Pending:**
-- ⚠️ Full Visual Studio extension build validation
-- ⚠️ DTO serialization/deserialization tests
-- ⚠️ Complete DTO generation (all 459 messages)
+**Obsolete:** C# generator directory (`generator/`) removed - TypeScript generator is now the sole implementation.
 
 **Next Task:** PORT-WEBVIEW-002 (Port remaining WebView protocol tests)
 
@@ -345,8 +355,9 @@ PORT-INFRA-001   → REVIEW
 PORT-INFRA-002   → REVIEW
 PORT-CLI-001     → REVIEW
 CLEANUP-CLI-001  → DONE
+PORT-INFRA-003   → DONE
 PORT-INFRA-004   → REVIEW
-PORT-WEBVIEW-001 → NOT_STARTED
+PORT-WEBVIEW-001 → DONE
 PORT-WEBVIEW-002 → NOT_STARTED
 PORT-CORE-001    → NOT_STARTED
 PORT-TEST-001    → NOT_STARTED

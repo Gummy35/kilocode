@@ -23,5 +23,5 @@ public class ValidateFilesResultMessage
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("existing")]
-    public List<object> Existing { get; set; }
+    public List<string> Existing { get; set; }
 }

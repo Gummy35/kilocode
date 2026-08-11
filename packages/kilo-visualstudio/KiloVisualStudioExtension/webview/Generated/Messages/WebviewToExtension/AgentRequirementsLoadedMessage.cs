@@ -21,5 +21,6 @@ public class AgentRequirementsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("result")]
+    // Original TypeScript type: AgentRequirementResult
     public object Result { get; set; }
 }

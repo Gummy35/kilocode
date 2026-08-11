@@ -23,5 +23,6 @@ public class FilePartSource
     [JsonProperty("path")]
     public string Path { get; set; }
     [JsonProperty("text")]
+    // Original TypeScript type: __type
     public object Text { get; set; }
 }

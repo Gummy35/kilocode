@@ -21,5 +21,5 @@ public class FavoritesLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("favorites")]
-    public List<object> Favorites { get; set; }
+    public List<ModelSelection> Favorites { get; set; }
 }

@@ -23,9 +23,12 @@ public class ToolPart
     [JsonProperty("tool")]
     public string Tool { get; set; }
     [JsonProperty("state")]
-    public object State { get; set; }
+    // Original TypeScript type: __type | __type | __type | __type
+    public object? State { get; set; }
     [JsonProperty("metadata")]
+    // Original TypeScript type: undefined | __type
     public object? Metadata { get; set; }
     [JsonProperty("callID")]
-    public object? CallID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? CallID { get; set; }
 }

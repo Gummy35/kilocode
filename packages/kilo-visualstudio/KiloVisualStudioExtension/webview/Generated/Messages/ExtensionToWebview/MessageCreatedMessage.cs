@@ -21,5 +21,5 @@ public class MessageCreatedMessage
 {
     public string Type { get; set; }
     [JsonProperty("message")]
-    public object Message { get; set; }
+    public Message Message { get; set; }
 }

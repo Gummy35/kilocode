@@ -25,5 +25,5 @@ public class MigrationCompleteMessage
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("results")]
-    public List<object> Results { get; set; }
+    public List<MigrationResultItem> Results { get; set; }
 }

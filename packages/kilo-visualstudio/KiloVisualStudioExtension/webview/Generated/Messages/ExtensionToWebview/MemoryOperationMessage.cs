@@ -23,19 +23,27 @@ public class MemoryOperationMessage
     [JsonProperty("operation")]
     public string Operation { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
     [JsonProperty("mode")]
+    // Original TypeScript type: undefined | "off" | "on" | "status"
     public object? Mode { get; set; }
     [JsonProperty("confirm")]
+    // Original TypeScript type: undefined | false | true
     public object? Confirm { get; set; }
     [JsonProperty("text")]
-    public object? Text { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Text { get; set; }
     [JsonProperty("query")]
-    public object? Query { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Query { get; set; }
     [JsonProperty("key")]
-    public object? Key { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Key { get; set; }
     [JsonProperty("file")]
+    // Original TypeScript type: undefined | md" | md" | md"
     public object? File { get; set; }
     [JsonProperty("section")]
-    public object? Section { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Section { get; set; }
 }

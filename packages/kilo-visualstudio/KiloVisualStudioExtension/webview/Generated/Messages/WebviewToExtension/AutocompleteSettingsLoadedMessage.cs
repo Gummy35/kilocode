@@ -21,5 +21,6 @@ public class AutocompleteSettingsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("settings")]
+    // Original TypeScript type: __type
     public object Settings { get; set; }
 }

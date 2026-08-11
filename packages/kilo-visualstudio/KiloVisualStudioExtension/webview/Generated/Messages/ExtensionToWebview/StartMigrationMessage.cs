@@ -25,5 +25,6 @@ public class StartMigrationMessage
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("selections")]
+    // Original TypeScript type: __type
     public object Selections { get; set; }
 }

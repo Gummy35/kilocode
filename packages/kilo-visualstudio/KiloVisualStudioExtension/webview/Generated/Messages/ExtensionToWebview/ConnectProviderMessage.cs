@@ -27,5 +27,6 @@ public class ConnectProviderMessage
     [JsonProperty("apiKey")]
     public string ApiKey { get; set; }
     [JsonProperty("metadata")]
+    // Original TypeScript type: undefined | __type
     public object? Metadata { get; set; }
 }

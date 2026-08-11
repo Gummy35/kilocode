@@ -27,5 +27,6 @@ public class AgentManagerMultiVersionProgressMessage
     [JsonProperty("completed")]
     public double Completed { get; set; }
     [JsonProperty("groupId")]
-    public object? GroupId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? GroupId { get; set; }
 }

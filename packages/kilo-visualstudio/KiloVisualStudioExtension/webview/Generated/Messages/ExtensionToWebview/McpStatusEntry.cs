@@ -21,5 +21,6 @@ public class McpStatusEntry
 {
     public string Status { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
 }

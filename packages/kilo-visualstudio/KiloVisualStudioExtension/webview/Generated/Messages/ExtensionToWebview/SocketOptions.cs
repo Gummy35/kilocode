@@ -21,19 +21,27 @@ public class SocketOptions
 {
     public string Type { get; set; }
     [JsonProperty("reuseAddr")]
+    // Original TypeScript type: undefined | false | true
     public object? ReuseAddr { get; set; }
     [JsonProperty("reusePort")]
+    // Original TypeScript type: undefined | false | true
     public object? ReusePort { get; set; }
     [JsonProperty("ipv6Only")]
+    // Original TypeScript type: undefined | false | true
     public object? Ipv6Only { get; set; }
     [JsonProperty("recvBufferSize")]
-    public object? RecvBufferSize { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? RecvBufferSize { get; set; }
     [JsonProperty("sendBufferSize")]
-    public object? SendBufferSize { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? SendBufferSize { get; set; }
     [JsonProperty("lookup")]
+    // Original TypeScript type: undefined | __type
     public object? Lookup { get; set; }
     [JsonProperty("receiveBlockList")]
+    // Original TypeScript type: undefined | BlockList
     public object? ReceiveBlockList { get; set; }
     [JsonProperty("sendBlockList")]
+    // Original TypeScript type: undefined | BlockList
     public object? SendBlockList { get; set; }
 }

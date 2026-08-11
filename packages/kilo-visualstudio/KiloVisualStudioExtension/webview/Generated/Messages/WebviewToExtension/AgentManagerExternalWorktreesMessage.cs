@@ -21,5 +21,5 @@ public class AgentManagerExternalWorktreesMessage
 {
     public string Type { get; set; }
     [JsonProperty("worktrees")]
-    public List<object> Worktrees { get; set; }
+    public List<ExternalWorktreeInfo> Worktrees { get; set; }
 }

@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 public class CryptoKey
 {
     [JsonProperty("algorithm")]
-    public object Algorithm { get; set; }
+    public KeyAlgorithm Algorithm { get; set; }
     [JsonProperty("extractable")]
     public string Extractable { get; set; }
     public string Type { get; set; }

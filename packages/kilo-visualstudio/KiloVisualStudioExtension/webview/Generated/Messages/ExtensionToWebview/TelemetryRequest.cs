@@ -23,5 +23,6 @@ public class TelemetryRequest
     [JsonProperty("event")]
     public string Event { get; set; }
     [JsonProperty("properties")]
+    // Original TypeScript type: undefined | __type
     public object? Properties { get; set; }
 }

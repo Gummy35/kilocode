@@ -21,5 +21,5 @@ public class AgentManagerTerminalFontChangedMessage
 {
     public string Type { get; set; }
     [JsonProperty("font")]
-    public object Font { get; set; }
+    public TerminalFont Font { get; set; }
 }

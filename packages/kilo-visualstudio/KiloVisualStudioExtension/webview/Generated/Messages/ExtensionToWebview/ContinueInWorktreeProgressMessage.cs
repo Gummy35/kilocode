@@ -23,7 +23,9 @@ public class ContinueInWorktreeProgressMessage
     [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("detail")]
-    public object? Detail { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Detail { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
 }

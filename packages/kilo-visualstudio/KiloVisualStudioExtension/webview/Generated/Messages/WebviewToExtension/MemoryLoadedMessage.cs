@@ -21,9 +21,12 @@ public class MemoryLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
     [JsonProperty("status")]
+    // Original TypeScript type: undefined | __type
     public object? Status { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
 }

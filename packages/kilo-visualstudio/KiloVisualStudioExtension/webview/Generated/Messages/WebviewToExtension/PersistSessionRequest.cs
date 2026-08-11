@@ -23,5 +23,6 @@ public class PersistSessionRequest
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("draftID")]
-    public object? DraftID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? DraftID { get; set; }
 }

@@ -32,7 +32,7 @@ public class FontFace
     [JsonProperty("lineGapOverride")]
     public string LineGapOverride { get; set; }
     [JsonProperty("loaded")]
-    public object Loaded { get; set; }
+    public Promise Loaded { get; set; }
     public string Status { get; set; }
     [JsonProperty("stretch")]
     public string Stretch { get; set; }

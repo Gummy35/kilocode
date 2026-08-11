@@ -25,7 +25,8 @@ public class DiffSourceDescriptor
     [JsonProperty("group")]
     public string Group { get; set; }
     [JsonProperty("icon")]
-    public object? Icon { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Icon { get; set; }
     [JsonProperty("capabilities")]
-    public object Capabilities { get; set; }
+    public DiffSourceCapabilities Capabilities { get; set; }
 }

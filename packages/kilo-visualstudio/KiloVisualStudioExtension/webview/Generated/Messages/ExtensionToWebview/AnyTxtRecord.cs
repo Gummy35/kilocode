@@ -21,5 +21,5 @@ public class AnyTxtRecord
 {
     public string Type { get; set; }
     [JsonProperty("entries")]
-    public List<object> Entries { get; set; }
+    public List<string> Entries { get; set; }
 }

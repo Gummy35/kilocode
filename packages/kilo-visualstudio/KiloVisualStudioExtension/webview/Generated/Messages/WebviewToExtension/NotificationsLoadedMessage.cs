@@ -21,7 +21,7 @@ public class NotificationsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("notifications")]
-    public List<object> Notifications { get; set; }
+    public List<KilocodeNotification> Notifications { get; set; }
     [JsonProperty("dismissedIds")]
-    public List<object> DismissedIds { get; set; }
+    public List<string> DismissedIds { get; set; }
 }

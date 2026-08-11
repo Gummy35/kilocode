@@ -23,7 +23,9 @@ public class ForkSessionRequest
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("worktreeId")]
-    public object? WorktreeId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? WorktreeId { get; set; }
     [JsonProperty("messageId")]
-    public object? MessageId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? MessageId { get; set; }
 }

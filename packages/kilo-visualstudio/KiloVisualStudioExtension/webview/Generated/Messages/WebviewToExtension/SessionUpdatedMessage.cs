@@ -21,5 +21,6 @@ public class SessionUpdatedMessage
 {
     public string Type { get; set; }
     [JsonProperty("session")]
+    // Original TypeScript type: SessionUpdate
     public object Session { get; set; }
 }

@@ -20,12 +20,15 @@ using Newtonsoft.Json;
 public class FontFaceSet
 {
     [JsonProperty("onloading")]
-    public object Onloading { get; set; }
+    // Original TypeScript type: null | __type
+    public object? Onloading { get; set; }
     [JsonProperty("onloadingdone")]
-    public object Onloadingdone { get; set; }
+    // Original TypeScript type: null | __type
+    public object? Onloadingdone { get; set; }
     [JsonProperty("onloadingerror")]
-    public object Onloadingerror { get; set; }
+    // Original TypeScript type: null | __type
+    public object? Onloadingerror { get; set; }
     [JsonProperty("ready")]
-    public object Ready { get; set; }
+    public Promise Ready { get; set; }
     public string Status { get; set; }
 }

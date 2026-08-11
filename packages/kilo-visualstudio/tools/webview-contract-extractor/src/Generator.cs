@@ -19,6 +19,8 @@ namespace WebViewContractGenerator
     {
         private readonly GeneratorOptions _options;
         private readonly JsonSerializerOptions _jsonOptions;
+        private readonly HashSet<string> _generatedTypes;
+        private readonly Dictionary<string, TypeDefinition> _typeDefinitions;
 
         public Generator(GeneratorOptions options)
         {
@@ -28,6 +30,8 @@ namespace WebViewContractGenerator
                 PropertyNameCaseInsensitive = true,
                 WriteIndented = true
             };
+            _generatedTypes = new HashSet<string>();
+            _typeDefinitions = new Dictionary<string, TypeDefinition>();
         }
 
         public void Generate()
@@ -58,14 +62,19 @@ namespace WebViewContractGenerator
             Console.WriteLine($"Extension→WebView messages: {contract.statistics.extensionToWebviewMessages}");
             Console.WriteLine();
 
+            foreach (var typeDef in contract.types)
+            {
+                _typeDefinitions[typeDef.name] = typeDef;
+            }
+
             var outputDir = _options.OutputPath;
             if (!Directory.Exists(outputDir))
             {
                 Directory.CreateDirectory(outputDir);
             }
 
-            GenerateMessages(contract, outputDir);
             GenerateTypes(contract, outputDir);
+            GenerateMessages(contract, outputDir);
             GenerateFactory(contract, outputDir);
 
             Console.WriteLine();
@@ -83,8 +92,15 @@ namespace WebViewContractGenerator
             Directory.CreateDirectory(webviewToExtDir);
             Directory.CreateDirectory(extToWebviewDir);
 
+            var typesDir = Path.Combine(outputDir, "Types");
+
             foreach (var message in contract.messages.webviewToExtension)
             {
+                foreach (var prop in message.properties)
+                {
+                    GenerateReferencedTypes(prop, typesDir);
+                }
+                
                 var code = GenerateMessageClass(message, _options.Namespace);
                 var filePath = Path.Combine(webviewToExtDir, $"{message.name}.cs");
                 File.WriteAllText(filePath, code);
@@ -93,10 +109,44 @@ namespace WebViewContractGenerator
 
             foreach (var message in contract.messages.extensionToWebview)
             {
+                foreach (var prop in message.properties)
+                {
+                    GenerateReferencedTypes(prop, typesDir);
+                }
+                
                 var code = GenerateMessageClass(message, _options.Namespace);
                 var filePath = Path.Combine(extToWebviewDir, $"{message.name}.cs");
                 File.WriteAllText(filePath, code);
                 Console.WriteLine($"  Generated: {message.name}");
+            }
+        }
+
+        private void GenerateReferencedTypes(PropertyDefinition prop, string typesDir)
+        {
+            if (prop.typeRef != null && _typeDefinitions.ContainsKey(prop.typeRef.name))
+            {
+                var refTypeDef = _typeDefinitions[prop.typeRef.name];
+                if (refTypeDef.kind == "interface" && refTypeDef.properties != null)
+                {
+                    GenerateTypeRecursive(refTypeDef, typesDir);
+                }
+                else if (refTypeDef.kind == "union" && refTypeDef.unionMembers != null)
+                {
+                    GenerateUnionTypesRecursive(refTypeDef, typesDir);
+                }
+            }
+
+            if (prop.elementType != null && _typeDefinitions.ContainsKey(prop.elementType))
+            {
+                var elemTypeDef = _typeDefinitions[prop.elementType];
+                if (elemTypeDef.kind == "interface" && elemTypeDef.properties != null)
+                {
+                    GenerateTypeRecursive(elemTypeDef, typesDir);
+                }
+                else if (elemTypeDef.kind == "union" && elemTypeDef.unionMembers != null)
+                {
+                    GenerateUnionTypesRecursive(elemTypeDef, typesDir);
+                }
             }
         }
 
@@ -107,61 +157,89 @@ namespace WebViewContractGenerator
             var typesDir = Path.Combine(outputDir, "Types");
             Directory.CreateDirectory(typesDir);
 
-            var processedNames = new HashSet<string>();
-
             foreach (var typeDef in contract.types)
             {
-                if (processedNames.Contains(typeDef.name))
+                if (_generatedTypes.Contains(typeDef.name))
                     continue;
 
                 if (typeDef.kind == "interface" && typeDef.properties != null)
                 {
-                    var code = GenerateTypeClass(typeDef, _options.Namespace);
-                    var filePath = Path.Combine(typesDir, $"{typeDef.name}.cs");
-                    File.WriteAllText(filePath, code);
-                    Console.WriteLine($"  Generated: {typeDef.name}");
-                    processedNames.Add(typeDef.name);
+                    GenerateTypeRecursive(typeDef, typesDir);
                 }
-                else if (typeDef.kind == "union")
+                else if (typeDef.kind == "union" && typeDef.unionMembers != null)
                 {
-                    GenerateUnionTypes(typeDef, typesDir, processedNames);
+                    GenerateUnionTypesRecursive(typeDef, typesDir);
                 }
             }
         }
 
-        private void GenerateUnionTypes(TypeDefinition unionDef, string typesDir, HashSet<string> processedNames)
+        private void GenerateTypeRecursive(TypeDefinition typeDef, string typesDir)
+        {
+            if (_generatedTypes.Contains(typeDef.name))
+                return;
+
+            if (typeDef.properties == null)
+                return;
+
+            foreach (var prop in typeDef.properties)
+            {
+                if (prop.typeRef != null && _typeDefinitions.ContainsKey(prop.typeRef.name))
+                {
+                    var refTypeDef = _typeDefinitions[prop.typeRef.name];
+                    if (refTypeDef.kind == "interface" && refTypeDef.properties != null)
+                    {
+                        GenerateTypeRecursive(refTypeDef, typesDir);
+                    }
+                    else if (refTypeDef.kind == "union" && refTypeDef.unionMembers != null)
+                    {
+                        GenerateUnionTypesRecursive(refTypeDef, typesDir);
+                    }
+                }
+
+                if (prop.elementType != null && _typeDefinitions.ContainsKey(prop.elementType))
+                {
+                    var elemTypeDef = _typeDefinitions[prop.elementType];
+                    if (elemTypeDef.kind == "interface" && elemTypeDef.properties != null)
+                    {
+                        GenerateTypeRecursive(elemTypeDef, typesDir);
+                    }
+                    else if (elemTypeDef.kind == "union" && elemTypeDef.unionMembers != null)
+                    {
+                        GenerateUnionTypesRecursive(elemTypeDef, typesDir);
+                    }
+                }
+            }
+
+            var code = GenerateTypeClass(typeDef, _options.Namespace);
+            var filePath = Path.Combine(typesDir, $"{typeDef.name}.cs");
+            File.WriteAllText(filePath, code);
+            Console.WriteLine($"  Generated: {typeDef.name}");
+            _generatedTypes.Add(typeDef.name);
+        }
+
+        private void GenerateUnionTypesRecursive(TypeDefinition unionDef, string typesDir)
         {
             if (unionDef.unionMembers == null)
                 return;
 
             foreach (var memberName in unionDef.unionMembers)
             {
-                if (processedNames.Contains(memberName))
+                if (_generatedTypes.Contains(memberName))
                     continue;
 
-                var memberDef = FindTypeByName(unionDef, memberName);
-                if (memberDef != null && memberDef.properties != null)
+                if (_typeDefinitions.ContainsKey(memberName))
                 {
-                    var code = GenerateTypeClass(memberDef, _options.Namespace);
-                    var filePath = Path.Combine(typesDir, $"{memberDef.name}.cs");
-                    File.WriteAllText(filePath, code);
-                    Console.WriteLine($"  Generated: {memberDef.name} (union member)");
-                    processedNames.Add(memberDef.name);
+                    var memberDef = _typeDefinitions[memberName];
+                    if (memberDef.kind == "interface" && memberDef.properties != null)
+                    {
+                        GenerateTypeRecursive(memberDef, typesDir);
+                    }
+                    else if (memberDef.kind == "union" && memberDef.unionMembers != null)
+                    {
+                        GenerateUnionTypesRecursive(memberDef, typesDir);
+                    }
                 }
             }
-        }
-
-        private TypeDefinition? FindTypeByName(TypeDefinition unionDef, string name)
-        {
-            return unionDef.unionMembers?.Contains(name) == true 
-                ? new TypeDefinition 
-                { 
-                    name = name, 
-                    kind = "interface",
-                    properties = new List<PropertyDefinition>(),
-                    sourceFile = unionDef.sourceFile
-                }
-                : null;
         }
 
         private void GenerateFactory(WebViewContract contract, string outputDir)
@@ -340,20 +418,58 @@ namespace WebViewContractGenerator
                 "number" => "double",
                 "integer" => "int",
                 "boolean" => "bool",
-                "array" => $"List<{prop.elementType ?? "object"}>",
-                "record" => $"Dictionary<string, {prop.elementType ?? "object"}>",
+                "array" => $"List<{MapElementType(prop.elementType)}>",
+                "record" => $"Dictionary<string, {MapElementType(prop.elementType)}>",
                 "literal" => "string",
-                "union" => "object",
+                "union" => MapUnionType(prop),
                 "any" or "unknown" => "object",
-                _ => prop.type switch
-                {
-                    "Part" => "Part",
-                    "Message" => "Message",
-                    "SessionInfo" => "SessionInfo",
-                    "FileAttachment" => "FileAttachment",
-                    _ => prop.typeRef?.name ?? "object"
-                }
+                _ => prop.typeRef != null && _typeDefinitions.ContainsKey(prop.typeRef.name) 
+                    ? prop.typeRef.name 
+                    : prop.type switch
+                    {
+                        "Part" => "Part",
+                        "Message" => "Message",
+                        "SessionInfo" => "SessionInfo",
+                        "FileAttachment" => "FileAttachment",
+                        _ => prop.typeRef?.name ?? "object"
+                    }
             };
+        }
+
+        private string MapElementType(string? elementType)
+        {
+            if (string.IsNullOrEmpty(elementType))
+                return "object";
+            
+            if (_typeDefinitions.ContainsKey(elementType))
+                return elementType;
+            
+            return elementType switch
+            {
+                "string" => "string",
+                "number" => "double",
+                "integer" => "int",
+                "boolean" => "bool",
+                "any" or "unknown" => "object",
+                _ => elementType
+            };
+        }
+
+        private string MapUnionType(PropertyDefinition prop)
+        {
+            if (prop.typeRef != null && _typeDefinitions.ContainsKey(prop.typeRef.name))
+            {
+                var unionDef = _typeDefinitions[prop.typeRef.name];
+                if (unionDef.unionMembers != null && unionDef.unionMembers.Count > 0)
+                {
+                    var firstMember = unionDef.unionMembers[0];
+                    if (_typeDefinitions.ContainsKey(firstMember))
+                    {
+                        return firstMember;
+                    }
+                }
+            }
+            return "object";
         }
 
         private string PascalCase(string name)

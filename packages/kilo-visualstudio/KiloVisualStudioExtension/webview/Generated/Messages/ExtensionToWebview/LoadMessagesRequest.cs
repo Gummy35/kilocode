@@ -23,9 +23,12 @@ public class LoadMessagesRequest
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("mode")]
+    // Original TypeScript type: undefined | "replace" | "prepend" | "focus" | "reconcile"
     public object? Mode { get; set; }
     [JsonProperty("before")]
-    public object? Before { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Before { get; set; }
     [JsonProperty("limit")]
-    public object? Limit { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Limit { get; set; }
 }

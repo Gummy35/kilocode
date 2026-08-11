@@ -21,15 +21,21 @@ public class ReadyMessage
 {
     public string Type { get; set; }
     [JsonProperty("serverInfo")]
-    public object? ServerInfo { get; set; }
+    // Original TypeScript type: undefined | ServerInfo
+    public ServerInfo? ServerInfo { get; set; }
     [JsonProperty("extensionVersion")]
-    public object? ExtensionVersion { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ExtensionVersion { get; set; }
     [JsonProperty("vscodeLanguage")]
-    public object? VscodeLanguage { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? VscodeLanguage { get; set; }
     [JsonProperty("languageOverride")]
-    public object? LanguageOverride { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? LanguageOverride { get; set; }
     [JsonProperty("fontSize")]
-    public object? FontSize { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? FontSize { get; set; }
     [JsonProperty("workspaceDirectory")]
-    public object? WorkspaceDirectory { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? WorkspaceDirectory { get; set; }
 }

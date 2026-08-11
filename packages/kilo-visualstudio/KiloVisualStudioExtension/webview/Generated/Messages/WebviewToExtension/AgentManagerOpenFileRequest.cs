@@ -25,7 +25,9 @@ public class AgentManagerOpenFileRequest
     [JsonProperty("filePath")]
     public string FilePath { get; set; }
     [JsonProperty("line")]
-    public object? Line { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Line { get; set; }
     [JsonProperty("column")]
-    public object? Column { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Column { get; set; }
 }

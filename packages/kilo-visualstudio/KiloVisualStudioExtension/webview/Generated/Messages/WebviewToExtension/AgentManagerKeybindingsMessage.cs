@@ -21,5 +21,6 @@ public class AgentManagerKeybindingsMessage
 {
     public string Type { get; set; }
     [JsonProperty("bindings")]
+    // Original TypeScript type: __type
     public object Bindings { get; set; }
 }

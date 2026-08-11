@@ -21,7 +21,8 @@ public class MoveToSectionRequest
 {
     public string Type { get; set; }
     [JsonProperty("worktreeIds")]
-    public List<object> WorktreeIds { get; set; }
+    public List<string> WorktreeIds { get; set; }
     [JsonProperty("sectionId")]
-    public object SectionId { get; set; }
+    // Original TypeScript type: null | string
+    public string? SectionId { get; set; }
 }

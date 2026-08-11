@@ -23,7 +23,8 @@ public class QuestionReplyRequest
     [JsonProperty("requestID")]
     public string RequestID { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
     [JsonProperty("answers")]
-    public List<object> Answers { get; set; }
+    public List<List<Array>> Answers { get; set; }
 }

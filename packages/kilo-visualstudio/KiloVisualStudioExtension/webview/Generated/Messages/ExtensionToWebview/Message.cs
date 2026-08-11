@@ -25,35 +25,50 @@ public class Message
     public string SessionID { get; set; }
     public string Role { get; set; }
     [JsonProperty("content")]
-    public object? Content { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Content { get; set; }
     [JsonProperty("parts")]
-    public object? Parts { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Parts { get; set; }
     [JsonProperty("createdAt")]
     public string CreatedAt { get; set; }
     [JsonProperty("time")]
+    // Original TypeScript type: undefined | __type
     public object? Time { get; set; }
     [JsonProperty("agent")]
-    public object? Agent { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Agent { get; set; }
     [JsonProperty("model")]
+    // Original TypeScript type: undefined | __type
     public object? Model { get; set; }
     [JsonProperty("providerID")]
-    public object? ProviderID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ProviderID { get; set; }
     [JsonProperty("modelID")]
-    public object? ModelID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ModelID { get; set; }
     [JsonProperty("mode")]
-    public object? Mode { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Mode { get; set; }
     [JsonProperty("parentID")]
-    public object? ParentID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ParentID { get; set; }
     [JsonProperty("path")]
+    // Original TypeScript type: undefined | __type
     public object? Path { get; set; }
     [JsonProperty("error")]
+    // Original TypeScript type: undefined | __type
     public object? Error { get; set; }
     [JsonProperty("summary")]
+    // Original TypeScript type: undefined | false | true | __type
     public object? Summary { get; set; }
     [JsonProperty("cost")]
-    public object? Cost { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Cost { get; set; }
     [JsonProperty("tokens")]
-    public object? Tokens { get; set; }
+    // Original TypeScript type: undefined | TokenUsage
+    public TokenUsage? Tokens { get; set; }
     [JsonProperty("finish")]
-    public object? Finish { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Finish { get; set; }
 }

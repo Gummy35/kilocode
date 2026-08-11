@@ -25,5 +25,6 @@ public class ProviderOAuthReadyMessage
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }
     [JsonProperty("authorization")]
+    // Original TypeScript type: __type
     public object Authorization { get; set; }
 }

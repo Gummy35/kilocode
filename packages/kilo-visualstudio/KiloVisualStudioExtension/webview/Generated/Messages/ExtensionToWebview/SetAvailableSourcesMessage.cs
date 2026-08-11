@@ -21,7 +21,7 @@ public class SetAvailableSourcesMessage
 {
     public string Type { get; set; }
     [JsonProperty("descriptors")]
-    public List<object> Descriptors { get; set; }
+    public List<DiffSourceDescriptor> Descriptors { get; set; }
     [JsonProperty("currentId")]
     public string CurrentId { get; set; }
 }

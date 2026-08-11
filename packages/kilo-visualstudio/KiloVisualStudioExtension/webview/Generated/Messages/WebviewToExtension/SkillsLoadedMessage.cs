@@ -21,5 +21,5 @@ public class SkillsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("skills")]
-    public List<object> Skills { get; set; }
+    public List<SkillInfo> Skills { get; set; }
 }

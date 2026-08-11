@@ -21,7 +21,8 @@ public class DeviceAuthStartedMessage
 {
     public string Type { get; set; }
     [JsonProperty("code")]
-    public object? Code { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Code { get; set; }
     [JsonProperty("verificationUrl")]
     public string VerificationUrl { get; set; }
     [JsonProperty("expiresIn")]

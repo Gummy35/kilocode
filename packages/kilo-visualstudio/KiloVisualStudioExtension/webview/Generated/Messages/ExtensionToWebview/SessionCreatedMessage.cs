@@ -21,9 +21,11 @@ public class SessionCreatedMessage
 {
     public string Type { get; set; }
     [JsonProperty("session")]
-    public object Session { get; set; }
+    public SessionInfo Session { get; set; }
     [JsonProperty("draftID")]
-    public object? DraftID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? DraftID { get; set; }
     [JsonProperty("activate")]
+    // Original TypeScript type: undefined | false | true
     public object? Activate { get; set; }
 }

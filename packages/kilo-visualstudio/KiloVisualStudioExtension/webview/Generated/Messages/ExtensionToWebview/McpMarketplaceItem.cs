@@ -23,7 +23,9 @@ public class McpMarketplaceItem
     [JsonProperty("url")]
     public string Url { get; set; }
     [JsonProperty("content")]
-    public object Content { get; set; }
+    // Original TypeScript type: string | Array
+    public object? Content { get; set; }
     [JsonProperty("parameters")]
-    public object? Parameters { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Parameters { get; set; }
 }

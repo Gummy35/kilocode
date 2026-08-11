@@ -21,5 +21,5 @@ public class AgentManagerWorktreeStatsMessage
 {
     public string Type { get; set; }
     [JsonProperty("stats")]
-    public List<object> Stats { get; set; }
+    public List<WorktreeGitStats> Stats { get; set; }
 }

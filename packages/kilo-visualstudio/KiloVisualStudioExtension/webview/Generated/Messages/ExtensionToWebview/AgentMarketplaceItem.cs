@@ -21,5 +21,5 @@ public class AgentMarketplaceItem
 {
     public string Type { get; set; }
     [JsonProperty("content")]
-    public object Content { get; set; }
+    public AgentContent Content { get; set; }
 }

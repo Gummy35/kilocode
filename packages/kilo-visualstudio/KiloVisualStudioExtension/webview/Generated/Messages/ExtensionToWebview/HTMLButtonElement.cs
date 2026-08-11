@@ -22,7 +22,8 @@ public class HTMLButtonElement
     [JsonProperty("disabled")]
     public string Disabled { get; set; }
     [JsonProperty("form")]
-    public object Form { get; set; }
+    // Original TypeScript type: null | HTMLFormElement
+    public HTMLFormElement? Form { get; set; }
     [JsonProperty("formAction")]
     public string FormAction { get; set; }
     [JsonProperty("formEnctype")]
@@ -34,14 +35,14 @@ public class HTMLButtonElement
     [JsonProperty("formTarget")]
     public string FormTarget { get; set; }
     [JsonProperty("labels")]
-    public object Labels { get; set; }
+    public NodeListOf Labels { get; set; }
     [JsonProperty("name")]
     public string Name { get; set; }
     public string Type { get; set; }
     [JsonProperty("validationMessage")]
     public string ValidationMessage { get; set; }
     [JsonProperty("validity")]
-    public object Validity { get; set; }
+    public ValidityState Validity { get; set; }
     [JsonProperty("value")]
     public string Value { get; set; }
     [JsonProperty("willValidate")]

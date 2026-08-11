@@ -23,7 +23,9 @@ public class CompactRequest
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("providerID")]
-    public object? ProviderID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ProviderID { get; set; }
     [JsonProperty("modelID")]
-    public object? ModelID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ModelID { get; set; }
 }

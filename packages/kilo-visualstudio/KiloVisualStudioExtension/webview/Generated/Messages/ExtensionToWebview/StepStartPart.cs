@@ -21,5 +21,6 @@ public class StepStartPart
 {
     public string Type { get; set; }
     [JsonProperty("time")]
+    // Original TypeScript type: undefined | __type
     public object? Time { get; set; }
 }

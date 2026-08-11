@@ -21,5 +21,5 @@ public class BrowserSettingsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("settings")]
-    public object Settings { get; set; }
+    public BrowserSettings Settings { get; set; }
 }

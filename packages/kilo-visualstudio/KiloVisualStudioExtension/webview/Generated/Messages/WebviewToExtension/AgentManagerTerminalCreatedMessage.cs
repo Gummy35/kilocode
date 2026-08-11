@@ -21,7 +21,8 @@ public class AgentManagerTerminalCreatedMessage
 {
     public string Type { get; set; }
     [JsonProperty("worktreeId")]
-    public object WorktreeId { get; set; }
+    // Original TypeScript type: null | string
+    public string? WorktreeId { get; set; }
     [JsonProperty("terminalId")]
     public string TerminalId { get; set; }
     [JsonProperty("title")]
@@ -29,5 +30,5 @@ public class AgentManagerTerminalCreatedMessage
     [JsonProperty("wsUrl")]
     public string WsUrl { get; set; }
     [JsonProperty("font")]
-    public object Font { get; set; }
+    public TerminalFont Font { get; set; }
 }

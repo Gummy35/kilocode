@@ -23,5 +23,6 @@ public class DiffViewerDiffFileMessage
     [JsonProperty("file")]
     public string File { get; set; }
     [JsonProperty("diff")]
-    public object Diff { get; set; }
+    // Original TypeScript type: null | WorktreeFileDiff
+    public WorktreeFileDiff? Diff { get; set; }
 }

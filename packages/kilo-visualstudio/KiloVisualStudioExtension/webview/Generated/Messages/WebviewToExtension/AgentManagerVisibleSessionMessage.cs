@@ -21,5 +21,6 @@ public class AgentManagerVisibleSessionMessage
 {
     public string Type { get; set; }
     [JsonProperty("sessionID")]
-    public object SessionID { get; set; }
+    // Original TypeScript type: null | string
+    public string? SessionID { get; set; }
 }

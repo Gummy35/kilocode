@@ -23,7 +23,9 @@ public class AgentManagerPRStatusMessage
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }
     [JsonProperty("pr")]
-    public object Pr { get; set; }
+    // Original TypeScript type: null | PRStatus
+    public PRStatus? Pr { get; set; }
     [JsonProperty("error")]
+    // Original TypeScript type: undefined | "gh_missing" | "gh_auth" | "fetch_failed"
     public object? Error { get; set; }
 }

@@ -23,5 +23,6 @@ public class AddSessionToWorktreeRequest
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }
     [JsonProperty("sessionId")]
-    public object? SessionId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionId { get; set; }
 }

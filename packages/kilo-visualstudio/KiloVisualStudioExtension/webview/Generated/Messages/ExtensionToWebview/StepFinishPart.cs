@@ -21,19 +21,27 @@ public class StepFinishPart
 {
     public string Type { get; set; }
     [JsonProperty("reason")]
-    public object? Reason { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Reason { get; set; }
     [JsonProperty("time")]
+    // Original TypeScript type: undefined | __type
     public object? Time { get; set; }
     [JsonProperty("model")]
+    // Original TypeScript type: undefined | __type
     public object? Model { get; set; }
     [JsonProperty("generationID")]
-    public object? GenerationID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? GenerationID { get; set; }
     [JsonProperty("vercelID")]
-    public object? VercelID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? VercelID { get; set; }
     [JsonProperty("cost")]
-    public object? Cost { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Cost { get; set; }
     [JsonProperty("tokens")]
+    // Original TypeScript type: undefined | __type
     public object? Tokens { get; set; }
     [JsonProperty("metrics")]
-    public object? Metrics { get; set; }
+    // Original TypeScript type: undefined | StepThroughputMetrics
+    public StepThroughputMetrics? Metrics { get; set; }
 }

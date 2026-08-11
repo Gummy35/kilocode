@@ -23,5 +23,6 @@ public class OpenConfigFileRequest
     [JsonProperty("scope")]
     public string Scope { get; set; }
     [JsonProperty("labels")]
+    // Original TypeScript type: __type
     public object Labels { get; set; }
 }

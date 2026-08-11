@@ -23,5 +23,6 @@ public class ReasoningPart
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("time")]
+    // Original TypeScript type: undefined | __type
     public object? Time { get; set; }
 }

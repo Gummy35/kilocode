@@ -21,5 +21,6 @@ public class McpStatusLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("status")]
+    // Original TypeScript type: __type
     public object Status { get; set; }
 }

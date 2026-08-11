@@ -21,5 +21,5 @@ public class AgentManagerOpenSessionsMessage
 {
     public string Type { get; set; }
     [JsonProperty("sessionIDs")]
-    public List<object> SessionIDs { get; set; }
+    public List<string> SessionIDs { get; set; }
 }

@@ -21,5 +21,5 @@ public class FilterMarketplaceItemsMessage
 {
     public string Type { get; set; }
     [JsonProperty("filters")]
-    public object Filters { get; set; }
+    public MarketplaceFilters Filters { get; set; }
 }

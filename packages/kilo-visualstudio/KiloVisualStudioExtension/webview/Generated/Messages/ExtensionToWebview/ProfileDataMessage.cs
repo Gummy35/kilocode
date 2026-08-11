@@ -21,5 +21,6 @@ public class ProfileDataMessage
 {
     public string Type { get; set; }
     [JsonProperty("data")]
-    public object Data { get; set; }
+    // Original TypeScript type: null | ProfileData
+    public ProfileData? Data { get; set; }
 }

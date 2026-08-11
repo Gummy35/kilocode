@@ -21,7 +21,9 @@ public class SelectKiloModelMessage
 {
     public string Type { get; set; }
     [JsonProperty("modelID")]
-    public object? ModelID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ModelID { get; set; }
     [JsonProperty("agent")]
-    public object? Agent { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Agent { get; set; }
 }

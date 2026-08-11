@@ -21,7 +21,7 @@ public class DiffViewerSendCommentsRequest
 {
     public string Type { get; set; }
     [JsonProperty("comments")]
-    public List<object> Comments { get; set; }
+    public List<ReviewCommentData> Comments { get; set; }
     [JsonProperty("autoSend")]
     public string AutoSend { get; set; }
 }

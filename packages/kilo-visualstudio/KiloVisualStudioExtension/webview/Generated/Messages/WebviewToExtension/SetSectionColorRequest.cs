@@ -23,5 +23,6 @@ public class SetSectionColorRequest
     [JsonProperty("sectionId")]
     public string SectionId { get; set; }
     [JsonProperty("color")]
-    public object Color { get; set; }
+    // Original TypeScript type: null | string
+    public string? Color { get; set; }
 }

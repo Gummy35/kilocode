@@ -27,7 +27,8 @@ public class SandboxStatusMessage
     [JsonProperty("available")]
     public string Available { get; set; }
     [JsonProperty("reason")]
-    public object? Reason { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Reason { get; set; }
     [JsonProperty("version")]
     public double Version { get; set; }
     [JsonProperty("directory")]
@@ -35,5 +36,6 @@ public class SandboxStatusMessage
     [JsonProperty("revision")]
     public double Revision { get; set; }
     [JsonProperty("requestID")]
-    public object? RequestID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? RequestID { get; set; }
 }

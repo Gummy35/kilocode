@@ -25,5 +25,6 @@ public class AgentManagerSessionForkedMessage
     [JsonProperty("forkedFromId")]
     public string ForkedFromId { get; set; }
     [JsonProperty("worktreeId")]
-    public object? WorktreeId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? WorktreeId { get; set; }
 }

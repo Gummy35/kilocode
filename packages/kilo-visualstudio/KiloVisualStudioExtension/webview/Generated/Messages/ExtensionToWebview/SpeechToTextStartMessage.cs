@@ -25,5 +25,6 @@ public class SpeechToTextStartMessage
     [JsonProperty("model")]
     public string Model { get; set; }
     [JsonProperty("language")]
-    public object? Language { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Language { get; set; }
 }

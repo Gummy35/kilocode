@@ -27,7 +27,7 @@ public class PermissionResponseRequest
     [JsonProperty("response")]
     public string Response { get; set; }
     [JsonProperty("approvedAlways")]
-    public List<object> ApprovedAlways { get; set; }
+    public List<string> ApprovedAlways { get; set; }
     [JsonProperty("deniedAlways")]
-    public List<object> DeniedAlways { get; set; }
+    public List<string> DeniedAlways { get; set; }
 }

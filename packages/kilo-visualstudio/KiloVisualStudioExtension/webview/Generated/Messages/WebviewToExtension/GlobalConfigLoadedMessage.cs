@@ -21,5 +21,5 @@ public class GlobalConfigLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("config")]
-    public object Config { get; set; }
+    public Config Config { get; set; }
 }

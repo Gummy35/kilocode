@@ -23,11 +23,14 @@ public class MarketplaceDataMessage
     [JsonProperty("marketplaceItems")]
     public List<object> MarketplaceItems { get; set; }
     [JsonProperty("marketplaceInstalledMetadata")]
-    public object MarketplaceInstalledMetadata { get; set; }
+    public MarketplaceInstalledMetadata MarketplaceInstalledMetadata { get; set; }
     [JsonProperty("marketplaceRelevance")]
+    // Original TypeScript type: __type
     public object MarketplaceRelevance { get; set; }
     [JsonProperty("errors")]
-    public object? Errors { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Errors { get; set; }
     [JsonProperty("showAgentMigrationBanner")]
+    // Original TypeScript type: undefined | false | true
     public object? ShowAgentMigrationBanner { get; set; }
 }

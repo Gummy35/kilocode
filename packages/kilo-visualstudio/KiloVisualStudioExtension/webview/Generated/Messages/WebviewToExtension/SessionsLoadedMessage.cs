@@ -21,7 +21,8 @@ public class SessionsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("sessions")]
-    public List<object> Sessions { get; set; }
+    public List<SessionInfo> Sessions { get; set; }
     [JsonProperty("preserveSessionIds")]
-    public object? PreserveSessionIds { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? PreserveSessionIds { get; set; }
 }

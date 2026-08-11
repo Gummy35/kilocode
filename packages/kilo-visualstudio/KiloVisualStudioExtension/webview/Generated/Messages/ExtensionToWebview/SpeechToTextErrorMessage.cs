@@ -23,7 +23,8 @@ public class SpeechToTextErrorMessage
     [JsonProperty("error")]
     public string Error { get; set; }
     [JsonProperty("code")]
-    public object? Code { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Code { get; set; }
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
 }

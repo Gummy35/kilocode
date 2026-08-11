@@ -29,5 +29,6 @@ public class SandboxStatusErrorMessage
     [JsonProperty("revision")]
     public double Revision { get; set; }
     [JsonProperty("requestID")]
-    public object? RequestID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? RequestID { get; set; }
 }

@@ -21,5 +21,5 @@ public class DiffViewerCapabilitiesMessage
 {
     public string Type { get; set; }
     [JsonProperty("capabilities")]
-    public object Capabilities { get; set; }
+    public DiffSourceCapabilities Capabilities { get; set; }
 }

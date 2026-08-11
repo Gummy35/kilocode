@@ -21,9 +21,12 @@ public class CreateWorktreeRequest
 {
     public string Type { get; set; }
     [JsonProperty("baseBranch")]
-    public object? BaseBranch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? BaseBranch { get; set; }
     [JsonProperty("branchName")]
-    public object? BranchName { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? BranchName { get; set; }
     [JsonProperty("variant")]
-    public object? Variant { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Variant { get; set; }
 }

@@ -21,7 +21,8 @@ public class AgentManagerTerminalErrorMessage
 {
     public string Type { get; set; }
     [JsonProperty("terminalId")]
-    public object? TerminalId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? TerminalId { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }
 }

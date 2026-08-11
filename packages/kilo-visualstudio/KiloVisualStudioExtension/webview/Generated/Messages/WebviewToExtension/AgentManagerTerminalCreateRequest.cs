@@ -21,5 +21,6 @@ public class AgentManagerTerminalCreateRequest
 {
     public string Type { get; set; }
     [JsonProperty("worktreeId")]
-    public object WorktreeId { get; set; }
+    // Original TypeScript type: null | string
+    public string? WorktreeId { get; set; }
 }

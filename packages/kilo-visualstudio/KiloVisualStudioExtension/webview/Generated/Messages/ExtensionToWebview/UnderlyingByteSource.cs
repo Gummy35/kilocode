@@ -20,12 +20,16 @@ using Newtonsoft.Json;
 public class UnderlyingByteSource
 {
     [JsonProperty("autoAllocateChunkSize")]
-    public object? AutoAllocateChunkSize { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? AutoAllocateChunkSize { get; set; }
     [JsonProperty("cancel")]
-    public object? Cancel { get; set; }
+    // Original TypeScript type: undefined | UnderlyingSourceCancelCallback
+    public UnderlyingSourceCancelCallback? Cancel { get; set; }
     [JsonProperty("pull")]
+    // Original TypeScript type: undefined | __type
     public object? Pull { get; set; }
     [JsonProperty("start")]
+    // Original TypeScript type: undefined | __type
     public object? Start { get; set; }
     public string Type { get; set; }
 }

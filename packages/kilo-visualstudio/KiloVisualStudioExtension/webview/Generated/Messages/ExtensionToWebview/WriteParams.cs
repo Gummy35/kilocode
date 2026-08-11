@@ -20,10 +20,13 @@ using Newtonsoft.Json;
 public class WriteParams
 {
     [JsonProperty("data")]
+    // Original TypeScript type: undefined | null | string | ArrayBuffer | ArrayBufferView | Blob
     public object? Data { get; set; }
     [JsonProperty("position")]
-    public object? Position { get; set; }
+    // Original TypeScript type: undefined | null | number
+    public double? Position { get; set; }
     [JsonProperty("size")]
-    public object? Size { get; set; }
+    // Original TypeScript type: undefined | null | number
+    public double? Size { get; set; }
     public string Type { get; set; }
 }

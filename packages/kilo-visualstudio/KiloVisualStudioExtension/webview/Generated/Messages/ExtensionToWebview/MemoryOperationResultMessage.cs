@@ -23,13 +23,17 @@ public class MemoryOperationResultMessage
     [JsonProperty("operation")]
     public string Operation { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
     [JsonProperty("ok")]
     public string Ok { get; set; }
     [JsonProperty("status")]
+    // Original TypeScript type: undefined | __type
     public object? Status { get; set; }
     [JsonProperty("result")]
+    // Original TypeScript type: undefined | __type | __type | __type | __type | __type | __type | __type | __type | __type
     public object? Result { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
 }

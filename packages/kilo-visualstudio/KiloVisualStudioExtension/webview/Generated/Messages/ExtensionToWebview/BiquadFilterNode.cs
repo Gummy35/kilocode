@@ -20,12 +20,12 @@ using Newtonsoft.Json;
 public class BiquadFilterNode
 {
     [JsonProperty("Q")]
-    public object Q { get; set; }
+    public AudioParam Q { get; set; }
     [JsonProperty("detune")]
-    public object Detune { get; set; }
+    public AudioParam Detune { get; set; }
     [JsonProperty("frequency")]
-    public object Frequency { get; set; }
+    public AudioParam Frequency { get; set; }
     [JsonProperty("gain")]
-    public object Gain { get; set; }
+    public AudioParam Gain { get; set; }
     public string Type { get; set; }
 }

@@ -27,5 +27,6 @@ public class AgentManagerApplyWorktreeDiffResultMessage
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("conflicts")]
-    public object? Conflicts { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Conflicts { get; set; }
 }

@@ -20,8 +20,10 @@ using Newtonsoft.Json;
 public class PublicKeyCredentialDescriptor
 {
     [JsonProperty("id")]
-    public object Id { get; set; }
+    // Original TypeScript type: ArrayBuffer | ArrayBufferView
+    public object? Id { get; set; }
     [JsonProperty("transports")]
-    public object? Transports { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Transports { get; set; }
     public string Type { get; set; }
 }

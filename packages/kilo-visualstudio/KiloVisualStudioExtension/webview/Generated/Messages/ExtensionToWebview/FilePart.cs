@@ -25,7 +25,9 @@ public class FilePart
     [JsonProperty("url")]
     public string Url { get; set; }
     [JsonProperty("filename")]
-    public object? Filename { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Filename { get; set; }
     [JsonProperty("source")]
-    public object? Source { get; set; }
+    // Original TypeScript type: undefined | FilePartSource
+    public FilePartSource? Source { get; set; }
 }

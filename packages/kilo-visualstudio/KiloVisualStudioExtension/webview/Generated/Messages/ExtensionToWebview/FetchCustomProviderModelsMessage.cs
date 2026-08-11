@@ -25,9 +25,12 @@ public class FetchCustomProviderModelsMessage
     [JsonProperty("baseURL")]
     public string BaseURL { get; set; }
     [JsonProperty("apiKey")]
-    public object? ApiKey { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ApiKey { get; set; }
     [JsonProperty("providerID")]
-    public object? ProviderID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ProviderID { get; set; }
     [JsonProperty("headers")]
+    // Original TypeScript type: undefined | __type
     public object? Headers { get; set; }
 }

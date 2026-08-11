@@ -23,5 +23,5 @@ public class TodoUpdatedMessage
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("items")]
-    public List<object> Items { get; set; }
+    public List<TodoItem> Items { get; set; }
 }

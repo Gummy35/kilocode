@@ -21,7 +21,7 @@ public class AgentManagerBranchesMessage
 {
     public string Type { get; set; }
     [JsonProperty("branches")]
-    public List<object> Branches { get; set; }
+    public List<BranchInfo> Branches { get; set; }
     [JsonProperty("defaultBranch")]
     public string DefaultBranch { get; set; }
 }

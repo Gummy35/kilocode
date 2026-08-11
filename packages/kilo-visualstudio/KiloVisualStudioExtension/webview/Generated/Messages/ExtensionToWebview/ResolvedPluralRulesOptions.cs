@@ -31,7 +31,9 @@ public class ResolvedPluralRulesOptions
     [JsonProperty("maximumFractionDigits")]
     public double MaximumFractionDigits { get; set; }
     [JsonProperty("minimumSignificantDigits")]
-    public object? MinimumSignificantDigits { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? MinimumSignificantDigits { get; set; }
     [JsonProperty("maximumSignificantDigits")]
-    public object? MaximumSignificantDigits { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? MaximumSignificantDigits { get; set; }
 }

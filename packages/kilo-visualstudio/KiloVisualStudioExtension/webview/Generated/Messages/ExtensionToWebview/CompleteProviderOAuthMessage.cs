@@ -27,5 +27,6 @@ public class CompleteProviderOAuthMessage
     [JsonProperty("method")]
     public double Method { get; set; }
     [JsonProperty("code")]
-    public object? Code { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Code { get; set; }
 }

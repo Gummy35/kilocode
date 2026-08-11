@@ -21,33 +21,46 @@ public class AgentManagerStateMessage
 {
     public string Type { get; set; }
     [JsonProperty("worktrees")]
-    public List<object> Worktrees { get; set; }
+    public List<WorktreeState> Worktrees { get; set; }
     [JsonProperty("sessions")]
-    public List<object> Sessions { get; set; }
+    public List<ManagedSessionState> Sessions { get; set; }
     [JsonProperty("sections")]
-    public object? Sections { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Sections { get; set; }
     [JsonProperty("staleWorktreeIds")]
-    public object? StaleWorktreeIds { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? StaleWorktreeIds { get; set; }
     [JsonProperty("tabOrder")]
+    // Original TypeScript type: undefined | __type
     public object? TabOrder { get; set; }
     [JsonProperty("worktreeOrder")]
-    public object? WorktreeOrder { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? WorktreeOrder { get; set; }
     [JsonProperty("sessionsCollapsed")]
+    // Original TypeScript type: undefined | false | true
     public object? SessionsCollapsed { get; set; }
     [JsonProperty("sidebarCollapsed")]
+    // Original TypeScript type: undefined | false | true
     public object? SidebarCollapsed { get; set; }
     [JsonProperty("reviewDiffStyle")]
+    // Original TypeScript type: undefined | "split" | "unified"
     public object? ReviewDiffStyle { get; set; }
     [JsonProperty("reviewMarkdownRender")]
+    // Original TypeScript type: undefined | false | true
     public object? ReviewMarkdownRender { get; set; }
     [JsonProperty("isGitRepo")]
+    // Original TypeScript type: undefined | false | true
     public object? IsGitRepo { get; set; }
     [JsonProperty("defaultBaseBranch")]
-    public object? DefaultBaseBranch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? DefaultBaseBranch { get; set; }
     [JsonProperty("runStatuses")]
-    public object? RunStatuses { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? RunStatuses { get; set; }
     [JsonProperty("runScriptConfigured")]
+    // Original TypeScript type: undefined | false | true
     public object? RunScriptConfigured { get; set; }
     [JsonProperty("runScriptPath")]
-    public object? RunScriptPath { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? RunScriptPath { get; set; }
 }

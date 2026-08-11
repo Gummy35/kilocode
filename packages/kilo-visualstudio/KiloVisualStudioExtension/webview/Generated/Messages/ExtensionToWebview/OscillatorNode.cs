@@ -20,8 +20,8 @@ using Newtonsoft.Json;
 public class OscillatorNode
 {
     [JsonProperty("detune")]
-    public object Detune { get; set; }
+    public AudioParam Detune { get; set; }
     [JsonProperty("frequency")]
-    public object Frequency { get; set; }
+    public AudioParam Frequency { get; set; }
     public string Type { get; set; }
 }

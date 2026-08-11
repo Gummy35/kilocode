@@ -21,9 +21,10 @@ public class FileSearchResultMessage
 {
     public string Type { get; set; }
     [JsonProperty("paths")]
-    public List<object> Paths { get; set; }
+    public List<string> Paths { get; set; }
     [JsonProperty("items")]
-    public object? Items { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Items { get; set; }
     [JsonProperty("dir")]
     public string Dir { get; set; }
     [JsonProperty("requestId")]

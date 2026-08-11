@@ -23,5 +23,6 @@ public class AgentRequirementSkill
     public string Name { get; set; }
     public string Status { get; set; }
     [JsonProperty("message")]
-    public object? Message { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Message { get; set; }
 }

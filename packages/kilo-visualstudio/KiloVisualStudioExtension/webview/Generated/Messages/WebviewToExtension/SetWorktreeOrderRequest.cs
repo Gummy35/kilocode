@@ -21,5 +21,5 @@ public class SetWorktreeOrderRequest
 {
     public string Type { get; set; }
     [JsonProperty("order")]
-    public List<object> Order { get; set; }
+    public List<string> Order { get; set; }
 }

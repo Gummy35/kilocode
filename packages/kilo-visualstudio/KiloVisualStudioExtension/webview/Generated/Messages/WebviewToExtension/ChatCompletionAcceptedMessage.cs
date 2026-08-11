@@ -21,5 +21,6 @@ public class ChatCompletionAcceptedMessage
 {
     public string Type { get; set; }
     [JsonProperty("suggestionLength")]
-    public object? SuggestionLength { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? SuggestionLength { get; set; }
 }

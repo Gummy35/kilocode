@@ -21,9 +21,12 @@ public class RequestCloudSessionsMessage
 {
     public string Type { get; set; }
     [JsonProperty("cursor")]
-    public object? Cursor { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Cursor { get; set; }
     [JsonProperty("limit")]
-    public object? Limit { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Limit { get; set; }
     [JsonProperty("gitUrl")]
-    public object? GitUrl { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? GitUrl { get; set; }
 }

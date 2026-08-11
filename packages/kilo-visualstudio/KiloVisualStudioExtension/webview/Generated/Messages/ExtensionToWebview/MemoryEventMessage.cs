@@ -21,7 +21,8 @@ public class MemoryEventMessage
 {
     public string Type { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
     [JsonProperty("detail")]
-    public object Detail { get; set; }
+    public MemoryEventDetail Detail { get; set; }
 }

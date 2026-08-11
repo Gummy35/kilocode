@@ -20,8 +20,10 @@ using Newtonsoft.Json;
 public class DirectUnderlyingSource
 {
     [JsonProperty("cancel")]
-    public object? Cancel { get; set; }
+    // Original TypeScript type: undefined | UnderlyingSourceCancelCallback
+    public UnderlyingSourceCancelCallback? Cancel { get; set; }
     [JsonProperty("pull")]
+    // Original TypeScript type: __type
     public object Pull { get; set; }
     public string Type { get; set; }
 }

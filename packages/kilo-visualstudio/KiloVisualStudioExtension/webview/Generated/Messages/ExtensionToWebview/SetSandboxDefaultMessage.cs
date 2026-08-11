@@ -25,7 +25,9 @@ public class SetSandboxDefaultMessage
     [JsonProperty("requestID")]
     public string RequestID { get; set; }
     [JsonProperty("agentManagerContext")]
-    public object? AgentManagerContext { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? AgentManagerContext { get; set; }
     [JsonProperty("contextDirectory")]
-    public object? ContextDirectory { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ContextDirectory { get; set; }
 }

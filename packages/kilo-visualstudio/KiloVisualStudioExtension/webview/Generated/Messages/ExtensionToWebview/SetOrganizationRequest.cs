@@ -21,5 +21,6 @@ public class SetOrganizationRequest
 {
     public string Type { get; set; }
     [JsonProperty("organizationId")]
-    public object OrganizationId { get; set; }
+    // Original TypeScript type: null | string
+    public string? OrganizationId { get; set; }
 }

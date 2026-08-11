@@ -21,5 +21,5 @@ public class SuggestionRequestMessage
 {
     public string Type { get; set; }
     [JsonProperty("suggestion")]
-    public object Suggestion { get; set; }
+    public SuggestionRequest Suggestion { get; set; }
 }

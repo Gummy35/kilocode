@@ -12,9 +12,9 @@
     <CreateVsixContainer>True</CreateVsixContainer>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Generated\**" />
-    <EmbeddedResource Remove="Generated\**" />
-    <None Remove="Generated\**" />
+    <Compile Remove="Generated\ApiClient\**" />
+    <EmbeddedResource Remove="Generated\ApiClient\**" />
+    <None Remove="Generated\ApiClient\**" />
   </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="CreateVsixContainer" />

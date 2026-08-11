@@ -21,5 +21,5 @@ public class CommandsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("commands")]
-    public List<object> Commands { get; set; }
+    public List<SlashCommandInfo> Commands { get; set; }
 }

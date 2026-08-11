@@ -23,7 +23,9 @@ public class PRCheck
     public string Name { get; set; }
     public string Status { get; set; }
     [JsonProperty("url")]
-    public object? Url { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Url { get; set; }
     [JsonProperty("duration")]
-    public object? Duration { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Duration { get; set; }
 }

@@ -25,9 +25,12 @@ public class SessionStatusMessage
     [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("attempt")]
-    public object? Attempt { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Attempt { get; set; }
     [JsonProperty("message")]
-    public object? Message { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Message { get; set; }
     [JsonProperty("next")]
-    public object? Next { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Next { get; set; }
 }

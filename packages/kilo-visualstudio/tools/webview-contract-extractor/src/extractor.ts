@@ -118,6 +118,21 @@ function extractPropertyDefinition(
       literalValue = extractLiteralValue(literalTypes[0]) ?? ""
     } else {
       propertyType = "union"
+      // Collect union member type names for better documentation
+      const unionMemberNames = unionType.types.map((t) => {
+        const typeName = getTypeName(t, typeChecker)
+        // For primitive types, use the actual type name
+        if (t.flags & ts.TypeFlags.String) return "string"
+        if (t.flags & ts.TypeFlags.Number) return "number"
+        if (t.flags & ts.TypeFlags.Boolean) return "boolean"
+        if (t.flags & ts.TypeFlags.Null) return "null"
+        if (t.flags & ts.TypeFlags.Undefined) return "undefined"
+        if (t.flags & ts.TypeFlags.Any) return "any"
+        return typeName
+      })
+      typeRef = { name: unionMemberNames[0], kind: "union" }
+      // Store all union members in elementType for reference
+      elementType = unionMemberNames.join(" | ")
     }
   } else if (type.flags & ts.TypeFlags.StringLiteral) {
     isLiteral = true

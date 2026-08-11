@@ -21,5 +21,5 @@ public class DiffViewerDiffsMessage
 {
     public string Type { get; set; }
     [JsonProperty("diffs")]
-    public List<object> Diffs { get; set; }
+    public List<WorktreeFileDiff> Diffs { get; set; }
 }

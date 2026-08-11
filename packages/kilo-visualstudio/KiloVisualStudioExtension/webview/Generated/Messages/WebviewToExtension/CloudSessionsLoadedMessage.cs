@@ -21,7 +21,8 @@ public class CloudSessionsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("sessions")]
-    public List<object> Sessions { get; set; }
+    public List<CloudSessionInfo> Sessions { get; set; }
     [JsonProperty("nextCursor")]
-    public object NextCursor { get; set; }
+    // Original TypeScript type: null | string
+    public string? NextCursor { get; set; }
 }

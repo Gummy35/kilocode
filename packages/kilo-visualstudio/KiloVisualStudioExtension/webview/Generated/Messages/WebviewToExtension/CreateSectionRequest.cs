@@ -23,7 +23,9 @@ public class CreateSectionRequest
     [JsonProperty("name")]
     public string Name { get; set; }
     [JsonProperty("color")]
-    public object? Color { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Color { get; set; }
     [JsonProperty("worktreeIds")]
-    public object? WorktreeIds { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? WorktreeIds { get; set; }
 }

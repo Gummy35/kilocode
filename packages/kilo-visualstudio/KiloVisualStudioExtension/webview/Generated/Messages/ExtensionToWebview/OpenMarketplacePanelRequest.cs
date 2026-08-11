@@ -21,5 +21,6 @@ public class OpenMarketplacePanelRequest
 {
     public string Type { get; set; }
     [JsonProperty("directory")]
-    public object? Directory { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Directory { get; set; }
 }

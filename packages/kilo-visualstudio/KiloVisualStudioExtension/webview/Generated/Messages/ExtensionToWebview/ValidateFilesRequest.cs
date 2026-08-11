@@ -23,5 +23,5 @@ public class ValidateFilesRequest
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("paths")]
-    public List<object> Paths { get; set; }
+    public List<string> Paths { get; set; }
 }

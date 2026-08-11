@@ -21,11 +21,15 @@ public class DeviceAuthState
 {
     public string Status { get; set; }
     [JsonProperty("code")]
-    public object? Code { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Code { get; set; }
     [JsonProperty("verificationUrl")]
-    public object? VerificationUrl { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? VerificationUrl { get; set; }
     [JsonProperty("expiresIn")]
-    public object? ExpiresIn { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? ExpiresIn { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
 }

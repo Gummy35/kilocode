@@ -24,14 +24,18 @@ public class MIDIPort
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("manufacturer")]
-    public object Manufacturer { get; set; }
+    // Original TypeScript type: null | string
+    public string? Manufacturer { get; set; }
     [JsonProperty("name")]
-    public object Name { get; set; }
+    // Original TypeScript type: null | string
+    public string? Name { get; set; }
     [JsonProperty("onstatechange")]
-    public object Onstatechange { get; set; }
+    // Original TypeScript type: null | __type
+    public object? Onstatechange { get; set; }
     [JsonProperty("state")]
     public string State { get; set; }
     public string Type { get; set; }
     [JsonProperty("version")]
-    public object Version { get; set; }
+    // Original TypeScript type: null | string
+    public string? Version { get; set; }
 }

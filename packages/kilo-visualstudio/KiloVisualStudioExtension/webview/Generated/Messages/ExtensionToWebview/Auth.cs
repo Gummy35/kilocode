@@ -20,10 +20,13 @@ using Newtonsoft.Json;
 public class Auth
 {
     [JsonProperty("in")]
+    // Original TypeScript type: undefined | "header" | "query" | "cookie"
     public object? In { get; set; }
     [JsonProperty("name")]
-    public object? Name { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Name { get; set; }
     [JsonProperty("scheme")]
+    // Original TypeScript type: undefined | "basic" | "bearer"
     public object? Scheme { get; set; }
     public string Type { get; set; }
 }

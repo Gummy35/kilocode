@@ -21,5 +21,5 @@ public class PersistRecentsRequest
 {
     public string Type { get; set; }
     [JsonProperty("recents")]
-    public List<object> Recents { get; set; }
+    public List<ModelSelection> Recents { get; set; }
 }

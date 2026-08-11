@@ -25,5 +25,6 @@ public class SessionModelUsageLoadedMessage
     [JsonProperty("requestID")]
     public string RequestID { get; set; }
     [JsonProperty("data")]
+    // Original TypeScript type: undefined | __type
     public object? Data { get; set; }
 }

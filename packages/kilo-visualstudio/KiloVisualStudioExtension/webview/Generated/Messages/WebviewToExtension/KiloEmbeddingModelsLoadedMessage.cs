@@ -21,5 +21,6 @@ public class KiloEmbeddingModelsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("catalog")]
+    // Original TypeScript type: __type
     public object Catalog { get; set; }
 }

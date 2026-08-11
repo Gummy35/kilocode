@@ -21,11 +21,15 @@ public class UpdateConfigMessage
 {
     public string Type { get; set; }
     [JsonProperty("config")]
+    // Original TypeScript type: __type
     public object Config { get; set; }
     [JsonProperty("globalUnset")]
-    public object? GlobalUnset { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? GlobalUnset { get; set; }
     [JsonProperty("projectConfig")]
+    // Original TypeScript type: undefined | __type
     public object? ProjectConfig { get; set; }
     [JsonProperty("projectUnset")]
-    public object? ProjectUnset { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? ProjectUnset { get; set; }
 }

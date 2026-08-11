@@ -25,5 +25,6 @@ public class MigrationDataMessage
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("data")]
+    // Original TypeScript type: __type
     public object Data { get; set; }
 }

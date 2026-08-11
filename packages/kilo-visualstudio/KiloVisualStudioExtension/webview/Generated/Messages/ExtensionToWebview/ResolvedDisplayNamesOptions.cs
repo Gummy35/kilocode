@@ -27,5 +27,6 @@ public class ResolvedDisplayNamesOptions
     [JsonProperty("fallback")]
     public string Fallback { get; set; }
     [JsonProperty("languageDisplay")]
+    // Original TypeScript type: undefined | "standard" | "dialect"
     public object? LanguageDisplay { get; set; }
 }

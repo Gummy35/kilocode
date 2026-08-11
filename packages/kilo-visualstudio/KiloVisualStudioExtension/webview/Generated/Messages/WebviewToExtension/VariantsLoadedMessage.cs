@@ -21,5 +21,6 @@ public class VariantsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("variants")]
+    // Original TypeScript type: __type
     public object Variants { get; set; }
 }

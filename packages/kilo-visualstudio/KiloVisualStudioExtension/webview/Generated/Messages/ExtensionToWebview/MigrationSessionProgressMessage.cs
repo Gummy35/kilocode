@@ -25,7 +25,7 @@ public class MigrationSessionProgressMessage
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("session")]
-    public object Session { get; set; }
+    public MigrationSessionInfo Session { get; set; }
     [JsonProperty("index")]
     public double Index { get; set; }
     [JsonProperty("total")]
@@ -33,5 +33,6 @@ public class MigrationSessionProgressMessage
     [JsonProperty("phase")]
     public string Phase { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
 }

@@ -21,9 +21,9 @@ public class AgentsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("agents")]
-    public List<object> Agents { get; set; }
+    public List<AgentInfo> Agents { get; set; }
     [JsonProperty("allAgents")]
-    public List<object> AllAgents { get; set; }
+    public List<AgentInfo> AllAgents { get; set; }
     [JsonProperty("defaultAgent")]
     public string DefaultAgent { get; set; }
 }

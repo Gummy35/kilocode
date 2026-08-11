@@ -21,27 +21,38 @@ public class CreateMultiVersionRequest
 {
     public string Type { get; set; }
     [JsonProperty("text")]
-    public object? Text { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Text { get; set; }
     [JsonProperty("name")]
-    public object? Name { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Name { get; set; }
     [JsonProperty("versions")]
     public double Versions { get; set; }
     [JsonProperty("providerID")]
-    public object? ProviderID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ProviderID { get; set; }
     [JsonProperty("modelID")]
-    public object? ModelID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ModelID { get; set; }
     [JsonProperty("agent")]
-    public object? Agent { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Agent { get; set; }
     [JsonProperty("files")]
-    public object? Files { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Files { get; set; }
     [JsonProperty("baseBranch")]
-    public object? BaseBranch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? BaseBranch { get; set; }
     [JsonProperty("branchName")]
-    public object? BranchName { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? BranchName { get; set; }
     [JsonProperty("variant")]
-    public object? Variant { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Variant { get; set; }
     [JsonProperty("modelAllocations")]
-    public object? ModelAllocations { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? ModelAllocations { get; set; }
     [JsonProperty("sandbox")]
+    // Original TypeScript type: undefined | false | true
     public object? Sandbox { get; set; }
 }

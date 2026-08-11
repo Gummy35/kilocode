@@ -21,5 +21,5 @@ public class QuestionRequestMessage
 {
     public string Type { get; set; }
     [JsonProperty("question")]
-    public object Question { get; set; }
+    public QuestionRequest Question { get; set; }
 }

@@ -21,7 +21,8 @@ public class RemoveInstalledMarketplaceItemMessage
 {
     public string Type { get; set; }
     [JsonProperty("mpItem")]
-    public object MpItem { get; set; }
+    // Original TypeScript type: McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem
+    public object? MpItem { get; set; }
     [JsonProperty("mpInstallOptions")]
-    public object MpInstallOptions { get; set; }
+    public InstallMarketplaceItemOptions MpInstallOptions { get; set; }
 }

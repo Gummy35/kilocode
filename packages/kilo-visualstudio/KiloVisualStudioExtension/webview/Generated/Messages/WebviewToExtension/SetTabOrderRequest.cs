@@ -23,5 +23,5 @@ public class SetTabOrderRequest
     [JsonProperty("key")]
     public string Key { get; set; }
     [JsonProperty("order")]
-    public List<object> Order { get; set; }
+    public List<string> Order { get; set; }
 }

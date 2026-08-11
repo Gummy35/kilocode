@@ -23,5 +23,6 @@ public class SidebarForkSessionRequest
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("messageId")]
-    public object? MessageId { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? MessageId { get; set; }
 }

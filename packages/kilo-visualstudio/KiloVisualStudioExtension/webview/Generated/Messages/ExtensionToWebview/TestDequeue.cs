@@ -24,7 +24,7 @@ public class TestDequeue
     [JsonProperty("nesting")]
     public double Nesting { get; set; }
     [JsonProperty("tags")]
-    public List<object> Tags { get; set; }
+    public List<string> Tags { get; set; }
     [JsonProperty("testId")]
     public double TestId { get; set; }
     public string Type { get; set; }

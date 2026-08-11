@@ -21,5 +21,6 @@ public class DiffViewerNoticeMessage
 {
     public string Type { get; set; }
     [JsonProperty("notice")]
-    public object Notice { get; set; }
+    // Original TypeScript type: undefined | "snapshots-disabled"
+    public string? Notice { get; set; }
 }

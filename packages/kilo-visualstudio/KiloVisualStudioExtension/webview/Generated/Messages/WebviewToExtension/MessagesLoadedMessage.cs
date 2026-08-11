@@ -23,13 +23,17 @@ public class MessagesLoadedMessage
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("messages")]
-    public List<object> Messages { get; set; }
+    public List<Message> Messages { get; set; }
     [JsonProperty("mode")]
+    // Original TypeScript type: undefined | "replace" | "prepend" | "reconcile"
     public object? Mode { get; set; }
     [JsonProperty("cursor")]
-    public object? Cursor { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Cursor { get; set; }
     [JsonProperty("hasMore")]
+    // Original TypeScript type: undefined | false | true
     public object? HasMore { get; set; }
     [JsonProperty("since")]
-    public object? Since { get; set; }
+    // Original TypeScript type: undefined | number
+    public double? Since { get; set; }
 }

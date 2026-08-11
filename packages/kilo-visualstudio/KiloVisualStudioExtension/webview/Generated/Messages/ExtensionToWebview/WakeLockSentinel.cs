@@ -20,7 +20,8 @@ using Newtonsoft.Json;
 public class WakeLockSentinel
 {
     [JsonProperty("onrelease")]
-    public object Onrelease { get; set; }
+    // Original TypeScript type: null | __type
+    public object? Onrelease { get; set; }
     [JsonProperty("released")]
     public string Released { get; set; }
     public string Type { get; set; }

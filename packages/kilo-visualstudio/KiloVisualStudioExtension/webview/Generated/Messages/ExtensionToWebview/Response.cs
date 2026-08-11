@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 public class Response
 {
     [JsonProperty("headers")]
-    public object Headers { get; set; }
+    public Headers Headers { get; set; }
     [JsonProperty("ok")]
     public string Ok { get; set; }
     [JsonProperty("redirected")]

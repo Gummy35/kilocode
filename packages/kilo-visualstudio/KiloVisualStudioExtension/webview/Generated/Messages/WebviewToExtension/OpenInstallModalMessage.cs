@@ -21,5 +21,6 @@ public class OpenInstallModalMessage
 {
     public string Type { get; set; }
     [JsonProperty("mpItem")]
-    public object MpItem { get; set; }
+    // Original TypeScript type: McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem
+    public object? MpItem { get; set; }
 }

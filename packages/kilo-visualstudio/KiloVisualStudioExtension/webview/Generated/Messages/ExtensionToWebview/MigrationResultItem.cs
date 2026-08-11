@@ -25,5 +25,6 @@ public class MigrationResultItem
     public string Category { get; set; }
     public string Status { get; set; }
     [JsonProperty("message")]
-    public object? Message { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Message { get; set; }
 }

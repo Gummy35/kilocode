@@ -23,5 +23,6 @@ public class OpenSubAgentViewerRequest
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("title")]
-    public object? Title { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Title { get; set; }
 }

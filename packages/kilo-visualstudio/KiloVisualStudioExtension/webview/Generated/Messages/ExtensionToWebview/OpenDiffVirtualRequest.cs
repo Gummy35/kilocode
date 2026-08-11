@@ -21,7 +21,7 @@ public class OpenDiffVirtualRequest
 {
     public string Type { get; set; }
     [JsonProperty("diff")]
-    public object Diff { get; set; }
+    public PermissionFileDiff Diff { get; set; }
     [JsonProperty("initialDiffStyle")]
     public string InitialDiffStyle { get; set; }
 }

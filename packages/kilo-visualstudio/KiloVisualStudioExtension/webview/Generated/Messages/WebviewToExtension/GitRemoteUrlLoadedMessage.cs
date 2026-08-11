@@ -21,5 +21,6 @@ public class GitRemoteUrlLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("gitUrl")]
-    public object GitUrl { get; set; }
+    // Original TypeScript type: null | string
+    public string? GitUrl { get; set; }
 }

@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 public class RTCEncodedVideoFrame
 {
     [JsonProperty("data")]
-    public object Data { get; set; }
+    public ArrayBuffer Data { get; set; }
     [JsonProperty("timestamp")]
     public double Timestamp { get; set; }
     public string Type { get; set; }

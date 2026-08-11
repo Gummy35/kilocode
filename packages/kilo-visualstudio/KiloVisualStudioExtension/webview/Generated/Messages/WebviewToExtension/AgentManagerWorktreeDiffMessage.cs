@@ -23,5 +23,5 @@ public class AgentManagerWorktreeDiffMessage
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("diffs")]
-    public List<object> Diffs { get; set; }
+    public List<WorktreeFileDiff> Diffs { get; set; }
 }

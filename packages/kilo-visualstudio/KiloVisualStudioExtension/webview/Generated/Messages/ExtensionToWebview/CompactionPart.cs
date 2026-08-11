@@ -23,7 +23,9 @@ public class CompactionPart
     [JsonProperty("auto")]
     public string Auto { get; set; }
     [JsonProperty("overflow")]
+    // Original TypeScript type: undefined | false | true
     public object? Overflow { get; set; }
     [JsonProperty("tail_start_id")]
-    public object? Tail_start_id { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Tail_start_id { get; set; }
 }

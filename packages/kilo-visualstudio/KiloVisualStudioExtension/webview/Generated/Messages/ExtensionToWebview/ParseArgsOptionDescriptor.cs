@@ -21,9 +21,12 @@ public class ParseArgsOptionDescriptor
 {
     public string Type { get; set; }
     [JsonProperty("multiple")]
+    // Original TypeScript type: undefined | false | true
     public object? Multiple { get; set; }
     [JsonProperty("short")]
-    public object? Short { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Short { get; set; }
     [JsonProperty("default")]
+    // Original TypeScript type: undefined | string | false | true | Array | Array
     public object? Default { get; set; }
 }

@@ -21,15 +21,19 @@ public class ProvidersLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("providers")]
+    // Original TypeScript type: __type
     public object Providers { get; set; }
     [JsonProperty("connected")]
-    public List<object> Connected { get; set; }
+    public List<string> Connected { get; set; }
     [JsonProperty("defaults")]
+    // Original TypeScript type: __type
     public object Defaults { get; set; }
     [JsonProperty("defaultSelection")]
-    public object DefaultSelection { get; set; }
+    public ModelSelection DefaultSelection { get; set; }
     [JsonProperty("authMethods")]
+    // Original TypeScript type: __type
     public object AuthMethods { get; set; }
     [JsonProperty("authStates")]
+    // Original TypeScript type: __type
     public object AuthStates { get; set; }
 }

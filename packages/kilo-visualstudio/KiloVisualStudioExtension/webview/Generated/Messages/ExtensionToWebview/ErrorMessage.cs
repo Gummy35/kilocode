@@ -23,7 +23,9 @@ public class ErrorMessage
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("code")]
-    public object? Code { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Code { get; set; }
     [JsonProperty("sessionID")]
-    public object? SessionID { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? SessionID { get; set; }
 }

@@ -21,13 +21,16 @@ public class ConfigLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("config")]
-    public object Config { get; set; }
+    public Config Config { get; set; }
     [JsonProperty("globalConfig")]
-    public object? GlobalConfig { get; set; }
+    // Original TypeScript type: undefined | Config
+    public Config? GlobalConfig { get; set; }
     [JsonProperty("projectConfig")]
-    public object? ProjectConfig { get; set; }
+    // Original TypeScript type: undefined | Config
+    public Config? ProjectConfig { get; set; }
     [JsonProperty("settings")]
-    public object? Settings { get; set; }
+    // Original TypeScript type: undefined | ExtensionSettings
+    public ExtensionSettings? Settings { get; set; }
     [JsonProperty("features")]
-    public object Features { get; set; }
+    public FeatureFlags Features { get; set; }
 }

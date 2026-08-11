@@ -21,15 +21,18 @@ public class DiffViewerBranchesLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("branches")]
-    public List<object> Branches { get; set; }
+    public List<BranchInfo> Branches { get; set; }
     [JsonProperty("defaultBranch")]
     public string DefaultBranch { get; set; }
     [JsonProperty("autoBase")]
-    public object AutoBase { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? AutoBase { get; set; }
     [JsonProperty("currentBase")]
-    public object CurrentBase { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? CurrentBase { get; set; }
     [JsonProperty("isAuto")]
     public string IsAuto { get; set; }
     [JsonProperty("currentBranch")]
-    public object CurrentBranch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? CurrentBranch { get; set; }
 }

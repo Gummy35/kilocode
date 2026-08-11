@@ -23,7 +23,9 @@ public class SetChatBoxMessage
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("paths")]
-    public object? Paths { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Paths { get; set; }
     [JsonProperty("sessions")]
-    public object? Sessions { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Sessions { get; set; }
 }

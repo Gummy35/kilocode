@@ -23,9 +23,12 @@ public class CustomProviderModelsFetchedMessage
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("models")]
-    public object? Models { get; set; }
+    // Original TypeScript type: undefined | Array
+    public Array? Models { get; set; }
     [JsonProperty("error")]
-    public object? Error { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Error { get; set; }
     [JsonProperty("auth")]
+    // Original TypeScript type: undefined | false | true
     public object? Auth { get; set; }
 }

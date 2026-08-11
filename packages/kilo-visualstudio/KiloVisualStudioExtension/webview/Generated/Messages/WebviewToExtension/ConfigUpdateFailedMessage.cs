@@ -23,5 +23,6 @@ public class ConfigUpdateFailedMessage
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("details")]
-    public object? Details { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Details { get; set; }
 }

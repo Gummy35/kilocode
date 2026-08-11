@@ -21,5 +21,5 @@ public class AgentManagerLocalStatsMessage
 {
     public string Type { get; set; }
     [JsonProperty("stats")]
-    public object Stats { get; set; }
+    public LocalGitStats Stats { get; set; }
 }

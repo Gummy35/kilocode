@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 public class RTCSessionDescriptionInit
 {
     [JsonProperty("sdp")]
-    public object? Sdp { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Sdp { get; set; }
     public string Type { get; set; }
 }

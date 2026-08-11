@@ -21,5 +21,6 @@ public class ModelSelectionsLoadedMessage
 {
     public string Type { get; set; }
     [JsonProperty("selections")]
+    // Original TypeScript type: __type
     public object Selections { get; set; }
 }

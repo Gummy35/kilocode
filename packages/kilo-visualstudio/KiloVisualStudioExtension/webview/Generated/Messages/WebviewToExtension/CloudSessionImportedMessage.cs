@@ -23,5 +23,5 @@ public class CloudSessionImportedMessage
     [JsonProperty("cloudSessionId")]
     public string CloudSessionId { get; set; }
     [JsonProperty("session")]
-    public object Session { get; set; }
+    public SessionInfo Session { get; set; }
 }

@@ -25,9 +25,12 @@ public class AgentManagerSessionMetaMessage
     [JsonProperty("mode")]
     public string Mode { get; set; }
     [JsonProperty("branch")]
-    public object? Branch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Branch { get; set; }
     [JsonProperty("path")]
-    public object? Path { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Path { get; set; }
     [JsonProperty("parentBranch")]
-    public object? ParentBranch { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? ParentBranch { get; set; }
 }

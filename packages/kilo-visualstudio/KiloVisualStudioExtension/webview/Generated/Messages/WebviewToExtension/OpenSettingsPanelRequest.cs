@@ -21,5 +21,6 @@ public class OpenSettingsPanelRequest
 {
     public string Type { get; set; }
     [JsonProperty("tab")]
-    public object? Tab { get; set; }
+    // Original TypeScript type: undefined | string
+    public string? Tab { get; set; }
 }
