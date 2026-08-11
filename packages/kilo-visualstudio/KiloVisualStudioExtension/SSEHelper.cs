@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using KiloVisualStudioExtension.ApiClient.Json;
+using KiloVisualStudioExtension.ApiClient.Sse;
 
 namespace KiloVisualStudioExtension
 {
@@ -13,7 +16,7 @@ namespace KiloVisualStudioExtension
         private readonly HashSet<string> _modelUsageSessionIds = new HashSet<string>();
         private readonly Dictionary<string, MessageCost> _messageCosts = new Dictionary<string, MessageCost>();
         private int _sandboxRevision = 0;
-        private JsonElement? _cachedIndexingStatusMessage = null;
+        private string? _cachedIndexingStatusMessage = null;
 
         public string? CurrentSessionID { get; private set; }
 
@@ -21,15 +24,17 @@ namespace KiloVisualStudioExtension
         public IReadOnlyDictionary<string, SessionStatus> SessionStatusMap => _sessionStatusMap;
 
         private readonly Action<string> _postMessage;
+        private readonly JsonSerializer _serializer;
 
         public SSEHelper(Action<string> postMessage)
         {
             _postMessage = postMessage;
+            _serializer = KiloJsonSerializer.Create();
         }
 
         public void PostMessage(object message)
         {
-            _postMessage(JsonSerializer.Serialize(message));
+            _postMessage(JsonConvert.SerializeObject(message));
         }
 
         public class SessionRevision
@@ -57,42 +62,30 @@ namespace KiloVisualStudioExtension
         {
             try
             {
-                var jsonData = JsonSerializer.Deserialize<JsonElement>(data);
-                if (jsonData.TryGetProperty("payload", out var payload))
-                    jsonData = payload;
+                var sseEvent = SseEventDeserializer.Deserialize(eventType, data);
 
-                string? sessionID = null;
-                string? directory = null;
-
-                if (jsonData.TryGetProperty("name", out var nameProp))
+                if (sseEvent is SyncEvent syncEvent)
                 {
-                    var name = nameProp.GetString() ?? "";
-                    if (jsonData.TryGetProperty("id", out var idProp))
-                        sessionID = idProp.GetString();
-                    if (jsonData.TryGetProperty("aggregateID", out var aggProp))
-                        sessionID = aggProp.GetString();
-                    
-                    HandleSyncEvent(name, jsonData.GetProperty("data"), jsonData.TryGetProperty("id", out var eid) ? eid.GetString() : null, jsonData.TryGetProperty("seq", out var seq) ? seq.GetInt32() : 0);
+                    HandleSyncEvent(syncEvent);
                 }
-                else if (jsonData.TryGetProperty("type", out var typeProp))
+                else if (sseEvent is StreamEvent streamEvent)
                 {
-                    var type = typeProp.GetString() ?? "";
-                    if (jsonData.TryGetProperty("sessionID", out var sidProp))
-                        sessionID = sidProp.GetString();
-                    if (jsonData.TryGetProperty("directory", out var dirProp))
-                        directory = dirProp.GetString();
-                    
-                    HandleStreamEvent(type, jsonData.GetProperty("properties"), sessionID, directory);
+                    HandleStreamEvent(streamEvent);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: error handling SSE event: {ex.Message} / {data}");
+                System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: error handling SSE event: {ex.Message}");
             }
         }
 
-        private void HandleSyncEvent(string name, JsonElement data, string? eventId, int seq)
+        private void HandleSyncEvent(SyncEvent syncEvent)
         {
+            var name = syncEvent.Name;
+            var data = syncEvent.Data;
+            var eventId = syncEvent.Id;
+            var seq = syncEvent.Seq;
+
             switch (name)
             {
                 case "message.updated.1":
@@ -119,8 +112,13 @@ namespace KiloVisualStudioExtension
             }
         }
 
-        private void HandleStreamEvent(string type, JsonElement properties, string? sessionID, string? directory)
+        private void HandleStreamEvent(StreamEvent streamEvent)
         {
+            var type = streamEvent.EventType;
+            var properties = streamEvent.Properties;
+            var sessionID = streamEvent.SessionID;
+            var directory = streamEvent.Directory;
+
             switch (type)
             {
                 case "kilo-sessions.remote-status-changed":
@@ -224,31 +222,33 @@ namespace KiloVisualStudioExtension
             }
         }
 
-        private void HandleMessageUpdatedSync(JsonElement data)
+        private void HandleMessageUpdatedSync(JToken data)
         {
-            var info = data.GetProperty("info");
-            var sessionID = info.GetProperty("sessionID").GetString();
-            var messageID = info.GetProperty("id").GetString();
+            var info = data["info"] ?? throw new JsonSerializationException("message.updated.1 missing 'info'");
+            var sessionID = info["sessionID"]?.Value<string>();
+            var messageID = info["id"]?.Value<string>() ?? "";
 
-            if (info.TryGetProperty("cost", out var costProp) && costProp.ValueKind == JsonValueKind.Number)
+            if (info["cost"] != null && info["cost"].Type == JTokenType.Float)
             {
-                var cost = costProp.GetDouble();
-                if (info.GetProperty("role").GetString() == "assistant")
+                var cost = info["cost"].Value<double>();
+                if (info["role"]?.Value<string>() == "assistant")
                 {
                     _messageCosts[messageID] = new MessageCost { SessionID = sessionID ?? "", MessageID = messageID, Cost = cost };
                 }
             }
 
-            var createdAt = info.TryGetProperty("time", out var time) && time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+            var createdAt = info["time"]?["created"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
             // Match TypeScript: { ...info, createdAt: new Date(info.time.created).toISOString() }
-            // We need to copy all properties from info and add createdAt
             var messageObj = new Dictionary<string, object?>();
-            foreach (var prop in info.EnumerateObject())
+            if (info is JObject infoObj)
             {
-                messageObj[prop.Name] = prop.Value;
+                foreach (var prop in infoObj)
+                {
+                    messageObj[prop.Key] = prop.Value;
+                }
             }
             messageObj["createdAt"] = createdAt;
             
@@ -259,10 +259,10 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandleMessageRemovedSync(JsonElement data)
+        private void HandleMessageRemovedSync(JToken data)
         {
-            var sessionID = data.GetProperty("sessionID").GetString();
-            var messageID = data.GetProperty("messageID").GetString();
+            var sessionID = data["sessionID"]?.Value<string>();
+            var messageID = data["messageID"]?.Value<string>() ?? "";
             
             _messageCosts.Remove(messageID);
 
@@ -274,15 +274,15 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandlePartUpdatedSync(JsonElement data)
+        private void HandlePartUpdatedSync(JToken data)
         {
-            var sessionID = data.GetProperty("sessionID").GetString();
-            var part = data.GetProperty("part");
-            var messageID = part.GetProperty("messageID").GetString();
+            var sessionID = data["sessionID"]?.Value<string>();
+            var part = data["part"] ?? throw new JsonSerializationException("message.part.updated.1 missing 'part'");
+            var messageID = part["messageID"]?.Value<string>() ?? "";
             
-            if (part.TryGetProperty("metadata", out var metadata) && metadata.TryGetProperty("sessionId", out var childIdProp))
+            if (part["metadata"]?["sessionId"] != null)
             {
-                var childId = childIdProp.GetString();
+                var childId = part["metadata"]["sessionId"].Value<string>();
                 if (!string.IsNullOrEmpty(childId) && !_trackedSessionIds.Contains(childId))
                 {
                     System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
@@ -299,11 +299,11 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandlePartRemovedSync(JsonElement data)
+        private void HandlePartRemovedSync(JToken data)
         {
-            var sessionID = data.GetProperty("sessionID").GetString();
-            var messageID = data.GetProperty("messageID").GetString();
-            var partID = data.GetProperty("partID").GetString();
+            var sessionID = data["sessionID"]?.Value<string>();
+            var messageID = data["messageID"]?.Value<string>();
+            var partID = data["partID"]?.Value<string>();
             
             PostMessage(new
             {
@@ -314,10 +314,10 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandleSessionCreatedSync(JsonElement data)
+        private void HandleSessionCreatedSync(JToken data)
         {
-            var info = data.GetProperty("info");
-            var sessionID = info.GetProperty("id").GetString();
+            var info = data["info"] ?? throw new JsonSerializationException("session.created.1 missing 'info'");
+            var sessionID = info["id"]?.Value<string>() ?? "";
             
             if (string.IsNullOrEmpty(CurrentSessionID))
             {
@@ -325,12 +325,11 @@ namespace KiloVisualStudioExtension
                 _trackedSessionIds.Add(sessionID);
             }
 
-            var time = info.GetProperty("time");
-            var createdAt = time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+            var createdAt = info["time"]?["created"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
-            var updatedAt = time.TryGetProperty("updated", out var updated)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+            var updatedAt = info["time"]?["updated"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["updated"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
             PostMessage(new
@@ -339,22 +338,22 @@ namespace KiloVisualStudioExtension
                 session = new
                 {
                     id = sessionID,
-                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
-                    title = info.GetProperty("title").GetString(),
+                    parentID = info["parentID"]?.Type == JTokenType.String ? info["parentID"].Value<string>() : null,
+                    title = info["title"]?.Value<string>(),
                     createdAt,
                     updatedAt,
-                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
-                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
+                    revert = info["revert"]?.Type == JTokenType.Object ? info["revert"] : (object?)null,
+                    summary = info["summary"]?.Type == JTokenType.String ? info["summary"].Value<string>() : null
                 }
             });
         }
 
-        private void HandleSessionUpdatedSync(JsonElement data, string? eventId, int seq)
+        private void HandleSessionUpdatedSync(JToken data, string? eventId, int seq)
         {
-            var sessionID = data.GetProperty("sessionID").GetString();
-            var info = data.GetProperty("info");
+            var sessionID = data["sessionID"]?.Value<string>();
+            var info = data["info"] ?? throw new JsonSerializationException("session.updated.1 missing 'info'");
             
-            if (info.TryGetProperty("cost", out var costProp) && costProp.ValueKind == JsonValueKind.Number)
+            if (info["cost"] != null && info["cost"].Type == JTokenType.Float)
             {
                 // requestCostAlert - not implemented
             }
@@ -362,7 +361,7 @@ namespace KiloVisualStudioExtension
             if (!string.IsNullOrEmpty(eventId))
             {
                 var revision = new SessionRevision { Id = long.Parse(eventId), Seq = seq };
-                _revisions[sessionID] = revision;
+                _revisions[sessionID ?? ""] = revision;
             }
 
             if (CurrentSessionID == sessionID)
@@ -370,12 +369,11 @@ namespace KiloVisualStudioExtension
                 CurrentSessionID = sessionID;
             }
 
-            var time = info.GetProperty("time");
-            var createdAt = time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+            var createdAt = info["time"]?["created"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
-            var updatedAt = time.TryGetProperty("updated", out var updated)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+            var updatedAt = info["time"]?["updated"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["updated"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
             PostMessage(new
@@ -384,29 +382,32 @@ namespace KiloVisualStudioExtension
                 session = new
                 {
                     id = sessionID,
-                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
-                    title = info.GetProperty("title").GetString(),
+                    parentID = info["parentID"]?.Type == JTokenType.String ? info["parentID"].Value<string>() : null,
+                    title = info["title"]?.Value<string>(),
                     createdAt,
                     updatedAt,
-                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
-                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
+                    revert = info["revert"]?.Type == JTokenType.Object ? info["revert"] : (object?)null,
+                    summary = info["summary"]?.Type == JTokenType.String ? info["summary"].Value<string>() : null
                 }
             });
         }
 
-        private void HandleSessionDeletedSync(JsonElement data)
+        private void HandleSessionDeletedSync(JToken data)
         {
-            var sessionID = data.GetProperty("sessionID").GetString();
+            var sessionID = data["sessionID"]?.Value<string>();
             
-            _trackedSessionIds.Remove(sessionID);
-            _modelUsageSessionIds.Remove(sessionID);
-            _revisions.Remove(sessionID);
-            _sessionStatusMap.Remove(sessionID);
-            
-            var costsToRemove = _messageCosts.Where(kvp => kvp.Value.SessionID == sessionID).Select(kvp => kvp.Key).ToArray();
-            foreach (var costId in costsToRemove)
+            if (!string.IsNullOrEmpty(sessionID))
             {
-                _messageCosts.Remove(costId);
+                _trackedSessionIds.Remove(sessionID);
+                _modelUsageSessionIds.Remove(sessionID);
+                _revisions.Remove(sessionID);
+                _sessionStatusMap.Remove(sessionID);
+                
+                var costsToRemove = _messageCosts.Where(kvp => kvp.Value.SessionID == sessionID).Select(kvp => kvp.Key).ToArray();
+                foreach (var costId in costsToRemove)
+                {
+                    _messageCosts.Remove(costId);
+                }
             }
 
             PostMessage(new
@@ -416,22 +417,22 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandleMemoryEvent(string type, JsonElement properties)
+        private void HandleMemoryEvent(string type, JToken properties)
         {
-            var eventSessionID = properties.TryGetProperty("sessionID", out var sid) ? sid.GetString() : null;
+            var eventSessionID = properties["sessionID"]?.Value<string>();
             var active = CurrentSessionID;
             
             var local = string.IsNullOrEmpty(eventSessionID) || eventSessionID == active || _trackedSessionIds.Contains(eventSessionID);
             if (!local) return;
 
             object? detail = null;
-            if (properties.TryGetProperty("detail", out var detailProp) && detailProp.ValueKind == JsonValueKind.Object)
+            if (properties["detail"]?.Type == JTokenType.Object)
             {
-                detail = detailProp;
+                detail = properties["detail"];
             }
-            else if (type == "memory.error" && properties.TryGetProperty("reason", out var reason) && reason.ValueKind == JsonValueKind.String)
+            else if (type == "memory.error" && properties["reason"]?.Type == JTokenType.String)
             {
-                detail = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new { type = "error", message = reason.GetString(), reason = reason.GetString() }));
+                detail = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(new { type = "error", message = properties["reason"].Value<string>(), reason = properties["reason"].Value<string>() }));
             }
 
             if (detail != null)
@@ -445,11 +446,11 @@ namespace KiloVisualStudioExtension
             }
         }
 
-        private void HandleSessionStatus(JsonElement properties, string? sessionID)
+        private void HandleSessionStatus(JToken properties, string? sessionID)
         {
-            var status = properties.GetProperty("status");
-            var statusType = status.GetProperty("type").GetString();
-            var sid = properties.GetProperty("sessionID").GetString();
+            var status = properties["status"] ?? throw new JsonSerializationException("session.status missing 'status'");
+            var statusType = status["type"]?.Value<string>();
+            var sid = properties["sessionID"]?.Value<string>() ?? "";
             
             var prev = _sessionStatusMap.ContainsKey(sid) ? _sessionStatusMap[sid] : null;
             if ((prev == null || prev.Type == "idle") && statusType != "idle")
@@ -460,9 +461,9 @@ namespace KiloVisualStudioExtension
             _sessionStatusMap[sid] = new SessionStatus
             {
                 Type = statusType ?? "",
-                Attempt = status.TryGetProperty("attempt", out var attempt) ? attempt.GetInt32() : 0,
-                Message = status.TryGetProperty("message", out var msg) ? msg.GetString() : null,
-                Next = status.TryGetProperty("next", out var next) && next.ValueKind == JsonValueKind.Number ? (long?)next.GetInt64() : null
+                Attempt = status["attempt"]?.Value<int>() ?? 0,
+                Message = status["message"]?.Value<string>(),
+                Next = status["next"]?.Type == JTokenType.Float || status["next"]?.Type == JTokenType.Integer ? (long?)status["next"].Value<long>() : null
             };
 
             object extra;
@@ -482,14 +483,14 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandlePartDelta(JsonElement properties)
+        private void HandlePartDelta(JToken properties)
         {
-            var partID = properties.GetProperty("partID").GetString();
-            var messageID = properties.GetProperty("messageID").GetString();
-            var sid = properties.GetProperty("sessionID").GetString();
-            var delta = properties.GetProperty("delta").GetString();
+            var partID = properties["partID"]?.Value<string>();
+            var messageID = properties["messageID"]?.Value<string>();
+            var sid = properties["sessionID"]?.Value<string>();
+            var delta = properties["delta"]?.Value<string>();
             
-            System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: HandlePartDelta - sid={sid}, tracked={_trackedSessionIds.Contains(sid)}, deltaLen={delta?.Length ?? 0}");
+            System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: HandlePartDelta - sid={sid}, tracked={_trackedSessionIds.Contains(sid ?? "")}, deltaLen={delta?.Length ?? 0}");
             
             if (!string.IsNullOrEmpty(sid) && !_trackedSessionIds.Contains(sid))
             {
@@ -507,10 +508,10 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandleSessionCreatedStream(JsonElement properties)
+        private void HandleSessionCreatedStream(JToken properties)
         {
-            var info = properties.GetProperty("info");
-            var sessionID = info.GetProperty("id").GetString();
+            var info = properties["info"] ?? throw new JsonSerializationException("session.created missing 'info'");
+            var sessionID = info["id"]?.Value<string>() ?? "";
             
             if (string.IsNullOrEmpty(CurrentSessionID))
             {
@@ -518,12 +519,11 @@ namespace KiloVisualStudioExtension
                 _trackedSessionIds.Add(sessionID);
             }
 
-            var time = info.GetProperty("time");
-            var createdAt = time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+            var createdAt = info["time"]?["created"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
-            var updatedAt = time.TryGetProperty("updated", out var updated)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+            var updatedAt = info["time"]?["updated"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["updated"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
             PostMessage(new
@@ -532,22 +532,22 @@ namespace KiloVisualStudioExtension
                 session = new
                 {
                     id = sessionID,
-                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
-                    title = info.GetProperty("title").GetString(),
+                    parentID = info["parentID"]?.Type == JTokenType.String ? info["parentID"].Value<string>() : null,
+                    title = info["title"]?.Value<string>(),
                     createdAt,
                     updatedAt,
-                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
-                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
+                    revert = info["revert"]?.Type == JTokenType.Object ? info["revert"] : (object?)null,
+                    summary = info["summary"]?.Type == JTokenType.String ? info["summary"].Value<string>() : null
                 }
             });
         }
 
-        private void HandleSessionUpdatedStream(JsonElement properties)
+        private void HandleSessionUpdatedStream(JToken properties)
         {
-            var sessionID = properties.GetProperty("sessionID").GetString();
-            var info = properties.GetProperty("info");
+            var sessionID = properties["sessionID"]?.Value<string>();
+            var info = properties["info"] ?? throw new JsonSerializationException("session.updated missing 'info'");
             
-            if (info.TryGetProperty("cost", out var costProp) && costProp.ValueKind == JsonValueKind.Number)
+            if (info["cost"] != null && info["cost"].Type == JTokenType.Float)
             {
                 // requestCostAlert - not implemented
             }
@@ -557,12 +557,11 @@ namespace KiloVisualStudioExtension
                 CurrentSessionID = sessionID;
             }
 
-            var time = info.GetProperty("time");
-            var createdAt = time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetDouble()).ToUniversalTime().ToString("o")
+            var createdAt = info["time"]?["created"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
-            var updatedAt = time.TryGetProperty("updated", out var updated)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)updated.GetDouble()).ToUniversalTime().ToString("o")
+            var updatedAt = info["time"]?["updated"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["updated"].Value<double>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
             PostMessage(new
@@ -571,29 +570,32 @@ namespace KiloVisualStudioExtension
                 session = new
                 {
                     id = sessionID,
-                    parentID = info.TryGetProperty("parentID", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null,
-                    title = info.GetProperty("title").GetString(),
+                    parentID = info["parentID"]?.Type == JTokenType.String ? info["parentID"].Value<string>() : null,
+                    title = info["title"]?.Value<string>(),
                     createdAt,
                     updatedAt,
-                    revert = (object?) (info.TryGetProperty("revert", out var r) && r.ValueKind == JsonValueKind.Object ? r : null),
-                    summary = info.TryGetProperty("summary", out var s) && s.ValueKind == JsonValueKind.String ? s.GetString() : null
+                    revert = info["revert"]?.Type == JTokenType.Object ? info["revert"] : (object?)null,
+                    summary = info["summary"]?.Type == JTokenType.String ? info["summary"].Value<string>() : null
                 }
             });
         }
 
-        private void HandleSessionDeletedStream(JsonElement properties)
+        private void HandleSessionDeletedStream(JToken properties)
         {
-            var sessionID = properties.GetProperty("sessionID").GetString();
+            var sessionID = properties["sessionID"]?.Value<string>();
             
-            _trackedSessionIds.Remove(sessionID);
-            _modelUsageSessionIds.Remove(sessionID);
-            _revisions.Remove(sessionID);
-            _sessionStatusMap.Remove(sessionID);
-            
-            var costsToRemove = _messageCosts.Where(kvp => kvp.Value.SessionID == sessionID).Select(kvp => kvp.Key).ToArray();
-            foreach (var costId in costsToRemove)
+            if (!string.IsNullOrEmpty(sessionID))
             {
-                _messageCosts.Remove(costId);
+                _trackedSessionIds.Remove(sessionID);
+                _modelUsageSessionIds.Remove(sessionID);
+                _revisions.Remove(sessionID);
+                _sessionStatusMap.Remove(sessionID);
+                
+                var costsToRemove = _messageCosts.Where(kvp => kvp.Value.SessionID == sessionID).Select(kvp => kvp.Key).ToArray();
+                foreach (var costId in costsToRemove)
+                {
+                    _messageCosts.Remove(costId);
+                }
             }
 
             PostMessage(new
@@ -603,30 +605,33 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandleMessageUpdatedStream(JsonElement properties)
+        private void HandleMessageUpdatedStream(JToken properties)
         {
-            var info = properties.GetProperty("info");
-            var sessionID = info.GetProperty("sessionID").GetString();
-            var messageID = info.GetProperty("id").GetString();
+            var info = properties["info"] ?? throw new JsonSerializationException("message.updated missing 'info'");
+            var sessionID = info["sessionID"]?.Value<string>();
+            var messageID = info["id"]?.Value<string>() ?? "";
             
-            if (info.TryGetProperty("cost", out var costProp) && costProp.ValueKind == JsonValueKind.Number)
+            if (info["cost"] != null && info["cost"].Type == JTokenType.Float)
             {
-                var cost = costProp.GetDouble();
-                if (info.GetProperty("role").GetString() == "assistant")
+                var cost = info["cost"].Value<double>();
+                if (info["role"]?.Value<string>() == "assistant")
                 {
-                    _messageCosts[messageID] = new MessageCost { SessionID = sessionID, MessageID = messageID, Cost = cost };
+                    _messageCosts[messageID] = new MessageCost { SessionID = sessionID ?? "", MessageID = messageID, Cost = cost };
                 }
             }
 
-            var createdAt = info.TryGetProperty("time", out var time) && time.TryGetProperty("created", out var created)
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)created.GetInt64()).ToUniversalTime().ToString("o")
+            var createdAt = info["time"]?["created"] != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<long>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
             // Match TypeScript: { ...info, createdAt: new Date(info.time.created).toISOString() }
             var messageObj = new Dictionary<string, object?>();
-            foreach (var prop in info.EnumerateObject())
+            if (info is JObject infoObj)
             {
-                messageObj[prop.Name] = prop.Value;
+                foreach (var prop in infoObj)
+                {
+                    messageObj[prop.Key] = prop.Value;
+                }
             }
             messageObj["createdAt"] = createdAt;
             
@@ -637,15 +642,15 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandleMessageRemovedStream(JsonElement properties)
+        private void HandleMessageRemovedStream(JToken properties)
         {
-            var messageID = properties.GetProperty("messageID").GetString();
-            _messageCosts.Remove(messageID);
+            var messageID = properties["messageID"]?.Value<string>();
+            _messageCosts.Remove(messageID ?? "");
 
             PostMessage(new
             {
                 type = "messageRemoved",
-                sessionID = properties.GetProperty("sessionID").GetString(),
+                sessionID = properties["sessionID"]?.Value<string>(),
                 messageID
             });
         }
@@ -655,9 +660,9 @@ namespace KiloVisualStudioExtension
             PostMessage(new { type = "globalDisposed" });
         }
 
-        private void HandleServerInstanceDisposed(JsonElement properties)
+        private void HandleServerInstanceDisposed(JToken properties)
         {
-            var dir = properties.TryGetProperty("directory", out var dirProp) ? dirProp.GetString() : null;
+            var dir = properties["directory"]?.Value<string>();
             
             foreach (var sid in _sessionStatusMap.Keys.ToList())
             {
@@ -672,15 +677,15 @@ namespace KiloVisualStudioExtension
             PostMessage(new { type = "globalConfigUpdated" });
         }
 
-        private void HandlePartUpdatedStream(JsonElement properties)
+        private void HandlePartUpdatedStream(JToken properties)
         {
-            var part = properties.GetProperty("part");
-            var sessionID = properties.GetProperty("sessionID").GetString();
-            var messageID = part.GetProperty("messageID").GetString();
+            var part = properties["part"] ?? throw new JsonSerializationException("message.part.updated missing 'part'");
+            var sessionID = properties["sessionID"]?.Value<string>();
+            var messageID = part["messageID"]?.Value<string>();
             
-            if (part.TryGetProperty("metadata", out var metadata) && metadata.TryGetProperty("sessionId", out var childIdProp))
+            if (part["metadata"]?["sessionId"] != null)
             {
-                var childId = childIdProp.GetString();
+                var childId = part["metadata"]["sessionId"].Value<string>();
                 if (!string.IsNullOrEmpty(childId) && !_trackedSessionIds.Contains(childId))
                 {
                     System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
@@ -697,139 +702,139 @@ namespace KiloVisualStudioExtension
             });
         }
 
-        private void HandleIndexingStatus(JsonElement properties)
+        private void HandleIndexingStatus(JToken properties)
         {
-            var status = properties.GetProperty("status");
-            _cachedIndexingStatusMessage = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new { type = "indexingStatusLoaded", status }));
+            var status = properties["status"];
+            _cachedIndexingStatusMessage = JsonConvert.SerializeObject(new { type = "indexingStatusLoaded", status });
             
-            if (_cachedIndexingStatusMessage.HasValue)
+            if (!string.IsNullOrEmpty(_cachedIndexingStatusMessage))
             {
-                PostMessage(_cachedIndexingStatusMessage.Value.GetRawText());
+                _postMessage(_cachedIndexingStatusMessage);
             }
         }
 
-        private void HandleSessionTurnClosed(JsonElement properties)
+        private void HandleSessionTurnClosed(JToken properties)
         {
             PostMessage(new
             {
                 type = "sessionTurnClosed",
-                sessionID = properties.GetProperty("sessionID").GetString(),
-                reason = properties.GetProperty("reason").GetString()
+                sessionID = properties["sessionID"]?.Value<string>(),
+                reason = properties["reason"]?.Value<string>()
             });
         }
 
-        private void HandlePermissionAsked(JsonElement properties)
+        private void HandlePermissionAsked(JToken properties)
         {
-            var permission = properties.GetProperty("permission").GetString();
+            var permission = properties["permission"]?.Value<string>();
             PostMessage(new
             {
                 type = "permissionRequest",
                 permission = new
                 {
-                    id = properties.GetProperty("id").GetString(),
-                    sessionID = properties.GetProperty("sessionID").GetString(),
+                    id = properties["id"]?.Value<string>(),
+                    sessionID = properties["sessionID"]?.Value<string>(),
                     toolName = permission,
-                    patterns = properties.TryGetProperty("patterns", out var p) ? p : JsonDocument.Parse("[]").RootElement,
-                    always = properties.TryGetProperty("always", out var a) ? a : JsonDocument.Parse("[]").RootElement,
-                    args = properties.TryGetProperty("metadata", out var m) ? m : JsonDocument.Parse("{}").RootElement,
+                    patterns = properties["patterns"] ?? JArray.Parse("[]"),
+                    always = properties["always"] ?? JArray.Parse("[]"),
+                    args = properties["metadata"] ?? JObject.Parse("{}"),
                     message = $"Permission required: {permission}",
-                    tool = properties.TryGetProperty("tool", out var t) ? t : JsonDocument.Parse("{}").RootElement
+                    tool = properties["tool"] ?? JObject.Parse("{}")
                 }
             });
         }
 
-        private void HandlePermissionReplied(JsonElement properties)
+        private void HandlePermissionReplied(JToken properties)
         {
             PostMessage(new
             {
                 type = "permissionResolved",
-                permissionID = properties.GetProperty("requestID").GetString()
+                permissionID = properties["requestID"]?.Value<string>()
             });
         }
 
-        private void HandleTodoUpdated(JsonElement properties)
+        private void HandleTodoUpdated(JToken properties)
         {
             PostMessage(new
             {
                 type = "todoUpdated",
-                sessionID = properties.GetProperty("sessionID").GetString(),
-                items = properties.GetProperty("todos")
+                sessionID = properties["sessionID"]?.Value<string>(),
+                items = properties["todos"]
             });
         }
 
-        private void HandleQuestionAsked(JsonElement properties)
+        private void HandleQuestionAsked(JToken properties)
         {
             PostMessage(new
             {
                 type = "questionRequest",
                 question = new
                 {
-                    id = properties.GetProperty("id").GetString(),
-                    sessionID = properties.GetProperty("sessionID").GetString(),
-                    questions = properties.GetProperty("questions"),
-                    blocking = properties.TryGetProperty("blocking", out var b) ? b.GetBoolean() : false,
-                    tool = properties.TryGetProperty("tool", out var t) ? t : JsonDocument.Parse("{}").RootElement
+                    id = properties["id"]?.Value<string>(),
+                    sessionID = properties["sessionID"]?.Value<string>(),
+                    questions = properties["questions"],
+                    blocking = properties["blocking"]?.Value<bool>() ?? false,
+                    tool = properties["tool"] ?? JObject.Parse("{}")
                 }
             });
         }
 
-        private void HandleQuestionResolved(JsonElement properties)
+        private void HandleQuestionResolved(JToken properties)
         {
             PostMessage(new
             {
                 type = "questionResolved",
-                requestID = properties.GetProperty("requestID").GetString()
+                requestID = properties["requestID"]?.Value<string>()
             });
         }
 
-        private void HandleSuggestionShown(JsonElement properties)
+        private void HandleSuggestionShown(JToken properties)
         {
             PostMessage(new
             {
                 type = "suggestionRequest",
                 suggestion = new
                 {
-                    id = properties.GetProperty("id").GetString(),
-                    sessionID = properties.GetProperty("sessionID").GetString(),
-                    text = properties.GetProperty("text").GetString(),
-                    actions = properties.GetProperty("actions"),
-                    blocking = properties.TryGetProperty("blocking", out var b) ? b.GetBoolean() : false,
-                    tool = properties.TryGetProperty("tool", out var t) ? t : JsonDocument.Parse("{}").RootElement
+                    id = properties["id"]?.Value<string>(),
+                    sessionID = properties["sessionID"]?.Value<string>(),
+                    text = properties["text"]?.Value<string>(),
+                    actions = properties["actions"],
+                    blocking = properties["blocking"]?.Value<bool>() ?? false,
+                    tool = properties["tool"] ?? JObject.Parse("{}")
                 }
             });
         }
 
-        private void HandleSuggestionResolved(JsonElement properties)
+        private void HandleSuggestionResolved(JToken properties)
         {
             PostMessage(new
             {
                 type = "suggestionResolved",
-                requestID = properties.GetProperty("requestID").GetString()
+                requestID = properties["requestID"]?.Value<string>()
             });
         }
 
-        private void HandleSessionError(JsonElement properties)
+        private void HandleSessionError(JToken properties)
         {
             PostMessage(new
             {
                 type = "sessionError",
-                sessionID = properties.TryGetProperty("sessionID", out var sid) ? sid.GetString() : null,
-                error = properties.TryGetProperty("error", out var e) ? e : JsonDocument.Parse("{}").RootElement
+                sessionID = properties["sessionID"]?.Value<string>(),
+                error = properties["error"] ?? JObject.Parse("{}")
             });
         }
 
-        private void HandleSandboxStatusChanged(JsonElement properties)
+        private void HandleSandboxStatusChanged(JToken properties)
         {
             _sandboxRevision++;
             PostMessage(new
             {
                 type = "sandboxStatus",
-                sessionID = properties.GetProperty("sessionID").GetString(),
-                directory = properties.GetProperty("directory").GetString(),
-                enabled = properties.GetProperty("enabled").GetBoolean(),
-                available = properties.GetProperty("available").GetBoolean(),
-                reason = properties.TryGetProperty("reason", out var r) ? r.GetString() : null,
-                version = properties.GetProperty("version").GetInt32(),
+                sessionID = properties["sessionID"]?.Value<string>(),
+                directory = properties["directory"]?.Value<string>(),
+                enabled = properties["enabled"]?.Value<bool>() ?? false,
+                available = properties["available"]?.Value<bool>() ?? false,
+                reason = properties["reason"]?.Value<string>(),
+                version = properties["version"]?.Value<int>() ?? 0,
                 revision = _sandboxRevision
             });
         }
