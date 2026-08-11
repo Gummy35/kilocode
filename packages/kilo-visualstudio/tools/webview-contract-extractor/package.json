@@ -1,0 +1,19 @@
+{
+  "name": "@kilocode/webview-contract-extractor",
+  "version": "1.0.0",
+  "description": "Extract WebView protocol contract from VS Code TypeScript source using TypeScript Compiler API",
+  "type": "module",
+  "main": "src/extractor.ts",
+  "bin": {
+    "webview-contract-extractor": "dist/extractor.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "extract": "bun run src/extractor.ts",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "@types/bun": "^1.3.14"
+  }
+}

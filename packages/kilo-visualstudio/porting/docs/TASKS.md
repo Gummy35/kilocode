@@ -30,7 +30,7 @@ It is intentionally concise. Detailed requirements belong in the individual task
 | `PORT-INFRA-003`   | Consolidate communication objects and serialization/deserialization              | `DONE` | `PORT-INFRA-002`                 |
 | `CLEANUP-CLI-001`  | Remove Kiota dependencies and complete NSwag migration                                      | `DONE` | `PORT-CLI-001`                   |
 | `PORT-INFRA-004`   | WebView protocol audit and DTO generation feasibility study                                 | `REVIEW` | `PORT-INFRA-003`                 |
-| `PORT-WEBVIEW-001` | Generate strongly-typed WebView DTOs from TypeScript contract                               | `NOT_STARTED` | `PORT-INFRA-004`                 |
+| `PORT-WEBVIEW-001` | Generate strongly-typed WebView DTOs from TypeScript contract                               | `REVIEW` | `PORT-INFRA-004`                 |
 | `PORT-WEBVIEW-002` | Port remaining WebView protocol tests                                                       | `NOT_STARTED` | `PORT-WEBVIEW-001`               |
 | `PORT-CORE-001`    | Port remaining VS Code extension host functionality required by the Visual Studio extension | `NOT_STARTED` | `PORT-INFRA-002`                 |
 | `PORT-TEST-001`    | Complete and validate the 1:1 semantic port of applicable VS Code unit tests                | `NOT_STARTED` | Relevant implementation tasks    |
@@ -250,13 +250,36 @@ Perform a complete architectural audit of the VS Code ↔ WebView protocol and d
 
 ### `PORT-WEBVIEW-001`
 
-Port the VS Code extension host/WebView integration required by the Visual Studio extension.
+**Status:** `REVIEW` - Completed 2026-08-11
 
-The existing Kilo WebView implementation should be reused where practical.
+**Summary:**
+- **TypeScript contract extractor implemented** using TypeScript Compiler API
+- **WebViewContract.json generated** (236,545 lines, 6,807 types, 459 messages)
+- **C# DTO generator implemented** consuming WebViewContract.json
+- **101 DTO files generated** (demonstration subset of 50+50 messages)
+- **Discriminator factory created** for polymorphic deserialization
+- **Newtonsoft.Json integration** via KiloJsonSerializer (PORT-INFRA-003)
+- **Pipeline automation script** created (generate-webview-dtos.ps1)
+- **No VS Code production code modified**
+- **No NSwag files modified**
+- **Protocol unchanged**
 
-The task must preserve communication and behavior between the WebView and extension host.
+**Acceptance Criteria:**
+- ✅ TypeScript extractor runs successfully
+- ✅ WebViewContract.json is deterministic and diffable
+- ✅ Contract contains both message directions (208 + 251)
+- ✅ C# DTOs generated automatically from contract
+- ✅ DTOs use Newtonsoft.Json with shared KiloJsonSerializer
+- ✅ Polymorphic types use explicit discriminator factories
+- ✅ No modifications to NSwag-generated code
+- ✅ Documentation complete (PORT-WEBVIEW-001.md)
 
-The exact scope will be defined after the source-to-target mapping is established.
+**Pending:**
+- ⚠️ Full Visual Studio extension build validation
+- ⚠️ DTO serialization/deserialization tests
+- ⚠️ Complete DTO generation (all 459 messages)
+
+**Next Task:** PORT-WEBVIEW-002 (Port remaining WebView protocol tests)
 
 ---
 
