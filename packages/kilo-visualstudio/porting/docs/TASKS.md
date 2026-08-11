@@ -27,6 +27,7 @@ It is intentionally concise. Detailed requirements belong in the individual task
 | `PORT-INFRA-001`   | Establish a deterministic baseline inventory of the existing Visual Studio implementation   | `REVIEW` | —                                |
 | `PORT-INFRA-002`   | Inventory the VS Code extension and establish source-to-target mappings                     | `REVIEW` | `PORT-INFRA-001`                 |
 | `PORT-CLI-001`     | Port the VS Code CLI/HTTP client and its relevant tests to Visual Studio                    | `REVIEW` | `PORT-INFRA-002`                 |
+| `PORT-INFRA-003`   | Consolidate communication objects and serialization/deserialization              | `DONE` | `PORT-INFRA-002`                 |
 | `CLEANUP-CLI-001`  | Remove Kiota dependencies and complete NSwag migration                                      | `DONE` | `PORT-CLI-001`                   |
 | `PORT-WEBVIEW-001` | Port the VS Code extension host/WebView integration to Visual Studio                        | `NOT_STARTED` | `PORT-INFRA-002`, `PORT-CLI-001` |
 | `PORT-CORE-001`    | Port remaining VS Code extension host functionality required by the Visual Studio extension | `NOT_STARTED` | `PORT-INFRA-002`                 |
@@ -149,6 +150,41 @@ This task follows the successful handler service migration (PORT-CLI-001) that r
 - **Build status:** 0 errors, 0 warnings
 - **Type aliases created** for improved code readability (ViewedRequest, RevertRequest, SessionCreateRequest, etc.)
 - **Documentation created:** `ApiClientAliases.cs` with complete BodyNN type mapping reference
+
+---
+
+### `PORT-INFRA-003`
+
+Consolidate SSE communication objects and serialization/deserialization infrastructure.
+
+**Objective:** Establish strongly-typed SSE event handling using Newtonsoft.Json exclusively.
+
+**Scope:**
+- Verify shared Newtonsoft.Json serializer configuration
+- Verify polymorphic deserialization for Part, ToolState, Message, FilePartSource
+- Verify typed SSE event deserialization (SyncEvent, StreamEvent)
+- Verify tests for polymorphic models
+- Ensure no System.Text.Json in SSE pipeline
+
+**Acceptance Criteria:**
+- SSE uses Newtonsoft.Json exclusively
+- No `JsonElement` in SSE pipeline
+- Polymorphic deserialization works for all known types
+- Shared serializer configuration (KiloJsonSerializer)
+- Tests pass (15 PolymorphicDeserializerTests)
+- Build passes with 0 errors
+
+**Status:** `DONE` - Completed 2026-08-11
+
+**Summary:**
+- Infrastructure was already complete upon inspection
+- `KiloJsonSerializer.cs` provides shared Newtonsoft.Json settings
+- `PolymorphicDeserializer.cs` handles Part, ToolState, Message, FilePartSource polymorphism
+- `SseEventDeserializer.cs` provides typed SSE event deserialization
+- `SSEHelper.cs` uses Newtonsoft.Json exclusively (no System.Text.Json)
+- 15 PolymorphicDeserializerTests all pass
+- Build: 0 errors, 0 warnings
+- System.Text.Json usage in WebView message handling is separate from SSE pipeline
 
 ---
 
