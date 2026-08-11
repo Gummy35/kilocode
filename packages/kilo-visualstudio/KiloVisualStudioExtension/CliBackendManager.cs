@@ -251,13 +251,18 @@ namespace KiloVisualStudioExtension
 
             while (stopwatch.Elapsed < timeout)
             {
-                if (!string.IsNullOrEmpty(_baseUrl))
+                if (!string.IsNullOrEmpty(_baseUrl) && !string.IsNullOrEmpty(_password))
                 {
-                    // Verify the server is responding
+                    // Verify the server is responding with authentication
                     try
                     {
                         using var client = new HttpClient();
                         client.Timeout = TimeSpan.FromSeconds(2);
+                        
+                        // Add Basic Authentication header matching the CLI's expected format
+                        var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"kilo:{_password}"));
+                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", auth);
+                        
                         var response = await client.GetAsync($"{_baseUrl}/global/health", cancellationToken);
                         if (response.IsSuccessStatusCode)
                             return;

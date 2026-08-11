@@ -17,16 +17,16 @@ namespace KiloVisualStudioExtension.ApiClient
     /// </summary>
     public partial class KiloApiClient
     {
-        private readonly string? _password;
+        private string? _password;
 
         /// <summary>
         /// Creates a new instance of KiloApiClient with Basic Authentication.
+        /// This overload accepts both baseUrl and password for convenience.
         /// </summary>
         /// <param name="baseUrl">The base URL of the CLI backend (e.g., "http://127.0.0.1:9999").</param>
         /// <param name="password">The password for authentication (extracted from CLI startup).</param>
-        public KiloApiClient(string baseUrl, string password)
+        public KiloApiClient(string baseUrl, string password) : this(baseUrl)
         {
-            BaseUrl = baseUrl;
             _password = password;
         }
 
