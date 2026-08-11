@@ -29,7 +29,9 @@ It is intentionally concise. Detailed requirements belong in the individual task
 | `PORT-CLI-001`     | Port the VS Code CLI/HTTP client and its relevant tests to Visual Studio                    | `REVIEW` | `PORT-INFRA-002`                 |
 | `PORT-INFRA-003`   | Consolidate communication objects and serialization/deserialization              | `DONE` | `PORT-INFRA-002`                 |
 | `CLEANUP-CLI-001`  | Remove Kiota dependencies and complete NSwag migration                                      | `DONE` | `PORT-CLI-001`                   |
-| `PORT-WEBVIEW-001` | Port the VS Code extension host/WebView integration to Visual Studio                        | `NOT_STARTED` | `PORT-INFRA-002`, `PORT-CLI-001` |
+| `PORT-INFRA-004`   | WebView protocol audit and DTO generation feasibility study                                 | `REVIEW` | `PORT-INFRA-003`                 |
+| `PORT-WEBVIEW-001` | Generate strongly-typed WebView DTOs from TypeScript contract                               | `NOT_STARTED` | `PORT-INFRA-004`                 |
+| `PORT-WEBVIEW-002` | Port remaining WebView protocol tests                                                       | `NOT_STARTED` | `PORT-WEBVIEW-001`               |
 | `PORT-CORE-001`    | Port remaining VS Code extension host functionality required by the Visual Studio extension | `NOT_STARTED` | `PORT-INFRA-002`                 |
 | `PORT-TEST-001`    | Complete and validate the 1:1 semantic port of applicable VS Code unit tests                | `NOT_STARTED` | Relevant implementation tasks    |
 | `PORT-SYNC-001`    | Establish the repeatable process for detecting and applying future VS Code source changes   | `NOT_STARTED` | Initial port                     |
@@ -188,6 +190,64 @@ Consolidate SSE communication objects and serialization/deserialization infrastr
 
 ---
 
+### `PORT-INFRA-004`
+
+Perform a complete architectural audit of the VS Code ↔ WebView protocol and determine whether strongly-typed C# DTOs can be introduced on the Visual Studio side.
+
+**Objective:** Analyze the complete WebView communication contract and determine feasibility of generating C# DTOs from TypeScript definitions.
+
+**Scope:**
+- Inventory all VS Code WebView message types (extension ↔ webview)
+- Identify TypeScript types, discriminated unions, and discriminators
+- Analyze TypeScript Compiler API feasibility for contract extraction
+- Design intermediate contract format (WebViewContract.json)
+- Evaluate C# DTO generation strategy
+- Audit VS Code tests related to WebView protocol
+- Map VS Code tests to VS2026 equivalents
+- Identify missing test coverage in VS2026
+- Audit current VS2026 WebView implementation
+- Define Newtonsoft.Json integration strategy
+- Determine polymorphic DTO handling approach
+- Produce architecture decision and implementation plan
+
+**Acceptance Criteria:**
+- All relevant WebView message directions inventoried (270+ types)
+- VS Code explicitly established as source of truth
+- All known WebView discriminators identified (type, status, role)
+- Relevant TypeScript types traced to definitions
+- Dynamic/weakly typed structures identified (Record, any, unknown)
+- VS Code WebView tests inventoried (7 test files)
+- Missing VS2026 test coverage identified (5 categories)
+- Current VS2026 WebView handling mapped to VS Code protocol
+- TypeScript Compiler API feasibility assessed (feasible)
+- Intermediate contract format evaluated (WebViewContract.json)
+- C# generation feasibility assessed (straightforward)
+- Newtonsoft.Json integration defined (reuse KiloJsonSerializer)
+- Polymorphic DTO handling analyzed (explicit discriminator factories)
+- No VS Code production code modified
+- No VS2026 production code modified
+- No generated NSwag file modified
+- Documentation updated
+- TASKS.md reflects actual state
+- Concrete implementation plan exists for next task
+
+**Status:** `REVIEW` - Completed 2026-08-11
+
+**Summary:**
+- Complete protocol inventory created (270+ message types across 6 core type files)
+- TypeScript Compiler API feasibility confirmed (types are explicit, discriminators are literal)
+- Intermediate contract design proposed (WebViewContract.json schema defined)
+- C# DTO generation strategy defined (reuse KiloJsonSerializer, explicit discriminator factories)
+- VS Code test audit completed (7 relevant test files, 5 missing test categories in VS2026)
+- VS2026 current implementation audited (uses anonymous objects, weaker type safety)
+- Protocol compatibility matrix created (no significant field mismatches)
+- Architecture decision: VIABLE - proposed architecture is feasible and recommended
+- Next task defined: PORT-WEBVIEW-001 (implement TypeScript contract extractor and C# DTO generator)
+- No production code modified (analysis only)
+- Build status: N/A (no code changes)
+
+---
+
 ### `PORT-WEBVIEW-001`
 
 Port the VS Code extension host/WebView integration required by the Visual Studio extension.
@@ -259,10 +319,12 @@ It becomes `DONE` only after the implementation and relevant validation have bee
 
 ```text
 PORT-INFRA-001   → REVIEW
-PORT-INFRA-002   → NOT_STARTED
+PORT-INFRA-002   → REVIEW
 PORT-CLI-001     → REVIEW
 CLEANUP-CLI-001  → DONE
+PORT-INFRA-004   → REVIEW
 PORT-WEBVIEW-001 → NOT_STARTED
+PORT-WEBVIEW-002 → NOT_STARTED
 PORT-CORE-001    → NOT_STARTED
 PORT-TEST-001    → NOT_STARTED
 PORT-SYNC-001    → NOT_STARTED
