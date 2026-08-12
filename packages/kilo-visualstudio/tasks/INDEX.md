@@ -2,9 +2,15 @@
 
 ## Status
 
-- `PORT-INFRA-001` — READY
-- `PORT-CLI-001` — READY (implementation complete, awaiting review)
-- `CLEANUP-CLI-001` — DONE (Kiota removal complete, 0 errors, 0 warnings)
+| Task | Status | Notes |
+|------|--------|-------|
+| `PORT-INFRA-001` | REVIEW | Baseline inventory complete, 273 tests resolved |
+| `PORT-INFRA-002` | REVIEW | Source-to-target mapping complete |
+| `PORT-CLI-001` | REVIEW | NSwag migration complete, 0 errors |
+| `CLEANUP-CLI-001` | DONE | Kiota removed, 74 usages migrated |
+| `PORT-INFRA-003` | DONE | SSE strongly-typed infrastructure complete |
+| `PORT-INFRA-004` | REVIEW | WebView protocol audit complete |
+| `PORT-WEBVIEW-001` | DONE | TypeScript extractor + C# DTO generator complete, 41 tests pass |
 
 ## Task rules
 
