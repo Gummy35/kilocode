@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class GitRemoteUrlLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "gitRemoteUrlLoaded";
     [JsonProperty("gitUrl", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string
     public string? GitUrl { get; set; }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ImageModelsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "imageModelsLoaded";
     [JsonProperty("models")]
     public List<object> Models { get; set; }
 }

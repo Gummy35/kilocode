@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SyncSessionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "syncSession";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("parentSessionID", NullValueHandling = NullValueHandling.Ignore)]

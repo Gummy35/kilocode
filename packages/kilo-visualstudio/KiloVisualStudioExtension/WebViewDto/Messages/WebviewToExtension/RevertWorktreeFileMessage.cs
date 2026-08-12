@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RevertWorktreeFileMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.revertWorktreeFile";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("file")]

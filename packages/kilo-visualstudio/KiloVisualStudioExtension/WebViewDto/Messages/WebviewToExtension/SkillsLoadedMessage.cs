@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SkillsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "skillsLoaded";
     [JsonProperty("skills")]
     public List<SkillInfo> Skills { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerStateMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.state";
     [JsonProperty("worktrees")]
     public List<WorktreeState> Worktrees { get; set; }
     [JsonProperty("sessions")]

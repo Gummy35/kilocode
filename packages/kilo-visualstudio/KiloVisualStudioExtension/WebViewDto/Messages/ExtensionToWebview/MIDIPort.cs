@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 public class MIDIPort
 {
     [JsonProperty("connection")]
+    // Original TypeScript type: literal
     public string Connection { get; set; }
     [JsonProperty("id")]
     public string Id { get; set; }
@@ -34,9 +35,11 @@ public class MIDIPort
     // Original TypeScript type: null | __type
     public object? Onstatechange { get; set; }
     [JsonProperty("state")]
+    // Original TypeScript type: literal
     public string State { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "input";
     [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string
     public string? Version { get; set; }

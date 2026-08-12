@@ -27,5 +27,6 @@ public class DirectUnderlyingSource
     // Original TypeScript type: __type
     public object Pull { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "direct";
 }

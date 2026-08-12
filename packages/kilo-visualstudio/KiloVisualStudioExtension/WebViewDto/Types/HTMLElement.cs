@@ -30,14 +30,18 @@ public class HTMLElement
     [JsonProperty("autocapitalize")]
     public string Autocapitalize { get; set; }
     [JsonProperty("autocorrect")]
+    // Original TypeScript type: literal
     public string Autocorrect { get; set; }
     [JsonProperty("dir")]
     public string Dir { get; set; }
     [JsonProperty("draggable")]
+    // Original TypeScript type: literal
     public string Draggable { get; set; }
     [JsonProperty("hidden")]
+    // Original TypeScript type: literal
     public string Hidden { get; set; }
     [JsonProperty("inert")]
+    // Original TypeScript type: literal
     public string Inert { get; set; }
     [JsonProperty("innerText")]
     public string InnerText { get; set; }
@@ -60,10 +64,12 @@ public class HTMLElement
     // Original TypeScript type: null | string
     public string? Popover { get; set; }
     [JsonProperty("spellcheck")]
+    // Original TypeScript type: literal
     public string Spellcheck { get; set; }
     [JsonProperty("title")]
     public string Title { get; set; }
     [JsonProperty("translate")]
+    // Original TypeScript type: literal
     public string Translate { get; set; }
     [JsonProperty("writingSuggestions")]
     public string WritingSuggestions { get; set; }

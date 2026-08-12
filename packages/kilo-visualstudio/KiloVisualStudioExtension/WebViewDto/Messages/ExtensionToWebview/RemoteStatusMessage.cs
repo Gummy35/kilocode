@@ -21,9 +21,12 @@ using Newtonsoft.Json;
 public class RemoteStatusMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "remoteStatus";
     [JsonProperty("enabled")]
+    // Original TypeScript type: literal
     public string Enabled { get; set; }
     [JsonProperty("connected")]
+    // Original TypeScript type: literal
     public string Connected { get; set; }
 }

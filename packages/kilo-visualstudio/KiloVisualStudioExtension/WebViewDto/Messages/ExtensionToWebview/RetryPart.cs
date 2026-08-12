@@ -27,7 +27,8 @@ public class RetryPart
     [JsonProperty("messageID")]
     public string MessageID { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "retry";
     [JsonProperty("attempt")]
     public double Attempt { get; set; }
     [JsonProperty("error")]

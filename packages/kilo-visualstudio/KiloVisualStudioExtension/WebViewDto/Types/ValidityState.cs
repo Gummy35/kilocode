@@ -24,25 +24,36 @@ using Newtonsoft.Json;
 public class ValidityState
 {
     [JsonProperty("badInput")]
+    // Original TypeScript type: literal
     public string BadInput { get; set; }
     [JsonProperty("customError")]
+    // Original TypeScript type: literal
     public string CustomError { get; set; }
     [JsonProperty("patternMismatch")]
+    // Original TypeScript type: literal
     public string PatternMismatch { get; set; }
     [JsonProperty("rangeOverflow")]
+    // Original TypeScript type: literal
     public string RangeOverflow { get; set; }
     [JsonProperty("rangeUnderflow")]
+    // Original TypeScript type: literal
     public string RangeUnderflow { get; set; }
     [JsonProperty("stepMismatch")]
+    // Original TypeScript type: literal
     public string StepMismatch { get; set; }
     [JsonProperty("tooLong")]
+    // Original TypeScript type: literal
     public string TooLong { get; set; }
     [JsonProperty("tooShort")]
+    // Original TypeScript type: literal
     public string TooShort { get; set; }
     [JsonProperty("typeMismatch")]
+    // Original TypeScript type: literal
     public string TypeMismatch { get; set; }
     [JsonProperty("valid")]
+    // Original TypeScript type: literal
     public string Valid { get; set; }
     [JsonProperty("valueMissing")]
+    // Original TypeScript type: literal
     public string ValueMissing { get; set; }
 }

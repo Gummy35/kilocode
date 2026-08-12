@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ReferenceLocalSource
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "local";
     [JsonProperty("path")]
     public string Path { get; set; }
     [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]

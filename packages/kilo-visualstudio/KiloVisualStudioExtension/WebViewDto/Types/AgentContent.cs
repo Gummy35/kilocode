@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 public class AgentContent
 {
     [JsonProperty("mode")]
+    // Original TypeScript type: literal
     public string Mode { get; set; }
     [JsonProperty("description")]
     public string Description { get; set; }

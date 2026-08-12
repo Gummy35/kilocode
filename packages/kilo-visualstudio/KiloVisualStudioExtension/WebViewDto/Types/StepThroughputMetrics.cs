@@ -25,5 +25,6 @@ public class StepThroughputMetrics
     // Original TypeScript type: undefined | number
     public double? Generation { get; set; }
     [JsonProperty("source")]
+    // Original TypeScript type: literal
     public string Source { get; set; }
 }

@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class MarketplaceInstallResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "marketplaceInstallResult";
     [JsonProperty("success")]
+    // Original TypeScript type: literal
     public string Success { get; set; }
     [JsonProperty("slug")]
     public string Slug { get; set; }

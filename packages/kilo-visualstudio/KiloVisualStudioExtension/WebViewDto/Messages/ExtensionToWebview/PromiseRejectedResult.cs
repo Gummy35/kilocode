@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PromiseRejectedResult
 {
     [JsonProperty("status")]
-    public string Status { get; set; }
+    // Original TypeScript type: literal
+    public string Status { get; set; } = "rejected";
     [JsonProperty("reason")]
     public object Reason { get; set; }
 }

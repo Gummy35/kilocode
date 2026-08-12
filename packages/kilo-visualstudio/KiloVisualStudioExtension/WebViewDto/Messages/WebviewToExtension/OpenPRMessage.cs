@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OpenPRMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.openPR";
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PartRemove
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "partRemoved";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("messageID")]

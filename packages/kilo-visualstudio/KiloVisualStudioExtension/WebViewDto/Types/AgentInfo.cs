@@ -27,6 +27,7 @@ public class AgentInfo
     // Original TypeScript type: undefined | string
     public string? Description { get; set; }
     [JsonProperty("mode")]
+    // Original TypeScript type: literal
     public string Mode { get; set; }
     [JsonProperty("native", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

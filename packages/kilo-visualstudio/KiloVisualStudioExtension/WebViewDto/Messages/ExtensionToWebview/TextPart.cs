@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class TextPart
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "text";
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("synthetic", NullValueHandling = NullValueHandling.Ignore)]

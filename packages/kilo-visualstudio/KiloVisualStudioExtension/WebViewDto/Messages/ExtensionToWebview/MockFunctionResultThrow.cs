@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class MockFunctionResultThrow
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "throw";
     [JsonProperty("value")]
     public object Value { get; set; }
 }

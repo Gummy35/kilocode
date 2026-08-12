@@ -21,13 +21,16 @@ using Newtonsoft.Json;
 public class MemoryOperationResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "memoryOperationResult";
     [JsonProperty("operation")]
+    // Original TypeScript type: literal
     public string Operation { get; set; }
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }
     [JsonProperty("ok")]
+    // Original TypeScript type: literal
     public string Ok { get; set; }
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type

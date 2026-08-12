@@ -23,7 +23,8 @@ public class SubtaskPartInput
     [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
     public string? Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "subtask";
     [JsonProperty("prompt")]
     public string Prompt { get; set; }
     [JsonProperty("description")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionMessageAssistantReasoning
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "reasoning";
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("text")]

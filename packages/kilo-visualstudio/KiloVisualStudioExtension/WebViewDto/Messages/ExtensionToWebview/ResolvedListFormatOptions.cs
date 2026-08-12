@@ -23,7 +23,9 @@ public class ResolvedListFormatOptions
     [JsonProperty("locale")]
     public string Locale { get; set; }
     [JsonProperty("style")]
+    // Original TypeScript type: literal
     public string Style { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "unit";
 }

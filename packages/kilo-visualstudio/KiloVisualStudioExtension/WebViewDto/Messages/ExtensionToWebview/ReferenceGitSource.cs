@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ReferenceGitSource
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "git";
     [JsonProperty("repository")]
     public string Repository { get; set; }
     [JsonProperty("branch", NullValueHandling = NullValueHandling.Ignore)]

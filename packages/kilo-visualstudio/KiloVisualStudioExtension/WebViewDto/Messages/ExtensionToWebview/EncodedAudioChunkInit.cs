@@ -32,5 +32,6 @@ public class EncodedAudioChunkInit
     // Original TypeScript type: undefined | Array
     public object? Transfer { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "delta";
 }

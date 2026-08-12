@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ToolTextContent
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "text";
     [JsonProperty("text")]
     public string Text { get; set; }
 }

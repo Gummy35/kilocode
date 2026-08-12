@@ -21,10 +21,12 @@ using Newtonsoft.Json;
 public class AgentManagerApplyWorktreeDiffResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.applyWorktreeDiffResult";
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }
     [JsonProperty("status")]
+    // Original TypeScript type: literal
     public string Status { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }

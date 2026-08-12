@@ -23,7 +23,8 @@ public class EventSessionNextReasoningEnded
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "session.next.reasoning.ended";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

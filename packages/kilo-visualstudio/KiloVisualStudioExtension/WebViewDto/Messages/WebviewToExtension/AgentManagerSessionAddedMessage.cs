@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerSessionAddedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.sessionAdded";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("worktreeId")]

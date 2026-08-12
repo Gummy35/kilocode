@@ -23,8 +23,10 @@ public class DiffSourceDescriptor
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "session";
     [JsonProperty("group")]
+    // Original TypeScript type: literal
     public string Group { get; set; }
     [JsonProperty("icon", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

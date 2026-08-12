@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class PersistModelSelectorExpandedRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "persistModelSelectorExpanded";
     [JsonProperty("value")]
+    // Original TypeScript type: literal
     public string Value { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ParseArgsOptionDescriptor
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "string";
     [JsonProperty("multiple", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public object? Multiple { get; set; }

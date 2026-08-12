@@ -32,25 +32,36 @@ public class SVGLength
     [JsonProperty("valueInSpecifiedUnits")]
     public double ValueInSpecifiedUnits { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_UNKNOWN")]
-    public string SVG_LENGTHTYPE_UNKNOWN { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_UNKNOWN { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_NUMBER")]
-    public string SVG_LENGTHTYPE_NUMBER { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_NUMBER { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_PERCENTAGE")]
-    public string SVG_LENGTHTYPE_PERCENTAGE { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_PERCENTAGE { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_EMS")]
-    public string SVG_LENGTHTYPE_EMS { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_EMS { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_EXS")]
-    public string SVG_LENGTHTYPE_EXS { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_EXS { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_PX")]
-    public string SVG_LENGTHTYPE_PX { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_PX { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_CM")]
-    public string SVG_LENGTHTYPE_CM { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_CM { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_MM")]
-    public string SVG_LENGTHTYPE_MM { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_MM { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_IN")]
-    public string SVG_LENGTHTYPE_IN { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_IN { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_PT")]
-    public string SVG_LENGTHTYPE_PT { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_PT { get; set; }
     [JsonProperty("SVG_LENGTHTYPE_PC")]
-    public string SVG_LENGTHTYPE_PC { get; set; }
+    // Original TypeScript type: literal
+    public double SVG_LENGTHTYPE_PC { get; set; }
 }

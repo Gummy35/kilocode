@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class ConnectionStateMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "connectionState";
     [JsonProperty("state")]
+    // Original TypeScript type: literal
     public string State { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

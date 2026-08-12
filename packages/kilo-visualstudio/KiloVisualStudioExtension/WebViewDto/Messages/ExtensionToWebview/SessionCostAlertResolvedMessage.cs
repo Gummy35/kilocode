@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionCostAlertResolvedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sessionCostAlertResolved";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("limit")]

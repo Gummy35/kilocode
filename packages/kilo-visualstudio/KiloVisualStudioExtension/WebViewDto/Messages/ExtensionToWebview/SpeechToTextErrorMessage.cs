@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SpeechToTextErrorMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "speechToTextError";
     [JsonProperty("error")]
     public string Error { get; set; }
     [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]

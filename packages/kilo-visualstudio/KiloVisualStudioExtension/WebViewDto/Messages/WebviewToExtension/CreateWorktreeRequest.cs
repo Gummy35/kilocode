@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CreateWorktreeRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.createWorktree";
     [JsonProperty("baseBranch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? BaseBranch { get; set; }

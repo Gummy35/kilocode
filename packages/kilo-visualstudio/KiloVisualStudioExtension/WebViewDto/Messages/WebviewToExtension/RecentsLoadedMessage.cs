@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RecentsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "recentsLoaded";
     [JsonProperty("recents")]
     public List<ModelSelection> Recents { get; set; }
 }

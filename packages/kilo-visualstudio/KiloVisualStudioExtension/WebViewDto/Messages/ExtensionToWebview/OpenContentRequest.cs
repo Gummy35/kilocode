@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OpenContentRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openContent";
     [JsonProperty("content")]
     public string Content { get; set; }
     [JsonProperty("language", NullValueHandling = NullValueHandling.Ignore)]

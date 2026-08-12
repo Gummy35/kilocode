@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ImportAndSendMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "importAndSend";
     [JsonProperty("cloudSessionId")]
     public string CloudSessionId { get; set; }
     [JsonProperty("text")]

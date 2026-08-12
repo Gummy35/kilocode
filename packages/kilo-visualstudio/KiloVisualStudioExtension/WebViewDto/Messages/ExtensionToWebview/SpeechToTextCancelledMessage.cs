@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SpeechToTextCancelledMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "speechToTextCancelled";
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
 }

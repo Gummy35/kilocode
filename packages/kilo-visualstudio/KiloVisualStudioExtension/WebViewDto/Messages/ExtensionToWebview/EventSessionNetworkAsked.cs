@@ -23,7 +23,8 @@ public class EventSessionNetworkAsked
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "session.network.asked";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

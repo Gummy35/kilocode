@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class McpStatusEntry
 {
     [JsonProperty("status")]
-    public string Status { get; set; }
+    // Original TypeScript type: literal
+    public string Status { get; set; } = "failed";
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Error { get; set; }

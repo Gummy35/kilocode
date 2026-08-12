@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class TodoUpdatedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "todoUpdated";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("items")]

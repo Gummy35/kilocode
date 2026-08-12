@@ -24,15 +24,18 @@ public class Response
     // Original TypeScript type: Headers
     public object Headers { get; set; }
     [JsonProperty("ok")]
+    // Original TypeScript type: literal
     public string Ok { get; set; }
     [JsonProperty("redirected")]
+    // Original TypeScript type: literal
     public string Redirected { get; set; }
     [JsonProperty("status")]
     public double Status { get; set; }
     [JsonProperty("statusText")]
     public string StatusText { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "basic";
     [JsonProperty("url")]
     public string Url { get; set; }
 }

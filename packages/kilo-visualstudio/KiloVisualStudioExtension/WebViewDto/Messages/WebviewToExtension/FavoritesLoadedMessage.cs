@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class FavoritesLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "favoritesLoaded";
     [JsonProperty("favorites")]
     public List<ModelSelection> Favorites { get; set; }
 }

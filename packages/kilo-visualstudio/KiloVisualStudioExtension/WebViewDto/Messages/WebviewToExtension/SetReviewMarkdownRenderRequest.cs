@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class SetReviewMarkdownRenderRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.setReviewMarkdownRender";
     [JsonProperty("render")]
+    // Original TypeScript type: literal
     public string Render { get; set; }
 }

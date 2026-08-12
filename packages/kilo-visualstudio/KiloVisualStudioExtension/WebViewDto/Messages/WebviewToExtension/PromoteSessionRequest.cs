@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PromoteSessionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.promoteSession";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
 }

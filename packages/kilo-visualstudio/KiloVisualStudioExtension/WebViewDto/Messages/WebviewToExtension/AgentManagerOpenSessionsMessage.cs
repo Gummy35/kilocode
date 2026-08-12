@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerOpenSessionsMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.openSessions";
     [JsonProperty("sessionIDs")]
     public List<string> SessionIDs { get; set; }
 }

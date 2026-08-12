@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class QuestionRequestMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "questionRequest";
     [JsonProperty("question")]
     public QuestionRequest Question { get; set; }
 }

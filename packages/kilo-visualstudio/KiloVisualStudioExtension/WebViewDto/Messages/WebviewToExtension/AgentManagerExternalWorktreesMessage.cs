@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerExternalWorktreesMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.externalWorktrees";
     [JsonProperty("worktrees")]
     public List<ExternalWorktreeInfo> Worktrees { get; set; }
 }

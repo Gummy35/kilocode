@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class AgentManagerMultiVersionProgressMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.multiVersionProgress";
     [JsonProperty("status")]
+    // Original TypeScript type: literal
     public string Status { get; set; }
     [JsonProperty("total")]
     public double Total { get; set; }

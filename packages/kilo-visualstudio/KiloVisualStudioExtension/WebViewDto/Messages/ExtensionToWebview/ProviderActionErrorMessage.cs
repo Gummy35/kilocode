@@ -21,12 +21,14 @@ using Newtonsoft.Json;
 public class ProviderActionErrorMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "providerActionError";
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }
     [JsonProperty("action")]
+    // Original TypeScript type: literal
     public string Action { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }

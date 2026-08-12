@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OpenExternalRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openExternal";
     [JsonProperty("url")]
     public string Url { get; set; }
 }

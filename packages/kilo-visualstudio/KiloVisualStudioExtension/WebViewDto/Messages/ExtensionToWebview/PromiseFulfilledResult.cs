@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PromiseFulfilledResult
 {
     [JsonProperty("status")]
-    public string Status { get; set; }
+    // Original TypeScript type: literal
+    public string Status { get; set; } = "fulfilled";
     [JsonProperty("value")]
     public object Value { get; set; }
 }

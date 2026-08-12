@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RenameSectionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.renameSection";
     [JsonProperty("sectionId")]
     public string SectionId { get; set; }
     [JsonProperty("name")]

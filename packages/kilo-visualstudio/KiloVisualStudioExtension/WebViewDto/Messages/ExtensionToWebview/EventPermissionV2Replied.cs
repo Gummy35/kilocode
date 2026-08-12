@@ -23,7 +23,8 @@ public class EventPermissionV2Replied
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "permission.v2.replied";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

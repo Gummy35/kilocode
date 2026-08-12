@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SendCommandRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sendCommand";
     [JsonProperty("command")]
     public string Command { get; set; }
     [JsonProperty("arguments")]

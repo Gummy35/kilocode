@@ -21,9 +21,11 @@ using Newtonsoft.Json;
 public class MoveSectionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.moveSection";
     [JsonProperty("sectionId")]
     public string SectionId { get; set; }
     [JsonProperty("dir")]
-    public string Dir { get; set; }
+    // Original TypeScript type: literal
+    public double Dir { get; set; }
 }

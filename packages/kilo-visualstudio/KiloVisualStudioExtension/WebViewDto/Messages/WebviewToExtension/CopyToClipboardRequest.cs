@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CopyToClipboardRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.copyToClipboard";
     [JsonProperty("text")]
     public string Text { get; set; }
 }

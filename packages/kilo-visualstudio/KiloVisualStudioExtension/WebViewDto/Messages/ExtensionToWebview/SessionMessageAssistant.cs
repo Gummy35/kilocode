@@ -27,7 +27,8 @@ public class SessionMessageAssistant
     [JsonProperty("time")]
     public object Time { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "assistant";
     [JsonProperty("agent")]
     public string Agent { get; set; }
     [JsonProperty("model")]

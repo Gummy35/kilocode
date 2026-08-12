@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class DismissNotificationMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "dismissNotification";
     [JsonProperty("notificationId")]
     public string NotificationId { get; set; }
 }

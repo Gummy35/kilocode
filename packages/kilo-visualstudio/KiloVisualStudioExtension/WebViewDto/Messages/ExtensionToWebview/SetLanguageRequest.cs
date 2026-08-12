@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SetLanguageRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "setLanguage";
     [JsonProperty("locale")]
     public string Locale { get; set; }
 }

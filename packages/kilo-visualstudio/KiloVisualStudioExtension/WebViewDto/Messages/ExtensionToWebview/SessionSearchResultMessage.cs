@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionSearchResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sessionSearchResult";
     [JsonProperty("sessions")]
     public List<SessionSearchItem> Sessions { get; set; }
     [JsonProperty("requestId")]

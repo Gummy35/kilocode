@@ -33,5 +33,6 @@ public class UnderlyingByteSource
     // Original TypeScript type: undefined | __type
     public object? Start { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "bytes";
 }

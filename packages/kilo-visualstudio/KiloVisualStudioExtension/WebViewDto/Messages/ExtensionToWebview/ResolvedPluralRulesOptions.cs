@@ -25,7 +25,8 @@ public class ResolvedPluralRulesOptions
     [JsonProperty("pluralCategories")]
     public List<object> PluralCategories { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "cardinal";
     [JsonProperty("minimumIntegerDigits")]
     public double MinimumIntegerDigits { get; set; }
     [JsonProperty("minimumFractionDigits")]

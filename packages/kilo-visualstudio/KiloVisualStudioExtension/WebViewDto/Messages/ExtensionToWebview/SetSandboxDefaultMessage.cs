@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class SetSandboxDefaultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "setSandboxDefault";
     [JsonProperty("enabled")]
+    // Original TypeScript type: literal
     public string Enabled { get; set; }
     [JsonProperty("requestID")]
     public string RequestID { get; set; }

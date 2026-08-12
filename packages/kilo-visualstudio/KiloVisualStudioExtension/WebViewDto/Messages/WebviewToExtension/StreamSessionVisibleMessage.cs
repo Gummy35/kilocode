@@ -21,9 +21,11 @@ using Newtonsoft.Json;
 public class StreamSessionVisibleMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "streamSessionVisible";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("visible")]
+    // Original TypeScript type: literal
     public string Visible { get; set; }
 }

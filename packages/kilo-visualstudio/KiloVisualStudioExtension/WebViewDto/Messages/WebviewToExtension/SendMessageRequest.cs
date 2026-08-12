@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SendMessageRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sendMessage";
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("messageID", NullValueHandling = NullValueHandling.Ignore)]

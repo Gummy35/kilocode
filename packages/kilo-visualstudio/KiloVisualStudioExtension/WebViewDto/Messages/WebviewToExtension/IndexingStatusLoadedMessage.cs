@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class IndexingStatusLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "indexingStatusLoaded";
     [JsonProperty("status")]
     // Original TypeScript type: __type
     public object Status { get; set; }

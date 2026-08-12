@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class McpLocalConfig
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "local";
     [JsonProperty("command")]
     public object Command { get; set; }
     [JsonProperty("environment", NullValueHandling = NullValueHandling.Ignore)]

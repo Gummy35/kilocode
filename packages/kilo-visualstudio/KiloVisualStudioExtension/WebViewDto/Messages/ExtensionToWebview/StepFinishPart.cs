@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class StepFinishPart
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "step-finish";
     [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Reason { get; set; }

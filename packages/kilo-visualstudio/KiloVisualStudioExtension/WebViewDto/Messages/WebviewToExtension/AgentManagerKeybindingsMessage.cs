@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerKeybindingsMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.keybindings";
     [JsonProperty("bindings")]
     // Original TypeScript type: __type
     public object Bindings { get; set; }

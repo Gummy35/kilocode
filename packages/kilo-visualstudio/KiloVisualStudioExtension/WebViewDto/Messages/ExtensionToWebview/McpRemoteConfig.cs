@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class McpRemoteConfig
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "remote";
     [JsonProperty("url")]
     public string Url { get; set; }
     [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]

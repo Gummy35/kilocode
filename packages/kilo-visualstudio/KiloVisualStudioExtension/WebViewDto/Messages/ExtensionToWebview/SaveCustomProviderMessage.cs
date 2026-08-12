@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SaveCustomProviderMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "saveCustomProvider";
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("providerID")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ApplyWorktreeDiffMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.applyWorktreeDiff";
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }
     [JsonProperty("selectedFiles", NullValueHandling = NullValueHandling.Ignore)]

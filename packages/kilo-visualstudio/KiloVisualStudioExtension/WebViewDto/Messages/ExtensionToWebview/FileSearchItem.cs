@@ -23,5 +23,6 @@ public class FileSearchItem
     [JsonProperty("path")]
     public string Path { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "file";
 }

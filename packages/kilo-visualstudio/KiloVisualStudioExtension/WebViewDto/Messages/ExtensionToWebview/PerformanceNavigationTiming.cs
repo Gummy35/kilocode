@@ -35,7 +35,8 @@ public class PerformanceNavigationTiming
     [JsonProperty("redirectCount")]
     public double RedirectCount { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "reload";
     [JsonProperty("unloadEventEnd")]
     public double UnloadEventEnd { get; set; }
     [JsonProperty("unloadEventStart")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class BrowserSettingsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "browserSettingsLoaded";
     [JsonProperty("settings")]
     public BrowserSettings Settings { get; set; }
 }

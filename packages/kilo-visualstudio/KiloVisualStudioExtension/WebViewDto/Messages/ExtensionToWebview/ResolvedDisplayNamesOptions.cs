@@ -23,10 +23,13 @@ public class ResolvedDisplayNamesOptions
     [JsonProperty("locale")]
     public string Locale { get; set; }
     [JsonProperty("style")]
+    // Original TypeScript type: literal
     public string Style { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "currency";
     [JsonProperty("fallback")]
+    // Original TypeScript type: literal
     public string Fallback { get; set; }
     [JsonProperty("languageDisplay", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "standard" | "dialect"

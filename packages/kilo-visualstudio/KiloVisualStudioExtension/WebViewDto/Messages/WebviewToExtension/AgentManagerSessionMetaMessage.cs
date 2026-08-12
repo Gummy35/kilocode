@@ -21,10 +21,12 @@ using Newtonsoft.Json;
 public class AgentManagerSessionMetaMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.sessionMeta";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("mode")]
+    // Original TypeScript type: literal
     public string Mode { get; set; }
     [JsonProperty("branch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

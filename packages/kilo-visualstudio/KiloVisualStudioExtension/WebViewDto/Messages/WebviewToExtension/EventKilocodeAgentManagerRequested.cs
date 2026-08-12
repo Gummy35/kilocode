@@ -23,7 +23,8 @@ public class EventKilocodeAgentManagerRequested
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "kilocode.agent_manager.requested";
     [JsonProperty("properties", NullValueHandling = NullValueHandling.Ignore)]
     public object? Properties { get; set; }
 }

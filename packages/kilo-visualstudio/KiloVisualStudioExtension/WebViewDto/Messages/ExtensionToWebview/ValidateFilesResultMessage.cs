@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ValidateFilesResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "validateFilesResult";
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("existing")]

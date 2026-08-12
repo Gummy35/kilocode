@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerTerminalErrorMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.terminal.error";
     [JsonProperty("terminalId", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? TerminalId { get; set; }

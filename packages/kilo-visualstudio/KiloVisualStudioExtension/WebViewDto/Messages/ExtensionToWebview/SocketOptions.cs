@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SocketOptions
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "udp4";
     [JsonProperty("reuseAddr", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public object? ReuseAddr { get; set; }

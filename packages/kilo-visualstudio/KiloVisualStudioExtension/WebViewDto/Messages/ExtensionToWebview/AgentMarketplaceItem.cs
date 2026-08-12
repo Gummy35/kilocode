@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentMarketplaceItem
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agent";
     [JsonProperty("content")]
     public AgentContent Content { get; set; }
 }

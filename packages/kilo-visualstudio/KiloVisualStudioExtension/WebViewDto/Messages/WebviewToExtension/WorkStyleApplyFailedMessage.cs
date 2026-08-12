@@ -21,9 +21,11 @@ using Newtonsoft.Json;
 public class WorkStyleApplyFailedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "workStyleApplyFailed";
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("rollbackFailed")]
+    // Original TypeScript type: literal
     public string RollbackFailed { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SpeechToTextStartMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "speechToTextStart";
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("model")]

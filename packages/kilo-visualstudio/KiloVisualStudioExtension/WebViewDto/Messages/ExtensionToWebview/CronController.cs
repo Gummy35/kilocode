@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CronController
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "scheduled";
     [JsonProperty("cron")]
     public string Cron { get; set; }
     [JsonProperty("scheduledTime")]

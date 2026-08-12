@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CreateSectionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.createSection";
     [JsonProperty("name")]
     public string Name { get; set; }
     [JsonProperty("color", NullValueHandling = NullValueHandling.Ignore)]

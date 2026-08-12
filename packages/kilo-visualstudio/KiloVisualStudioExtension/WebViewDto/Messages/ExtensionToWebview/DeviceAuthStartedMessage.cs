@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class DeviceAuthStartedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "deviceAuthStarted";
     [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Code { get; set; }

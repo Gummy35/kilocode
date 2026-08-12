@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class NotificationsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "notificationsLoaded";
     [JsonProperty("notifications")]
     public List<KilocodeNotification> Notifications { get; set; }
     [JsonProperty("dismissedIds")]

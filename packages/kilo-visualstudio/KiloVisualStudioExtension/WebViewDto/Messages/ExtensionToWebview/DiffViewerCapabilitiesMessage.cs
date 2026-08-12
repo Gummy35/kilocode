@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class DiffViewerCapabilitiesMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "diffViewer.capabilities";
     [JsonProperty("capabilities")]
     public DiffSourceCapabilities Capabilities { get; set; }
 }

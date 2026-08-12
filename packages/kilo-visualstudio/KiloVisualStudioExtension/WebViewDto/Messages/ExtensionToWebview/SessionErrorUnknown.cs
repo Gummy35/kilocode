@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionErrorUnknown
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "unknown";
     [JsonProperty("message")]
     public string Message { get; set; }
 }

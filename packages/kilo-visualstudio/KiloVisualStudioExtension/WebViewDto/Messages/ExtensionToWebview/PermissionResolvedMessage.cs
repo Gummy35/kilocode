@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PermissionResolvedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "permissionResolved";
     [JsonProperty("permissionID")]
     public string PermissionID { get; set; }
 }

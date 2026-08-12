@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class OpenConfigFileRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openConfigFile";
     [JsonProperty("scope")]
+    // Original TypeScript type: literal
     public string Scope { get; set; }
     [JsonProperty("labels")]
     // Original TypeScript type: __type

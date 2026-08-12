@@ -30,5 +30,6 @@ public class Auth
     // Original TypeScript type: undefined | "basic" | "bearer"
     public object? Scheme { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "apiKey";
 }

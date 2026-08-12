@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionCommandCompletedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sessionCommandCompleted";
     [JsonProperty("messageID")]
     public string MessageID { get; set; }
 }

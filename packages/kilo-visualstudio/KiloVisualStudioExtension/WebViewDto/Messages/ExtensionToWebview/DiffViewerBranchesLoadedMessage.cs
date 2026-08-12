@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class DiffViewerBranchesLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "diffViewer.branches";
     [JsonProperty("branches")]
     public List<BranchInfo> Branches { get; set; }
     [JsonProperty("defaultBranch")]
@@ -33,6 +34,7 @@ public class DiffViewerBranchesLoadedMessage
     // Original TypeScript type: undefined | string
     public string? CurrentBase { get; set; }
     [JsonProperty("isAuto")]
+    // Original TypeScript type: literal
     public string IsAuto { get; set; }
     [JsonProperty("currentBranch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

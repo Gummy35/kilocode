@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class KiloEmbeddingModelsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "kiloEmbeddingModelsLoaded";
     [JsonProperty("catalog")]
     // Original TypeScript type: __type
     public object Catalog { get; set; }

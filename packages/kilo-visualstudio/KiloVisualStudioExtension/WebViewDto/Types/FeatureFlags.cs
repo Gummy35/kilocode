@@ -19,7 +19,9 @@ using Newtonsoft.Json;
 public class FeatureFlags
 {
     [JsonProperty("indexing")]
+    // Original TypeScript type: literal
     public string Indexing { get; set; }
     [JsonProperty("sandboxControls")]
+    // Original TypeScript type: literal
     public string SandboxControls { get; set; }
 }

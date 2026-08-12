@@ -21,9 +21,11 @@ using Newtonsoft.Json;
 public class OpenDiffVirtualRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openDiffVirtual";
     [JsonProperty("diff")]
     public PermissionFileDiff Diff { get; set; }
     [JsonProperty("initialDiffStyle")]
+    // Original TypeScript type: literal
     public string InitialDiffStyle { get; set; }
 }

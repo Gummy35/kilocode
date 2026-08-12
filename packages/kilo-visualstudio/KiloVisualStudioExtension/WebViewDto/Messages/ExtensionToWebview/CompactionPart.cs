@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class CompactionPart
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "compaction";
     [JsonProperty("auto")]
+    // Original TypeScript type: literal
     public string Auto { get; set; }
     [JsonProperty("overflow", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

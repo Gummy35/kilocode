@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class DiffViewerRequestFileRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "diffViewer.requestFile";
     [JsonProperty("file")]
     public string File { get; set; }
 }

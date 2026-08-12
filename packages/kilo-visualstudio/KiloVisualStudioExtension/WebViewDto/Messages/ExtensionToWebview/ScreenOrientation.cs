@@ -26,5 +26,6 @@ public class ScreenOrientation
     // Original TypeScript type: null | __type
     public object? Onchange { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "landscape-primary";
 }

@@ -23,7 +23,8 @@ public class EventMessagePartDelta
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "message.part.delta";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

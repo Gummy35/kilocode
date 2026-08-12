@@ -25,6 +25,7 @@ public class PRStatus
     [JsonProperty("url")]
     public string Url { get; set; }
     [JsonProperty("state")]
+    // Original TypeScript type: literal
     public string State { get; set; }
     [JsonProperty("review", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | "pending" | "approved" | "changes_requested"

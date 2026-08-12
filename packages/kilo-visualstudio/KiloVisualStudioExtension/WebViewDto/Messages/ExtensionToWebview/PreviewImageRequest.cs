@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PreviewImageRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "previewImage";
     [JsonProperty("dataUrl")]
     public string DataUrl { get; set; }
     [JsonProperty("filename")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class MessageCreatedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "messageCreated";
     [JsonProperty("message")]
     public Message Message { get; set; }
 }

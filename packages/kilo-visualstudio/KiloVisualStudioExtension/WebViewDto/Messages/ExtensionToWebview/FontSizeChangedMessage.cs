@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class FontSizeChangedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "fontSizeChanged";
     [JsonProperty("fontSize")]
     public double FontSize { get; set; }
 }

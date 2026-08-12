@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RequestFileSearchMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "requestFileSearch";
     [JsonProperty("query")]
     public string Query { get; set; }
     [JsonProperty("requestId")]

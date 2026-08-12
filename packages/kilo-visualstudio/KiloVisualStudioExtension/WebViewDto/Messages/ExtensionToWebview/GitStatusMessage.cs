@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class GitStatusMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "gitStatus";
     [JsonProperty("repo")]
+    // Original TypeScript type: literal
     public string Repo { get; set; }
 }

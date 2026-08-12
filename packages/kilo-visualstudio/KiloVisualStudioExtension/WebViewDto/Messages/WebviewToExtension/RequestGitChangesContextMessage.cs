@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RequestGitChangesContextMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "requestGitChangesContext";
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]

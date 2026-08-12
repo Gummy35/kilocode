@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ViewSubAgentSessionMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "viewSubAgentSession";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
 }

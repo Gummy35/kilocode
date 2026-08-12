@@ -27,7 +27,8 @@ public class SnapshotPart
     [JsonProperty("messageID")]
     public string MessageID { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "snapshot";
     [JsonProperty("snapshot")]
     public string Snapshot { get; set; }
 }

@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 public class HTMLButtonElement
 {
     [JsonProperty("disabled")]
+    // Original TypeScript type: literal
     public string Disabled { get; set; }
     [JsonProperty("form", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | HTMLFormElement
@@ -32,6 +33,7 @@ public class HTMLButtonElement
     [JsonProperty("formMethod")]
     public string FormMethod { get; set; }
     [JsonProperty("formNoValidate")]
+    // Original TypeScript type: literal
     public string FormNoValidate { get; set; }
     [JsonProperty("formTarget")]
     public string FormTarget { get; set; }
@@ -41,7 +43,8 @@ public class HTMLButtonElement
     [JsonProperty("name")]
     public string Name { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "submit";
     [JsonProperty("validationMessage")]
     public string ValidationMessage { get; set; }
     [JsonProperty("validity")]
@@ -49,5 +52,6 @@ public class HTMLButtonElement
     [JsonProperty("value")]
     public string Value { get; set; }
     [JsonProperty("willValidate")]
+    // Original TypeScript type: literal
     public string WillValidate { get; set; }
 }

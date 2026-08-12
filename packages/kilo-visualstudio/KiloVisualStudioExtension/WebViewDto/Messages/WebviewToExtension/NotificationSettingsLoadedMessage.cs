@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class NotificationSettingsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "notificationSettingsLoaded";
     [JsonProperty("settings")]
     // Original TypeScript type: __type
     public object Settings { get; set; }

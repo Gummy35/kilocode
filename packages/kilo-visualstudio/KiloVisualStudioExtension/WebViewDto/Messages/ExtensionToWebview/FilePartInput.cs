@@ -23,7 +23,8 @@ public class FilePartInput
     [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
     public string? Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "file";
     [JsonProperty("mime")]
     public string Mime { get; set; }
     [JsonProperty("filename", NullValueHandling = NullValueHandling.Ignore)]

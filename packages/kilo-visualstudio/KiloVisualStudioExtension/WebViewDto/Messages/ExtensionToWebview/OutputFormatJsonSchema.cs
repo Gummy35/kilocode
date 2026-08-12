@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OutputFormatJsonSchema
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "json_schema";
     [JsonProperty("schema")]
     public object Schema { get; set; }
     [JsonProperty("retryCount", NullValueHandling = NullValueHandling.Ignore)]

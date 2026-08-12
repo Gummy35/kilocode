@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CustomProviderModelsFetchedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "customProviderModelsFetched";
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("models", NullValueHandling = NullValueHandling.Ignore)]

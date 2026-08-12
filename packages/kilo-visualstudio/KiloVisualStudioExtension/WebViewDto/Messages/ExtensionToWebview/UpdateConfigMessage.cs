@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class UpdateConfigMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "updateConfig";
     [JsonProperty("config")]
     // Original TypeScript type: __type
     public object Config { get; set; }

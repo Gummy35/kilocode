@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class MarketplaceDataMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "marketplaceData";
     [JsonProperty("marketplaceItems")]
     public List<object> MarketplaceItems { get; set; }
     [JsonProperty("marketplaceInstalledMetadata")]

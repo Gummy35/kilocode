@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentsLoaded";
     [JsonProperty("agents")]
     public List<AgentInfo> Agents { get; set; }
     [JsonProperty("allAgents")]

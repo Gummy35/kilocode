@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RequestMemoryMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "requestMemory";
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }

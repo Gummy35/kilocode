@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PartTextDelta
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "text-delta";
     [JsonProperty("textDelta")]
     public string TextDelta { get; set; }
 }

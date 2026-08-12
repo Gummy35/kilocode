@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class AgentManagerWorktreeSetupMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.worktreeSetup";
     [JsonProperty("status")]
+    // Original TypeScript type: literal
     public string Status { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }

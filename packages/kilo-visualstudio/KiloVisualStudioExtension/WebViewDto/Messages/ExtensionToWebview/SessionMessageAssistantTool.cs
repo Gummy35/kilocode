@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionMessageAssistantTool
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "tool";
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("name")]

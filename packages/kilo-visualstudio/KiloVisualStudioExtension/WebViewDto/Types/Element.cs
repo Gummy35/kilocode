@@ -29,10 +29,13 @@ public class Element
     // Original TypeScript type: IterableIterator
     public object Attributes { get; set; }
     [JsonProperty("removed")]
+    // Original TypeScript type: literal
     public string Removed { get; set; }
     [JsonProperty("selfClosing")]
+    // Original TypeScript type: literal
     public string SelfClosing { get; set; }
     [JsonProperty("canHaveContent")]
+    // Original TypeScript type: literal
     public string CanHaveContent { get; set; }
     [JsonProperty("namespaceURI")]
     public string NamespaceURI { get; set; }

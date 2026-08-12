@@ -19,9 +19,12 @@ using Newtonsoft.Json;
 public class BrowserSettings
 {
     [JsonProperty("enabled")]
+    // Original TypeScript type: literal
     public string Enabled { get; set; }
     [JsonProperty("useSystemChrome")]
+    // Original TypeScript type: literal
     public string UseSystemChrome { get; set; }
     [JsonProperty("headless")]
+    // Original TypeScript type: literal
     public string Headless { get; set; }
 }

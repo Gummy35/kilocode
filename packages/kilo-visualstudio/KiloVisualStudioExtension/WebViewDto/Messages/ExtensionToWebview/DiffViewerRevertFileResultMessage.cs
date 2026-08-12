@@ -21,10 +21,12 @@ using Newtonsoft.Json;
 public class DiffViewerRevertFileResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "diffViewer.revertFileResult";
     [JsonProperty("file")]
     public string File { get; set; }
     [JsonProperty("status")]
+    // Original TypeScript type: literal
     public string Status { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }

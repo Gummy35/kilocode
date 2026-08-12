@@ -25,5 +25,6 @@ public class TodoItem
     [JsonProperty("content")]
     public string Content { get; set; }
     [JsonProperty("status")]
-    public string Status { get; set; }
+    // Original TypeScript type: literal
+    public string Status { get; set; } = "completed";
 }

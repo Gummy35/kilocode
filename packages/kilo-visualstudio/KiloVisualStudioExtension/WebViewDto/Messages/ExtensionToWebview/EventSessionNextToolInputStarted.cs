@@ -23,7 +23,8 @@ public class EventSessionNextToolInputStarted
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "session.next.tool.input.started";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

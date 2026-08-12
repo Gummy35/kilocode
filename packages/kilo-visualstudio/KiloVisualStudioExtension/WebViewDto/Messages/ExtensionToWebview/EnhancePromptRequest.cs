@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class EnhancePromptRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "enhancePrompt";
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("requestId")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerLocalStatsMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.localStats";
     [JsonProperty("stats")]
     public LocalGitStats Stats { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class StepStartPart
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "step-start";
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Time { get; set; }

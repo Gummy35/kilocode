@@ -33,5 +33,6 @@ public class SessionMessageUser
     [JsonProperty("agents", NullValueHandling = NullValueHandling.Ignore)]
     public object? Agents { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "user";
 }

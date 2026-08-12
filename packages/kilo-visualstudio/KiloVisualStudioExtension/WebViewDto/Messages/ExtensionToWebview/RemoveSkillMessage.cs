@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RemoveSkillMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "removeSkill";
     [JsonProperty("location")]
     public string Location { get; set; }
 }

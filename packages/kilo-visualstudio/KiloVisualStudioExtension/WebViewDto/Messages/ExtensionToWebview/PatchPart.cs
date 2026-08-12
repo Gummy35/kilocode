@@ -27,7 +27,8 @@ public class PatchPart
     [JsonProperty("messageID")]
     public string MessageID { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "patch";
     [JsonProperty("hash")]
     public string Hash { get; set; }
     [JsonProperty("files")]

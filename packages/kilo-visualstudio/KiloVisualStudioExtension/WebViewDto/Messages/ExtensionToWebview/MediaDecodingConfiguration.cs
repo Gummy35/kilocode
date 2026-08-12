@@ -24,5 +24,6 @@ public class MediaDecodingConfiguration
     // Original TypeScript type: undefined | MediaCapabilitiesKeySystemConfiguration
     public MediaCapabilitiesKeySystemConfiguration? KeySystemConfiguration { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "file";
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PartBatch
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "partsUpdated";
     [JsonProperty("updates")]
     public object Updates { get; set; }
 }

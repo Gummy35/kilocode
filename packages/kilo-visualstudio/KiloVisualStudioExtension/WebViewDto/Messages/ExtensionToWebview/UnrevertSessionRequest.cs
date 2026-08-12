@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class UnrevertSessionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "unrevertSession";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
 }

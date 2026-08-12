@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ToolPart
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "tool";
     [JsonProperty("tool")]
     public string Tool { get; set; }
     [JsonProperty("state", NullValueHandling = NullValueHandling.Ignore)]

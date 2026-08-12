@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RenameSessionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "renameSession";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("title")]

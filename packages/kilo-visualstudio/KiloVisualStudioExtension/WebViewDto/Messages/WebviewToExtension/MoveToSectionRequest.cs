@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class MoveToSectionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.moveToSection";
     [JsonProperty("worktreeIds")]
     public List<string> WorktreeIds { get; set; }
     [JsonProperty("sectionId", NullValueHandling = NullValueHandling.Ignore)]

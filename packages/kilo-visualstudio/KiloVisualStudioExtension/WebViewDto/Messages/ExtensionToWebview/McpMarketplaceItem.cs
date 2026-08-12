@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class McpMarketplaceItem
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "mcp";
     [JsonProperty("url")]
     public string Url { get; set; }
     [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]

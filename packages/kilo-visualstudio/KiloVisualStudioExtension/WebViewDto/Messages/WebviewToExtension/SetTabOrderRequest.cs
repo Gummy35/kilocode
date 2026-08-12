@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SetTabOrderRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.setTabOrder";
     [JsonProperty("key")]
     public string Key { get; set; }
     [JsonProperty("order")]

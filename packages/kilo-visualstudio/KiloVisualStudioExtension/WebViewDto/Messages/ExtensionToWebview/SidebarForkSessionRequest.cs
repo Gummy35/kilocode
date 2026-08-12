@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SidebarForkSessionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "forkSession";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("messageId", NullValueHandling = NullValueHandling.Ignore)]

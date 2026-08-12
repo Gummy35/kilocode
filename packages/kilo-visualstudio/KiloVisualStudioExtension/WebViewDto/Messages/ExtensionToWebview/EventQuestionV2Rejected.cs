@@ -23,7 +23,8 @@ public class EventQuestionV2Rejected
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "question.v2.rejected";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

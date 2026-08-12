@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class FilePartSource
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "file";
     [JsonProperty("path")]
     public string Path { get; set; }
     [JsonProperty("text")]

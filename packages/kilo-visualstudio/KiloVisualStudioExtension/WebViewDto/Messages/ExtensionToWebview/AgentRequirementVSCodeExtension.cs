@@ -25,7 +25,8 @@ public class AgentRequirementVSCodeExtension
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("status")]
-    public string Status { get; set; }
+    // Original TypeScript type: literal
+    public string Status { get; set; } = "error";
     [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Message { get; set; }

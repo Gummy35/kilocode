@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerVisibleSessionMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.visibleSession";
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string
     public string? SessionID { get; set; }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class FileSearchResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "fileSearchResult";
     [JsonProperty("paths")]
     public List<string> Paths { get; set; }
     [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]

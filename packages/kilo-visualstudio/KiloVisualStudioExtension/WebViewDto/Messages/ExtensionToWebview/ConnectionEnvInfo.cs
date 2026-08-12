@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ConnectionEnvInfo
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "env";
     [JsonProperty("name")]
     public string Name { get; set; }
 }

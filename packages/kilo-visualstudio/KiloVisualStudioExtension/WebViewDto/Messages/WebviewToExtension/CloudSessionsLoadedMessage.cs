@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CloudSessionsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "cloudSessionsLoaded";
     [JsonProperty("sessions")]
     public List<CloudSessionInfo> Sessions { get; set; }
     [JsonProperty("nextCursor", NullValueHandling = NullValueHandling.Ignore)]

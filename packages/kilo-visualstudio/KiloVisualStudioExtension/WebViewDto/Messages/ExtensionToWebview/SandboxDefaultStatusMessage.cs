@@ -21,12 +21,16 @@ using Newtonsoft.Json;
 public class SandboxDefaultStatusMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sandboxDefaultStatus";
     [JsonProperty("desired")]
+    // Original TypeScript type: literal
     public string Desired { get; set; }
     [JsonProperty("enabled")]
+    // Original TypeScript type: literal
     public string Enabled { get; set; }
     [JsonProperty("available")]
+    // Original TypeScript type: literal
     public string Available { get; set; }
     [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PermissionErrorMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "permissionError";
     [JsonProperty("permissionID")]
     public string PermissionID { get; set; }
     [JsonProperty("stale", NullValueHandling = NullValueHandling.Ignore)]

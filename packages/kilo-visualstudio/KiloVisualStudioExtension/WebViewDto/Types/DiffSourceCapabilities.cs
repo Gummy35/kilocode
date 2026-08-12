@@ -19,7 +19,9 @@ using Newtonsoft.Json;
 public class DiffSourceCapabilities
 {
     [JsonProperty("revert")]
+    // Original TypeScript type: literal
     public string Revert { get; set; }
     [JsonProperty("comments")]
+    // Original TypeScript type: literal
     public string Comments { get; set; }
 }

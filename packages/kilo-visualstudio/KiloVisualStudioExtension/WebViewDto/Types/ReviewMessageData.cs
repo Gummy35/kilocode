@@ -19,7 +19,8 @@ using Newtonsoft.Json;
 public class ReviewMessageData
 {
     [JsonProperty("version")]
-    public string Version { get; set; }
+    // Original TypeScript type: literal
+    public double Version { get; set; }
     [JsonProperty("comments")]
     public List<ReviewCommentData> Comments { get; set; }
 }

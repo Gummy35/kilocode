@@ -21,14 +21,17 @@ using Newtonsoft.Json;
 public class MigrationProgressMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "migrationProgress";
     [JsonProperty("source")]
+    // Original TypeScript type: literal
     public string Source { get; set; }
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("item")]
     public string Item { get; set; }
     [JsonProperty("status")]
+    // Original TypeScript type: literal
     public string Status { get; set; }
     [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

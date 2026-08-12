@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class WellKnownAuth
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "wellknown";
     [JsonProperty("key")]
     public string Key { get; set; }
     [JsonProperty("token")]

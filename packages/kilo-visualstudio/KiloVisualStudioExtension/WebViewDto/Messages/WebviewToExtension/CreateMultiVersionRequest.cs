@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CreateMultiVersionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.createMultiVersion";
     [JsonProperty("text", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Text { get; set; }

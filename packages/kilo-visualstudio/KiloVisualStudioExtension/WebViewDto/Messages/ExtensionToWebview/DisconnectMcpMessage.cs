@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class DisconnectMcpMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "disconnectMcp";
     [JsonProperty("name")]
     public string Name { get; set; }
 }

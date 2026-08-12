@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class SetReviewDiffStyleRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.setReviewDiffStyle";
     [JsonProperty("style")]
+    // Original TypeScript type: literal
     public string Style { get; set; }
 }

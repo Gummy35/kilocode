@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class IntegrationKeyMethod
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "key";
     [JsonProperty("label", NullValueHandling = NullValueHandling.Ignore)]
     public string? Label { get; set; }
 }

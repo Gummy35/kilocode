@@ -30,5 +30,6 @@ public class WriteParams
     // Original TypeScript type: undefined | null | number
     public double? Size { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "seek";
 }

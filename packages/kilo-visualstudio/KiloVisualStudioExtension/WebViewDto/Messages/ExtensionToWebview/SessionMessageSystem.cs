@@ -27,7 +27,8 @@ public class SessionMessageSystem
     [JsonProperty("time")]
     public object Time { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "system";
     [JsonProperty("text")]
     public string Text { get; set; }
 }

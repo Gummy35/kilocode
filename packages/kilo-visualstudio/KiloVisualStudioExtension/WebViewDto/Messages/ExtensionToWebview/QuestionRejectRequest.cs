@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class QuestionRejectRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "questionReject";
     [JsonProperty("requestID")]
     public string RequestID { get; set; }
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]

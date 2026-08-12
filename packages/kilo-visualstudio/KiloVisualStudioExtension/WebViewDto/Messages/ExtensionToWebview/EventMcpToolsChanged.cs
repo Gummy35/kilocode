@@ -23,7 +23,8 @@ public class EventMcpToolsChanged
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "mcp.tools.changed";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

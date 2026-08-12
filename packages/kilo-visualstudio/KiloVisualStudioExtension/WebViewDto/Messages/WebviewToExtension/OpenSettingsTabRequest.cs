@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OpenSettingsTabRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openSettingsTab";
     [JsonProperty("tab")]
     public string Tab { get; set; }
 }

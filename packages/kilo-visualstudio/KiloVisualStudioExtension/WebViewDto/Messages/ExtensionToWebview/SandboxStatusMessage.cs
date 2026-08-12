@@ -21,12 +21,15 @@ using Newtonsoft.Json;
 public class SandboxStatusMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sandboxStatus";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("enabled")]
+    // Original TypeScript type: literal
     public string Enabled { get; set; }
     [JsonProperty("available")]
+    // Original TypeScript type: literal
     public string Available { get; set; }
     [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

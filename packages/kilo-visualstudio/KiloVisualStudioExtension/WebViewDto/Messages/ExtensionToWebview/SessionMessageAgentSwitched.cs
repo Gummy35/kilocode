@@ -27,7 +27,8 @@ public class SessionMessageAgentSwitched
     [JsonProperty("time")]
     public object Time { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "agent-switched";
     [JsonProperty("agent")]
     public string Agent { get; set; }
 }

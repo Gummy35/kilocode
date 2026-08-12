@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ConfigUpdateFailedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "configUpdateFailed";
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("details", NullValueHandling = NullValueHandling.Ignore)]

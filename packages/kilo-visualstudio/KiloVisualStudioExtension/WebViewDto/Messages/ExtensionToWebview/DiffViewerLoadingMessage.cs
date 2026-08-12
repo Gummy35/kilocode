@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class DiffViewerLoadingMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "diffViewer.loading";
     [JsonProperty("loading")]
+    // Original TypeScript type: literal
     public string Loading { get; set; }
 }

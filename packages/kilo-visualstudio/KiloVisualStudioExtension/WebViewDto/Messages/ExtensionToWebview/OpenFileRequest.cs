@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OpenFileRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openFile";
     [JsonProperty("filePath")]
     public string FilePath { get; set; }
     [JsonProperty("line", NullValueHandling = NullValueHandling.Ignore)]

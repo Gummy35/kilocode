@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class UpdateSettingRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "updateSetting";
     [JsonProperty("key")]
     public string Key { get; set; }
     [JsonProperty("value")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class MockFunctionResultIncomplete
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "incomplete";
     [JsonProperty("value")]
     public object Value { get; set; }
 }

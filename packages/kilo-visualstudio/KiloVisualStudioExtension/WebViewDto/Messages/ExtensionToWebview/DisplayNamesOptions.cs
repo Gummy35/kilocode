@@ -27,7 +27,8 @@ public class DisplayNamesOptions
     // Original TypeScript type: undefined | "long" | "short" | "narrow"
     public object? Style { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "currency";
     [JsonProperty("languageDisplay", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "standard" | "dialect"
     public object? LanguageDisplay { get; set; }

@@ -27,7 +27,8 @@ public class SessionMessageShell
     [JsonProperty("time")]
     public object Time { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "shell";
     [JsonProperty("callID")]
     public string CallID { get; set; }
     [JsonProperty("command")]

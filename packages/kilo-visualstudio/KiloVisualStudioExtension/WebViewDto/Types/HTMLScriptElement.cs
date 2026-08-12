@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 public class HTMLScriptElement
 {
     [JsonProperty("async")]
+    // Original TypeScript type: literal
     public string Async { get; set; }
     [JsonProperty("charset")]
     public string Charset { get; set; }
@@ -31,16 +32,19 @@ public class HTMLScriptElement
     // Original TypeScript type: null | string
     public string? CrossOrigin { get; set; }
     [JsonProperty("defer")]
+    // Original TypeScript type: literal
     public string Defer { get; set; }
     [JsonProperty("event")]
     public string Event { get; set; }
     [JsonProperty("fetchPriority")]
+    // Original TypeScript type: literal
     public string FetchPriority { get; set; }
     [JsonProperty("htmlFor")]
     public string HtmlFor { get; set; }
     [JsonProperty("integrity")]
     public string Integrity { get; set; }
     [JsonProperty("noModule")]
+    // Original TypeScript type: literal
     public string NoModule { get; set; }
     [JsonProperty("referrerPolicy")]
     public string ReferrerPolicy { get; set; }

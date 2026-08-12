@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class DiffViewerMarkdownRenderMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "diffViewer.markdownRender";
     [JsonProperty("render")]
+    // Original TypeScript type: literal
     public string Render { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SelectKiloModelMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "selectKiloModel";
     [JsonProperty("modelID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? ModelID { get; set; }

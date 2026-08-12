@@ -23,6 +23,7 @@ public class ReviewCommentData
     [JsonProperty("file")]
     public string File { get; set; }
     [JsonProperty("side")]
+    // Original TypeScript type: literal
     public string Side { get; set; }
     [JsonProperty("line")]
     public double Line { get; set; }

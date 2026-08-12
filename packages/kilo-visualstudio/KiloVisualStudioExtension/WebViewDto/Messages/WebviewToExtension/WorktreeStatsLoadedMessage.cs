@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class WorktreeStatsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "worktreeStatsLoaded";
     [JsonProperty("files")]
     public double Files { get; set; }
     [JsonProperty("additions")]

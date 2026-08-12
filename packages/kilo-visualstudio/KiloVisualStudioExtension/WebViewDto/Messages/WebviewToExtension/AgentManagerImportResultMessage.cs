@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class AgentManagerImportResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.importResult";
     [JsonProperty("success")]
+    // Original TypeScript type: literal
     public string Success { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }

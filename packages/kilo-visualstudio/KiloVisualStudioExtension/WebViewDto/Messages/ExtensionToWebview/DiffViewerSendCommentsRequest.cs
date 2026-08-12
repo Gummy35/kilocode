@@ -21,9 +21,11 @@ using Newtonsoft.Json;
 public class DiffViewerSendCommentsRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "diffViewer.sendComments";
     [JsonProperty("comments")]
     public List<ReviewCommentData> Comments { get; set; }
     [JsonProperty("autoSend")]
+    // Original TypeScript type: literal
     public string AutoSend { get; set; }
 }

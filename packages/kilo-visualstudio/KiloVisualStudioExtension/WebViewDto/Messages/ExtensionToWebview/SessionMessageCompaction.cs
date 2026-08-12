@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionMessageCompaction
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "compaction";
     [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
     public object? Reason { get; set; }
     [JsonProperty("summary")]

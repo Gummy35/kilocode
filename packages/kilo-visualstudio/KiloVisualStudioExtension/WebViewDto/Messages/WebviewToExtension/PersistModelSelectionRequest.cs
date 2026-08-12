@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PersistModelSelectionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "persistModelSelection";
     [JsonProperty("agent")]
     public string Agent { get; set; }
     [JsonProperty("providerID")]

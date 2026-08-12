@@ -23,7 +23,8 @@ public class FileSource
     [JsonProperty("text")]
     public object Text { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "file";
     [JsonProperty("path")]
     public string Path { get; set; }
 }

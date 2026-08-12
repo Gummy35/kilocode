@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OpenVSCodeSettingsRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openVSCodeSettings";
     [JsonProperty("query")]
     public string Query { get; set; }
 }

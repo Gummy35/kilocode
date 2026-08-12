@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class FilePickerResultMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "filePickerResult";
     [JsonProperty("path")]
     public string Path { get; set; }
     [JsonProperty("requestId")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SetAvailableSourcesMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "setAvailableSources";
     [JsonProperty("descriptors")]
     public List<DiffSourceDescriptor> Descriptors { get; set; }
     [JsonProperty("currentId")]

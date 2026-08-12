@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class StartMigrationMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "startMigration";
     [JsonProperty("source")]
+    // Original TypeScript type: literal
     public string Source { get; set; }
     [JsonProperty("operationId")]
     public string OperationId { get; set; }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ShowTerminalRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.showTerminal";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
 }

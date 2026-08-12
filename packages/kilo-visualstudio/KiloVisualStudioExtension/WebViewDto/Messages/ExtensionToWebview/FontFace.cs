@@ -25,6 +25,7 @@ public class FontFace
     [JsonProperty("descentOverride")]
     public string DescentOverride { get; set; }
     [JsonProperty("display")]
+    // Original TypeScript type: literal
     public string Display { get; set; }
     [JsonProperty("family")]
     public string Family { get; set; }
@@ -36,7 +37,8 @@ public class FontFace
     // Original TypeScript type: Promise
     public Task<object> Loaded { get; set; }
     [JsonProperty("status")]
-    public string Status { get; set; }
+    // Original TypeScript type: literal
+    public string Status { get; set; } = "error";
     [JsonProperty("stretch")]
     public string Stretch { get; set; }
     [JsonProperty("style")]

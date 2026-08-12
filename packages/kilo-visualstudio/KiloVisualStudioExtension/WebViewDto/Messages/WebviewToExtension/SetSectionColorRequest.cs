@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SetSectionColorRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.setSectionColor";
     [JsonProperty("sectionId")]
     public string SectionId { get; set; }
     [JsonProperty("color", NullValueHandling = NullValueHandling.Ignore)]

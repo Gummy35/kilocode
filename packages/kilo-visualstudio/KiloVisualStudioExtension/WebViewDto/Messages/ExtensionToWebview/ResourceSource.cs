@@ -23,7 +23,8 @@ public class ResourceSource
     [JsonProperty("text")]
     public object Text { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "resource";
     [JsonProperty("clientName")]
     public string ClientName { get; set; }
     [JsonProperty("uri")]

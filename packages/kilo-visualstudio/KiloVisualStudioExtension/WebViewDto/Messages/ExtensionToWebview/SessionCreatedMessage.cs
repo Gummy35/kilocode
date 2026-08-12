@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SessionCreatedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sessionCreated";
     [JsonProperty("session")]
     public SessionInfo Session { get; set; }
     [JsonProperty("draftID", NullValueHandling = NullValueHandling.Ignore)]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SuggestionRequestMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "suggestionRequest";
     [JsonProperty("suggestion")]
     public SuggestionRequest Suggestion { get; set; }
 }

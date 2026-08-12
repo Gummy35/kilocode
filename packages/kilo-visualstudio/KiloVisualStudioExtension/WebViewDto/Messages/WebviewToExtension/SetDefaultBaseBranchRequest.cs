@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SetDefaultBaseBranchRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.setDefaultBaseBranch";
     [JsonProperty("branch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Branch { get; set; }

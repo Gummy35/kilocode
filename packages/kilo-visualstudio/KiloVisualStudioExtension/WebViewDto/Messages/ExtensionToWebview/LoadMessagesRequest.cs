@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class LoadMessagesRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "loadMessages";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]

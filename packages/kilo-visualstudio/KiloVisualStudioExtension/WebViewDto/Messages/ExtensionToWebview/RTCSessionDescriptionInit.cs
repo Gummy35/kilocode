@@ -24,5 +24,6 @@ public class RTCSessionDescriptionInit
     // Original TypeScript type: undefined | string
     public string? Sdp { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "answer";
 }

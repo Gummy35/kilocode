@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ImportFromBranchRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.importFromBranch";
     [JsonProperty("branch")]
     public string Branch { get; set; }
 }

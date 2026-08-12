@@ -81,13 +81,16 @@ public class Document
     // Original TypeScript type: FragmentDirective
     public object FragmentDirective { get; set; }
     [JsonProperty("fullscreen")]
+    // Original TypeScript type: literal
     public string Fullscreen { get; set; }
     [JsonProperty("fullscreenEnabled")]
+    // Original TypeScript type: literal
     public string FullscreenEnabled { get; set; }
     [JsonProperty("head")]
     // Original TypeScript type: HTMLHeadElement
     public object Head { get; set; }
     [JsonProperty("hidden")]
+    // Original TypeScript type: literal
     public string Hidden { get; set; }
     [JsonProperty("images")]
     // Original TypeScript type: HTMLCollectionOf
@@ -125,11 +128,13 @@ public class Document
     [JsonProperty("ownerDocument")]
     public object OwnerDocument { get; set; }
     [JsonProperty("pictureInPictureEnabled")]
+    // Original TypeScript type: literal
     public string PictureInPictureEnabled { get; set; }
     [JsonProperty("plugins")]
     // Original TypeScript type: HTMLCollectionOf
     public object Plugins { get; set; }
     [JsonProperty("readyState")]
+    // Original TypeScript type: literal
     public string ReadyState { get; set; }
     [JsonProperty("referrer")]
     public string Referrer { get; set; }
@@ -148,6 +153,7 @@ public class Document
     [JsonProperty("title")]
     public string Title { get; set; }
     [JsonProperty("visibilityState")]
+    // Original TypeScript type: literal
     public string VisibilityState { get; set; }
     [JsonProperty("vlinkColor")]
     public string VlinkColor { get; set; }

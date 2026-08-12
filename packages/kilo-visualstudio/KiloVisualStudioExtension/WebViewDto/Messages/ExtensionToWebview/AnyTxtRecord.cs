@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AnyTxtRecord
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "TXT";
     [JsonProperty("entries")]
     public List<string> Entries { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AnyPtrRecord
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "PTR";
     [JsonProperty("value")]
     public string Value { get; set; }
 }

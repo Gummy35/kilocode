@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ChatSettingsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "chatSettingsLoaded";
     [JsonProperty("settings")]
     // Original TypeScript type: __type
     public object Settings { get; set; }

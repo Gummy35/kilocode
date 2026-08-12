@@ -23,7 +23,8 @@ public class IntegrationOAuthMethod
     [JsonProperty("id")]
     public string Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "oauth";
     [JsonProperty("label")]
     public string Label { get; set; }
     [JsonProperty("prompts", NullValueHandling = NullValueHandling.Ignore)]

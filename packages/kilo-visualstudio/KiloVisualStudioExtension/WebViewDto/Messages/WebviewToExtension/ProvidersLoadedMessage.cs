@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ProvidersLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "providersLoaded";
     [JsonProperty("providers")]
     // Original TypeScript type: __type
     public object Providers { get; set; }

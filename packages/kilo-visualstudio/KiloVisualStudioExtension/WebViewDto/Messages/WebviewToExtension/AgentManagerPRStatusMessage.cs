@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerPRStatusMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.prStatus";
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }
     [JsonProperty("pr", NullValueHandling = NullValueHandling.Ignore)]

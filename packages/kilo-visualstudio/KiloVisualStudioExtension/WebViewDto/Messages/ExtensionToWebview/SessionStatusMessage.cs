@@ -21,10 +21,12 @@ using Newtonsoft.Json;
 public class SessionStatusMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sessionStatus";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("status")]
+    // Original TypeScript type: literal
     public string Status { get; set; }
     [JsonProperty("attempt", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number

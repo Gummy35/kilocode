@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OpenMarketplacePanelRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "openMarketplacePanel";
     [JsonProperty("directory", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Directory { get; set; }

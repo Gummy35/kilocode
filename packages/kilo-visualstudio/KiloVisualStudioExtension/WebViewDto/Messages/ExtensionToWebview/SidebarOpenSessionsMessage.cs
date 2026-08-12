@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SidebarOpenSessionsMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sidebar.openSessions";
     [JsonProperty("sessionIDs")]
     public List<string> SessionIDs { get; set; }
 }

@@ -44,5 +44,6 @@ public class MutationRecord
     [JsonProperty("target")]
     public Node Target { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "attributes";
 }

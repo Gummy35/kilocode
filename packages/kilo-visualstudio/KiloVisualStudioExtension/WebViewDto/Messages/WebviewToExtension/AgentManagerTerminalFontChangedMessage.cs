@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerTerminalFontChangedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.terminal.fontChanged";
     [JsonProperty("font")]
     public TerminalFont Font { get; set; }
 }

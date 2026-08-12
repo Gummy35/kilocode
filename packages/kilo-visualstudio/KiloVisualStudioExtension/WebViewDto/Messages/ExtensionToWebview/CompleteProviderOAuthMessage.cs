@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CompleteProviderOAuthMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "completeProviderOAuth";
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("providerID")]

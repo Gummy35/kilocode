@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ReasoningPart
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "reasoning";
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]

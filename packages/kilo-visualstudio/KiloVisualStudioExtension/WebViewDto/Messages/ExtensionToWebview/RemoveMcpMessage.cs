@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RemoveMcpMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "removeMcp";
     [JsonProperty("name")]
     public string Name { get; set; }
 }

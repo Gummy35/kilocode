@@ -23,7 +23,8 @@ public class AgentPartInput
     [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
     public string? Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "agent";
     [JsonProperty("name")]
     public string Name { get; set; }
     [JsonProperty("source", NullValueHandling = NullValueHandling.Ignore)]

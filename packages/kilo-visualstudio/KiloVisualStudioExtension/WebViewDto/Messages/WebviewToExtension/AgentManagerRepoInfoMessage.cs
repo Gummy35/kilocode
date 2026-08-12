@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerRepoInfoMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.repoInfo";
     [JsonProperty("branch")]
     public string Branch { get; set; }
     [JsonProperty("defaultBranch", NullValueHandling = NullValueHandling.Ignore)]

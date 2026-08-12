@@ -23,5 +23,6 @@ public class Highlight
     [JsonProperty("priority")]
     public double Priority { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "grammar-error";
 }

@@ -32,6 +32,7 @@ public class Node
     // Original TypeScript type: null | ChildNode
     public object? FirstChild { get; set; }
     [JsonProperty("isConnected")]
+    // Original TypeScript type: literal
     public string IsConnected { get; set; }
     [JsonProperty("lastChild", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | ChildNode
@@ -62,39 +63,57 @@ public class Node
     // Original TypeScript type: null | string
     public string? TextContent { get; set; }
     [JsonProperty("ELEMENT_NODE")]
-    public string ELEMENT_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double ELEMENT_NODE { get; set; }
     [JsonProperty("ATTRIBUTE_NODE")]
-    public string ATTRIBUTE_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double ATTRIBUTE_NODE { get; set; }
     [JsonProperty("TEXT_NODE")]
-    public string TEXT_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double TEXT_NODE { get; set; }
     [JsonProperty("CDATA_SECTION_NODE")]
-    public string CDATA_SECTION_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double CDATA_SECTION_NODE { get; set; }
     [JsonProperty("ENTITY_REFERENCE_NODE")]
-    public string ENTITY_REFERENCE_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double ENTITY_REFERENCE_NODE { get; set; }
     [JsonProperty("ENTITY_NODE")]
-    public string ENTITY_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double ENTITY_NODE { get; set; }
     [JsonProperty("PROCESSING_INSTRUCTION_NODE")]
-    public string PROCESSING_INSTRUCTION_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double PROCESSING_INSTRUCTION_NODE { get; set; }
     [JsonProperty("COMMENT_NODE")]
-    public string COMMENT_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double COMMENT_NODE { get; set; }
     [JsonProperty("DOCUMENT_NODE")]
-    public string DOCUMENT_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_NODE { get; set; }
     [JsonProperty("DOCUMENT_TYPE_NODE")]
-    public string DOCUMENT_TYPE_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_TYPE_NODE { get; set; }
     [JsonProperty("DOCUMENT_FRAGMENT_NODE")]
-    public string DOCUMENT_FRAGMENT_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_FRAGMENT_NODE { get; set; }
     [JsonProperty("NOTATION_NODE")]
-    public string NOTATION_NODE { get; set; }
+    // Original TypeScript type: literal
+    public double NOTATION_NODE { get; set; }
     [JsonProperty("DOCUMENT_POSITION_DISCONNECTED")]
-    public string DOCUMENT_POSITION_DISCONNECTED { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_POSITION_DISCONNECTED { get; set; }
     [JsonProperty("DOCUMENT_POSITION_PRECEDING")]
-    public string DOCUMENT_POSITION_PRECEDING { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_POSITION_PRECEDING { get; set; }
     [JsonProperty("DOCUMENT_POSITION_FOLLOWING")]
-    public string DOCUMENT_POSITION_FOLLOWING { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_POSITION_FOLLOWING { get; set; }
     [JsonProperty("DOCUMENT_POSITION_CONTAINS")]
-    public string DOCUMENT_POSITION_CONTAINS { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_POSITION_CONTAINS { get; set; }
     [JsonProperty("DOCUMENT_POSITION_CONTAINED_BY")]
-    public string DOCUMENT_POSITION_CONTAINED_BY { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_POSITION_CONTAINED_BY { get; set; }
     [JsonProperty("DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC")]
-    public string DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC { get; set; }
+    // Original TypeScript type: literal
+    public double DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC { get; set; }
 }

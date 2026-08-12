@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class FilePart
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "file";
     [JsonProperty("mime")]
     public string Mime { get; set; }
     [JsonProperty("url")]

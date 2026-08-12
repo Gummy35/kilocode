@@ -25,7 +25,8 @@ public class Message
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("role")]
-    public string Role { get; set; }
+    // Original TypeScript type: literal
+    public string Role { get; set; } = "user";
     [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Content { get; set; }

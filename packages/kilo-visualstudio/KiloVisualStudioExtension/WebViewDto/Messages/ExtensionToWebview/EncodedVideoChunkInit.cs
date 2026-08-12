@@ -29,5 +29,6 @@ public class EncodedVideoChunkInit
     [JsonProperty("timestamp")]
     public double Timestamp { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "delta";
 }

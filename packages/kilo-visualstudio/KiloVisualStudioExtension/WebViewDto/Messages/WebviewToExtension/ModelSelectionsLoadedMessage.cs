@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ModelSelectionsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "modelSelectionsLoaded";
     [JsonProperty("selections")]
     // Original TypeScript type: __type
     public object Selections { get; set; }

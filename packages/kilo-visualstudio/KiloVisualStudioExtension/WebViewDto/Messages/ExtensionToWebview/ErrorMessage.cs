@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ErrorMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "error";
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]

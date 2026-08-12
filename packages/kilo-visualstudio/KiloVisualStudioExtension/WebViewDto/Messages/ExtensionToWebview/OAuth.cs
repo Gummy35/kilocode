@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class OAuth
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "oauth";
     [JsonProperty("refresh")]
     public string Refresh { get; set; }
     [JsonProperty("access")]

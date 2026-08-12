@@ -113,6 +113,20 @@ function isInternalType(typeName: string): boolean {
 function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType?: string, isNullable: boolean } {
   const baseType = prop.type.toLowerCase()
   
+  // Check for literal types first (regardless of the baseType)
+  if (prop.isLiteral && prop.literalValue !== null) {
+    // For literal types, use the appropriate C# type based on the literal value
+    if (typeof prop.literalValue === 'string') {
+      return { type: 'string', isNullable: prop.optional || prop.nullable, originalType: prop.type }
+    }
+    if (typeof prop.literalValue === 'number') {
+      return { type: 'double', isNullable: prop.optional || prop.nullable, originalType: prop.type }
+    }
+    if (typeof prop.literalValue === 'boolean') {
+      return { type: 'bool', isNullable: prop.optional || prop.nullable, originalType: prop.type }
+    }
+  }
+  
   if (baseType === 'string' || baseType === 'literal') return { type: 'string', isNullable: prop.optional || prop.nullable }
   if (baseType === 'number' || baseType === 'integer') return { type: 'double', isNullable: prop.optional || prop.nullable }
   if (baseType === 'boolean') return { type: 'bool', isNullable: prop.optional || prop.nullable }
@@ -423,13 +437,24 @@ function generateTypeClass(typeDef: TypeDefinition): string {
     for (const prop of typeDef.properties) {
       const mapped = mapToCSharpType(prop)
       const nullable = mapped.isNullable ? "?" : ""
-      const jsonAttr = prop.name !== typeDef.discriminator?.field
-        ? `    [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`
-        : ""
+      const jsonAttr = `    [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`
       const summary = prop.description ? `    /// <summary>${prop.description}</summary>\n` : ""
       const comment = mapped.originalType ? `    // Original TypeScript type: ${mapped.originalType}\n` : ""
       
-      sb.push(jsonAttr + comment + summary + `    public ${mapped.type}${nullable} ${pascalCase(prop.name)} { get; set; }`)
+      // For discriminator properties, add a default value via field initializer
+      // Note: We use { get; set; } instead of { get; init; } for .NET Framework 4.8.1 compatibility
+      let propertyDecl: string
+      if (typeDef.discriminator && prop.name === typeDef.discriminator.field && typeDef.discriminator.value) {
+        // Discriminator property with default value
+        const literalValue = typeof typeDef.discriminator.value === 'string' 
+          ? `"${typeDef.discriminator.value}"` 
+          : String(typeDef.discriminator.value)
+        propertyDecl = `    public ${mapped.type} ${pascalCase(prop.name)} { get; set; } = ${literalValue};`
+      } else {
+        propertyDecl = `    public ${mapped.type}${nullable} ${pascalCase(prop.name)} { get; set; }`
+      }
+      
+      sb.push(jsonAttr + comment + summary + propertyDecl)
     }
   }
 
@@ -471,7 +496,20 @@ function generateMessageClass(message: MessageType, ns: string): string {
     const jsonAttr = `    [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`
     const comment = mapped.originalType ? "    // Original TypeScript type: " + mapped.originalType + "\n" : ""
     
-    sb.push(jsonAttr + comment + "    public " + mapped.type + nullable + " " + pascalCase(prop.name) + " { get; set; }")
+    // For discriminator properties, add a default value via field initializer
+    // Note: We use { get; set; } instead of { get; init; } for .NET Framework 4.8.1 compatibility
+    let propertyDecl: string
+    if (message.discriminator && prop.name === message.discriminator.field && message.discriminator.value) {
+      // Discriminator property with default value
+      const literalValue = typeof message.discriminator.value === 'string' 
+        ? `"${message.discriminator.value}"` 
+        : String(message.discriminator.value)
+      propertyDecl = `    public ${mapped.type} ${pascalCase(prop.name)} { get; set; } = ${literalValue};`
+    } else {
+      propertyDecl = `    public ${mapped.type}${nullable} ${pascalCase(prop.name)} { get; set; }`
+    }
+    
+    sb.push(jsonAttr + comment + propertyDecl)
   }
 
   sb.push("}")

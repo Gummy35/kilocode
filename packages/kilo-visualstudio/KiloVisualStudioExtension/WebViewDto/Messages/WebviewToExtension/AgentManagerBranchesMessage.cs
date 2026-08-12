@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AgentManagerBranchesMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.branches";
     [JsonProperty("branches")]
     public List<BranchInfo> Branches { get; set; }
     [JsonProperty("defaultBranch")]

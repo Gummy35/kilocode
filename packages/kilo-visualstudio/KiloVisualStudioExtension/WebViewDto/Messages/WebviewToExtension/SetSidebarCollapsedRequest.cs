@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class SetSidebarCollapsedRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.setSidebarCollapsed";
     [JsonProperty("collapsed")]
+    // Original TypeScript type: literal
     public string Collapsed { get; set; }
 }

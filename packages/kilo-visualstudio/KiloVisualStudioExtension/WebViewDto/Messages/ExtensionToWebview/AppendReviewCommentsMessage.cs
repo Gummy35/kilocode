@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class AppendReviewCommentsMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "appendReviewComments";
     [JsonProperty("comments")]
     public List<ReviewCommentData> Comments { get; set; }
     [JsonProperty("autoSend", NullValueHandling = NullValueHandling.Ignore)]

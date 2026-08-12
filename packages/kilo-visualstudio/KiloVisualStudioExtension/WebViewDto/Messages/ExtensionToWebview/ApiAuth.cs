@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ApiAuth
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "api";
     [JsonProperty("key")]
     public string Key { get; set; }
     [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]

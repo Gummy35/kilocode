@@ -21,12 +21,14 @@ using Newtonsoft.Json;
 public class PermissionResponseRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "permissionResponse";
     [JsonProperty("permissionId")]
     public string PermissionId { get; set; }
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("response")]
+    // Original TypeScript type: literal
     public string Response { get; set; }
     [JsonProperty("approvedAlways")]
     public List<string> ApprovedAlways { get; set; }

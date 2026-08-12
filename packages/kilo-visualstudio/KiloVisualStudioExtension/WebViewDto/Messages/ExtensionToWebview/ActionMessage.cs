@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ActionMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "action";
     [JsonProperty("action")]
     public string Action { get; set; }
 }

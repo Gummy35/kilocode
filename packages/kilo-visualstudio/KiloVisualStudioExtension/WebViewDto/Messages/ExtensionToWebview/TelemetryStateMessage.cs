@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class TelemetryStateMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "telemetryState";
     [JsonProperty("enabled")]
+    // Original TypeScript type: literal
     public string Enabled { get; set; }
 }

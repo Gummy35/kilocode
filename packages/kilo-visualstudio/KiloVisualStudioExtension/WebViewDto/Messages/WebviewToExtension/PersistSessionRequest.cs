@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class PersistSessionRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.persistSession";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("draftID", NullValueHandling = NullValueHandling.Ignore)]

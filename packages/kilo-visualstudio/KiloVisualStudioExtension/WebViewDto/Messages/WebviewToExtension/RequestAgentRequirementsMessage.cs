@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RequestAgentRequirementsMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "requestAgentRequirements";
     [JsonProperty("agent")]
     public string Agent { get; set; }
     [JsonProperty("directory")]

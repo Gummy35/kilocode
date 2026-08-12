@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class IntegrationEnvMethod
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "env";
     [JsonProperty("names")]
     public object Names { get; set; }
 }

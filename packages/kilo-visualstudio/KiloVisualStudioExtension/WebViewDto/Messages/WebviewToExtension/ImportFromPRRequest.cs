@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ImportFromPRRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.importFromPR";
     [JsonProperty("url")]
     public string Url { get; set; }
 }

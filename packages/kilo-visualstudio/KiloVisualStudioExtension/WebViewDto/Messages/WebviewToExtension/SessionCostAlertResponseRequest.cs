@@ -21,11 +21,13 @@ using Newtonsoft.Json;
 public class SessionCostAlertResponseRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sessionCostAlertResponse";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("limit")]
     public double Limit { get; set; }
     [JsonProperty("response")]
+    // Original TypeScript type: literal
     public string Response { get; set; }
 }

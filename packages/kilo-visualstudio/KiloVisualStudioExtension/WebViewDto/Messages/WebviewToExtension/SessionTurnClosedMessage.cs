@@ -21,9 +21,11 @@ using Newtonsoft.Json;
 public class SessionTurnClosedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "sessionTurnClosed";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("reason")]
+    // Original TypeScript type: literal
     public string Reason { get; set; }
 }

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class IntegrationTextPrompt
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "text";
     [JsonProperty("key")]
     public string Key { get; set; }
     [JsonProperty("message")]

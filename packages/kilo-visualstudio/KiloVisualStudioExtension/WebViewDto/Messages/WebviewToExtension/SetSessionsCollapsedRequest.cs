@@ -21,7 +21,9 @@ using Newtonsoft.Json;
 public class SetSessionsCollapsedRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.setSessionsCollapsed";
     [JsonProperty("collapsed")]
+    // Original TypeScript type: literal
     public string Collapsed { get; set; }
 }

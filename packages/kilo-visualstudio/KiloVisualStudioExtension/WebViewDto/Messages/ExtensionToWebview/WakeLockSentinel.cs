@@ -24,7 +24,9 @@ public class WakeLockSentinel
     // Original TypeScript type: null | __type
     public object? Onrelease { get; set; }
     [JsonProperty("released")]
+    // Original TypeScript type: literal
     public string Released { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "screen";
 }

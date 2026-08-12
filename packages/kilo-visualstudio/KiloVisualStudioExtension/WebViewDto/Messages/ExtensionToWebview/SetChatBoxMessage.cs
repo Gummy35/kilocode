@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SetChatBoxMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "setChatBoxMessage";
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("paths", NullValueHandling = NullValueHandling.Ignore)]

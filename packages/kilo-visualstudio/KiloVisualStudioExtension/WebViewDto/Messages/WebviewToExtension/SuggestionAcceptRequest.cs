@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SuggestionAcceptRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "suggestionAccept";
     [JsonProperty("requestID")]
     public string RequestID { get; set; }
     [JsonProperty("sessionID")]

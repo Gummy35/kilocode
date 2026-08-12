@@ -21,5 +21,6 @@ using Newtonsoft.Json;
 public class OutputFormatText
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "text";
 }

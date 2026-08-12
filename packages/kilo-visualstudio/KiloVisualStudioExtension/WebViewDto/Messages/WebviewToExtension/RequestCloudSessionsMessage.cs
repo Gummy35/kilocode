@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class RequestCloudSessionsMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "requestCloudSessions";
     [JsonProperty("cursor", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Cursor { get; set; }

@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class ContinueInWorktreeProgressMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "continueInWorktreeProgress";
     [JsonProperty("status")]
+    // Original TypeScript type: literal
     public string Status { get; set; }
     [JsonProperty("detail", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

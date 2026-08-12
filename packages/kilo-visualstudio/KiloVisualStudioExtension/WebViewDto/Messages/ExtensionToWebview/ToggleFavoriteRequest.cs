@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class ToggleFavoriteRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "toggleFavorite";
     [JsonProperty("action")]
+    // Original TypeScript type: literal
     public string Action { get; set; }
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }

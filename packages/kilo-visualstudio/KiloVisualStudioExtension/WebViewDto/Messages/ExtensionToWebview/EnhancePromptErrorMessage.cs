@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class EnhancePromptErrorMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "enhancePromptError";
     [JsonProperty("error")]
     public string Error { get; set; }
     [JsonProperty("requestId")]

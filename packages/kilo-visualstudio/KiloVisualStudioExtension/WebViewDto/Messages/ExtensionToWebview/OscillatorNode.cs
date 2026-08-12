@@ -27,5 +27,6 @@ public class OscillatorNode
     // Original TypeScript type: AudioParam
     public object Frequency { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "custom";
 }

@@ -23,7 +23,8 @@ public class TextPartInput
     [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
     public string? Id { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "text";
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("synthetic", NullValueHandling = NullValueHandling.Ignore)]

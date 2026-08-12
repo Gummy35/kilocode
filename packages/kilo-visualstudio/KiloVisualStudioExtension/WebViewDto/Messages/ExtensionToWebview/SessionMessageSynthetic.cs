@@ -31,5 +31,6 @@ public class SessionMessageSynthetic
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "synthetic";
 }

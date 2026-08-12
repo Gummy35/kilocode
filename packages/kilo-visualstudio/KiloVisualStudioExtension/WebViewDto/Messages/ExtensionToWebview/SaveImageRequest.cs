@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class SaveImageRequest
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "saveImage";
     [JsonProperty("dataUrl")]
     public string DataUrl { get; set; }
     [JsonProperty("filename")]

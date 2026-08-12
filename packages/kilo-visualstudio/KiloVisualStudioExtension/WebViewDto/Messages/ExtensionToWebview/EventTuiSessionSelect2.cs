@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class EventTuiSessionSelect2
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "tui.session.select";
     [JsonProperty("properties")]
     public object Properties { get; set; }
 }

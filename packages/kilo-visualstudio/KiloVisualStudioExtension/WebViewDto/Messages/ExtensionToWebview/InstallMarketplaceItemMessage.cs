@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class InstallMarketplaceItemMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "installMarketplaceItem";
     [JsonProperty("mpItem", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem
     public object? MpItem { get; set; }

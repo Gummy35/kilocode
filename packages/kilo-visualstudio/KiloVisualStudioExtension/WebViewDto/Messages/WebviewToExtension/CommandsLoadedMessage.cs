@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class CommandsLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "commandsLoaded";
     [JsonProperty("commands")]
     public List<SlashCommandInfo> Commands { get; set; }
 }

@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class NavigateMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "navigate";
     [JsonProperty("view")]
+    // Original TypeScript type: literal
     public string View { get; set; }
     [JsonProperty("tab", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

@@ -21,9 +21,11 @@ using Newtonsoft.Json;
 public class AgentManagerWorktreeDiffLoadingMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "agentManager.worktreeDiffLoading";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("loading")]
+    // Original TypeScript type: literal
     public string Loading { get; set; }
 }

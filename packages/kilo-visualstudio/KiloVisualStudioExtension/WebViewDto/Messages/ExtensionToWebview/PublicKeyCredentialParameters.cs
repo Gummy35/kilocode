@@ -23,5 +23,6 @@ public class PublicKeyCredentialParameters
     [JsonProperty("alg")]
     public double Alg { get; set; }
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "public-key";
 }

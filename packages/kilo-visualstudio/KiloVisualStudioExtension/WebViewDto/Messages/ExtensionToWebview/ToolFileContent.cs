@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class ToolFileContent
 {
     [JsonProperty("type")]
-    public object Type { get; set; }
+    // Original TypeScript type: unknown
+    public string Type { get; set; } = "file";
     [JsonProperty("uri")]
     public string Uri { get; set; }
     [JsonProperty("mime")]

@@ -21,7 +21,8 @@ using Newtonsoft.Json;
 public class GlobalConfigLoadedMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "globalConfigLoaded";
     [JsonProperty("config")]
     public Config Config { get; set; }
 }

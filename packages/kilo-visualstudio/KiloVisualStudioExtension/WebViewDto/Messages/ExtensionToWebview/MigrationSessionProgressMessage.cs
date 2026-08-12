@@ -21,8 +21,10 @@ using Newtonsoft.Json;
 public class MigrationSessionProgressMessage
 {
     [JsonProperty("type")]
-    public string Type { get; set; }
+    // Original TypeScript type: literal
+    public string Type { get; set; } = "migrationSessionProgress";
     [JsonProperty("source")]
+    // Original TypeScript type: literal
     public string Source { get; set; }
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
@@ -33,6 +35,7 @@ public class MigrationSessionProgressMessage
     [JsonProperty("total")]
     public double Total { get; set; }
     [JsonProperty("phase")]
+    // Original TypeScript type: literal
     public string Phase { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
