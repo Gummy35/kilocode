@@ -20,5 +20,6 @@ using Newtonsoft.Json;
 /// </summary>
 public class RefreshProfileRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentMarketplaceItem
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("content")]
     public AgentContent Content { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenContentRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("content")]
     public string Content { get; set; }

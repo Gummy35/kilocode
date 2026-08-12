@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class RequestAgentRequirementsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("agent")]
     public string Agent { get; set; }

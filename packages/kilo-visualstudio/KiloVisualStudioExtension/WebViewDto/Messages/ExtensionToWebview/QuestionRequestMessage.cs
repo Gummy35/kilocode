@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class QuestionRequestMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("question")]
     public QuestionRequest Question { get; set; }

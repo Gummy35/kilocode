@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SaveImageRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("dataUrl")]
     public string DataUrl { get; set; }

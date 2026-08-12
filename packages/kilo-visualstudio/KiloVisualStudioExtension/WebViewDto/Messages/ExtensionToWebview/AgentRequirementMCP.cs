@@ -22,6 +22,7 @@ public class AgentRequirementMCP
 {
     [JsonProperty("name")]
     public string Name { get; set; }
+    [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

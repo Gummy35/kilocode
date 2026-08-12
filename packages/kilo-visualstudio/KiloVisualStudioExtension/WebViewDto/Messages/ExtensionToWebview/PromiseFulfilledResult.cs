@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class PromiseFulfilledResult
 {
+    [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("value")]
     public object Value { get; set; }

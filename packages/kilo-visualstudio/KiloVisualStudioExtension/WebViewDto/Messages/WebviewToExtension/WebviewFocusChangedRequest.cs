@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class WebviewFocusChangedRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("focused")]
     public string Focused { get; set; }

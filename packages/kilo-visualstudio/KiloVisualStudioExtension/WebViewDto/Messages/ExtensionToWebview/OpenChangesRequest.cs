@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenChangesRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("turnId", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ModelSelectorExpandedLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("value")]
     public string Value { get; set; }

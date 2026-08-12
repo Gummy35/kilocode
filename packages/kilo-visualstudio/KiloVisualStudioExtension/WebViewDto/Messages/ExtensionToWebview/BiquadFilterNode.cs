@@ -32,5 +32,6 @@ public class BiquadFilterNode
     [JsonProperty("gain")]
     // Original TypeScript type: AudioParam
     public object Gain { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

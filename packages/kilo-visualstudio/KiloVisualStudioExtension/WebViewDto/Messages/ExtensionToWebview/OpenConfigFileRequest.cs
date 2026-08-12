@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenConfigFileRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("scope")]
     public string Scope { get; set; }

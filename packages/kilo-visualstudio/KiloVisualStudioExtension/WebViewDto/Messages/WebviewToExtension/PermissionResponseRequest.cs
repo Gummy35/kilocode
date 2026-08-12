@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class PermissionResponseRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("permissionId")]
     public string PermissionId { get; set; }

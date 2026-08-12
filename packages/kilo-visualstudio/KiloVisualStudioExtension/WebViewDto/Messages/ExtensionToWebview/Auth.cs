@@ -29,5 +29,6 @@ public class Auth
     [JsonProperty("scheme", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "basic" | "bearer"
     public object? Scheme { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

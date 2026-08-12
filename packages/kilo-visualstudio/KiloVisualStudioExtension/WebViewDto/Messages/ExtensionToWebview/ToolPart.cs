@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ToolPart
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("tool")]
     public string Tool { get; set; }

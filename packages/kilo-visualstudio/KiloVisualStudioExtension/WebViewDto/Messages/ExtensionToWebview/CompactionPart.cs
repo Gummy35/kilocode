@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class CompactionPart
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("auto")]
     public string Auto { get; set; }

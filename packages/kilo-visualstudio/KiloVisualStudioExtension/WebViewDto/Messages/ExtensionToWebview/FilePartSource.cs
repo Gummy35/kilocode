@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class FilePartSource
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("path")]
     public string Path { get; set; }

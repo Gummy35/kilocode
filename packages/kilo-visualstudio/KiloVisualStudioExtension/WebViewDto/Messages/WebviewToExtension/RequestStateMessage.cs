@@ -20,5 +20,6 @@ using Newtonsoft.Json;
 /// </summary>
 public class RequestStateMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

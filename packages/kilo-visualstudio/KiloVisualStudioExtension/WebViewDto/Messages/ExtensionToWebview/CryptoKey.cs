@@ -24,6 +24,7 @@ public class CryptoKey
     public KeyAlgorithm Algorithm { get; set; }
     [JsonProperty("extractable")]
     public string Extractable { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("usages")]
     public List<object> Usages { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SessionSearchResultMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("sessions")]
     public List<SessionSearchItem> Sessions { get; set; }

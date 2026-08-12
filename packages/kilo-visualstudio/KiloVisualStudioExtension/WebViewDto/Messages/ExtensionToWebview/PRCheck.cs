@@ -22,6 +22,7 @@ public class PRCheck
 {
     [JsonProperty("name")]
     public string Name { get; set; }
+    [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("url", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

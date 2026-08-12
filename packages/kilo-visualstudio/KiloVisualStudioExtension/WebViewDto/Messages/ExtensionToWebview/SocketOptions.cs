@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SocketOptions
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("reuseAddr", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class NavigateMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("view")]
     public string View { get; set; }

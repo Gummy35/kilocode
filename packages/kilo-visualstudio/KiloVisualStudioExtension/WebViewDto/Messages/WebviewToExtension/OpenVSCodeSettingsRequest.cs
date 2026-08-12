@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenVSCodeSettingsRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("query")]
     public string Query { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SessionCreatedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("session")]
     public SessionInfo Session { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ChatCompletionAcceptedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("suggestionLength", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number

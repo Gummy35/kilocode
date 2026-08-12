@@ -29,5 +29,6 @@ public class WriteParams
     [JsonProperty("size", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | null | number
     public double? Size { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ErrorMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }

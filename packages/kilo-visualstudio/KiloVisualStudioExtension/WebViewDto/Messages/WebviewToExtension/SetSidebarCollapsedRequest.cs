@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SetSidebarCollapsedRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("collapsed")]
     public string Collapsed { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class VariantsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("variants")]
     // Original TypeScript type: __type

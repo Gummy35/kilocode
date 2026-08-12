@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class MarketplaceInstallResultMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("success")]
     public string Success { get; set; }

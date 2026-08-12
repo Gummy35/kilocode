@@ -447,9 +447,7 @@ function generateMessageClass(message: MessageType, ns: string): string {
   for (const prop of message.properties) {
     const mapped = mapToCSharpType(prop)
     const nullable = mapped.isNullable ? "?" : ""
-    const jsonAttr = prop.name !== message.discriminator.field 
-      ? "    [JsonProperty(\"" + prop.name + "\"" + (mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : "") + ")]\n" 
-      : ""
+    const jsonAttr = `    [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`
     const comment = mapped.originalType ? "    // Original TypeScript type: " + mapped.originalType + "\n" : ""
     
     sb.push(jsonAttr + comment + "    public " + mapped.type + nullable + " " + pascalCase(prop.name) + " { get; set; }")

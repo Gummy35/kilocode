@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class RequestCloudSessionsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("cursor", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

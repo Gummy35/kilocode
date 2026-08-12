@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SetAvailableSourcesMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("descriptors")]
     public List<DiffSourceDescriptor> Descriptors { get; set; }

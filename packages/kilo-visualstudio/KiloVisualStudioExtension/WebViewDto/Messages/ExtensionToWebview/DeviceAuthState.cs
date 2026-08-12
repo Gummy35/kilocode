@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DeviceAuthState
 {
+    [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

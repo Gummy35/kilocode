@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ConfigLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("config")]
     public Config Config { get; set; }

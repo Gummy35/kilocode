@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentManagerWorktreeStatsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("stats")]
     public List<WorktreeGitStats> Stats { get; set; }

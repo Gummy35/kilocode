@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SetWorktreeOrderRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("order")]
     public List<string> Order { get; set; }

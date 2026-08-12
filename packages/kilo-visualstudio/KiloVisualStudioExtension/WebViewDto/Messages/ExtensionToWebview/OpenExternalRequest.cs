@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenExternalRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("url")]
     public string Url { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class CreateWorktreeRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("baseBranch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

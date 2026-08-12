@@ -32,5 +32,6 @@ public class UnderlyingByteSource
     [JsonProperty("start", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Start { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

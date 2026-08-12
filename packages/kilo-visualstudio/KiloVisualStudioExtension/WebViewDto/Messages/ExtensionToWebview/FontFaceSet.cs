@@ -32,5 +32,6 @@ public class FontFaceSet
     [JsonProperty("ready")]
     // Original TypeScript type: Promise
     public Task<object> Ready { get; set; }
+    [JsonProperty("status")]
     public string Status { get; set; }
 }

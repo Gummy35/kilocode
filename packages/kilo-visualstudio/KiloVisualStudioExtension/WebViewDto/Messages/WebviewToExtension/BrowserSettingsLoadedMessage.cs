@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class BrowserSettingsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("settings")]
     public BrowserSettings Settings { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class PersistVariantRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("key")]
     public string Key { get; set; }

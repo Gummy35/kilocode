@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ImageModelsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("models")]
     public List<object> Models { get; set; }

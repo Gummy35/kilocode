@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class GitStatusMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("repo")]
     public string Repo { get; set; }

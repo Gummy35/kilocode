@@ -25,5 +25,6 @@ public class WakeLockSentinel
     public object? Onrelease { get; set; }
     [JsonProperty("released")]
     public string Released { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

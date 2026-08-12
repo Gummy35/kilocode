@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SpeechToTextCancelMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("requestId")]
     public string RequestId { get; set; }

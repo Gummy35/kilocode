@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class FilePart
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("mime")]
     public string Mime { get; set; }

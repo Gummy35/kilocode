@@ -25,5 +25,6 @@ public class ScreenOrientation
     [JsonProperty("onchange", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | __type
     public object? Onchange { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

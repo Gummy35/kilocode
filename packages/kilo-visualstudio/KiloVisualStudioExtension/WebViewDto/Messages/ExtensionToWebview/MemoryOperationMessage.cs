@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class MemoryOperationMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("operation")]
     public string Operation { get; set; }

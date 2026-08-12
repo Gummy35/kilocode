@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class CloudSessionsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("sessions")]
     public List<CloudSessionInfo> Sessions { get; set; }

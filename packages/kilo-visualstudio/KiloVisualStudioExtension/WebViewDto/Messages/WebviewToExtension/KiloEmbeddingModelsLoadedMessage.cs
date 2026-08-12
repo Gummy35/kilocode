@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class KiloEmbeddingModelsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("catalog")]
     // Original TypeScript type: __type

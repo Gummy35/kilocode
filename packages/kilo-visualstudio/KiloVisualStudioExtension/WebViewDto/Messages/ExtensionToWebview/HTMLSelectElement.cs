@@ -48,6 +48,7 @@ public class HTMLSelectElement
     public object SelectedOptions { get; set; }
     [JsonProperty("size")]
     public double Size { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("validationMessage")]
     public string ValidationMessage { get; set; }

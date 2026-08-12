@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ImportExternalWorktreeRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("path")]
     public string Path { get; set; }

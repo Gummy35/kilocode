@@ -23,5 +23,6 @@ public class MediaDecodingConfiguration
     [JsonProperty("keySystemConfiguration", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | MediaCapabilitiesKeySystemConfiguration
     public MediaCapabilitiesKeySystemConfiguration? KeySystemConfiguration { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

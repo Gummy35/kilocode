@@ -22,5 +22,6 @@ public class FileSearchItem
 {
     [JsonProperty("path")]
     public string Path { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

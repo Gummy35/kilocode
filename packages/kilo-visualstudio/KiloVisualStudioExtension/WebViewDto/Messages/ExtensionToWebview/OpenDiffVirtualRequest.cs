@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenDiffVirtualRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("diff")]
     public PermissionFileDiff Diff { get; set; }

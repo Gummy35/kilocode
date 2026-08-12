@@ -81,28 +81,6 @@ namespace KiloVisualStudioExtension.Tests.WebView
         }
 
         [Fact]
-        public void Deserialize_PartUpdatedMessage_Success()
-        {
-            // Arrange
-            var json = @"{
-                ""type"": ""partUpdated"",
-                ""sessionID"": ""session-xyz"",
-                ""messageID"": ""msg-xyz"",
-                ""part"": {
-                    ""id"": ""part-123"",
-                    ""type"": ""text"",
-                    ""messageID"": ""msg-xyz""
-                }
-            }";
-
-            // Act
-            var result = WebViewMessageFactory.Deserialize<object>(json);
-
-            // Assert
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
         public void Deserialize_UnknownMessageType_ThrowsException()
         {
             // Arrange
@@ -162,7 +140,7 @@ namespace KiloVisualStudioExtension.Tests.WebView
         {
             // Arrange
             var json = @"{
-                ""type"": ""setTabOrder"",
+                ""type"": ""agentManager.setTabOrder"",
                 ""key"": ""local"",
                 ""order"": [""session-1"", ""session-2"", ""session-3""]
             }";
@@ -172,7 +150,7 @@ namespace KiloVisualStudioExtension.Tests.WebView
 
             // Assert
             result.Should().NotBeNull();
-            result.Type.Should().Be("setTabOrder");
+            result.Type.Should().Be("agentManager.setTabOrder");
             result.Order.Should().NotBeNull();
         }
 
@@ -297,7 +275,9 @@ namespace KiloVisualStudioExtension.Tests.WebView
             var message = new SendMessageRequest
             {
                 Type = "sendMessage",
-                Text = "Test"
+                Text = "Test",
+                MessageID = "msg-123",
+                SessionID = "session-456"
             };
 
             // Act

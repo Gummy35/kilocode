@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ActionMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("action")]
     public string Action { get; set; }

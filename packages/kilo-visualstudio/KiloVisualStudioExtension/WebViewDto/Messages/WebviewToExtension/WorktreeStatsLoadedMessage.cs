@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class WorktreeStatsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("files")]
     public double Files { get; set; }

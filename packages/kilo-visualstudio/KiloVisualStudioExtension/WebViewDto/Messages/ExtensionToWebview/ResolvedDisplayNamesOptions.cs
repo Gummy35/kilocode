@@ -24,6 +24,7 @@ public class ResolvedDisplayNamesOptions
     public string Locale { get; set; }
     [JsonProperty("style")]
     public string Style { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("fallback")]
     public string Fallback { get; set; }

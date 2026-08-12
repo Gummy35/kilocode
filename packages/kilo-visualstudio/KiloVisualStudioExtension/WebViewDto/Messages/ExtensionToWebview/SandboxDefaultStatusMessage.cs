@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SandboxDefaultStatusMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("desired")]
     public string Desired { get; set; }

@@ -27,5 +27,6 @@ public class EncodedAudioChunk
     public double? Duration { get; set; }
     [JsonProperty("timestamp")]
     public double Timestamp { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

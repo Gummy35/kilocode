@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class FilterMarketplaceItemsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("filters")]
     public MarketplaceFilters Filters { get; set; }

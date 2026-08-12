@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentRequirementsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("result")]
     // Original TypeScript type: AgentRequirementResult

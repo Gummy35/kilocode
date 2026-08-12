@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class WorkspaceDirectoryChangedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("directory")]
     public string Directory { get; set; }

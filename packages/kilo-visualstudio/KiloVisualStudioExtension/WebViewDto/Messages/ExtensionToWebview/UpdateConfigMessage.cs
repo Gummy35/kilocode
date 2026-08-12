@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class UpdateConfigMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("config")]
     // Original TypeScript type: __type

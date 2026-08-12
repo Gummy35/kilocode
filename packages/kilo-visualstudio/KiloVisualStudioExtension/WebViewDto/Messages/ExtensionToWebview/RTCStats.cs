@@ -24,5 +24,6 @@ public class RTCStats
     public string Id { get; set; }
     [JsonProperty("timestamp")]
     public double Timestamp { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class PromiseRejectedResult
 {
+    [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("reason")]
     public object Reason { get; set; }

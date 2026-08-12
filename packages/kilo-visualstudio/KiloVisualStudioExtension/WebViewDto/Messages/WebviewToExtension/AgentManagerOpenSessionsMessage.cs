@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentManagerOpenSessionsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("sessionIDs")]
     public List<string> SessionIDs { get; set; }

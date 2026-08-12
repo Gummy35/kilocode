@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AppendReviewCommentsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("comments")]
     public List<ReviewCommentData> Comments { get; set; }

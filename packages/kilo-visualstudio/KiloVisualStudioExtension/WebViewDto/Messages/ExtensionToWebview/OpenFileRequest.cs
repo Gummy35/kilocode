@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenFileRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("filePath")]
     public string FilePath { get; set; }

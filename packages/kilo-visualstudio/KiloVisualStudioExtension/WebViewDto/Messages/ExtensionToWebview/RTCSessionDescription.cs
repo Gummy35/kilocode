@@ -22,5 +22,6 @@ public class RTCSessionDescription
 {
     [JsonProperty("sdp")]
     public string Sdp { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

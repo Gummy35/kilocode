@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class NotificationsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("notifications")]
     public List<KilocodeNotification> Notifications { get; set; }

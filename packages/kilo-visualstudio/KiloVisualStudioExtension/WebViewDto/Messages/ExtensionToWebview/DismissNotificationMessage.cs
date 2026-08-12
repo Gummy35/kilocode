@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DismissNotificationMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("notificationId")]
     public string NotificationId { get; set; }

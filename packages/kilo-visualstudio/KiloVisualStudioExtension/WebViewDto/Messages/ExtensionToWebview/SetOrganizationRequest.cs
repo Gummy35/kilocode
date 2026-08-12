@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SetOrganizationRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("organizationId", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string

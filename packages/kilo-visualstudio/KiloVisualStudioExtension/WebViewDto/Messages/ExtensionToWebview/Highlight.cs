@@ -22,5 +22,6 @@ public class Highlight
 {
     [JsonProperty("priority")]
     public double Priority { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

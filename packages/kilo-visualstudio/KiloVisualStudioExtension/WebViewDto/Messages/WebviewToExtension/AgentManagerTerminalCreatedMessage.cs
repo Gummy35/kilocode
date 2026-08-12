@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentManagerTerminalCreatedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("worktreeId", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SelectSourceRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("id")]
     public string Id { get; set; }

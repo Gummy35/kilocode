@@ -40,6 +40,7 @@ public class HTMLButtonElement
     public object Labels { get; set; }
     [JsonProperty("name")]
     public string Name { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("validationMessage")]
     public string ValidationMessage { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SandboxStatusErrorMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }

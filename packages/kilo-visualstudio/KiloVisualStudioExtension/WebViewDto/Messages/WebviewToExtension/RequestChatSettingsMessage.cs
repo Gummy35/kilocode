@@ -20,5 +20,6 @@ using Newtonsoft.Json;
 /// </summary>
 public class RequestChatSettingsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

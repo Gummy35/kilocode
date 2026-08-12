@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class CommandsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("commands")]
     public List<SlashCommandInfo> Commands { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DiffViewerSetBaseBranchRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("branch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

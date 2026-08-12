@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentManagerTerminalClosedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("terminalId")]
     public string TerminalId { get; set; }

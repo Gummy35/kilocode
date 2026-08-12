@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SessionUpdatedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("session")]
     // Original TypeScript type: SessionUpdate

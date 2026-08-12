@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SuggestionRequestMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("suggestion")]
     public SuggestionRequest Suggestion { get; set; }

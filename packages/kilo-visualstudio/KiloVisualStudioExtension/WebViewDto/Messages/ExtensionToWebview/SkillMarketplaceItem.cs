@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SkillMarketplaceItem
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("githubUrl")]
     public string GithubUrl { get; set; }

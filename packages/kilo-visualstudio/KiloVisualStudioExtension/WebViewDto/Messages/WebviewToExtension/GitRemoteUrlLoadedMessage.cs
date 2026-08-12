@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class GitRemoteUrlLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("gitUrl", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string

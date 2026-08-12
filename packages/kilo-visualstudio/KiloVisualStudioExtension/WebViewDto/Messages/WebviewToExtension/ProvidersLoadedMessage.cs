@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ProvidersLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("providers")]
     // Original TypeScript type: __type

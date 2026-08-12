@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DiffViewerLoadingMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("loading")]
     public string Loading { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentManagerBranchesMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("branches")]
     public List<BranchInfo> Branches { get; set; }

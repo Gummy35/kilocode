@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class FavoritesLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("favorites")]
     public List<ModelSelection> Favorites { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class RecentsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("recents")]
     public List<ModelSelection> Recents { get; set; }

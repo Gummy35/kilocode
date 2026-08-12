@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class CronController
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("cron")]
     public string Cron { get; set; }

@@ -26,5 +26,6 @@ public class PublicKeyCredentialDescriptor
     [JsonProperty("transports", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array
     public object? Transports { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

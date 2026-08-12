@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ReadyMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("serverInfo", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | ServerInfo

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ForgetSessionRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }

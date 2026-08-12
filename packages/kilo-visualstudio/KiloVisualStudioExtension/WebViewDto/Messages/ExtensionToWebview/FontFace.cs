@@ -35,6 +35,7 @@ public class FontFace
     [JsonProperty("loaded")]
     // Original TypeScript type: Promise
     public Task<object> Loaded { get; set; }
+    [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("stretch")]
     public string Stretch { get; set; }

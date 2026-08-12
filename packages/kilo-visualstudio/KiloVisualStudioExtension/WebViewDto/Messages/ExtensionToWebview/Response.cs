@@ -31,6 +31,7 @@ public class Response
     public double Status { get; set; }
     [JsonProperty("statusText")]
     public string StatusText { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("url")]
     public string Url { get; set; }

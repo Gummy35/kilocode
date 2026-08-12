@@ -28,5 +28,6 @@ public class TestEnqueue
     public List<string> Tags { get; set; }
     [JsonProperty("testId")]
     public double TestId { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

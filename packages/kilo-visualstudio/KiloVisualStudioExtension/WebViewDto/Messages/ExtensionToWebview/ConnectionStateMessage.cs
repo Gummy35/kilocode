@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ConnectionStateMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("state")]
     public string State { get; set; }

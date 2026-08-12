@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ParseArgsOptionDescriptor
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("multiple", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ContinueInWorktreeProgressMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("status")]
     public string Status { get; set; }

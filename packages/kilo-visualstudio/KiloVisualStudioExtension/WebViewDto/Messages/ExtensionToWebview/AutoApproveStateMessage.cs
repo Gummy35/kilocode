@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AutoApproveStateMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("active")]
     public string Active { get; set; }

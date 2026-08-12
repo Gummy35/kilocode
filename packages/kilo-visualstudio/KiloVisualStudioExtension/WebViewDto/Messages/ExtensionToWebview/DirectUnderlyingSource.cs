@@ -26,5 +26,6 @@ public class DirectUnderlyingSource
     [JsonProperty("pull")]
     // Original TypeScript type: __type
     public object Pull { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

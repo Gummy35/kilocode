@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class MoveToSectionRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("worktreeIds")]
     public List<string> WorktreeIds { get; set; }

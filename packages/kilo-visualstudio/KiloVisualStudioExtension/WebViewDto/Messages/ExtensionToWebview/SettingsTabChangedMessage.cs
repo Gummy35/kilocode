@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SettingsTabChangedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("tab")]
     public string Tab { get; set; }

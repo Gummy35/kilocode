@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class QuestionResolvedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("requestID")]
     public string RequestID { get; set; }

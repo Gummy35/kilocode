@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DiffViewerNoticeMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("notice", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "snapshots-disabled"

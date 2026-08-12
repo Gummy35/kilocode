@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class RequestMigrationDataMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("source")]
     public string Source { get; set; }

@@ -26,6 +26,7 @@ public class DisplayNamesOptions
     [JsonProperty("style", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "long" | "short" | "narrow"
     public object? Style { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("languageDisplay", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "standard" | "dialect"

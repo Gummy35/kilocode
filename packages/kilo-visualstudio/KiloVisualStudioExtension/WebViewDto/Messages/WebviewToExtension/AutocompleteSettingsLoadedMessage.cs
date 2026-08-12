@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AutocompleteSettingsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("settings")]
     // Original TypeScript type: __type

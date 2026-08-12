@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class PermissionRequestMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("permission")]
     // Original TypeScript type: PermissionRequest

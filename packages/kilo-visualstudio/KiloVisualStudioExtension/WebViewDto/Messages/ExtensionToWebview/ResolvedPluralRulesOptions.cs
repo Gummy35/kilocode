@@ -24,6 +24,7 @@ public class ResolvedPluralRulesOptions
     public string Locale { get; set; }
     [JsonProperty("pluralCategories")]
     public List<object> PluralCategories { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("minimumIntegerDigits")]
     public double MinimumIntegerDigits { get; set; }

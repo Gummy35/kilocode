@@ -22,5 +22,6 @@ public class PublicKeyCredentialParameters
 {
     [JsonProperty("alg")]
     public double Alg { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

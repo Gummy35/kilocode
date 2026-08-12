@@ -31,5 +31,6 @@ public class EncodedAudioChunkInit
     [JsonProperty("transfer", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array
     public object? Transfer { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

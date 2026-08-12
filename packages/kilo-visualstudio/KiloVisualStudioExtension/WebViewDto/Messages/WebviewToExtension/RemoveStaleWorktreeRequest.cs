@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class RemoveStaleWorktreeRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DiffViewerCapabilitiesMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("capabilities")]
     public DiffSourceCapabilities Capabilities { get; set; }

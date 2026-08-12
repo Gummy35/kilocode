@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class RemoteStatusMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("enabled")]
     public string Enabled { get; set; }

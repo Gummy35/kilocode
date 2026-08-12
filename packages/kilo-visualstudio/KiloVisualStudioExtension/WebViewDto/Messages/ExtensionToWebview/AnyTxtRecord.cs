@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AnyTxtRecord
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("entries")]
     public List<string> Entries { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ConnectProviderMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("requestId")]
     public string RequestId { get; set; }

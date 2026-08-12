@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DiffViewerRequestFileRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("file")]
     public string File { get; set; }

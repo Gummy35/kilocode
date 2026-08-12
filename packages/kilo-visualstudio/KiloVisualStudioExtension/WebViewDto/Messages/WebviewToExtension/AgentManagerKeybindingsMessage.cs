@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentManagerKeybindingsMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("bindings")]
     // Original TypeScript type: __type

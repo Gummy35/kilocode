@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SkillsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("skills")]
     public List<SkillInfo> Skills { get; set; }

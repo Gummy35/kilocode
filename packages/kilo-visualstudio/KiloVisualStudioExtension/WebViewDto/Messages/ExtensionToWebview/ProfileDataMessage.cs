@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ProfileDataMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | ProfileData

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class PartDelta
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("textDelta", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

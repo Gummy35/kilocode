@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ModelSelectionsLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("selections")]
     // Original TypeScript type: __type

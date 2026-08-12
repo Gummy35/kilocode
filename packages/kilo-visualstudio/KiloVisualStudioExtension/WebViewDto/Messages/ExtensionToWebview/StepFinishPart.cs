@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class StepFinishPart
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

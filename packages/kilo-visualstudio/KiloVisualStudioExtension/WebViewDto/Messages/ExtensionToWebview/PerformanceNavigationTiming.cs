@@ -34,6 +34,7 @@ public class PerformanceNavigationTiming
     public double LoadEventStart { get; set; }
     [JsonProperty("redirectCount")]
     public double RedirectCount { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("unloadEventEnd")]
     public double UnloadEventEnd { get; set; }

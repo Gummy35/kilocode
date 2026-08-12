@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentManagerTerminalFontChangedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("font")]
     public TerminalFont Font { get; set; }

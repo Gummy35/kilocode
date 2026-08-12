@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SetChatBoxMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("text")]
     public string Text { get; set; }

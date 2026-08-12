@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class TelemetryRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("event")]
     public string Event { get; set; }

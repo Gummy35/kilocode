@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class ImportFromPRRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("url")]
     public string Url { get; set; }

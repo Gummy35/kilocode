@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SetReviewMarkdownRenderRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("render")]
     public string Render { get; set; }

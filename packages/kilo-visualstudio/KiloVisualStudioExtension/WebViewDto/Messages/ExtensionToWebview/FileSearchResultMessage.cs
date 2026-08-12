@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class FileSearchResultMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("paths")]
     public List<string> Paths { get; set; }

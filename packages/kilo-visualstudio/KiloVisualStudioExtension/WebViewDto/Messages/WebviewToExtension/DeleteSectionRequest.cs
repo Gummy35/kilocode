@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class DeleteSectionRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("sectionId")]
     public string SectionId { get; set; }

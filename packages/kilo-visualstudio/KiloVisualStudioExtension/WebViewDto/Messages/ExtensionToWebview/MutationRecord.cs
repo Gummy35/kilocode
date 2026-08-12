@@ -43,5 +43,6 @@ public class MutationRecord
     public object RemovedNodes { get; set; }
     [JsonProperty("target")]
     public Node Target { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

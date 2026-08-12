@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SpeechToTextErrorMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("error")]
     public string Error { get; set; }

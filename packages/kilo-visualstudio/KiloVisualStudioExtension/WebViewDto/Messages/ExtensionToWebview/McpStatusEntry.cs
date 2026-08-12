@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class McpStatusEntry
 {
+    [JsonProperty("status")]
     public string Status { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

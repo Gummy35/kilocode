@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class MigrationStateMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("needed")]
     public string Needed { get; set; }

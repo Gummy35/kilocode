@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SendCommandRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("command")]
     public string Command { get; set; }

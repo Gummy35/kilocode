@@ -23,5 +23,6 @@ public class RTCSessionDescriptionInit
     [JsonProperty("sdp", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Sdp { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
 }

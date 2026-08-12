@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class SetLanguageRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("locale")]
     public string Locale { get; set; }

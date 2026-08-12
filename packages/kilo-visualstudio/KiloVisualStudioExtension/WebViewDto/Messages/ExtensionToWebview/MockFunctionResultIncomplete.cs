@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class MockFunctionResultIncomplete
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("value")]
     public object Value { get; set; }

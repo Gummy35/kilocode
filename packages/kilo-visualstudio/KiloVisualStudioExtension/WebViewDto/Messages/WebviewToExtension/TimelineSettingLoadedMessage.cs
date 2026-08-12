@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class TimelineSettingLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("visible")]
     public string Visible { get; set; }

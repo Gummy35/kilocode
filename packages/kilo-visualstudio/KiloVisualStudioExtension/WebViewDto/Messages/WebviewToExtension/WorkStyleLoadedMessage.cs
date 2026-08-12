@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class WorkStyleLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("style")]
     public string Style { get; set; }

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class OpenInstallModalMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("mpItem", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem

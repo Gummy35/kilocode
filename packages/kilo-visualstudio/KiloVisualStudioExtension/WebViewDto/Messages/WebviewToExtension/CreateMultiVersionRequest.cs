@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class CreateMultiVersionRequest
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("text", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

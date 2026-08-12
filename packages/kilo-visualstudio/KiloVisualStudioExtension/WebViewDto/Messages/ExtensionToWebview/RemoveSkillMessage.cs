@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class RemoveSkillMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("location")]
     public string Location { get; set; }

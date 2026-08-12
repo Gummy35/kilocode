@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class MemoryShowMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

@@ -22,6 +22,7 @@ public class DiffSourceDescriptor
 {
     [JsonProperty("id")]
     public string Id { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("group")]
     public string Group { get; set; }

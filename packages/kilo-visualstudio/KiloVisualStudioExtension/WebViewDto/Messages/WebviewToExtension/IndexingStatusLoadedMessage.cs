@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class IndexingStatusLoadedMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("status")]
     // Original TypeScript type: __type

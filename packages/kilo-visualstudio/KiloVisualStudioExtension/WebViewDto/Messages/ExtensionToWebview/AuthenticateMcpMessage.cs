@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class AuthenticateMcpMessage
 {
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("name")]
     public string Name { get; set; }

@@ -35,6 +35,7 @@ public class MIDIPort
     public object? Onstatechange { get; set; }
     [JsonProperty("state")]
     public string State { get; set; }
+    [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string
