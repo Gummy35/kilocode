@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.ApiClient.Sse;
+using KiloVisualStudioExtension.WebView.Generated;
+using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
+using WebViewMessage = KiloVisualStudioExtension.WebView.Generated.Message;
 
 namespace KiloVisualStudioExtension
 {
@@ -82,32 +85,29 @@ namespace KiloVisualStudioExtension
         private void HandleSyncEvent(SyncEvent syncEvent)
         {
             var name = syncEvent.Name;
-            var data = syncEvent.Data;
-            var eventId = syncEvent.Id;
-            var seq = syncEvent.Seq;
 
             switch (name)
             {
                 case "message.updated.1":
-                    HandleMessageUpdatedSync(data);
+                    HandleMessageUpdatedSync((MessageUpdatedSyncEvent)syncEvent);
                     break;
                 case "message.removed.1":
-                    HandleMessageRemovedSync(data);
+                    HandleMessageRemovedSync(syncEvent);
                     break;
                 case "message.part.updated.1":
-                    HandlePartUpdatedSync(data);
+                    HandlePartUpdatedSync((MessagePartUpdatedSyncEvent)syncEvent);
                     break;
                 case "message.part.removed.1":
-                    HandlePartRemovedSync(data);
+                    HandlePartRemovedSync(syncEvent);
                     break;
                 case "session.created.1":
-                    HandleSessionCreatedSync(data);
+                    HandleSessionCreatedSync((SessionCreatedSyncEvent)syncEvent);
                     break;
                 case "session.updated.1":
-                    HandleSessionUpdatedSync(data, eventId, seq);
+                    HandleSessionUpdatedSync((SessionUpdatedSyncEvent)syncEvent);
                     break;
                 case "session.deleted.1":
-                    HandleSessionDeletedSync(data);
+                    HandleSessionDeletedSync(syncEvent);
                     break;
             }
         }
@@ -222,67 +222,69 @@ namespace KiloVisualStudioExtension
             }
         }
 
-        private void HandleMessageUpdatedSync(JToken data)
+        private void HandleMessageUpdatedSync(MessageUpdatedSyncEvent evt)
         {
-            var info = data["info"] ?? throw new JsonSerializationException("message.updated.1 missing 'info'");
-            var sessionID = info["sessionID"]?.Value<string>();
-            var messageID = info["id"]?.Value<string>() ?? "";
+            var data = (KiloVisualStudioExtension.ApiClient.EventMessageUpdated)evt.Data;
+            var info = data.Properties.Info;
+            var infoJson = info.ToJson();
+            var infoObj = JObject.Parse(infoJson);
+            var messageID = infoObj["id"]?.Value<string>();
+            var sessionID = infoObj["sessionID"]?.Value<string>();
 
-            if (info["cost"] != null && info["cost"].Type == JTokenType.Float)
+            if (infoObj["cost"]?.Type == JTokenType.Float && infoObj["role"]?.Value<string>() == "assistant")
             {
-                var cost = info["cost"].Value<double>();
-                if (info["role"]?.Value<string>() == "assistant")
-                {
-                    _messageCosts[messageID] = new MessageCost { SessionID = sessionID ?? "", MessageID = messageID, Cost = cost };
-                }
+                _messageCosts[messageID] = new MessageCost { SessionID = sessionID, MessageID = messageID, Cost = infoObj["cost"].Value<double>() };
             }
 
-            var createdAt = info["time"]?["created"] != null
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
+            var timeObj = infoObj["time"];
+            var createdAt = timeObj != null && timeObj["created"]?.Type == JTokenType.Integer
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)timeObj["created"].Value<long>()).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
-            // Match TypeScript: { ...info, createdAt: new Date(info.time.created).toISOString() }
-            var messageObj = new Dictionary<string, object?>();
-            if (info is JObject infoObj)
+            var message = new WebViewMessage
             {
-                foreach (var prop in infoObj)
-                {
-                    messageObj[prop.Key] = prop.Value;
-                }
-            }
-            messageObj["createdAt"] = createdAt;
+                Id = messageID,
+                SessionID = sessionID,
+                Role = infoObj["role"]?.Value<string>(),
+                Content = infoObj["content"]?.ToString(),
+                Parts = infoObj["parts"],
+                CreatedAt = createdAt,
+                Time = timeObj != null ? new { created = timeObj["created"]?.Value<long>(), updated = timeObj["updated"]?.Value<long>() } : null,
+                Agent = infoObj["agent"]?.ToString(),
+                Model = infoObj["model"]?.ToString(),
+                ProviderID = infoObj["providerID"]?.Value<string>(),
+                ModelID = infoObj["modelID"]?.Value<string>()
+            };
             
-            PostMessage(new
+            PostMessage(new MessageCreatedMessage { Message = message });
+        }
+
+        private void HandleMessageRemovedSync(SyncEvent evt)
+        {
+            var data = (KiloVisualStudioExtension.ApiClient.EventMessageRemoved)evt.Data;
+            
+            _messageCosts.Remove(data.Properties.MessageID);
+
+            PostMessage(new MessageRemovedMessage
             {
-                type = "messageCreated",
-                message = messageObj
+                SessionID = data.Properties.SessionID,
+                MessageID = data.Properties.MessageID
             });
         }
 
-        private void HandleMessageRemovedSync(JToken data)
+        private void HandlePartUpdatedSync(MessagePartUpdatedSyncEvent evt)
         {
-            var sessionID = data["sessionID"]?.Value<string>();
-            var messageID = data["messageID"]?.Value<string>() ?? "";
+            var data = (KiloVisualStudioExtension.ApiClient.EventMessagePartUpdated)evt.Data;
+            var part = data.Properties.Part;
+            var sessionID = data.Properties.SessionID;
+            var partJson = part.ToJson();
+            var partObj = JObject.Parse(partJson);
+            var messageID = partObj["messageID"]?.Value<string>();
             
-            _messageCosts.Remove(messageID);
-
-            PostMessage(new
+            var metadata = partObj["metadata"];
+            if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
             {
-                type = "messageRemoved",
-                sessionID,
-                messageID
-            });
-        }
-
-        private void HandlePartUpdatedSync(JToken data)
-        {
-            var sessionID = data["sessionID"]?.Value<string>();
-            var part = data["part"] ?? throw new JsonSerializationException("message.part.updated.1 missing 'part'");
-            var messageID = part["messageID"]?.Value<string>() ?? "";
-            
-            if (part["metadata"]?["sessionId"] != null)
-            {
-                var childId = part["metadata"]["sessionId"].Value<string>();
+                var childId = metadataObj["sessionId"].Value<string>();
                 if (!string.IsNullOrEmpty(childId) && !_trackedSessionIds.Contains(childId))
                 {
                     System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
@@ -290,34 +292,31 @@ namespace KiloVisualStudioExtension
                 }
             }
 
-            PostMessage(new
+            PostMessage(new PartUpdate
             {
-                type = "partUpdated",
-                sessionID,
-                messageID,
-                part
+                SessionID = sessionID,
+                MessageID = messageID,
+                Part = new { id = partObj["id"], type = partObj["type"], messageID = partObj["messageID"], text = partObj["text"] }
             });
         }
 
-        private void HandlePartRemovedSync(JToken data)
+        private void HandlePartRemovedSync(SyncEvent evt)
         {
-            var sessionID = data["sessionID"]?.Value<string>();
-            var messageID = data["messageID"]?.Value<string>();
-            var partID = data["partID"]?.Value<string>();
+            var data = (KiloVisualStudioExtension.ApiClient.EventMessagePartRemoved)evt.Data;
             
-            PostMessage(new
+            PostMessage(new PartRemove
             {
-                type = "partRemoved",
-                sessionID,
-                messageID,
-                partID
+                SessionID = data.Properties.SessionID,
+                MessageID = data.Properties.MessageID,
+                PartID = data.Properties.PartID
             });
         }
 
-        private void HandleSessionCreatedSync(JToken data)
+        private void HandleSessionCreatedSync(SessionCreatedSyncEvent evt)
         {
-            var info = data["info"] ?? throw new JsonSerializationException("session.created.1 missing 'info'");
-            var sessionID = info["id"]?.Value<string>() ?? "";
+            var data = (KiloVisualStudioExtension.ApiClient.EventSessionCreated)evt.Data;
+            var info = data.Properties.Info;
+            var sessionID = info.Id;
             
             if (string.IsNullOrEmpty(CurrentSessionID))
             {
@@ -325,43 +324,38 @@ namespace KiloVisualStudioExtension
                 _trackedSessionIds.Add(sessionID);
             }
 
-            var createdAt = info["time"]?["created"] != null
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
+            var createdAt = info.Time != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Created).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
-            var updatedAt = info["time"]?["updated"] != null
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["updated"].Value<double>()).ToUniversalTime().ToString("o")
+            var updatedAt = info.Time != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Updated).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
-            PostMessage(new
+            PostMessage(new SessionCreatedMessage
             {
-                type = "sessionCreated",
-                session = new
+                Session = new SessionInfo
                 {
-                    id = sessionID,
-                    parentID = info["parentID"]?.Type == JTokenType.String ? info["parentID"].Value<string>() : null,
-                    title = info["title"]?.Value<string>(),
-                    createdAt,
-                    updatedAt,
-                    revert = info["revert"]?.Type == JTokenType.Object ? info["revert"] : (object?)null,
-                    summary = info["summary"]?.Type == JTokenType.String ? info["summary"].Value<string>() : null
+                    Id = sessionID,
+                    ParentID = info.ParentID,
+                    Title = info.Title,
+                    CreatedAt = createdAt,
+                    UpdatedAt = updatedAt,
+                    Revert = info.Revert,
+                    Summary = info.Summary
                 }
             });
         }
 
-        private void HandleSessionUpdatedSync(JToken data, string? eventId, int seq)
+        private void HandleSessionUpdatedSync(SessionUpdatedSyncEvent evt)
         {
-            var sessionID = data["sessionID"]?.Value<string>();
-            var info = data["info"] ?? throw new JsonSerializationException("session.updated.1 missing 'info'");
+            var data = (KiloVisualStudioExtension.ApiClient.EventSessionUpdated)evt.Data;
+            var info = data.Properties.Info;
+            var sessionID = data.Properties.SessionID;
             
-            if (info["cost"] != null && info["cost"].Type == JTokenType.Float)
+            if (!string.IsNullOrEmpty(evt.Id))
             {
-                // requestCostAlert - not implemented
-            }
-
-            if (!string.IsNullOrEmpty(eventId))
-            {
-                var revision = new SessionRevision { Id = long.Parse(eventId), Seq = seq };
-                _revisions[sessionID ?? ""] = revision;
+                var revision = new SessionRevision { Id = long.Parse(evt.Id), Seq = evt.Seq };
+                _revisions[sessionID] = revision;
             }
 
             if (CurrentSessionID == sessionID)
@@ -369,32 +363,32 @@ namespace KiloVisualStudioExtension
                 CurrentSessionID = sessionID;
             }
 
-            var createdAt = info["time"]?["created"] != null
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["created"].Value<double>()).ToUniversalTime().ToString("o")
+            var createdAt = info.Time != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Created).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
-            var updatedAt = info["time"]?["updated"] != null
-                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info["time"]["updated"].Value<double>()).ToUniversalTime().ToString("o")
+            var updatedAt = info.Time != null
+                ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Updated).ToUniversalTime().ToString("o")
                 : DateTime.UtcNow.ToString("o");
             
-            PostMessage(new
+            PostMessage(new SessionUpdatedMessage
             {
-                type = "sessionUpdated",
-                session = new
+                Session = new SessionInfo
                 {
-                    id = sessionID,
-                    parentID = info["parentID"]?.Type == JTokenType.String ? info["parentID"].Value<string>() : null,
-                    title = info["title"]?.Value<string>(),
-                    createdAt,
-                    updatedAt,
-                    revert = info["revert"]?.Type == JTokenType.Object ? info["revert"] : (object?)null,
-                    summary = info["summary"]?.Type == JTokenType.String ? info["summary"].Value<string>() : null
+                    Id = sessionID,
+                    ParentID = info.ParentID,
+                    Title = info.Title,
+                    CreatedAt = createdAt,
+                    UpdatedAt = updatedAt,
+                    Revert = info.Revert,
+                    Summary = info.Summary
                 }
             });
         }
 
-        private void HandleSessionDeletedSync(JToken data)
+        private void HandleSessionDeletedSync(SyncEvent evt)
         {
-            var sessionID = data["sessionID"]?.Value<string>();
+            var data = (KiloVisualStudioExtension.ApiClient.EventSessionDeleted)evt.Data;
+            var sessionID = data.Properties.SessionID;
             
             if (!string.IsNullOrEmpty(sessionID))
             {
@@ -410,11 +404,7 @@ namespace KiloVisualStudioExtension
                 }
             }
 
-            PostMessage(new
-            {
-                type = "sessionDeleted",
-                sessionID
-            });
+            PostMessage(new SessionDeletedMessage { SessionID = sessionID });
         }
 
         private void HandleMemoryEvent(string type, JToken properties)
@@ -657,7 +647,7 @@ namespace KiloVisualStudioExtension
 
         private void HandleGlobalDisposed()
         {
-            PostMessage(new { type = "globalDisposed" });
+            PostMessage(new { type = "global.disposed" });
         }
 
         private void HandleServerInstanceDisposed(JToken properties)
@@ -669,7 +659,7 @@ namespace KiloVisualStudioExtension
                 _sessionStatusMap[sid] = new SessionStatus { Type = "idle" };
             }
 
-            PostMessage(new { type = "serverInstanceDisposed", directory = dir });
+            PostMessage(new { type = "server.instance.disposed", directory = dir });
         }
 
         private void HandleGlobalConfigUpdated()

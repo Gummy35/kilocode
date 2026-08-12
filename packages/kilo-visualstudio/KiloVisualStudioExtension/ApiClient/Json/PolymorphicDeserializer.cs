@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.ApiClient.Sse;
 
 namespace KiloVisualStudioExtension.ApiClient.Json
 {
@@ -177,6 +178,181 @@ namespace KiloVisualStudioExtension.ApiClient.Json
             }
 
             return filePart;
+        }
+
+        /// <summary>
+        /// Deserializes EventMessagePartUpdated with proper handling of the nested Part polymorphic property.
+        /// </summary>
+        public static EventMessagePartUpdated DeserializeEventMessagePartUpdated(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for EventMessagePartUpdated");
+            var evt = obj.ToObject<EventMessagePartUpdated>(serializer);
+            if (evt == null)
+                throw new JsonSerializationException("Failed to deserialize EventMessagePartUpdated");
+
+            // Deserialize nested Part polymorphically
+            var partToken = obj["properties"]?["part"];
+            if (partToken != null && partToken.Type != JTokenType.Null)
+            {
+                evt.Properties.Part = (Part)DeserializePart(partToken, serializer);
+            }
+
+            return evt;
+        }
+
+        /// <summary>
+        /// Deserializes EventMessagePartRemoved.
+        /// </summary>
+        public static EventMessagePartRemoved DeserializeEventMessagePartRemoved(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for EventMessagePartRemoved");
+            var evt = obj.ToObject<EventMessagePartRemoved>(serializer);
+            if (evt == null)
+                throw new JsonSerializationException("Failed to deserialize EventMessagePartRemoved");
+
+            return evt;
+        }
+
+
+
+        /// <summary>
+        /// Deserializes EventMessageUpdated with proper handling of the nested Info polymorphic property.
+        /// The Info field uses 'role' discriminator to determine SessionMessageAssistant vs SessionMessageUser, etc.
+        /// </summary>
+        public static EventMessageUpdated DeserializeEventMessageUpdated(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for EventMessageUpdated");
+            var evt = obj.ToObject<EventMessageUpdated>(serializer);
+            if (evt == null)
+                throw new JsonSerializationException("Failed to deserialize EventMessageUpdated");
+
+            // Deserialize nested Info polymorphically based on 'role' discriminator
+            var infoToken = obj["properties"]?["info"];
+            if (infoToken != null && infoToken.Type != JTokenType.Null)
+            {
+                evt.Properties.Info = (ApiClient.Message)DeserializeSessionMessage(infoToken, serializer);
+            }
+
+            return evt;
+        }
+
+        /// <summary>
+        /// Deserializes a SessionMessage token to the appropriate concrete type based on the 'role' or 'type' discriminator.
+        /// Returns ApiClient.Message (base class) but actually contains SessionMessageAssistant, SessionMessageUser, etc.
+        /// </summary>
+        public static object DeserializeSessionMessage(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for SessionMessage");
+            
+            // Check for 'role' discriminator first (AssistantMessage, UserMessage pattern)
+            var roleToken = obj["role"];
+            if (roleToken != null && roleToken.Type != JTokenType.Null)
+            {
+                var role = roleToken.Value<string>();
+                return role switch
+                {
+                    "user" => obj.ToObject<SessionMessageUser>(serializer)!,
+                    "assistant" => obj.ToObject<SessionMessageAssistant>(serializer)!,
+                    _ => obj.ToObject<SessionMessage>(serializer)!
+                };
+            }
+            
+            // Fall back to 'type' discriminator
+            var typeToken = obj["type"];
+            if (typeToken != null && typeToken.Type != JTokenType.Null)
+            {
+                var type = typeToken.Value<string>();
+                return type switch
+                {
+                    "user" => obj.ToObject<SessionMessageUser>(serializer)!,
+                    "assistant" => obj.ToObject<SessionMessageAssistant>(serializer)!,
+                    "system" => obj.ToObject<SessionMessageSystem>(serializer)!,
+                    "synthetic" => obj.ToObject<SessionMessageSynthetic>(serializer)!,
+                    "shell" => obj.ToObject<SessionMessageShell>(serializer)!,
+                    "compaction" => obj.ToObject<SessionMessageCompaction>(serializer)!,
+                    "model-switched" => obj.ToObject<SessionMessageModelSwitched>(serializer)!,
+                    "agent-switched" => obj.ToObject<SessionMessageAgentSwitched>(serializer)!,
+                    _ => obj.ToObject<SessionMessage>(serializer)!
+                };
+            }
+
+            return obj.ToObject<SessionMessage>(serializer)!;
+        }
+
+        /// <summary>
+        /// Deserializes EventSessionCreated with proper handling of the nested Info property.
+        /// </summary>
+        public static EventSessionCreated DeserializeEventSessionCreated(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for EventSessionCreated");
+            var evt = obj.ToObject<EventSessionCreated>(serializer);
+            if (evt == null)
+                throw new JsonSerializationException("Failed to deserialize EventSessionCreated");
+
+            return evt;
+        }
+
+        /// <summary>
+        /// Deserializes EventSessionUpdated with proper handling of the nested Info property.
+        /// </summary>
+        public static EventSessionUpdated DeserializeEventSessionUpdated(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for EventSessionUpdated");
+            var evt = obj.ToObject<EventSessionUpdated>(serializer);
+            if (evt == null)
+                throw new JsonSerializationException("Failed to deserialize EventSessionUpdated");
+
+            return evt;
+        }
+
+        /// <summary>
+        /// Deserializes EventSessionDeleted.
+        /// </summary>
+        public static EventSessionDeleted DeserializeEventSessionDeleted(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for EventSessionDeleted");
+            var evt = obj.ToObject<EventSessionDeleted>(serializer);
+            if (evt == null)
+                throw new JsonSerializationException("Failed to deserialize EventSessionDeleted");
+
+            return evt;
+        }
+
+        /// <summary>
+        /// Deserializes EventMessageRemoved.
+        /// </summary>
+        public static EventMessageRemoved DeserializeEventMessageRemoved(JToken token, JsonSerializer serializer)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for EventMessageRemoved");
+            var evt = obj.ToObject<EventMessageRemoved>(serializer);
+            if (evt == null)
+                throw new JsonSerializationException("Failed to deserialize EventMessageRemoved");
+
+            return evt;
         }
     }
 }

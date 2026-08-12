@@ -23,7 +23,7 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
         public string Name { get; set; } = "";
         public string Id { get; set; } = "";
         public int Seq { get; set; }
-        public JToken Data { get; set; } = null!;
+        public object Data { get; set; } = null!;
     }
 
     /// <summary>
@@ -75,7 +75,10 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
             var name = obj["name"]?.Value<string>() ?? "";
             var id = obj["id"]?.Value<string>() ?? "";
             var seq = obj["seq"]?.Value<int>() ?? 0;
-            var data = obj["data"] ?? throw new JsonSerializationException("Sync event missing 'data'");
+            var data = obj["data"];
+
+            if (data == null)
+                throw new JsonSerializationException("Sync event missing 'data'");
 
             return name switch
             {
@@ -85,7 +88,15 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
                     Name = name,
                     Id = id,
                     Seq = seq,
-                    Data = data
+                    Data = PolymorphicDeserializer.DeserializeEventMessageUpdated(data, serializer)
+                },
+                "message.removed.1" => new GenericSyncEvent
+                {
+                    EventType = "sync",
+                    Name = name,
+                    Id = id,
+                    Seq = seq,
+                    Data = PolymorphicDeserializer.DeserializeEventMessageRemoved(data, serializer)
                 },
                 "message.part.updated.1" => new MessagePartUpdatedSyncEvent
                 {
@@ -93,7 +104,15 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
                     Name = name,
                     Id = id,
                     Seq = seq,
-                    Data = data
+                    Data = PolymorphicDeserializer.DeserializeEventMessagePartUpdated(data, serializer)
+                },
+                "message.part.removed.1" => new GenericSyncEvent
+                {
+                    EventType = "sync",
+                    Name = name,
+                    Id = id,
+                    Seq = seq,
+                    Data = PolymorphicDeserializer.DeserializeEventMessagePartRemoved(data, serializer)
                 },
                 "session.created.1" => new SessionCreatedSyncEvent
                 {
@@ -101,7 +120,7 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
                     Name = name,
                     Id = id,
                     Seq = seq,
-                    Data = data
+                    Data = PolymorphicDeserializer.DeserializeEventSessionCreated(data, serializer)
                 },
                 "session.updated.1" => new SessionUpdatedSyncEvent
                 {
@@ -109,7 +128,15 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
                     Name = name,
                     Id = id,
                     Seq = seq,
-                    Data = data
+                    Data = PolymorphicDeserializer.DeserializeEventSessionUpdated(data, serializer)
+                },
+                "session.deleted.1" => new GenericSyncEvent
+                {
+                    EventType = "sync",
+                    Name = name,
+                    Id = id,
+                    Seq = seq,
+                    Data = PolymorphicDeserializer.DeserializeEventSessionDeleted(data, serializer)
                 },
                 _ => new GenericSyncEvent
                 {
@@ -192,6 +219,7 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
     }
 
     // Concrete event types for better type safety
+    // These extend SyncEvent/StreamEvent but use the NSwag-generated event classes for Data/Properties
     public class MessageUpdatedSyncEvent : SyncEvent { }
     public class MessagePartUpdatedSyncEvent : SyncEvent { }
     public class SessionCreatedSyncEvent : SyncEvent { }

@@ -1,7 +1,7 @@
 # Kilo Visual Studio Porting Tasks
 
 **Status:** Active
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-12
 
 This file is the high-level task tracker for the Kilo Code Visual Studio port.
 
