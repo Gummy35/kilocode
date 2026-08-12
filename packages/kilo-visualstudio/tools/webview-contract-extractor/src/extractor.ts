@@ -19,8 +19,9 @@ import type {
 // Project root is 5 levels up from this script
 const ROOT_DIR = path.resolve(__dirname, "..", "..", "..", "..", "..")
 const VS_CODE_TYPES_PATH = path.join(ROOT_DIR, "packages/kilo-vscode/webview-ui/src/types/messages")
-const OUTPUT_PATH = path.join(ROOT_DIR, "packages/kilo-visualstudio/porting/contract/WebViewContract.json")
+const VS_CODE_SHARED_PATH = path.join(ROOT_DIR, "packages/kilo-vscode/src/shared")
 const TSCONFIG_PATH = path.join(ROOT_DIR, "packages/kilo-vscode/webview-ui/tsconfig.json")
+const OUTPUT_PATH = path.join(ROOT_DIR, "packages/kilo-visualstudio/porting/contract/WebViewContract.json")
 
 interface ExtractionContext {
   program: ts.Program
@@ -237,8 +238,41 @@ function extractTypeAliasDeclaration(
     const members: string[] = []
     
     for (const memberType of unionType.types) {
-      const memberName = getTypeName(memberType, typeChecker)
-      members.push(memberName)
+      // Try to get the name from the symbol first
+      let memberName = getTypeName(memberType, typeChecker)
+      
+      // If we got __type, try to parse from source file
+      if (memberName === '__type') {
+        const sourceFile = node.getSourceFile()
+        const sourceText = sourceFile.getFullText()
+        const typeName = node.name.text
+        
+        // Look for the line containing "export type TypeName = ..."
+        const lines = sourceText.split('\n')
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (trimmed.startsWith(`export type ${typeName} =`)) {
+            // Extract everything after the =
+            const afterEquals = trimmed.substring(trimmed.indexOf('=') + 1).trim()
+            // Remove trailing semicolon if present
+            const withoutSemi = afterEquals.replace(/;$/, '').trim()
+            // Split by | and clean up
+            const parsedMembers = withoutSemi.split('|').map(m => m.trim()).filter(m => m && !m.startsWith('{'))
+            if (parsedMembers.length > 0) {
+              for (const parsedMember of parsedMembers) {
+                if (!members.includes(parsedMember)) {
+                  members.push(parsedMember)
+                }
+              }
+              break
+            }
+          }
+        }
+      }
+      
+      if (memberName !== '__type' && !members.includes(memberName)) {
+        members.push(memberName)
+      }
     }
 
     return {
@@ -246,6 +280,92 @@ function extractTypeAliasDeclaration(
       kind: "union",
       unionMembers: members,
       sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
+    }
+  }
+
+  // Check if the type alias has a type literal (object structure)
+  if (node.type && ts.isTypeLiteralNode(node.type)) {
+    const properties: PropertyDefinition[] = []
+    let discriminator: DiscriminatorInfo | undefined
+    
+    for (const member of node.type.members) {
+      if (ts.isPropertySignature(member) && member.name) {
+        const propName = member.name.getText()
+        const propType = member.type ? typeChecker.getTypeAtLocation(member.type) : null
+        const propKind = propType ? getTypeKind(propType) : "object"
+        
+        // Check if this is a literal type (e.g., type: "partUpdated")
+        let isLiteral = false
+        let literalValue: string | number | boolean | null = null
+        if (member.type && ts.isLiteralTypeNode(member.type)) {
+          isLiteral = true
+          const literal = member.type.literal
+          if (ts.isStringLiteral(literal)) {
+            literalValue = literal.text
+          } else if (ts.isNumericLiteral(literal)) {
+            literalValue = parseFloat(literal.text)
+          }
+        }
+        
+        properties.push({
+          name: propName,
+          type: propKind,
+          optional: member.questionToken !== undefined,
+          nullable: false,
+          isLiteral,
+          elementType: null,
+          typeRef: null,
+          literalValue,
+        })
+        
+        // Check if this is the discriminator property
+        if (propName === 'type' && isLiteral && literalValue) {
+          discriminator = {
+            field: 'type',
+            value: literalValue as string,
+          }
+        }
+      }
+    }
+
+    if (properties.length > 0) {
+      return {
+        name,
+        kind: "interface",
+        properties,
+        discriminator,
+        sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
+      }
+    }
+  }
+
+  // For type aliases that reference other types, check if the referenced type has properties
+  if (node.type) {
+    let referencedTypeName: string | null = null
+    
+    if (ts.isTypeReferenceNode(node.type)) {
+      // Handle both simple references (Type) and generic references (Type<T>)
+      referencedTypeName = node.type.typeName.getText()
+    } else if (ts.isTypeAliasDeclaration(node.type)) {
+      // Nested type alias
+      referencedTypeName = node.type.name.text
+    }
+    
+    if (referencedTypeName && context.types.has(referencedTypeName)) {
+      const referencedType = context.types.get(referencedTypeName)!
+      if (referencedType.properties && referencedType.properties.length > 0) {
+        // Check if this type alias has a discriminator in the referenced type
+        const typeProp = referencedType.properties.find(p => p.name === 'type')
+        if (typeProp) {
+          return {
+            name,
+            kind: "interface",
+            properties: referencedType.properties,
+            discriminator: referencedType.discriminator,
+            sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
+          }
+        }
+      }
     }
   }
 
@@ -423,7 +543,7 @@ function main(): void {
   )
 
   const program = ts.createProgram({
-    rootNames: parsedConfig.fileNames.filter(f => f.includes("webview-ui/src/types/messages")),
+    rootNames: parsedConfig.fileNames.filter(f => f.includes("webview-ui/src/types/messages") || f.includes("src/shared/stream-messages")),
     options: parsedConfig.options,
   })
 

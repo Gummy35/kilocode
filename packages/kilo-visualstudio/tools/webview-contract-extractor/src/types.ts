@@ -42,6 +42,7 @@ export interface TypeDefinition {
   discriminator?: DiscriminatorInfo
   sourceFile: string
   description?: string
+  typeRef?: TypeReference
 }
 
 export interface PropertyDefinition {

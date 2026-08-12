@@ -27,8 +27,7 @@ public class SaveCustomProviderMessage
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }
     [JsonProperty("config")]
-    // Original TypeScript type: ProviderConfig
-    public object Config { get; set; }
+    public ProviderConfig Config { get; set; }
     [JsonProperty("apiKey", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? ApiKey { get; set; }

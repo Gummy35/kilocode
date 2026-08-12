@@ -332,7 +332,8 @@ function collectNeededTypes(prop: PropertyDefinition) {
         for (const memberName of typeDef.unionMembers) {
           if (typeDefinitions.has(memberName)) {
             const memberDef = typeDefinitions.get(memberName)!
-            if (memberDef.kind === 'interface' && memberDef.properties) {
+            // Generate union members that are interfaces OR type aliases with properties
+            if ((memberDef.kind === 'interface' || memberDef.kind === 'typeAlias') && memberDef.properties) {
               neededTypes.add(memberName)
               for (const p of memberDef.properties) {
                 collectNeededTypes(p)
@@ -378,6 +379,26 @@ function generateTypeClass(typeDef: TypeDefinition): string {
     } else {
       sourceComment = "/// <remarks>\n/// This type is from node_modules.\n/// It is included because it is referenced by a message property.\n/// </remarks>\n"
     }
+  }
+  
+  // Generate enum for enum kinds
+  if (typeDef.kind === 'enum' && typeDef.unionMembers) {
+    sb.push("/// <summary>")
+    sb.push(`/// Enum: ${typeDef.name}`)
+    sb.push(`/// Source: ${typeDef.sourceFile}`)
+    sb.push("/// </summary>")
+    if (sourceComment) sb.push(sourceComment)
+    sb.push(`public enum ${typeDef.name}`)
+    sb.push("{")
+    for (let i = 0; i < typeDef.unionMembers.length; i++) {
+      const member = typeDef.unionMembers[i]!
+      const enumName = pascalCase(member)
+      const comma = i < typeDef.unionMembers.length - 1 ? "," : ""
+      sb.push(`    ${enumName}${comma}`)
+    }
+    sb.push("}")
+    sb.push("")
+    return sb.join("\n")
   }
   
   if (typeDef.discriminator) {

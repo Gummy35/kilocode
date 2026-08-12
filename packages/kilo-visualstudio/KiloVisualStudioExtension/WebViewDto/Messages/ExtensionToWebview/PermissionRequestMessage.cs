@@ -23,6 +23,5 @@ public class PermissionRequestMessage
     [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("permission")]
-    // Original TypeScript type: PermissionRequest
-    public object Permission { get; set; }
+    public PermissionRequest Permission { get; set; }
 }
