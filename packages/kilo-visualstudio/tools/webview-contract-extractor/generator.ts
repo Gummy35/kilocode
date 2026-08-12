@@ -5,7 +5,7 @@ import * as path from "path"
 // Contract is 2 levels up (from tools/webview-contract-extractor to packages/kilo-visualstudio)
 const VS_DIR = path.resolve(__dirname, "..", "..")
 const CONTRACT_PATH = path.join(VS_DIR, "porting/contract/WebViewContract.json")
-const OUTPUT_PATH = path.join(VS_DIR, "KiloVisualStudioExtension/WebView/Generated")
+const OUTPUT_PATH = path.join(VS_DIR, "KiloVisualStudioExtension/WebViewDto")
 
 interface TypeReference {
   name: string
@@ -78,6 +78,31 @@ function isPrimitiveType(typeName: string): boolean {
          lower === 'void' || lower === 'null' || lower === 'undefined'
 }
 
+// Common TypeScript types that have C# equivalents
+const csharpTypeMap: Map<string, string> = new Map([
+  ['array', 'List<object>'],
+  ['readonlyarray', 'IReadOnlyList<object>'],
+  ['map', 'Dictionary<object, object>'],
+  ['readonlymap', 'IReadOnlyDictionary<object, object>'],
+  ['set', 'HashSet<object>'],
+  ['readonlyset', 'IReadOnlySet<object>'],
+  ['promise', 'Task<object>'],
+  ['function', 'Delegate'],
+  ['object', 'object'],
+  ['date', 'DateTime'],
+  ['regexp', 'Regex'],
+  ['error', 'Exception'],
+  ['symbol', 'object'],
+])
+
+function getCSharpTypeForCommonType(typeName: string): string | null {
+  const lower = typeName.toLowerCase()
+  if (csharpTypeMap.has(lower)) {
+    return csharpTypeMap.get(lower)!
+  }
+  return null
+}
+
 function isInternalType(typeName: string): boolean {
   return typeName.includes('@') || typeName.includes(':') || 
          typeName.startsWith('"') || typeName.includes('::') ||
@@ -127,6 +152,15 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
         if (isInternalType(actualType)) {
           return { type: 'object', isNullable: true, originalType: prop.elementType }
         }
+        // Check if the type exists in the contract and has no properties (from node_modules)
+        if (typeDefinitions.has(actualType)) {
+          const typeDef = typeDefinitions.get(actualType)!
+          const isNodeModules = typeDef.sourceFile.includes('node_modules')
+          const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
+          if (isNodeModules && hasNoProperties) {
+            return { type: 'object', isNullable: true, originalType: prop.elementType }
+          }
+        }
         // Check if the type exists in the contract
         if (!typeDefinitions.has(actualType)) {
           return { type: 'object', isNullable: true, originalType: prop.elementType }
@@ -158,8 +192,19 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
     if (isInternalType(refName)) {
       return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
     }
+    // Check for common TypeScript types with C# equivalents
+    const csharpEquivalent = getCSharpTypeForCommonType(refName)
+    if (csharpEquivalent) {
+      return { type: csharpEquivalent, isNullable: prop.optional || prop.nullable, originalType: refName }
+    }
     if (typeDefinitions.has(refName)) {
       const typeDef = typeDefinitions.get(refName)!
+      // Check if the type is from node_modules with no properties
+      const isNodeModules = typeDef.sourceFile.includes('node_modules')
+      const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
+      if (isNodeModules && hasNoProperties) {
+        return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
+      }
       if (typeDef.kind === 'typeAlias') {
         return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
       }
@@ -315,8 +360,25 @@ function generateTypeClass(typeDef: TypeDefinition): string {
   sb.push("")
   sb.push("using System;")
   sb.push("using System.Collections.Generic;")
+  sb.push("using System.Threading.Tasks;")
   sb.push("using Newtonsoft.Json;")
   sb.push("")
+  
+  // Add source information comment
+  const isNodeModules = typeDef.sourceFile.includes('node_modules')
+  let sourceComment = ""
+  if (isNodeModules) {
+    const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
+    if (normalizedSource.includes('node_modules/typescript')) {
+      sourceComment = "/// <remarks>\n/// This type is from TypeScript lib definitions (node_modules/typescript).\n/// It is included because it is referenced by a message property.\n/// </remarks>\n"
+    } else if (normalizedSource.includes('node_modules/@types/node')) {
+      sourceComment = "/// <remarks>\n/// This type is from Node.js type definitions (node_modules/@types/node).\n/// It is included because it is referenced by a message property.\n/// </remarks>\n"
+    } else if (normalizedSource.includes('node_modules/@types')) {
+      sourceComment = "/// <remarks>\n/// This type is from @types package (node_modules/@types).\n/// It is included because it is referenced by a message property.\n/// </remarks>\n"
+    } else {
+      sourceComment = "/// <remarks>\n/// This type is from node_modules.\n/// It is included because it is referenced by a message property.\n/// </remarks>\n"
+    }
+  }
   
   if (typeDef.discriminator) {
     sb.push("/// <summary>")
@@ -324,11 +386,13 @@ function generateTypeClass(typeDef: TypeDefinition): string {
     sb.push(`/// Discriminator: ${typeDef.discriminator.field} = "${typeDef.discriminator.value}"`)
     sb.push(`/// Source: ${typeDef.sourceFile}`)
     sb.push("/// </summary>")
+    if (sourceComment) sb.push(sourceComment)
   } else {
     sb.push("/// <summary>")
     sb.push(`/// Type: ${typeDef.name}`)
     sb.push(`/// Source: ${typeDef.sourceFile}`)
     sb.push("/// </summary>")
+    if (sourceComment) sb.push(sourceComment)
   }
   
   sb.push(`public class ${typeDef.name}`)
@@ -339,7 +403,7 @@ function generateTypeClass(typeDef: TypeDefinition): string {
       const mapped = mapToCSharpType(prop)
       const nullable = mapped.isNullable ? "?" : ""
       const jsonAttr = prop.name !== typeDef.discriminator?.field
-        ? `    [JsonProperty("${prop.name}")]\n`
+        ? `    [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`
         : ""
       const summary = prop.description ? `    /// <summary>${prop.description}</summary>\n` : ""
       const comment = mapped.originalType ? `    // Original TypeScript type: ${mapped.originalType}\n` : ""
@@ -369,6 +433,7 @@ function generateMessageClass(message: MessageType, ns: string): string {
   sb.push("")
   sb.push("using System;")
   sb.push("using System.Collections.Generic;")
+  sb.push("using System.Threading.Tasks;")
   sb.push("using Newtonsoft.Json;")
   sb.push("")
   sb.push("/// <summary>")
@@ -383,7 +448,7 @@ function generateMessageClass(message: MessageType, ns: string): string {
     const mapped = mapToCSharpType(prop)
     const nullable = mapped.isNullable ? "?" : ""
     const jsonAttr = prop.name !== message.discriminator.field 
-      ? "    [JsonProperty(\"" + prop.name + "\")]\n" 
+      ? "    [JsonProperty(\"" + prop.name + "\"" + (mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : "") + ")]\n" 
       : ""
     const comment = mapped.originalType ? "    // Original TypeScript type: " + mapped.originalType + "\n" : ""
     
@@ -581,6 +646,20 @@ for (const typeName of generatedOrder) {
   
   const typeDef = typeDefinitions.get(typeName)
   if (!typeDef) continue
+  
+  // Skip common TypeScript types that have C# equivalents (don't generate classes for them)
+  const csharpEquivalent = getCSharpTypeForCommonType(typeName)
+  if (csharpEquivalent) {
+    continue
+  }
+  
+  // Skip types from node_modules with no properties
+  const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
+  const isNodeModules = normalizedSource.includes('node_modules')
+  const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
+  if (isNodeModules && hasNoProperties) {
+    continue
+  }
   
   const code = generateTypeClass(typeDef)
   const filePath = path.join(typesDir, `${typeDef.name}.cs`)
