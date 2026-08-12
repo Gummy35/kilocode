@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: AgentPart
 /// Discriminator: type = "agent"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class AgentPart
 {

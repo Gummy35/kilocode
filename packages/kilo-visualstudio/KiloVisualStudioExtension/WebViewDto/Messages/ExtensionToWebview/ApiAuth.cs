@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: ApiAuth
 /// Discriminator: type = "api"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\kilo-gateway\src\auth\legacy-migration.ts
 /// </summary>
 public class ApiAuth
 {
@@ -25,6 +25,4 @@ public class ApiAuth
     public string Type { get; set; } = "api";
     [JsonProperty("key")]
     public string Key { get; set; }
-    [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Metadata { get; set; }
 }

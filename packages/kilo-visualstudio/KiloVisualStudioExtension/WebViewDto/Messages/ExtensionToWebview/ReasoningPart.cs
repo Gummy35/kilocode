@@ -16,16 +16,23 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: ReasoningPart
 /// Discriminator: type = "reasoning"
-/// Source: parts.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class ReasoningPart
 {
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("sessionID")]
+    public string SessionID { get; set; }
+    [JsonProperty("messageID")]
+    public string MessageID { get; set; }
     [JsonProperty("type")]
-    // Original TypeScript type: literal
+    // Original TypeScript type: unknown
     public string Type { get; set; } = "reasoning";
     [JsonProperty("text")]
     public string Text { get; set; }
-    [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | __type
-    public object? Time { get; set; }
+    [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
+    public object? Metadata { get; set; }
+    [JsonProperty("time")]
+    public object Time { get; set; }
 }

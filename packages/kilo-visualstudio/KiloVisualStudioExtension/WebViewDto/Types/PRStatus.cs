@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: PRStatus
-/// Source: agent-manager.ts
+/// Source: ..\..\..\..\src\agent-manager\types.ts
 /// </summary>
 public class PRStatus
 {

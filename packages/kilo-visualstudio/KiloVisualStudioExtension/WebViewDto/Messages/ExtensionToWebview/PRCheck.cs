@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: PRCheck
 /// Discriminator: status = "pending"
-/// Source: agent-manager.ts
+/// Source: ..\..\..\..\src\agent-manager\types.ts
 /// </summary>
 public class PRCheck
 {

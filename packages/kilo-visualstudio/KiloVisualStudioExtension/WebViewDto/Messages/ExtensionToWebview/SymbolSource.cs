@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: SymbolSource
 /// Discriminator: type = "symbol"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class SymbolSource
 {

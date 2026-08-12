@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: KilocodeBalance
-/// Source: profile.ts
+/// Source: ..\..\..\..\..\kilo-gateway\src\types.ts
 /// </summary>
 public class KilocodeBalance
 {

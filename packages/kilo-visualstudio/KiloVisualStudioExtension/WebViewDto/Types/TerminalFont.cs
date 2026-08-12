@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: TerminalFont
-/// Source: agent-manager.ts
+/// Source: ..\..\..\..\src\agent-manager\terminal-font.ts
 /// </summary>
 public class TerminalFont
 {

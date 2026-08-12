@@ -179,6 +179,16 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
         if (!typeDefinitions.has(actualType)) {
           return { type: 'object', isNullable: true, originalType: prop.elementType }
         }
+        // Check if it's from node_modules - map to object
+        const actualTypeDef = typeDefinitions.get(actualType)!
+        const isNodeModules = actualTypeDef.sourceFile.includes('node_modules')
+        if (isNodeModules) {
+          return { type: 'object', isNullable: true, originalType: prop.elementType }
+        }
+        // Check if it's a type alias or union - map to object
+        if (actualTypeDef.kind === 'typeAlias' || actualTypeDef.kind === 'union') {
+          return { type: 'object', isNullable: true, originalType: prop.elementType }
+        }
         // For reference types, use Type?
         return { type: actualType, isNullable: true, originalType: prop.elementType }
       }
@@ -213,10 +223,9 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
     }
     if (typeDefinitions.has(refName)) {
       const typeDef = typeDefinitions.get(refName)!
-      // Check if the type is from node_modules with no properties
+      // Check if the type is from node_modules - map to object
       const isNodeModules = typeDef.sourceFile.includes('node_modules')
-      const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
-      if (isNodeModules && hasNoProperties) {
+      if (isNodeModules) {
         return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
       }
       if (typeDef.kind === 'typeAlias') {
@@ -308,14 +317,15 @@ function collectNeededTypes(prop: PropertyDefinition) {
   if (baseType === 'union' && prop.elementType) {
     const unionParts = prop.elementType.split('|').map(p => p.trim())
     for (const part of unionParts) {
-      // Skip null, undefined, string literals, and intersection types
-      if (part !== 'undefined' && part !== 'null' && !part.startsWith('"') && !part.startsWith("'") && !part.includes('&')) {
+      // Skip null, undefined, string literals, intersection types, and Zod types
+      if (part !== 'undefined' && part !== 'null' && !part.startsWith('"') && !part.startsWith("'") && !part.includes('&') && !part.startsWith('$Zod') && !part.startsWith('Zod')) {
         // Only add if the type actually exists in the contract
         if (typeDefinitions.has(part)) {
           collectingTypes.add(part)
           const typeDef = typeDefinitions.get(part)!
+          // Add to neededTypes regardless of whether it has properties
+          neededTypes.add(part)
           if (typeDef.kind === 'interface' && typeDef.properties) {
-            neededTypes.add(part)
             for (const p of typeDef.properties) {
               collectNeededTypes(p)
             }
@@ -328,6 +338,11 @@ function collectNeededTypes(prop: PropertyDefinition) {
   }
   
   if (prop.typeRef?.name && !isPrimitiveType(prop.typeRef.name) && !isInternalType(prop.typeRef.name)) {
+    // Skip Zod internal types
+    if (prop.typeRef.name.startsWith('$Zod') || prop.typeRef.name.startsWith('Zod')) {
+      return
+    }
+    
     if (collectingTypes.has(prop.typeRef.name)) {
       return
     }
@@ -335,24 +350,25 @@ function collectNeededTypes(prop: PropertyDefinition) {
     if (typeDefinitions.has(prop.typeRef.name)) {
       collectingTypes.add(prop.typeRef.name)
       const typeDef = typeDefinitions.get(prop.typeRef.name)!
-      if (typeDef.kind === 'interface' && typeDef.properties) {
+      
+      // Map type aliases and unions to object
+      if (typeDef.kind === 'typeAlias' || typeDef.kind === 'union') {
+        collectingTypes.delete(prop.typeRef.name)
+        return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.typeRef.name }
+      }
+      
+      // Check if the type is from node_modules - map to object
+      const isNodeModules = typeDef.sourceFile.includes('node_modules')
+      if (isNodeModules) {
+        collectingTypes.delete(prop.typeRef.name)
+        return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.typeRef.name }
+      }
+      
+      if (typeDef.kind === 'interface') {
         neededTypes.add(prop.typeRef.name)
-        for (const p of typeDef.properties) {
-          collectNeededTypes(p)
-        }
-      } else if (typeDef.kind === 'typeAlias') {
-        // Type aliases are not generated - they'll map to object
-      } else if (typeDef.kind === 'union' && typeDef.unionMembers) {
-        for (const memberName of typeDef.unionMembers) {
-          if (typeDefinitions.has(memberName)) {
-            const memberDef = typeDefinitions.get(memberName)!
-            // Generate union members that are interfaces OR type aliases with properties
-            if ((memberDef.kind === 'interface' || memberDef.kind === 'typeAlias') && memberDef.properties) {
-              neededTypes.add(memberName)
-              for (const p of memberDef.properties) {
-                collectNeededTypes(p)
-              }
-            }
+        if (typeDef.properties) {
+          for (const p of typeDef.properties) {
+            collectNeededTypes(p)
           }
         }
       }
@@ -487,7 +503,8 @@ function generateMessageClass(message: MessageType, ns: string): string {
   sb.push("/// Discriminator: " + message.discriminator.field + " = \"" + message.discriminator.value + "\"")
   sb.push("/// Source: " + message.sourceFile)
   sb.push("/// </summary>")
-  sb.push("public class " + message.name)
+  const sanitizedName = pascalCase(message.name)
+  sb.push("public class " + sanitizedName)
   sb.push("{")
 
   for (const prop of message.properties) {
@@ -563,17 +580,27 @@ function generateDiscriminatorFactory(
   const cases: string[] = []
   
   for (const message of webviewToExt) {
+    // Skip messages from node_modules
+    if (message.sourceFile.includes('node_modules')) {
+      continue
+    }
     const discValue = message.discriminator.value
+    const sanitizedName = pascalCase(message.name)
     if (!seenDiscriminators.has(discValue)) {
-      cases.push("            \"" + discValue + "\" => typeof(T) == typeof(" + message.name + ") ? (T)(object)token.ToObject<" + message.name + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
+      cases.push("            \"" + discValue + "\" => typeof(T) == typeof(" + sanitizedName + ") ? (T)(object)token.ToObject<" + sanitizedName + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
       seenDiscriminators.add(discValue)
     }
   }
 
   for (const message of extToWebview) {
+    // Skip messages from node_modules
+    if (message.sourceFile.includes('node_modules')) {
+      continue
+    }
     const discValue = message.discriminator.value
+    const sanitizedName = pascalCase(message.name)
     if (!seenDiscriminators.has(discValue)) {
-      cases.push("            \"" + discValue + "\" => typeof(T) == typeof(" + message.name + ") ? (T)(object)token.ToObject<" + message.name + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
+      cases.push("            \"" + discValue + "\" => typeof(T) == typeof(" + sanitizedName + ") ? (T)(object)token.ToObject<" + sanitizedName + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
       seenDiscriminators.add(discValue)
     }
   }
@@ -673,15 +700,17 @@ function generateTypeWithDeps(typeName: string) {
   visited.add(typeName)
   
   const typeDef = typeDefinitions.get(typeName)
-  if (!typeDef || typeDef.kind !== 'interface' || !typeDef.properties) return
+  if (!typeDef || typeDef.kind !== 'interface') return
   
   // First generate all dependencies
-  for (const prop of typeDef.properties) {
-    if (prop.typeRef?.name && neededTypes.has(prop.typeRef.name)) {
-      generateTypeWithDeps(prop.typeRef.name)
-    }
-    if (prop.elementType && neededTypes.has(prop.elementType)) {
-      generateTypeWithDeps(prop.elementType)
+  if (typeDef.properties) {
+    for (const prop of typeDef.properties) {
+      if (prop.typeRef?.name && neededTypes.has(prop.typeRef.name)) {
+        generateTypeWithDeps(prop.typeRef.name)
+      }
+      if (prop.elementType && neededTypes.has(prop.elementType)) {
+        generateTypeWithDeps(prop.elementType)
+      }
     }
   }
   
@@ -710,11 +739,27 @@ for (const typeName of generatedOrder) {
     continue
   }
   
-  // Skip types from node_modules with no properties
+  // Skip Zod internal types
+  if (typeName.startsWith('$Zod') || typeName.startsWith('Zod')) {
+    continue
+  }
+  
+  // Skip types from node_modules
   const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
   const isNodeModules = normalizedSource.includes('node_modules')
+  if (isNodeModules) {
+    continue
+  }
+  
+  // Skip type aliases and unions (they map to object)
+  if (typeDef.kind === 'typeAlias' || typeDef.kind === 'union') {
+    continue
+  }
+  
+  // Skip interfaces with no properties UNLESS they are needed by messages
+  // (needed types are those explicitly referenced by message properties)
   const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
-  if (isNodeModules && hasNoProperties) {
+  if (hasNoProperties && !neededTypes.has(typeName)) {
     continue
   }
   
@@ -731,8 +776,12 @@ console.log("Generating message classes...")
 let generatedCount = 0
 
 for (const message of contract.messages.webviewToExtension) {
+  // Skip messages from node_modules
+  if (message.sourceFile.includes('node_modules')) {
+    continue
+  }
   const code = generateMessageClass(message, ns)
-  const filePath = path.join(webviewToExtDir, `${message.name}.cs`)
+  const filePath = path.join(webviewToExtDir, `${pascalCase(message.name)}.cs`)
   fs.writeFileSync(filePath, code)
   generatedCount++
   if (generatedCount <= 10 || generatedCount % 20 === 0) {
@@ -741,8 +790,12 @@ for (const message of contract.messages.webviewToExtension) {
 }
 
 for (const message of contract.messages.extensionToWebview) {
+  // Skip messages from node_modules
+  if (message.sourceFile.includes('node_modules')) {
+    continue
+  }
   const code = generateMessageClass(message, ns)
-  const filePath = path.join(extToWebviewDir, `${message.name}.cs`)
+  const filePath = path.join(extToWebviewDir, `${pascalCase(message.name)}.cs`)
   fs.writeFileSync(filePath, code)
   generatedCount++
   if (generatedCount <= 10 || generatedCount % 20 === 0) {

@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: Auth
 /// Discriminator: type = "apiKey"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\core\auth.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\core\auth.gen.ts
 /// </summary>
 public class Auth
 {

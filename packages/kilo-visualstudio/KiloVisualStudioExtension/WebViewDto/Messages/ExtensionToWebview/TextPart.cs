@@ -16,22 +16,27 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: TextPart
 /// Discriminator: type = "text"
-/// Source: parts.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class TextPart
 {
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("sessionID")]
+    public string SessionID { get; set; }
+    [JsonProperty("messageID")]
+    public string MessageID { get; set; }
     [JsonProperty("type")]
-    // Original TypeScript type: literal
+    // Original TypeScript type: unknown
     public string Type { get; set; } = "text";
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("synthetic", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | false | true
     public object? Synthetic { get; set; }
+    [JsonProperty("ignored", NullValueHandling = NullValueHandling.Ignore)]
+    public object? Ignored { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | __type
     public object? Time { get; set; }
     [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | __type
     public object? Metadata { get; set; }
 }

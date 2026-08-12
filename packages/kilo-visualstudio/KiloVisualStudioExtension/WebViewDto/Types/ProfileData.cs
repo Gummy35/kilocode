@@ -14,19 +14,15 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: ProfileData
-/// Source: profile.ts
+/// Source: ..\..\..\..\src\services\cli-backend\types.ts
 /// </summary>
 public class ProfileData
 {
     [JsonProperty("profile")]
-    // Original TypeScript type: __type
-    public object Profile { get; set; }
+    public KilocodeProfile Profile { get; set; }
     [JsonProperty("balance", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | KilocodeBalance
     public KilocodeBalance? Balance { get; set; }
-    [JsonProperty("kiloPass", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: null | KiloPassState
-    public KiloPassState? KiloPass { get; set; }
     [JsonProperty("currentOrgId", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | string
     public string? CurrentOrgId { get; set; }

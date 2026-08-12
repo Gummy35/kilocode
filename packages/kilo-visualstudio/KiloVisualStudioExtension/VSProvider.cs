@@ -26,6 +26,7 @@ using KiloVisualStudioExtension.Services.Handlers.Ui;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.WebView.Generated;
 using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
 
 namespace KiloVisualStudioExtension
@@ -381,6 +382,29 @@ namespace KiloVisualStudioExtension
         {
             System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: received message type={e.Type}");
             _ = ProcessMessageAsync(e.Type, e.Payload);
+        }
+
+        /// <summary>
+        /// Deserializes a WebView message from JsonElement to a strongly-typed DTO using WebViewMessageFactory.
+        /// Returns null if the message type is not recognized or deserialization fails.
+        /// </summary>
+        private T? DeserializeWebViewMessage<T>(JsonElement? payload) where T : class
+        {
+            if (!payload.HasValue)
+                return null;
+
+            try
+            {
+                // Convert JsonElement to JSON string, then to JToken for WebViewMessageFactory
+                var json = payload.Value.GetRawText();
+                var jToken = Newtonsoft.Json.Linq.JToken.Parse(json);
+                return WebViewMessageFactory.Deserialize<T>(jToken);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: Failed to deserialize message to {typeof(T).Name}: {ex.Message}");
+                return null;
+            }
         }
 
         private async Task ProcessMessageAsync(string type, JsonElement? payload)

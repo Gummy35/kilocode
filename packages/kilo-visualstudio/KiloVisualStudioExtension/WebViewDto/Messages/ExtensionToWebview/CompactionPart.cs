@@ -16,20 +16,19 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: CompactionPart
 /// Discriminator: type = "compaction"
-/// Source: parts.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class CompactionPart
 {
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("sessionID")]
+    public string SessionID { get; set; }
+    [JsonProperty("messageID")]
+    public string MessageID { get; set; }
     [JsonProperty("type")]
-    // Original TypeScript type: literal
+    // Original TypeScript type: unknown
     public string Type { get; set; } = "compaction";
-    [JsonProperty("auto")]
-    // Original TypeScript type: literal
-    public string Auto { get; set; }
-    [JsonProperty("overflow", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | false | true
-    public object? Overflow { get; set; }
-    [JsonProperty("tail_start_id", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | string
-    public string? Tail_start_id { get; set; }
+    [JsonProperty("auto", NullValueHandling = NullValueHandling.Ignore)]
+    public object? Auto { get; set; }
 }

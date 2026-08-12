@@ -16,12 +16,10 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: EventVcsBranchUpdated
 /// Discriminator: type = "vcs.branch.updated"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class EventVcsBranchUpdated
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
     [JsonProperty("type")]
     // Original TypeScript type: unknown
     public string Type { get; set; } = "vcs.branch.updated";

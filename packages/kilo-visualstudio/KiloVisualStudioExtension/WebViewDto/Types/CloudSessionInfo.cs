@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: CloudSessionInfo
-/// Source: sessions.ts
+/// Source: ..\..\..\..\src\services\cli-backend\types.ts
 /// </summary>
 public class CloudSessionInfo
 {
@@ -27,4 +27,6 @@ public class CloudSessionInfo
     public string Created_at { get; set; }
     [JsonProperty("updated_at")]
     public string Updated_at { get; set; }
+    [JsonProperty("version")]
+    public double Version { get; set; }
 }

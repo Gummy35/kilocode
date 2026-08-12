@@ -24,5 +24,6 @@ public class GlobalConfigLoadedMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "globalConfigLoaded";
     [JsonProperty("config")]
-    public Config Config { get; set; }
+    // Original TypeScript type: Config
+    public object Config { get; set; }
 }

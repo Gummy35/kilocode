@@ -298,22 +298,20 @@ bun run generator.ts        # Generate C# DTOs from contract
 **Status:** `DONE` - Completed 2026-08-12
 
 **Summary:**
-- **Documentation complete:** PORT-WEBVIEW-002.md with full implementation analysis
-- **Integration audit complete:** SSEHelper, KiloWebViewControl, AgentManagerProvider examined
-- **Generator behavior validated:** Inline anonymous unions correctly represented as `object?`
-- **Test coverage verified:** All 41 WebView tests pass
-- **Integration patterns documented:** Examples provided for future DTO integration work
-- **No blockers identified:** Generator working correctly, integration can proceed incrementally
+- **DTO Generation Complete:** 528 C# files generated (45 types + 459 messages + factory)
+- **WebViewMessageFactory:** Discriminator-based deserialization for all message types
+- **PolymorphicDeserializer Enhanced:** SSE event deserializers added for proper polymorphic support
+- **Build:** 0 errors, 0 warnings
+- **Tests:** 41 WebView-specific tests all passing
+- **Integration Pattern Established:** Ready for incremental DTO integration
 
-**Key Findings:**
-- ✅ 528 DTO files generated (45 types + 459 messages + factory)
-- ✅ WebViewMessageFactory discriminator-based deserialization works
-- ✅ Newtonsoft.Json integration verified with KiloJsonSerializer
-- ✅ **AgentManager messages generated** - 34 total (33 Webview→Extension + 1 Extension→Webview)
-- ✅ **Part types generated** - TextPart, FilePart, ToolPart, ReasoningPart, StepStartPart, StepFinishPart, CompactionPart
-- ✅ **ToolState handled correctly** - Inline anonymous union represented as `object?` (expected behavior)
-- ✅ **Message role handled correctly** - Inline anonymous union represented as `object?` (expected behavior)
-- ✅ **All 41 WebView tests pass**
+**Key Deliverables:**
+- ✅ `WebViewMessageFactory.cs` - Discriminator-based deserialization factory
+- ✅ 528 generated DTO files - Complete WebView protocol representation
+- ✅ Enhanced `PolymorphicDeserializer.cs` - SSE event deserializers (EventMessageUpdated, EventMessagePartUpdated, etc.)
+- ✅ SSE pipeline - Uses NSwag types with Newtonsoft.Json and polymorphic deserialization
+- ✅ Build validation - 0 errors, 0 warnings
+- ✅ Test validation - 41 WebView tests pass (303 total passed, 44 pre-existing failures)
 
 **Test Coverage:**
 - WebViewMessageFactoryTests: 10 tests ✅
@@ -324,21 +322,27 @@ bun run generator.ts        # Generate C# DTOs from contract
 - **Total: 41 tests, all passing**
 
 **Available DTOs for Integration:**
-- SessionCreatedMessage, SessionStatusMessage, SessionErrorMessage
-- MessageCreatedMessage, PermissionRequestMessage, PermissionResolvedMessage
-- QuestionRequestMessage, QuestionResolvedMessage, SuggestionRequestMessage
-- SuggestionResolvedMessage, TodoUpdatedMessage, SandboxStatusMessage
-- MemoryEventMessage, ConfigUpdatedMessage, GlobalConfigUpdatedMessage
-- AgentManager messages (34 types)
-- Part types (TextPart, FilePart, ToolPart, etc.)
+- **Session messages:** SessionCreatedMessage, SessionUpdatedMessage, SessionDeletedMessage, SessionStatusMessage
+- **Message types:** MessageCreatedMessage, MessageRemovedMessage
+- **Part types:** PartUpdate, PartBatch, PartRemove, TextPart, FilePart, ToolPart, ReasoningPart
+- **Interaction:** PermissionRequestMessage, PermissionResolvedMessage, QuestionRequestMessage, SuggestionRequestMessage
+- **System:** TodoUpdatedMessage, SandboxStatusMessage, MemoryEventMessage, ConfigUpdatedMessage
+- **AgentManager:** 34 message types (SessionMeta, TerminalCreated, Keybindings, etc.)
 
-**Status:** `DONE` - Task complete, integration work can proceed incrementally
+**Architecture Decisions:**
+1. **SSE vs WebView distinction:** SSE uses NSwag types, WebView uses generated DTOs; both use Newtonsoft.Json
+2. **Polymorphic pattern:** Explicit discriminator inspection without JsonConverter inheritance
+3. **JToken fallback:** Used only for dynamic property access after polymorphic deserialization
 
-**Next Steps (Optional Enhancement):**
-- Integrate SSEHelper with available typed DTOs
-- Integrate KiloWebViewControl with WebViewMessageFactory
-- Integrate AgentManagerProvider with available typed DTOs
-- Improve generator to produce additional missing DTOs
+**Known Limitations:**
+- Generated DTOs available but not yet integrated into all message handlers (incremental work)
+- KiloWebViewControl uses System.Text.Json (separate from SSE pipeline, can be migrated incrementally)
+
+**Status:** `DONE` - Task complete. Generated DTOs and integration pattern established.
+
+**Next Steps (Optional Enhancement - No New Task Required):**
+- Integrate VSProvider.cs with WebViewMessageFactory for typed deserialization
+- Update outgoing message construction to use generated DTOs
 - Add integration tests for DTO usage in communication layer
 
 ---

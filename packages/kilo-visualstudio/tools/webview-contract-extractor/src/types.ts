@@ -76,4 +76,5 @@ export interface Statistics {
   totalTypes: number
   webviewToExtensionMessages: number
   extensionToWebviewMessages: number
+  inlineMessagesExtracted?: number
 }

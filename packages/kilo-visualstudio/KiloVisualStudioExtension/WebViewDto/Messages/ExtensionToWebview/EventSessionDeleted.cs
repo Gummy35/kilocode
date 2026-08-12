@@ -16,12 +16,10 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: EventSessionDeleted
 /// Discriminator: type = "session.deleted"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class EventSessionDeleted
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
     [JsonProperty("type")]
     // Original TypeScript type: unknown
     public string Type { get; set; } = "session.deleted";

@@ -15,16 +15,19 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// WebView message: SessionForkedMessage
-/// Discriminator: type = "sessionForked"
-/// Source: extension-messages.ts
+/// Discriminator: type = "agentManager.sessionForked"
+/// Source: ..\..\..\..\src\agent-manager\types.ts
 /// </summary>
 public class SessionForkedMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
-    public string Type { get; set; } = "sessionForked";
-    [JsonProperty("sessionID")]
-    public string SessionID { get; set; }
-    [JsonProperty("forkedFromID")]
-    public string ForkedFromID { get; set; }
+    public string Type { get; set; } = "agentManager.sessionForked";
+    [JsonProperty("sessionId")]
+    public string SessionId { get; set; }
+    [JsonProperty("forkedFromId")]
+    public string ForkedFromId { get; set; }
+    [JsonProperty("worktreeId", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? WorktreeId { get; set; }
 }

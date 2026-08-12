@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: SubtaskPartInput
 /// Discriminator: type = "subtask"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class SubtaskPartInput
 {
@@ -31,8 +31,4 @@ public class SubtaskPartInput
     public string Description { get; set; }
     [JsonProperty("agent")]
     public string Agent { get; set; }
-    [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Model { get; set; }
-    [JsonProperty("command", NullValueHandling = NullValueHandling.Ignore)]
-    public string? Command { get; set; }
 }

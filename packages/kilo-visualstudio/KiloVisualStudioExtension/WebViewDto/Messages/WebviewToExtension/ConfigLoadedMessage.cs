@@ -24,13 +24,14 @@ public class ConfigLoadedMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "configLoaded";
     [JsonProperty("config")]
-    public Config Config { get; set; }
+    // Original TypeScript type: Config
+    public object Config { get; set; }
     [JsonProperty("globalConfig", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Config
-    public Config? GlobalConfig { get; set; }
+    public object? GlobalConfig { get; set; }
     [JsonProperty("projectConfig", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Config
-    public Config? ProjectConfig { get; set; }
+    public object? ProjectConfig { get; set; }
     [JsonProperty("settings", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | ExtensionSettings
     public ExtensionSettings? Settings { get; set; }

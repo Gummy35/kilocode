@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: ProviderConfig
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class ProviderConfig
 {
@@ -28,12 +28,12 @@ public class ProviderConfig
     public string? Id { get; set; }
     [JsonProperty("npm", NullValueHandling = NullValueHandling.Ignore)]
     public string? Npm { get; set; }
+    [JsonProperty("models", NullValueHandling = NullValueHandling.Ignore)]
+    public object? Models { get; set; }
     [JsonProperty("whitelist", NullValueHandling = NullValueHandling.Ignore)]
     public object? Whitelist { get; set; }
     [JsonProperty("blacklist", NullValueHandling = NullValueHandling.Ignore)]
     public object? Blacklist { get; set; }
     [JsonProperty("options", NullValueHandling = NullValueHandling.Ignore)]
     public object? Options { get; set; }
-    [JsonProperty("models", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Models { get; set; }
 }

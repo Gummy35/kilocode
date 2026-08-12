@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: OAuth
 /// Discriminator: type = "oauth"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class OAuth
 {
@@ -29,8 +29,6 @@ public class OAuth
     public string Access { get; set; }
     [JsonProperty("expires")]
     public double Expires { get; set; }
-    [JsonProperty("accountId", NullValueHandling = NullValueHandling.Ignore)]
-    public string? AccountId { get; set; }
     [JsonProperty("enterpriseUrl", NullValueHandling = NullValueHandling.Ignore)]
     public string? EnterpriseUrl { get; set; }
 }

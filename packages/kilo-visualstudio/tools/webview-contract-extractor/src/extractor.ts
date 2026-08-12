@@ -16,12 +16,26 @@ import type {
   MessageCollections,
 } from "./types.js"
 
-// Project root is 5 levels up from this script
-const ROOT_DIR = path.resolve(__dirname, "..", "..", "..", "..", "..")
-const VS_CODE_TYPES_PATH = path.join(ROOT_DIR, "packages/kilo-vscode/webview-ui/src/types/messages")
-const VS_CODE_SHARED_PATH = path.join(ROOT_DIR, "packages/kilo-vscode/src/shared")
-const TSCONFIG_PATH = path.join(ROOT_DIR, "packages/kilo-vscode/webview-ui/tsconfig.json")
-const OUTPUT_PATH = path.join(ROOT_DIR, "packages/kilo-visualstudio/porting/contract/WebViewContract.json")
+// __dirname is the src directory; go up 4 levels to packages directory
+const PKGS_DIR = path.resolve(__dirname, "..", "..", "..", "..")
+const VS_CODE_TYPES_PATH = path.join(PKGS_DIR, "kilo-vscode/webview-ui/src/types/messages")
+const VS_CODE_SHARED_PATH = path.join(PKGS_DIR, "kilo-vscode/src/shared")
+const VS_CODE_SRC_PATH = path.join(PKGS_DIR, "kilo-vscode/src")
+const TSCONFIG_PATH = path.join(PKGS_DIR, "kilo-vscode/webview-ui/tsconfig.json")
+const OUTPUT_PATH = path.join(PKGS_DIR, "kilo-visualstudio/porting/contract/WebViewContract.json")
+
+function findTsFiles(dir: string, files: string[] = []): string[] {
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name)
+    if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "node_modules") {
+      findTsFiles(fullPath, files)
+    } else if (entry.isFile() && entry.name.endsWith(".ts")) {
+      files.push(fullPath)
+    }
+  }
+  return files
+}
 
 interface ExtractionContext {
   program: ts.Program
@@ -33,6 +47,7 @@ interface ExtractionContext {
   }
   errors: string[]
   warnings: string[]
+  extractedMessages: Map<string, MessageType> // Track extracted inline messages by discriminator value
 }
 
 function createContext(program: ts.Program): ExtractionContext {
@@ -46,6 +61,7 @@ function createContext(program: ts.Program): ExtractionContext {
     },
     errors: [],
     warnings: [],
+    extractedMessages: new Map(),
   }
 }
 
@@ -511,11 +527,141 @@ function createContract(context: ExtractionContext): WebViewContract {
       warnings: context.warnings,
     } as Diagnostics,
     statistics: {
-      totalTypes: context.types.size,
+      totalTypes: context.types.size + context.extractedMessages.size,
       webviewToExtensionMessages: context.messages.webviewToExtension.length,
       extensionToWebviewMessages: context.messages.extensionToWebview.length,
+      inlineMessagesExtracted: context.extractedMessages.size,
     } as Statistics,
   }
+}
+
+function scanPostMessageCalls(
+  sourceFile: ts.SourceFile,
+  context: ExtractionContext
+): void {
+  // Skip files from node_modules
+  if (sourceFile.fileName.includes("node_modules")) {
+    return
+  }
+  
+  const typeChecker = context.typeChecker
+  const sourceText = sourceFile.getFullText()
+  
+  const visit = (node: ts.Node): void => {
+    if (ts.isCallExpression(node)) {
+      const expression = node.expression
+      let methodName: string | undefined
+      
+      if (ts.isPropertyAccessExpression(expression)) {
+        methodName = expression.name.getText()
+      } else if (ts.isCallExpression(expression)) {
+        return
+      }
+      
+      if (methodName === "postMessage" || methodName === "sendMessage") {
+        const args = node.arguments
+        if (args.length > 0) {
+          const firstArg = args[0]
+          if (ts.isObjectLiteralExpression(firstArg)) {
+            const properties: PropertyDefinition[] = []
+            let discriminator: DiscriminatorInfo | undefined
+            
+            for (const prop of firstArg.properties) {
+              if (ts.isPropertyAssignment(prop)) {
+                const propName = prop.name.getText()
+                const propValue = prop.initializer
+                
+                let propType: string
+                let literalValue: string | number | boolean | null = null
+                let isLiteral = false
+                let typeRef: TypeReference | null = null
+                let elementType: string | null = null
+                
+                if (ts.isStringLiteral(propValue)) {
+                  propType = "literal"
+                  literalValue = propValue.text
+                  isLiteral = true
+                  typeRef = { name: "string", kind: "string" }
+                } else if (ts.isNumericLiteral(propValue)) {
+                  propType = "literal"
+                  literalValue = parseFloat(propValue.text)
+                  isLiteral = true
+                  typeRef = { name: "number", kind: "number" }
+                } else if (ts.isIdentifier(propValue) && (propValue.text === "true" || propValue.text === "false")) {
+                  propType = "literal"
+                  literalValue = propValue.text === "true"
+                  isLiteral = true
+                  typeRef = { name: "boolean", kind: "boolean" }
+                } else if (ts.isArrayLiteralExpression(propValue)) {
+                  propType = "array"
+                  typeRef = { name: "any", kind: "any" }
+                  elementType = "any"
+                } else if (ts.isObjectLiteralExpression(propValue)) {
+                  propType = "object"
+                  typeRef = { name: "object", kind: "object" }
+                } else {
+                  const inferredType = typeChecker.getTypeAtLocation(propValue)
+                  propType = getTypeName(inferredType, typeChecker)
+                  typeRef = { name: propType, kind: getTypeKind(inferredType) }
+                }
+                
+                const propDef: PropertyDefinition = {
+                  name: propName,
+                  type: propType,
+                  optional: false,
+                  nullable: false,
+                  elementType,
+                  typeRef,
+                  literalValue,
+                  isLiteral,
+                }
+                
+                properties.push(propDef)
+                
+                if (propName === "type" && isLiteral && literalValue) {
+                  discriminator = {
+                    field: "type",
+                    value: String(literalValue),
+                  }
+                }
+              }
+            }
+            
+            if (properties.length > 0 && discriminator) {
+              const discValue = discriminator.value
+              const messageKey = `${discriminator.field}:${discriminator.value}`
+              
+              if (!context.extractedMessages.has(messageKey)) {
+                const messageType: MessageType = {
+                  name: `Inline${discriminator.value.charAt(0).toUpperCase() + discriminator.value.slice(1)}Message`,
+                  type: "inline",
+                  discriminator,
+                  properties,
+                  sourceFile: path.relative(VS_CODE_SRC_PATH, sourceFile.fileName),
+                }
+                
+                context.extractedMessages.set(messageKey, messageType)
+                
+                if (discValue.includes("continueInWorktree") ||
+                    discValue.includes("action") ||
+                    discValue.includes("diffViewer") ||
+                    discValue.includes("chat") ||
+                    discValue.includes("terminal")) {
+                  context.messages.webviewToExtension.push(messageType)
+                } else {
+                  context.messages.extensionToWebview.push(messageType)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    ts.forEachChild(node, visit)
+  }
+  
+  ts.forEachChild(sourceFile, visit)
 }
 
 function main(): void {
@@ -542,8 +688,14 @@ function main(): void {
     path.dirname(TSCONFIG_PATH)
   )
 
+  const vsCodeSrcFiles = findTsFiles(VS_CODE_SRC_PATH).filter(f => 
+    !f.includes("node_modules") && 
+    !f.includes("webview-ui") &&
+    !f.includes("test")
+  )
+  
   const program = ts.createProgram({
-    rootNames: parsedConfig.fileNames.filter(f => f.includes("webview-ui/src/types/messages") || f.includes("src/shared/stream-messages")),
+    rootNames: [...parsedConfig.fileNames.filter(f => f.includes("webview-ui/src/types/messages") || f.includes("src/shared/stream-messages")), ...vsCodeSrcFiles],
     options: parsedConfig.options,
   })
 
@@ -558,6 +710,26 @@ function main(): void {
     const relativePath = path.relative(VS_CODE_TYPES_PATH, sourceFile.fileName)
     console.log(`Processing: ${relativePath}`)
     extractMessageTypes(sourceFile, context)
+  }
+
+  console.log()
+  console.log("Scanning VS Code source files for postMessage calls...")
+  const vsCodeSrcPathNormalized = VS_CODE_SRC_PATH.replace(/\\/g, "/")
+  
+  const allSourceFiles = program.getSourceFiles()
+  
+  const filesToScan = allSourceFiles.filter(f => 
+    f.fileName.replace(/\\/g, "/").includes(vsCodeSrcPathNormalized) && 
+    !f.fileName.includes("node_modules") &&
+    !f.fileName.includes("webview-ui") &&
+    !f.fileName.includes("test")
+  )
+  
+  console.log(`Found ${filesToScan.length} VS Code source files to scan`)
+  
+  for (const sourceFile of filesToScan) {
+    const relativePath = path.relative(VS_CODE_SRC_PATH, sourceFile.fileName)
+    scanPostMessageCalls(sourceFile, context)
   }
 
   console.log()

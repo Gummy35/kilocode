@@ -16,12 +16,10 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: EventMessageUpdated
 /// Discriminator: type = "message.updated"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class EventMessageUpdated
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
     [JsonProperty("type")]
     // Original TypeScript type: unknown
     public string Type { get; set; } = "message.updated";

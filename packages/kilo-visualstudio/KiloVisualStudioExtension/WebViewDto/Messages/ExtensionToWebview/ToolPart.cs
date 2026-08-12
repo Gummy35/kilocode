@@ -16,22 +16,25 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: ToolPart
 /// Discriminator: type = "tool"
-/// Source: parts.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class ToolPart
 {
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("sessionID")]
+    public string SessionID { get; set; }
+    [JsonProperty("messageID")]
+    public string MessageID { get; set; }
     [JsonProperty("type")]
-    // Original TypeScript type: literal
+    // Original TypeScript type: unknown
     public string Type { get; set; } = "tool";
+    [JsonProperty("callID")]
+    public string CallID { get; set; }
     [JsonProperty("tool")]
     public string Tool { get; set; }
     [JsonProperty("state", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: __type | __type | __type | __type
     public object? State { get; set; }
     [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | __type
     public object? Metadata { get; set; }
-    [JsonProperty("callID", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | string
-    public string? CallID { get; set; }
 }

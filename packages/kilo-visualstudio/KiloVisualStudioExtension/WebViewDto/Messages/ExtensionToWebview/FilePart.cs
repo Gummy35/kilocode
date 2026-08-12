@@ -16,21 +16,25 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: FilePart
 /// Discriminator: type = "file"
-/// Source: parts.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class FilePart
 {
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("sessionID")]
+    public string SessionID { get; set; }
+    [JsonProperty("messageID")]
+    public string MessageID { get; set; }
     [JsonProperty("type")]
-    // Original TypeScript type: literal
+    // Original TypeScript type: unknown
     public string Type { get; set; } = "file";
     [JsonProperty("mime")]
     public string Mime { get; set; }
+    [JsonProperty("filename", NullValueHandling = NullValueHandling.Ignore)]
+    public string? Filename { get; set; }
     [JsonProperty("url")]
     public string Url { get; set; }
-    [JsonProperty("filename", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | string
-    public string? Filename { get; set; }
     [JsonProperty("source", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | FilePartSource
-    public FilePartSource? Source { get; set; }
+    public object? Source { get; set; }
 }

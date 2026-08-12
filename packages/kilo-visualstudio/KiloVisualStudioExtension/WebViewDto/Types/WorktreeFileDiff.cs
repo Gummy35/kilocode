@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: WorktreeFileDiff
-/// Source: agent-manager.ts
+/// Source: ..\..\..\..\src\services\cli-backend\types.ts
 /// </summary>
 public class WorktreeFileDiff
 {
@@ -24,9 +24,6 @@ public class WorktreeFileDiff
     public string Before { get; set; }
     [JsonProperty("after")]
     public string After { get; set; }
-    [JsonProperty("patch", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | string
-    public string? Patch { get; set; }
     [JsonProperty("additions")]
     public double Additions { get; set; }
     [JsonProperty("deletions")]
@@ -34,22 +31,4 @@ public class WorktreeFileDiff
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "added" | "deleted" | "modified"
     public object? Status { get; set; }
-    [JsonProperty("tracked", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | false | true
-    public object? Tracked { get; set; }
-    [JsonProperty("generatedLike", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | false | true
-    public object? GeneratedLike { get; set; }
-    [JsonProperty("summarized", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | false | true
-    public object? Summarized { get; set; }
-    [JsonProperty("stamp", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | string
-    public string? Stamp { get; set; }
-    [JsonProperty("kind", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "image"
-    public string? Kind { get; set; }
-    [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | DiffImage
-    public DiffImage? Image { get; set; }
 }

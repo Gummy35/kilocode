@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: InstallMarketplaceItemOptions
-/// Source: ..\marketplace.ts
+/// Source: ..\..\..\..\src\services\marketplace\types.ts
 /// </summary>
 public class InstallMarketplaceItemOptions
 {

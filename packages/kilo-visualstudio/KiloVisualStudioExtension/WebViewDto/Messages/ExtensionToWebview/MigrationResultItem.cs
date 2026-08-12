@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: MigrationResultItem
 /// Discriminator: status = "error"
-/// Source: migration.ts
+/// Source: ..\..\..\..\src\legacy-migration\migration-types.ts
 /// </summary>
 public class MigrationResultItem
 {

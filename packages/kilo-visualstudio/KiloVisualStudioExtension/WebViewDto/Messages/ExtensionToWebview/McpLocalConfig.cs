@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: McpLocalConfig
 /// Discriminator: type = "local"
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
 /// </summary>
 public class McpLocalConfig
 {
@@ -27,8 +27,6 @@ public class McpLocalConfig
     public object Command { get; set; }
     [JsonProperty("environment", NullValueHandling = NullValueHandling.Ignore)]
     public object? Environment { get; set; }
-    [JsonProperty("env", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Env { get; set; }
     [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
     public object? Enabled { get; set; }
     [JsonProperty("timeout", NullValueHandling = NullValueHandling.Ignore)]
