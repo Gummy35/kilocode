@@ -28,37 +28,7 @@ namespace KiloVisualStudioExtension.Tests.WebView
             _factoryPath = Path.Combine(SolutionRoot, "packages", "kilo-visualstudio", "KiloVisualStudioExtension", "WebViewDto", "WebViewMessageFactory.cs");
         }
 
-        [Fact]
-        public void AllContractMessages_HaveGeneratedClasses()
-        {
-            var contract = JObject.Parse(File.ReadAllText(_contractPath));
-            var webviewToExtMessages = contract["messages"]!["webviewToExtension"]!.ToObject<List<JObject>>()!;
-            var extToWebviewMessages = contract["messages"]!["extensionToWebview"]!.ToObject<List<JObject>>()!;
-
-            var missing = new List<string>();
-
-            foreach (var message in webviewToExtMessages)
-            {
-                var name = message["name"]!.Value<string>()!;
-                var filePath = Path.Combine(_messagesDir, "WebviewToExtension", $"{name}.cs");
-                if (!File.Exists(filePath))
-                {
-                    missing.Add($"{name} (webviewToExtension)");
-                }
-            }
-
-            foreach (var message in extToWebviewMessages)
-            {
-                var name = message["name"]!.Value<string>()!;
-                var filePath = Path.Combine(_messagesDir, "ExtensionToWebview", $"{name}.cs");
-                if (!File.Exists(filePath))
-                {
-                    missing.Add($"{name} (extensionToWebview)");
-                }
-            }
-
-            missing.Should().BeEmpty($"All {webviewToExtMessages.Count + extToWebviewMessages.Count} contract messages should have generated classes");
-        }
+       
 
         [Fact]
         public void AllContractDiscriminators_HaveFactoryCases()
@@ -98,13 +68,53 @@ namespace KiloVisualStudioExtension.Tests.WebView
             var webviewToExtMessages = contract["messages"]!["webviewToExtension"]!.ToObject<List<JObject>>()!;
             var extToWebviewMessages = contract["messages"]!["extensionToWebview"]!.ToObject<List<JObject>>()!;
 
-            var webviewToExtFiles = Directory.GetFiles(Path.Combine(_messagesDir, "WebviewToExtension"), "*.cs").Length;
-            var extToWebviewFiles = Directory.GetFiles(Path.Combine(_messagesDir, "ExtensionToWebview"), "*.cs").Length;
-
-            webviewToExtFiles.Should().Be(webviewToExtMessages.Count, $"WebviewToExtension message count mismatch: expected {webviewToExtMessages.Count}, got {webviewToExtFiles}");
+            var webviewToExtFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "WebviewMessages"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
             
-            extToWebviewFiles.Should().BeGreaterOrEqualTo(extToWebviewMessages.Count - 10, 
-                $"ExtensionToWebview message count mismatch: expected at least {extToWebviewMessages.Count - 10} (excluding node_modules types), got {extToWebviewFiles}");
+            var extToWebviewFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "ExtensionMessages"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+            
+            var partsFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "Parts"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+            
+            var sessionsFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "Sessions"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+            
+            var agentsFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "Agents"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+            
+            var memoryFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "Memory"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+            
+            var migrationFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "Migration"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+            
+            var sharedFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "Shared"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+            
+            var questionsFiles = Directory.EnumerateFiles(Path.Combine(_messagesDir, "Questions"), "*.cs", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension).ToHashSet();
+
+            var allExtToWebviewFiles = new HashSet<string>(extToWebviewFiles);
+            allExtToWebviewFiles.UnionWith(partsFiles);
+            allExtToWebviewFiles.UnionWith(sessionsFiles);
+            allExtToWebviewFiles.UnionWith(agentsFiles);
+            allExtToWebviewFiles.UnionWith(memoryFiles);
+            allExtToWebviewFiles.UnionWith(migrationFiles);
+            allExtToWebviewFiles.UnionWith(sharedFiles);
+            allExtToWebviewFiles.UnionWith(questionsFiles);
+
+            foreach (var message in webviewToExtMessages)
+            {
+                var name = message["name"]!.Value<string>()!;
+                webviewToExtFiles.Should().Contain(name, $"Contract message {name} should have a generated file");
+            }
+            
+            foreach (var message in extToWebviewMessages)
+            {
+                var name = message["name"]!.Value<string>()!;
+                allExtToWebviewFiles.Should().Contain(name, $"Contract message {name} should have a generated file");
+            }
         }
     }
 }

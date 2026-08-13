@@ -6,6 +6,8 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using KiloVisualStudioExtension.WebView.Generated;
 using KiloVisualStudioExtension.ApiClient.Json;
+using KiloVisualStudioExtension.WebView.Generated.WebviewMessages;
+using KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
 
 namespace KiloVisualStudioExtension.Tests.WebView
 {
