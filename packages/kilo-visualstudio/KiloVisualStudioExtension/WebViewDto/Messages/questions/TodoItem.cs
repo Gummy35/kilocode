@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.questions;
+namespace KiloVisualStudioExtension.WebView.Generated.Questions;
 
 using System;
 using System.Collections.Generic;

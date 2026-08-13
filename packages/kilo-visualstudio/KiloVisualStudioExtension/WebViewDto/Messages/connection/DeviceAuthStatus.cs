@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.connection;
+namespace KiloVisualStudioExtension.WebView.Generated.Connection;
 
 /// <summary>
 /// Enum: DeviceAuthStatus

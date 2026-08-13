@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.permissions;
+namespace KiloVisualStudioExtension.WebView.Generated.Permissions;
 
 using System;
 using System.Collections.Generic;

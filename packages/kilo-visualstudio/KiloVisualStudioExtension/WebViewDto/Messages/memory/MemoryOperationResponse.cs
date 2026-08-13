@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.memory;
+namespace KiloVisualStudioExtension.WebView.Generated.Memory;
 
 /// <summary>
 /// Enum: MemoryOperationResponse

@@ -6,13 +6,13 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.extensionMessages;
+namespace KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.WebView.Generated.connection;
+using KiloVisualStudioExtension.WebView.Generated.Connection;
 
 /// <summary>
 /// WebView message: ConnectionStateMessage

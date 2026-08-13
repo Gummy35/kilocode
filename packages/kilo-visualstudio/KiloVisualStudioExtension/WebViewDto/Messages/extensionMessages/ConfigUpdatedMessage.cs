@@ -6,14 +6,13 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.extensionMessages;
+namespace KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.ApiClient;
-using KiloVisualStudioExtension.WebView.Generated.config;
+using KiloVisualStudioExtension.WebView.Generated.KiloConfig;
 
 /// <summary>
 /// WebView message: ConfigUpdatedMessage

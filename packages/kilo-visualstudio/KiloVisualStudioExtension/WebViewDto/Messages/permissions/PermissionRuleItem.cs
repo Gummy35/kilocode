@@ -4,13 +4,13 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.permissions;
+namespace KiloVisualStudioExtension.WebView.Generated.Permissions;
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.WebView.Generated.Types;
+using KiloVisualStudioExtension.WebView.Generated.Shared;
 
 /// <summary>
 /// Type: PermissionRuleItem

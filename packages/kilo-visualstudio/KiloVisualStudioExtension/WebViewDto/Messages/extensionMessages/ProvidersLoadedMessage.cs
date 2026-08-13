@@ -6,13 +6,13 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.extensionMessages;
+namespace KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.WebView.Generated.providers;
+using KiloVisualStudioExtension.WebView.Generated.Providers;
 
 /// <summary>
 /// WebView message: ProvidersLoadedMessage

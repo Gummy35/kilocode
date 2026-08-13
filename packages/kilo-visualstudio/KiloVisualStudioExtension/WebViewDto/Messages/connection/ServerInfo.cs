@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.connection;
+namespace KiloVisualStudioExtension.WebView.Generated.Connection;
 
 using System;
 using System.Collections.Generic;

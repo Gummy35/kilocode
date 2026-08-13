@@ -6,13 +6,13 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.extensionMessages;
+namespace KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.WebView.Generated.agents;
+using KiloVisualStudioExtension.WebView.Generated.Agents;
 
 /// <summary>
 /// WebView message: SkillsLoadedMessage

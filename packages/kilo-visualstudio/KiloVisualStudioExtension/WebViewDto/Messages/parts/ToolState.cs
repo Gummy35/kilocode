@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.parts;
+namespace KiloVisualStudioExtension.WebView.Generated.Parts;
 
 /// <summary>
 /// Enum: ToolState

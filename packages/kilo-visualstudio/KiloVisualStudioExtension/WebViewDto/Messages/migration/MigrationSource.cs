@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.migration;
+namespace KiloVisualStudioExtension.WebView.Generated.Migration;
 
 /// <summary>
 /// Enum: MigrationSource

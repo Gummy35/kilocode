@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.parts;
+namespace KiloVisualStudioExtension.WebView.Generated.Parts;
 
 using System;
 using System.Collections.Generic;

@@ -6,13 +6,13 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.webviewMessages;
+namespace KiloVisualStudioExtension.WebView.Generated.WebviewMessages;
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.WebView.Generated;
+using KiloVisualStudioExtension.WebView.Generated.Shared;
 
 /// <summary>
 /// WebView message: ImportAndSendMessage

@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.webviewMessages;
+namespace KiloVisualStudioExtension.WebView.Generated.WebviewMessages;
 
 /// <summary>
 /// Type: WebviewMessage (placeholder for union)

@@ -11,5 +11,17 @@
     "packages/kilo-vscode/out": true,
     "packages/kilo-vscode/dist": true
   },
-  "typescript.tsc.autoDetect": "off"
+  "typescript.tsc.autoDetect": "off",
+  "i18n-ally.localesPaths": [
+    "packages/kilo-ui/src/i18n",
+    "packages/kilo-web-ui/src/i18n",
+    "packages/ui/src/i18n",
+    "packages/kilo-vscode/src/services/i18n",
+    "packages/kilo-vscode/webview-ui/agent-manager/i18n",
+    "packages/kilo-vscode/webview-ui/kiloclaw/i18n",
+    "packages/kilo-vscode/webview-ui/src/i18n",
+    "packages/kilo-vscode/src/services/cli-backend/i18n",
+    "packages/kilo-vscode/webview-ui/src/types/messages",
+    "packages/kilo-jetbrains/frontend/src/main/resources/messages"
+  ]
 }

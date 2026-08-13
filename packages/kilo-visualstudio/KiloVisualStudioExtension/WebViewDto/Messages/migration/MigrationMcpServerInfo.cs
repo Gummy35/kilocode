@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.migration;
+namespace KiloVisualStudioExtension.WebView.Generated.Migration;
 
 using System;
 using System.Collections.Generic;

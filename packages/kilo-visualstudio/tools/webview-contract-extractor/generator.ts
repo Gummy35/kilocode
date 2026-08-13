@@ -63,6 +63,8 @@ interface WebViewContract {
   types: TypeDefinition[]
 }
 
+let contract: WebViewContract
+
 function pascalCase(name: string): string {
   if (!name) return name
   const converted = name.replace(/-([a-z])/g, (match) => match.charAt(1).toUpperCase())

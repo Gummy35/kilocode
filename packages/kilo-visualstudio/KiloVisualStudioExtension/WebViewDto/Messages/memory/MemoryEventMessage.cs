@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.memory;
+namespace KiloVisualStudioExtension.WebView.Generated.Memory;
 
 using System;
 using System.Collections.Generic;

@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.profile;
+namespace KiloVisualStudioExtension.WebView.Generated.Profile;
 
 using System;
 using System.Collections.Generic;

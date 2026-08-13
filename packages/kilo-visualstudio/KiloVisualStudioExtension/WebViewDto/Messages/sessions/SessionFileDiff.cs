@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.sessions;
+namespace KiloVisualStudioExtension.WebView.Generated.Sessions;
 
 using System;
 using System.Collections.Generic;

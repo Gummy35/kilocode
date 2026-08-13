@@ -6,13 +6,13 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.sessions;
+namespace KiloVisualStudioExtension.WebView.Generated.Sessions;
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.WebView.Generated.parts;
+using KiloVisualStudioExtension.WebView.Generated.Parts;
 
 /// <summary>
 /// WebView message: Message

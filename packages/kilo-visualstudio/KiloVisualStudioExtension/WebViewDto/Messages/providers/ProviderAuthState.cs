@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.providers;
+namespace KiloVisualStudioExtension.WebView.Generated.Providers;
 
 /// <summary>
 /// Enum: ProviderAuthState

@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.agentManager;
+namespace KiloVisualStudioExtension.WebView.Generated.AgentManager;
 
 using System;
 using System.Collections.Generic;

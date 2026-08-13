@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.sessions;
+namespace KiloVisualStudioExtension.WebView.Generated.Sessions;
 
 /// <summary>
 /// Enum: SessionCloseReason

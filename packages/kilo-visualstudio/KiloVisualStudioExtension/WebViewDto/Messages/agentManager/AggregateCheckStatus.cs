@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.agentManager;
+namespace KiloVisualStudioExtension.WebView.Generated.AgentManager;
 
 /// <summary>
 /// Enum: AggregateCheckStatus
