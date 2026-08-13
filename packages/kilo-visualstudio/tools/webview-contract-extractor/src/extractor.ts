@@ -123,62 +123,81 @@ function extractPropertyDefinition(
   let literalValue: string | number | boolean | null = null
   let isLiteral = false
 
-  if (type.flags & ts.TypeFlags.Union) {
-    const unionType = type as ts.UnionType
-    const literalTypes = unionType.types.filter((t) => 
-      t.flags & (ts.TypeFlags.StringLiteral | ts.TypeFlags.NumberLiteral | ts.TypeFlags.BooleanLiteral)
-    )
-    
-    if (literalTypes.length > 0 && literalTypes.length === unionType.types.length) {
+  // Check if the property declaration references a type alias
+  // by looking at the type annotation in the source code
+  if (ts.isPropertySignature(declaration) && declaration.type && ts.isTypeReferenceNode(declaration.type)) {
+    const referencedTypeName = declaration.type.typeName.getText()
+    // Check if this is a known type alias (union, etc.)
+    if (context.types.has(referencedTypeName)) {
+      const referencedType = context.types.get(referencedTypeName)!
+      if (referencedType.kind === 'union' && referencedType.unionMembers) {
+        // This is a reference to a union type alias - use the type alias name
+        typeRef = { name: referencedTypeName, kind: 'union' }
+        propertyType = referencedTypeName
+      }
+    }
+  }
+  
+  if (!typeRef) {
+    if (type.flags & ts.TypeFlags.Union) {
+      const unionType = type as ts.UnionType
+      const literalTypes = unionType.types.filter((t) => 
+        t.flags & (ts.TypeFlags.StringLiteral | ts.TypeFlags.NumberLiteral | ts.TypeFlags.BooleanLiteral)
+      )
+      
+      if (literalTypes.length > 0 && literalTypes.length === unionType.types.length) {
+        isLiteral = true
+        propertyType = "literal"
+        literalValue = extractLiteralValue(literalTypes[0]) ?? ""
+      } else {
+        propertyType = "union"
+        // Collect union member type names for better documentation
+        const unionMemberNames = unionType.types.map((t) => {
+          const typeName = getTypeName(t, typeChecker)
+          // For primitive types, use the actual type name
+          if (t.flags & ts.TypeFlags.String) return "string"
+          if (t.flags & ts.TypeFlags.Number) return "number"
+          if (t.flags & ts.TypeFlags.Boolean) return "boolean"
+          if (t.flags & ts.TypeFlags.Null) return "null"
+          if (t.flags & ts.TypeFlags.Undefined) return "undefined"
+          if (t.flags & ts.TypeFlags.Any) return "any"
+          return typeName
+        })
+        typeRef = { name: unionMemberNames[0], kind: "union" }
+        // Store all union members in elementType for reference
+        elementType = unionMemberNames.join(" | ")
+      }
+    } else if (type.flags & ts.TypeFlags.StringLiteral) {
       isLiteral = true
       propertyType = "literal"
-      literalValue = extractLiteralValue(literalTypes[0]) ?? ""
+      literalValue = (type as ts.StringLiteralType).value
+    } else if (type.flags & ts.TypeFlags.NumberLiteral) {
+      isLiteral = true
+      propertyType = "literal"
+      literalValue = (type as ts.NumberLiteralType).value
+    } else if (type.flags & ts.TypeFlags.BooleanLiteral) {
+      isLiteral = true
+      propertyType = "literal"
+      literalValue = (type as ts.BooleanLiteralType).value
+    } else if (type.flags & ts.TypeFlags.Array || type.symbol?.name === "Array") {
+      propertyType = "array"
+      const typeArgs = (type as ts.TypeReference).typeArguments
+      if (typeArgs && typeArgs.length > 0) {
+        elementType = getTypeName(typeArgs[0], typeChecker)
+        typeRef = { name: getTypeName(typeArgs[0], typeChecker), kind: getTypeKind(typeArgs[0]) }
+      }
+    } else if (type.flags & ts.TypeFlags.Object && type.symbol?.name === "Record") {
+      propertyType = "record"
+      const typeArgs = (type as ts.TypeReference).typeArguments
+      if (typeArgs && typeArgs.length >= 2) {
+        elementType = getTypeName(typeArgs[1], typeChecker)
+      }
     } else {
-      propertyType = "union"
-      // Collect union member type names for better documentation
-      const unionMemberNames = unionType.types.map((t) => {
-        const typeName = getTypeName(t, typeChecker)
-        // For primitive types, use the actual type name
-        if (t.flags & ts.TypeFlags.String) return "string"
-        if (t.flags & ts.TypeFlags.Number) return "number"
-        if (t.flags & ts.TypeFlags.Boolean) return "boolean"
-        if (t.flags & ts.TypeFlags.Null) return "null"
-        if (t.flags & ts.TypeFlags.Undefined) return "undefined"
-        if (t.flags & ts.TypeFlags.Any) return "any"
-        return typeName
-      })
-      typeRef = { name: unionMemberNames[0], kind: "union" }
-      // Store all union members in elementType for reference
-      elementType = unionMemberNames.join(" | ")
-    }
-  } else if (type.flags & ts.TypeFlags.StringLiteral) {
-    isLiteral = true
-    propertyType = "literal"
-    literalValue = (type as ts.StringLiteralType).value
-  } else if (type.flags & ts.TypeFlags.NumberLiteral) {
-    isLiteral = true
-    propertyType = "literal"
-    literalValue = (type as ts.NumberLiteralType).value
-  } else if (type.flags & ts.TypeFlags.BooleanLiteral) {
-    isLiteral = true
-    propertyType = "literal"
-    literalValue = (type as ts.BooleanLiteralType).value
-  } else if (type.flags & ts.TypeFlags.Array || type.symbol?.name === "Array") {
-    propertyType = "array"
-    const typeArgs = (type as ts.TypeReference).typeArguments
-    if (typeArgs && typeArgs.length > 0) {
-      elementType = getTypeName(typeArgs[0], typeChecker)
-      typeRef = { name: getTypeName(typeArgs[0], typeChecker), kind: getTypeKind(typeArgs[0]) }
-    }
-  } else if (type.flags & ts.TypeFlags.Object && type.symbol?.name === "Record") {
-    propertyType = "record"
-    const typeArgs = (type as ts.TypeReference).typeArguments
-    if (typeArgs && typeArgs.length >= 2) {
-      elementType = getTypeName(typeArgs[1], typeChecker)
+      propertyType = getTypeName(type, typeChecker)
+      typeRef = { name: propertyType, kind: getTypeKind(type) }
     }
   } else {
-    propertyType = getTypeName(type, typeChecker)
-    typeRef = { name: propertyType, kind: getTypeKind(type) }
+    propertyType = typeRef.name
   }
 
   return {
@@ -508,111 +527,142 @@ function extractMessageTypes(
 ): void {
   const typeChecker = context.typeChecker
   
-  const visit = (node: ts.Node): void => {
+  // First pass: Extract all interfaces first
+  const visitFirstPass = (node: ts.Node): void => {
+    if (ts.isInterfaceDeclaration(node)) {
+      const typeDef = extractInterfaceDeclaration(node, context)
+      if (typeDef) {
+        context.types.set(typeDef.name, typeDef)
+      }
+    }
+    ts.forEachChild(node, visitFirstPass)
+  }
+  
+  visitFirstPass(sourceFile)
+  
+  // Second pass: Extract all type aliases (now that interfaces are available)
+  const visitSecondPass = (node: ts.Node): void => {
+    if (ts.isTypeAliasDeclaration(node)) {
+      const typeDef = extractTypeAliasDeclaration(node, context)
+      if (typeDef) {
+        context.types.set(typeDef.name, typeDef)
+      }
+    }
+    ts.forEachChild(node, visitSecondPass)
+  }
+  
+  visitSecondPass(sourceFile)
+  
+  // Third pass: Extract interfaces again (in case they reference type aliases from pass 2)
+  const visitThirdPass = (node: ts.Node): void => {
+    if (ts.isInterfaceDeclaration(node)) {
+      const typeDef = extractInterfaceDeclaration(node, context)
+      if (typeDef) {
+        // Update the interface if we got more complete information
+        context.types.set(typeDef.name, typeDef)
+      }
+    }
+    ts.forEachChild(node, visitThirdPass)
+  }
+  
+  visitThirdPass(sourceFile)
+  
+  // Fourth pass: Process messages (interfaces with discriminators)
+  const visitFourthPass = (node: ts.Node): void => {
     let typeDef: TypeDefinition | null = null
     
     if (ts.isInterfaceDeclaration(node)) {
-      typeDef = extractInterfaceDeclaration(node, context)
-    } else if (ts.isTypeAliasDeclaration(node)) {
-      typeDef = extractTypeAliasDeclaration(node, context)
+      typeDef = context.types.get(node.name.text) || null
     }
 
-    if (typeDef) {
-      // Check if there's already a type with the same name
-      const existingType = context.types.get(typeDef.name)
-      
-      // Prefer interface over typeAlias - if existing is interface and new is typeAlias, skip
-      if (existingType && existingType.kind === 'interface' && typeDef.kind === 'typeAlias') {
-        // Keep the existing interface, skip the typeAlias
-      } else if (existingType && existingType.kind === 'typeAlias' && typeDef.kind === 'interface') {
-        // Replace the typeAlias with the interface
-        context.types.set(typeDef.name, typeDef)
-      } else {
-        // No conflict or same kind - just add/update
-        context.types.set(typeDef.name, typeDef)
+    if (typeDef && typeDef.discriminator && typeDef.properties) {
+      const messageType: MessageType = {
+        name: typeDef.name,
+        type: "interface",
+        discriminator: typeDef.discriminator,
+        properties: typeDef.properties,
+        sourceFile: typeDef.sourceFile,
       }
       
-      if (typeDef.discriminator && typeDef.properties) {
-        const messageType: MessageType = {
-          name: typeDef.name,
-          type: "interface",
-          discriminator: typeDef.discriminator,
-          properties: typeDef.properties,
-          sourceFile: typeDef.sourceFile,
-        }
-        
-        // Categorize based on discriminator value
-        const discValue = typeDef.discriminator.value
-        if (discValue.includes("agentManager") || 
-            discValue.includes("sendMessage") ||
-            discValue.includes("abort") ||
-            discValue.includes("createSession") ||
-            discValue.includes("request") ||
-            discValue.includes("Reply") ||
-            discValue.includes("Response") ||
-            discValue.includes("Accept") ||
-            discValue.includes("Dismiss") ||
-            discValue.includes("Delete") ||
-            discValue.includes("Update") ||
-            discValue.includes("Open") ||
-            discValue.includes("Close") ||
-            discValue.includes("Login") ||
-            discValue.includes("Logout") ||
-            discValue.includes("Select") ||
-            discValue.includes("Set") ||
-            discValue.includes("Validate") ||
-            discValue.includes("Compact") ||
-            discValue.includes("Export") ||
-            discValue.includes("Rename") ||
-            discValue.includes("Clear") ||
-            discValue.includes("Load") ||
-            discValue.includes("Import") ||
-            discValue.includes("Refresh") ||
-            discValue.includes("Telemetry") ||
-            discValue.includes("Copy") ||
-            discValue.includes("Preview") ||
-            discValue.includes("Save") ||
-            discValue.includes("Continue") ||
-            discValue.includes("Persist") ||
-            discValue.includes("Forget") ||
-            discValue.includes("Promote") ||
-            discValue.includes("Fork") ||
-            discValue.includes("Remove") ||
-            discValue.includes("Filter") ||
-            discValue.includes("Install") ||
-            discValue.includes("Connect") ||
-            discValue.includes("Disconnect") ||
-            discValue.includes("Authorize") ||
-            discValue.includes("Fetch") ||
-            discValue.includes("Toggle") ||
-            discValue.includes("Reset") ||
-            discValue.includes("Retry") ||
-            discValue.includes("Reload") ||
-            discValue.includes("Enhance") ||
-            discValue.includes("Apply") ||
-            discValue.includes("Revert") ||
-            discValue.includes("Move") ||
-            discValue.includes("Configure") ||
-            discValue.includes("Run") ||
-            discValue.includes("Stop") ||
-            discValue.includes("Show") ||
-            discValue.includes("Hide") ||
-            discValue.includes("Ready") ||
-            discValue.includes("Focus") ||
-            discValue.includes("Visible") ||
-            discValue.includes("FocusChanged") ||
-            discValue.includes("Focus")) {
+      // Categorize based on discriminator value
+      const discValue = typeDef.discriminator.value
+      if (discValue.includes("agentManager") || 
+          discValue.includes("sendMessage") ||
+          discValue.includes("abort") ||
+          discValue.includes("createSession") ||
+          discValue.includes("request") ||
+          discValue.includes("Reply") ||
+          discValue.includes("Response") ||
+          discValue.includes("Accept") ||
+          discValue.includes("Dismiss") ||
+          discValue.includes("Delete") ||
+          discValue.includes("Update") ||
+          discValue.includes("Open") ||
+          discValue.includes("Close") ||
+          discValue.includes("Login") ||
+          discValue.includes("Logout") ||
+          discValue.includes("Select") ||
+          discValue.includes("Set") ||
+          discValue.includes("Validate") ||
+          discValue.includes("Compact") ||
+          discValue.includes("Export") ||
+          discValue.includes("Rename") ||
+          discValue.includes("Clear") ||
+          discValue.includes("Load") ||
+          discValue.includes("Import") ||
+          discValue.includes("Refresh") ||
+          discValue.includes("Telemetry") ||
+          discValue.includes("Copy") ||
+          discValue.includes("Preview") ||
+          discValue.includes("Save") ||
+          discValue.includes("Continue") ||
+          discValue.includes("Persist") ||
+          discValue.includes("Forget") ||
+          discValue.includes("Promote") ||
+          discValue.includes("Fork") ||
+          discValue.includes("Remove") ||
+          discValue.includes("Filter") ||
+          discValue.includes("Install") ||
+          discValue.includes("Connect") ||
+          discValue.includes("Disconnect") ||
+          discValue.includes("Authorize") ||
+          discValue.includes("Fetch") ||
+          discValue.includes("Toggle") ||
+          discValue.includes("Reset") ||
+          discValue.includes("Retry") ||
+          discValue.includes("Reload") ||
+          discValue.includes("Enhance") ||
+          discValue.includes("Apply") ||
+          discValue.includes("Revert") ||
+          discValue.includes("Move") ||
+          discValue.includes("Configure") ||
+          discValue.includes("Run") ||
+          discValue.includes("Stop") ||
+          discValue.includes("Show") ||
+          discValue.includes("Hide") ||
+          discValue.includes("Ready") ||
+          discValue.includes("Focus") ||
+          discValue.includes("Visible") ||
+          discValue.includes("FocusChanged") ||
+          discValue.includes("Focus")) {
+        // Check if already added
+        const existing = context.messages.webviewToExtension.find(m => m.name === typeDef.name)
+        if (!existing) {
           context.messages.webviewToExtension.push(messageType)
-        } else {
+        }
+      } else {
+        // Check if already added
+        const existing = context.messages.extensionToWebview.find(m => m.name === typeDef.name)
+        if (!existing) {
           context.messages.extensionToWebview.push(messageType)
         }
       }
     }
 
-    ts.forEachChild(node, visit)
+    ts.forEachChild(node, visitFourthPass)
   }
-
-  ts.forEachChild(sourceFile, visit)
+  
+  visitFourthPass(sourceFile)
 }
 
 function createContract(context: ExtractionContext): WebViewContract {

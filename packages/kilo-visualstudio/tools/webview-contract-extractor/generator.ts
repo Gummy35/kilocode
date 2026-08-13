@@ -280,19 +280,25 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
   }
   if (baseType === 'record') return { type: 'Dictionary<string, object>', isNullable: prop.optional || prop.nullable }
   
-  if (!isPrimitiveType(baseType) && !isInternalType(baseType) && typeDefinitions.has(baseType)) {
-    const typeDef = typeDefinitions.get(baseType)!
+  // Use the original prop.type for lookup (not lowercase) to preserve case
+  if (!isPrimitiveType(prop.type) && !isInternalType(prop.type) && typeDefinitions.has(prop.type)) {
+    const typeDef = typeDefinitions.get(prop.type)!
     const isNodeModules = typeDef.sourceFile.includes('node_modules')
     if (isNodeModules) {
-      return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: baseType }
+      return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.type }
     }
     if (typeDef.kind === 'typeAlias') {
-      return { type: pascalCase(baseType), isNullable: prop.optional || prop.nullable, originalType: baseType }
+      return { type: pascalCase(prop.type), isNullable: prop.optional || prop.nullable, originalType: prop.type }
     }
     if (typeDef.kind === 'union') {
-      return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: baseType }
+      // Check if all union members are string literals (enum-able)
+      if (typeDef.unionMembers && typeDef.unionMembers.every(m => m.startsWith('"') || m.startsWith("'"))) {
+        // This is a string literal union - use the type name as the enum name
+        return { type: pascalCase(prop.type), isNullable: prop.optional || prop.nullable, originalType: prop.type }
+      }
+      return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.type }
     }
-    return { type: pascalCase(baseType), isNullable: prop.optional || prop.nullable, originalType: baseType }
+    return { type: pascalCase(prop.type), isNullable: prop.optional || prop.nullable, originalType: prop.type }
   }
   
   if (baseType === 'union') {
@@ -702,9 +708,9 @@ function getSourceFileFolder(sourceFile: string): string {
   if (normalizedSource.includes('memory.ts')) return 'memory'
   if (normalizedSource.includes('extension-messages.ts')) return 'extensionMessages'
   if (normalizedSource.includes('webview-messages.ts')) return 'webviewMessages'
-  // Types from src/shared or marketplace go in the base Types folder
+  // Types from src/shared or SDK go in the base Types folder
   if (normalizedSource.includes('src/shared')) return 'Types'
-  if (normalizedSource.includes('marketplace.ts')) return 'Types'
+  if (normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts')) return 'Types'
   return 'Types'
 }
 
@@ -718,8 +724,13 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
     if (prop.typeRef?.name && typeDefinitions.has(prop.typeRef.name)) {
       const refTypeDef = typeDefinitions.get(prop.typeRef.name)!
       const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
-      if (refFolder !== folder && refFolder !== 'Types') {
-        referencedNamespaces.add(ns + "." + refFolder)
+      if (refFolder !== folder) {
+        // Add using statement for Types folder or other folders
+        if (refFolder === 'Types') {
+          referencedNamespaces.add(ns)
+        } else {
+          referencedNamespaces.add(ns + "." + refFolder)
+        }
       }
     }
     // Also check elementType for union types like "undefined | ServerInfo"
@@ -730,8 +741,13 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
         if (part && part !== 'undefined' && part !== 'null' && typeDefinitions.has(part)) {
           const refTypeDef = typeDefinitions.get(part)!
           const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
-          if (refFolder !== folder && refFolder !== 'Types') {
-            referencedNamespaces.add(ns + "." + refFolder)
+          if (refFolder !== folder) {
+            // Add using statement for Types folder or other folders
+            if (refFolder === 'Types') {
+              referencedNamespaces.add(ns)
+            } else {
+              referencedNamespaces.add(ns + "." + refFolder)
+            }
           }
         }
       }
@@ -987,21 +1003,108 @@ for (const message of contract.messages.extensionToWebview) {
 console.log(`Types to generate: ${neededTypes.size}`)
 console.log()
 
+console.log()
 console.log("Generating type definitions...")
 
-// Write enum files first - place them based on source file
-for (const [enumName, enumDef] of generatedEnums) {
-  // Find the source file for this enum by checking which message/type uses it
-  let enumFolder = 'Types' // default
-  for (const message of [...contract.messages.webviewToExtension, ...contract.messages.extensionToWebview]) {
-    for (const prop of message.properties) {
-      if (prop.elementType === enumName || prop.typeRef?.name === enumName) {
-        enumFolder = getSourceFileFolder(message.sourceFile)
-        break
+// First, generate enums for all union type aliases from message source files
+// This ensures that types like DeviceAuthStatus are generated even if not directly referenced
+console.log("Generating enums from union type aliases...")
+for (const [typeName, typeDef] of typeDefinitions) {
+  if (typeDef.kind === 'union' && typeDef.unionMembers) {
+    // Check if all members are string literals (enum-able)
+    const allLiterals = typeDef.unionMembers.every(m => 
+      m.startsWith('"') || m.startsWith("'")
+    )
+    if (allLiterals) {
+      // This is a string literal union - generate as enum
+      const enumName = typeName
+      const enumFolder = getSourceFileFolder(typeDef.sourceFile)
+      
+      const literalValues = typeDef.unionMembers.map(v => {
+        if (v.startsWith('"') || v.startsWith("'")) {
+          return v.slice(1, -1)
+        }
+        return v
+      })
+      
+      // Check if enum already exists
+      if (!generatedEnums.has(enumName)) {
+        const enumDef: EnumDefinition = { name: enumName, members: literalValues }
+        generatedEnums.set(enumName, enumDef)
+        
+        // Use base namespace for Types folder, folder namespace for others
+        const enumNamespace = enumFolder === 'Types' ? ns : (ns + "." + enumFolder)
+        
+        const enumCode = `// <auto-generated>
+//     This code was generated by WebViewContractGenerator.
+//     Do not modify this file directly as changes will be lost on regeneration.
+//     Source: WebViewContract.json schema version ${contract.schemaVersion}
+// </auto-generated>
+
+#nullable enable
+
+namespace ${enumNamespace};
+
+/// <summary>
+/// Enum: ${enumName}
+/// Generated from union type
+/// Source: ${typeDef.sourceFile}
+/// </summary>
+public enum ${enumName}
+{
+${enumDef.members.map((m, i) => `    ${pascalCase(m)}${i < enumDef.members.length - 1 ? ',' : ''}`).join('\n')}
+}
+`
+        let enumTargetDir: string
+        switch (enumFolder) {
+          case 'connection': enumTargetDir = connectionDir; break
+          case 'parts': enumTargetDir = partsDir; break
+          case 'sessions': enumTargetDir = sessionsDir; break
+          case 'permissions': enumTargetDir = permissionsDir; break
+          case 'questions': enumTargetDir = questionsDir; break
+          case 'providers': enumTargetDir = providersDir; break
+          case 'agents': enumTargetDir = agentsDir; break
+          case 'config': enumTargetDir = configDir; break
+          case 'profile': enumTargetDir = profileDir; break
+          case 'agentManager': enumTargetDir = agentManagerDir; break
+          case 'migration': enumTargetDir = migrationDir; break
+          case 'memory': enumTargetDir = memoryDir; break
+          case 'extensionMessages': enumTargetDir = extensionMessagesDir; break
+          case 'webviewMessages': enumTargetDir = webviewMessagesDir; break
+          case 'Types': enumTargetDir = typesDir; break
+          default: enumTargetDir = typesDir; break
+        }
+        const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
+        fs.writeFileSync(enumFilePath, enumCode)
+        console.log(`  Generated enum: ${enumName} (${enumFolder})`)
       }
     }
-    if (enumFolder !== 'Types') break
   }
+}
+
+// Write enum files first - place them based on source file
+// Skip enums that were already generated from union type aliases
+for (const [enumName, enumDef] of generatedEnums) {
+  // Find the source file for this enum by checking typeDefinitions first
+  let enumFolder = 'Types' // default
+  const typeDef = typeDefinitions.get(enumName)
+  if (typeDef && typeDef.sourceFile) {
+    enumFolder = getSourceFileFolder(typeDef.sourceFile)
+  } else {
+    // Fallback: check which message/type uses it
+    for (const message of [...contract.messages.webviewToExtension, ...contract.messages.extensionToWebview]) {
+      for (const prop of message.properties) {
+        if (prop.elementType === enumName || prop.typeRef?.name === enumName) {
+          enumFolder = getSourceFileFolder(message.sourceFile)
+          break
+        }
+      }
+      if (enumFolder !== 'Types') break
+    }
+  }
+  
+  // Use base namespace for Types folder, folder namespace for others
+  const enumNamespace = enumFolder === 'Types' ? ns : (ns + "." + enumFolder)
   
   const enumCode = `// <auto-generated>
 //     This code was generated by WebViewContractGenerator.
@@ -1011,7 +1114,7 @@ for (const [enumName, enumDef] of generatedEnums) {
 
 #nullable enable
 
-namespace ${ns}.${enumFolder};
+namespace ${enumNamespace};
 
 /// <summary>
 /// Enum: ${enumName}
@@ -1077,14 +1180,96 @@ for (const typeName of neededTypes) {
   generateTypeWithDeps(typeName)
 }
 
+// Also add all types from src/shared that have properties to generatedOrder
+// These may be used by SSEHelper or other extension code
+for (const [typeName, typeDef] of typeDefinitions) {
+  const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
+  if (normalizedSource.includes('src/shared') && typeDef.properties && typeDef.properties.length > 0) {
+    if (!generatedOrder.includes(typeName)) {
+      generatedOrder.push(typeName)
+    }
+  }
+}
+
+// Also add all types from SDK that are referenced by type aliases in the message files
+// These are external types that belong to the repository and should be generated
+for (const [typeName, typeDef] of typeDefinitions) {
+  const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
+  
+  // Check if this type is from the SDK
+  const isSdkType = normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts')
+  
+  if (isSdkType && typeDef.properties && typeDef.properties.length > 0) {
+    // Check if all property names are valid C# identifiers
+    const hasValidProperties = typeDef.properties.every(p => 
+      /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(p.name)
+    )
+    
+    if (hasValidProperties && !generatedOrder.includes(typeName)) {
+      generatedOrder.push(typeName)
+    }
+  }
+}
+
+// Generate ALL types from the message source files, regardless of whether they're referenced
+// This ensures that types like DeviceAuthState are generated even if not directly referenced by messages
+console.log("Adding all types from message source files to generation list...")
+
+// Check if types already exist in the ApiClient folder and skip generating them
+const apiClientPath = path.join(VS_DIR, "KiloVisualStudioExtension/ApiClient")
+const existingApiTypes = new Set<string>()
+if (fs.existsSync(apiClientPath)) {
+  const apiFiles = fs.readdirSync(apiClientPath).filter(f => f.endsWith('.cs'))
+  for (const file of apiFiles) {
+    const content = fs.readFileSync(path.join(apiClientPath, file), 'utf-8')
+    // Look for class, enum, interface, record declarations
+    const matches = content.matchAll(/(?:public\s+(?:partial\s+)?(?:class|enum|interface|record)\s+)(\w+)/g)
+    for (const match of matches) {
+      existingApiTypes.add(match[1])
+    }
+  }
+}
+console.log(`Found ${existingApiTypes.size} existing types in ApiClient folder`)
+
+for (const [typeName, typeDef] of typeDefinitions) {
+  const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
+  
+  // Only include types from the message folders
+  const isMessageSource = 
+    normalizedSource.includes('connection.ts') ||
+    normalizedSource.includes('parts.ts') ||
+    normalizedSource.includes('sessions.ts') ||
+    normalizedSource.includes('permissions.ts') ||
+    normalizedSource.includes('questions.ts') ||
+    normalizedSource.includes('providers.ts') ||
+    normalizedSource.includes('agents.ts') ||
+    normalizedSource.includes('config.ts') ||
+    normalizedSource.includes('profile.ts') ||
+    normalizedSource.includes('agent-manager.ts') ||
+    normalizedSource.includes('migration.ts') ||
+    normalizedSource.includes('memory.ts') ||
+    normalizedSource.includes('extension-messages.ts') ||
+    normalizedSource.includes('webview-messages.ts')
+  
+  // Skip types that already exist in ApiClient
+  if (existingApiTypes.has(typeName)) {
+    console.log(`  Skipping ${typeName} - already exists in ApiClient`)
+    continue
+  }
+  
+  if (isMessageSource && !generatedOrder.includes(typeName)) {
+    generatedOrder.push(typeName)
+  }
+}
+
 // Now generate in order
 for (const typeName of generatedOrder) {
+  // Skip if this type is also a message
+  const isMessage = messageNames.has(typeName)
+  
   // Get the type definition
   const typeDef = typeDefinitions.get(typeName)
   if (!typeDef) continue
-  
-  // Check if this type is also a message
-  const isMessage = messageNames.has(typeName)
   
   // Determine the folder based on source file
   const typeFolder = getSourceFileFolder(typeDef.sourceFile)
@@ -1114,8 +1299,134 @@ for (const typeName of generatedOrder) {
     continue
   }
   
-  // For type aliases and unions that are needed, generate placeholder classes
+  // For types from src/shared, always generate them if they have properties
+  // (they may be used by SSEHelper or other extension code)
+  const isSharedType = normalizedSource.includes('src/shared')
+  if (isSharedType && typeDef.properties && typeDef.properties.length > 0) {
+    // Generate this shared type
+  } else if (isSharedType) {
+    // Skip shared types with no properties
+    continue
+  }
+  
+  // For type aliases and unions that are needed, generate appropriate types
   if (typeDef.kind === 'typeAlias' || typeDef.kind === 'union') {
+    // Check if this is a string literal union (should be an enum)
+    const isStringLiteralUnion = typeDef.kind === 'union' && 
+      typeDef.unionMembers && 
+      typeDef.unionMembers.every(m => m.startsWith('"') || m.startsWith("'"))
+    
+    if (isStringLiteralUnion) {
+      // Generate as enum
+      const enumName = typeName
+      const enumFolder = typeFolder
+      const enumNamespace = enumFolder === 'Types' ? ns : (ns + "." + enumFolder)
+      
+      const literalValues = typeDef.unionMembers.map(v => {
+        if (v.startsWith('"') || v.startsWith("'")) {
+          return v.slice(1, -1)
+        }
+        return v
+      })
+      
+      const enumCode = `// <auto-generated>
+//     This code was generated by WebViewContractGenerator.
+//     Do not modify this file directly as changes will be lost on regeneration.
+//     Source: WebViewContract.json schema version ${contract.schemaVersion}
+// </auto-generated>
+
+#nullable enable
+
+namespace ${enumNamespace};
+
+/// <summary>
+/// Enum: ${enumName}
+/// Generated from union type
+/// Source: ${typeDef.sourceFile}
+/// </summary>
+public enum ${enumName}
+{
+${literalValues.map((m, i) => `    ${pascalCase(m)}${i < literalValues.length - 1 ? ',' : ''}`).join('\n')}
+}
+`
+      let enumTargetDir: string
+      switch (enumFolder) {
+        case 'connection': enumTargetDir = connectionDir; break
+        case 'parts': enumTargetDir = partsDir; break
+        case 'sessions': enumTargetDir = sessionsDir; break
+        case 'permissions': enumTargetDir = permissionsDir; break
+        case 'questions': enumTargetDir = questionsDir; break
+        case 'providers': enumTargetDir = providersDir; break
+        case 'agents': enumTargetDir = agentsDir; break
+        case 'config': enumTargetDir = configDir; break
+        case 'profile': enumTargetDir = profileDir; break
+        case 'agentManager': enumTargetDir = agentManagerDir; break
+        case 'migration': enumTargetDir = migrationDir; break
+        case 'memory': enumTargetDir = memoryDir; break
+        case 'extensionMessages': enumTargetDir = extensionMessagesDir; break
+        case 'webviewMessages': enumTargetDir = webviewMessagesDir; break
+        case 'Types': enumTargetDir = typesDir; break
+        default: enumTargetDir = typesDir; break
+      }
+      const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
+      fs.writeFileSync(enumFilePath, enumCode)
+      generatedTypes.add(typeName)
+      console.log(`  Generated enum: ${enumName} (${enumFolder})`)
+      continue
+    }
+    
+    // Check if this type alias references a known type (e.g., SdkIndexingStatus -> IndexingStatus)
+    // by checking if there's a type with a similar name (without the "Sdk" prefix)
+    let referencedTypeName: string | null = null
+    if (typeName.startsWith('Sdk') && typeDefinitions.has(typeName.substring(3))) {
+      referencedTypeName = typeName.substring(3)
+    }
+    
+    if (referencedTypeName) {
+      // Generate as a type alias (using the referenced type)
+      const namespace = typeFolder === 'Types' ? ns : (ns + "." + typeFolder)
+      const code = `// <auto-generated>
+//     This code was generated by WebViewContractGenerator.
+//     Do not modify this file directly as changes will be lost on regeneration.
+//     Source: WebViewContract.json schema version ${contract.schemaVersion}
+// </auto-generated>
+
+#nullable enable
+
+namespace ${namespace};
+
+/// <summary>
+/// Type: ${typeName} (alias for ${referencedTypeName})
+/// Source: ${typeDef.sourceFile}
+/// </summary>
+public class ${pascalCase(typeName)} : ${pascalCase(referencedTypeName)} { }
+`
+      let typeTargetDir: string
+      switch (typeFolder) {
+        case 'connection': typeTargetDir = connectionDir; break
+        case 'parts': typeTargetDir = partsDir; break
+        case 'sessions': typeTargetDir = sessionsDir; break
+        case 'permissions': typeTargetDir = permissionsDir; break
+        case 'questions': typeTargetDir = questionsDir; break
+        case 'providers': typeTargetDir = providersDir; break
+        case 'agents': typeTargetDir = agentsDir; break
+        case 'config': typeTargetDir = configDir; break
+        case 'profile': typeTargetDir = profileDir; break
+        case 'agentManager': typeTargetDir = agentManagerDir; break
+        case 'migration': typeTargetDir = migrationDir; break
+        case 'memory': typeTargetDir = memoryDir; break
+        case 'extensionMessages': typeTargetDir = extensionMessagesDir; break
+        case 'webviewMessages': typeTargetDir = webviewMessagesDir; break
+        case 'Types': typeTargetDir = typesDir; break
+        default: typeTargetDir = typesDir; break
+      }
+      const filePath = path.join(typeTargetDir, `${pascalCase(typeName)}.cs`)
+      fs.writeFileSync(filePath, code)
+      generatedTypes.add(typeName)
+      console.log(`  Generated: ${typeName} (alias for ${referencedTypeName}, ${typeFolder})`)
+      continue
+    }
+    
     // Use base namespace for Types folder
     const namespace = typeFolder === 'Types' ? ns : (ns + "." + typeFolder)
     // Generate a placeholder class for needed type aliases/unions
