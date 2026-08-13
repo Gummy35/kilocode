@@ -6,8 +6,12 @@ using Newtonsoft.Json.Linq;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.ApiClient.Sse;
 using KiloVisualStudioExtension.WebView.Generated;
+using KiloVisualStudioExtension.WebView.Generated.sessions;
+using KiloVisualStudioExtension.WebView.Generated.extensionMessages;
+using KiloVisualStudioExtension.WebView.Generated.Types;
+using KiloVisualStudioExtension.WebView.Generated.parts;
 using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
-using WebViewMessage = KiloVisualStudioExtension.WebView.Generated.Message;
+using WebViewMessage = KiloVisualStudioExtension.WebView.Generated.sessions.Message;
 
 namespace KiloVisualStudioExtension
 {

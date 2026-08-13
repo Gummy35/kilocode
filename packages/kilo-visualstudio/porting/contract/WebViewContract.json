@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "aa0edfc7c340e86a53c45b3ce48cd3efd9e089cc",
-    "generatedAt": "2026-08-13T10:03:10.289Z"
+    "commit": "4baf7c76587e383a4ab303c30ea5379f3d46d1c9",
+    "generatedAt": "2026-08-13T11:29:39.738Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -13,149 +13,6 @@
   },
   "messages": {
     "webviewToExtension": [
-      {
-        "name": "PartUpdate",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "partUpdated"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": true,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "partUpdated"
-          },
-          {
-            "name": "sessionID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "messageID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "part",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "delta",
-            "type": "object",
-            "optional": true,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          }
-        ],
-        "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts"
-      },
-      {
-        "name": "PartBatch",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "partsUpdated"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": true,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "partsUpdated"
-          },
-          {
-            "name": "updates",
-            "type": "object",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          }
-        ],
-        "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts"
-      },
-      {
-        "name": "PartRemove",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "partRemoved"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": true,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "partRemoved"
-          },
-          {
-            "name": "sessionID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "messageID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "partID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          }
-        ],
-        "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts"
-      },
       {
         "name": "RequestMigrationDataMessage",
         "type": "interface",
@@ -176,13 +33,16 @@
           },
           {
             "name": "source",
-            "type": "literal",
+            "type": "MigrationSource",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "legacy",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MigrationSource",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "operationId",
@@ -454,149 +314,6 @@
         "sourceFile": "extension-messages.ts"
       },
       {
-        "name": "PartUpdatedMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "partUpdated"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": true,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "partUpdated"
-          },
-          {
-            "name": "sessionID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "messageID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "part",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "delta",
-            "type": "object",
-            "optional": true,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "PartsUpdatedMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "partsUpdated"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": true,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "partsUpdated"
-          },
-          {
-            "name": "updates",
-            "type": "object",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "PartRemovedMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "partRemoved"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": true,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "partRemoved"
-          },
-          {
-            "name": "sessionID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "messageID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          },
-          {
-            "name": "partID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
         "name": "SessionTurnClosedMessage",
         "type": "interface",
         "discriminator": {
@@ -629,13 +346,16 @@
           },
           {
             "name": "reason",
-            "type": "literal",
+            "type": "SessionCloseReason",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "error",
-            "isLiteral": true
+            "typeRef": {
+              "name": "SessionCloseReason",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -2189,13 +1909,16 @@
           },
           {
             "name": "style",
-            "type": "literal",
+            "type": "WorkStyleState",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "skipped",
-            "isLiteral": true
+            "typeRef": {
+              "name": "WorkStyleState",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -2503,12 +2226,12 @@
           },
           {
             "name": "errorCode",
-            "type": "union",
+            "type": "WorktreeErrorCode",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | \"git_not_found\" | \"not_git_repo\" | \"lfs_missing\"",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
+              "name": "WorktreeErrorCode",
               "kind": "union"
             },
             "literalValue": null,
@@ -3491,12 +3214,12 @@
           },
           {
             "name": "errorCode",
-            "type": "union",
+            "type": "WorktreeErrorCode",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | \"git_not_found\" | \"not_git_repo\" | \"lfs_missing\"",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
+              "name": "WorktreeErrorCode",
               "kind": "union"
             },
             "literalValue": null,
@@ -3689,13 +3412,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "AgentManagerApplyWorktreeDiffStatus",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "success",
-            "isLiteral": true
+            "typeRef": {
+              "name": "AgentManagerApplyWorktreeDiffStatus",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "message",
@@ -4267,12 +3993,12 @@
           },
           {
             "name": "mpItem",
-            "type": "union",
+            "type": "MarketplaceItem",
             "optional": false,
             "nullable": false,
-            "elementType": "McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem",
+            "elementType": null,
             "typeRef": {
-              "name": "McpMarketplaceItem",
+              "name": "MarketplaceItem",
               "kind": "union"
             },
             "literalValue": null,
@@ -9226,12 +8952,12 @@
           },
           {
             "name": "mpItem",
-            "type": "union",
+            "type": "MarketplaceItem",
             "optional": false,
             "nullable": false,
-            "elementType": "McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem",
+            "elementType": null,
             "typeRef": {
-              "name": "McpMarketplaceItem",
+              "name": "MarketplaceItem",
               "kind": "union"
             },
             "literalValue": null,
@@ -9423,66 +9149,6 @@
         "sourceFile": "..\\marketplace.ts"
       },
       {
-        "name": "PRCheck",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "pending"
-        },
-        "properties": [
-          {
-            "name": "name",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "pending",
-            "isLiteral": true
-          },
-          {
-            "name": "url",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "duration",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "agent-manager.ts"
-      },
-      {
         "name": "AgentRequirementSkill",
         "type": "interface",
         "discriminator": {
@@ -9635,110 +9301,6 @@
           }
         ],
         "sourceFile": "agents.ts"
-      },
-      {
-        "name": "DeviceAuthState",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "pending"
-        },
-        "properties": [
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "pending",
-            "isLiteral": true
-          },
-          {
-            "name": "code",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "verificationUrl",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "expiresIn",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | number",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "error",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "connection.ts"
-      },
-      {
-        "name": "PartTextDelta",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "text-delta"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "unknown",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": true,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "text-delta"
-          },
-          {
-            "name": "textDelta",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "isLiteral": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": null
-          }
-        ],
-        "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts"
       },
       {
         "name": "TextPart",
@@ -9966,12 +9528,12 @@
           },
           {
             "name": "state",
-            "type": "union",
+            "type": "ToolState",
             "optional": false,
             "nullable": false,
-            "elementType": "__type | __type | __type | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "__type",
+              "name": "ToolState",
               "kind": "union"
             },
             "literalValue": null,
@@ -10723,13 +10285,16 @@
           },
           {
             "name": "source",
-            "type": "literal",
+            "type": "MigrationSource",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "legacy",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MigrationSource",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "operationId",
@@ -10780,13 +10345,16 @@
           },
           {
             "name": "source",
-            "type": "literal",
+            "type": "MigrationSource",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "legacy",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MigrationSource",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "operationId",
@@ -10860,13 +10428,16 @@
           },
           {
             "name": "source",
-            "type": "literal",
+            "type": "MigrationSource",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "legacy",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MigrationSource",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "operationId",
@@ -10922,13 +10493,16 @@
           },
           {
             "name": "phase",
-            "type": "literal",
+            "type": "LegacyMigrationSessionPhase",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "skipped",
-            "isLiteral": true
+            "typeRef": {
+              "name": "LegacyMigrationSessionPhase",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "error",
@@ -10966,13 +10540,16 @@
           },
           {
             "name": "source",
-            "type": "literal",
+            "type": "MigrationSource",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "legacy",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MigrationSource",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "operationId",
@@ -11023,13 +10600,16 @@
           },
           {
             "name": "source",
-            "type": "literal",
+            "type": "MigrationSource",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "legacy",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MigrationSource",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "operationId",
@@ -11190,13 +10770,16 @@
           },
           {
             "name": "operation",
-            "type": "literal",
+            "type": "MemoryResultOperation",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "auto",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MemoryResultOperation",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "sessionID",
@@ -11236,12 +10819,12 @@
           },
           {
             "name": "result",
-            "type": "union",
+            "type": "MemoryOperationResponse",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type | __type | __type | __type | __type | __type | __type | __type | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
+              "name": "MemoryOperationResponse",
               "kind": "union"
             },
             "literalValue": null,
@@ -11283,13 +10866,16 @@
           },
           {
             "name": "operation",
-            "type": "literal",
+            "type": "MemoryOperation",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "auto",
-            "isLiteral": true
+            "typeRef": {
+              "name": "MemoryOperation",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "sessionID",
@@ -11371,12 +10957,12 @@
           },
           {
             "name": "file",
-            "type": "union",
+            "type": "MemorySourceFile",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | md\" | md\" | md\"",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
+              "name": "MemorySourceFile",
               "kind": "union"
             },
             "literalValue": null,
@@ -11650,13 +11236,16 @@
           },
           {
             "name": "state",
-            "type": "literal",
+            "type": "ConnectionState",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "error",
-            "isLiteral": true
+            "typeRef": {
+              "name": "ConnectionState",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "error",
@@ -11827,13 +11416,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "SessionStatus",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "idle",
-            "isLiteral": true
+            "typeRef": {
+              "name": "SessionStatus",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "attempt",
@@ -13720,13 +13312,16 @@
           },
           {
             "name": "style",
-            "type": "literal",
+            "type": "WorkStyle",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "human-in-the-loop",
-            "isLiteral": true
+            "typeRef": {
+              "name": "WorkStyle",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -14858,13 +14453,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "ContinueInWorktreeStatus",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "error",
-            "isLiteral": true
+            "typeRef": {
+              "name": "ContinueInWorktreeStatus",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "detail",
@@ -15178,12 +14776,12 @@
           },
           {
             "name": "mode",
-            "type": "union",
+            "type": "MessageLoadMode",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | \"replace\" | \"prepend\" | \"focus\" | \"reconcile\"",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
+              "name": "MessageLoadMode",
               "kind": "union"
             },
             "literalValue": null,
@@ -16635,13 +16233,16 @@
           },
           {
             "name": "style",
-            "type": "literal",
+            "type": "WorkStyleState",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "skipped",
-            "isLiteral": true
+            "typeRef": {
+              "name": "WorkStyleState",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -16666,13 +16267,16 @@
           },
           {
             "name": "style",
-            "type": "literal",
+            "type": "WorkStyle",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "human-in-the-loop",
-            "isLiteral": true
+            "typeRef": {
+              "name": "WorkStyle",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -18449,12 +18053,12 @@
           },
           {
             "name": "mpItem",
-            "type": "union",
+            "type": "MarketplaceItem",
             "optional": false,
             "nullable": false,
-            "elementType": "McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem",
+            "elementType": null,
             "typeRef": {
-              "name": "McpMarketplaceItem",
+              "name": "MarketplaceItem",
               "kind": "union"
             },
             "literalValue": null,
@@ -19012,16 +18616,6 @@
       "sourceFile": "..\\marketplace.ts"
     },
     {
-      "name": "MarketplaceItem",
-      "kind": "union",
-      "unionMembers": [
-        "McpMarketplaceItem",
-        "AgentMarketplaceItem",
-        "SkillMarketplaceItem"
-      ],
-      "sourceFile": "..\\marketplace.ts"
-    },
-    {
       "name": "InstallMarketplaceItemOptions",
       "kind": "interface",
       "properties": [
@@ -19121,11 +18715,6 @@
       "sourceFile": "..\\marketplace.ts"
     },
     {
-      "name": "MarketplaceRelevanceMetadata",
-      "kind": "typeAlias",
-      "sourceFile": "..\\marketplace.ts"
-    },
-    {
       "name": "MarketplaceFilters",
       "kind": "interface",
       "properties": [
@@ -19169,6 +18758,21 @@
           "isLiteral": false
         }
       ],
+      "sourceFile": "..\\marketplace.ts"
+    },
+    {
+      "name": "MarketplaceItem",
+      "kind": "union",
+      "unionMembers": [
+        "McpMarketplaceItem",
+        "AgentMarketplaceItem",
+        "SkillMarketplaceItem"
+      ],
+      "sourceFile": "..\\marketplace.ts"
+    },
+    {
+      "name": "MarketplaceRelevanceMetadata",
+      "kind": "typeAlias",
       "sourceFile": "..\\marketplace.ts"
     },
     {
@@ -19315,16 +18919,6 @@
         }
       ],
       "sourceFile": "..\\..\\..\\..\\src\\shared\\review-comments.ts"
-    },
-    {
-      "name": "WorktreeErrorCode",
-      "kind": "union",
-      "unionMembers": [
-        "\"git_not_found\"",
-        "\"not_git_repo\"",
-        "\"lfs_missing\""
-      ],
-      "sourceFile": "agent-manager.ts"
     },
     {
       "name": "TerminalFont",
@@ -19592,50 +19186,6 @@
       "sourceFile": "agent-manager.ts"
     },
     {
-      "name": "PRState",
-      "kind": "union",
-      "unionMembers": [
-        "\"open\"",
-        "\"draft\"",
-        "\"merged\"",
-        "\"closed\""
-      ],
-      "sourceFile": "agent-manager.ts"
-    },
-    {
-      "name": "ReviewDecision",
-      "kind": "union",
-      "unionMembers": [
-        "\"approved\"",
-        "\"changes_requested\"",
-        "\"pending\""
-      ],
-      "sourceFile": "agent-manager.ts"
-    },
-    {
-      "name": "CheckStatus",
-      "kind": "union",
-      "unionMembers": [
-        "\"pending\"",
-        "\"success\"",
-        "\"failure\"",
-        "\"skipped\"",
-        "\"cancelled\""
-      ],
-      "sourceFile": "agent-manager.ts"
-    },
-    {
-      "name": "AggregateCheckStatus",
-      "kind": "union",
-      "unionMembers": [
-        "\"pending\"",
-        "\"success\"",
-        "\"failure\"",
-        "\"none\""
-      ],
-      "sourceFile": "agent-manager.ts"
-    },
-    {
       "name": "PRCheck",
       "kind": "interface",
       "properties": [
@@ -19654,13 +19204,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "CheckStatus",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "pending",
-          "isLiteral": true
+          "typeRef": {
+            "name": "CheckStatus",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "url",
@@ -19689,10 +19242,6 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "pending"
-      },
       "sourceFile": "agent-manager.ts"
     },
     {
@@ -19861,20 +19410,23 @@
         },
         {
           "name": "state",
-          "type": "literal",
+          "type": "PRState",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "open",
-          "isLiteral": true
+          "typeRef": {
+            "name": "PRState",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "review",
           "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": "null | \"approved\" | \"changes_requested\" | \"pending\"",
+          "elementType": "null | \"pending\" | \"approved\" | \"changes_requested\"",
           "typeRef": {
             "name": "null",
             "kind": "union"
@@ -19951,16 +19503,6 @@
       "sourceFile": "agent-manager.ts"
     },
     {
-      "name": "RunState",
-      "kind": "union",
-      "unionMembers": [
-        "\"idle\"",
-        "\"running\"",
-        "\"stopping\""
-      ],
-      "sourceFile": "agent-manager.ts"
-    },
-    {
       "name": "RunStatus",
       "kind": "interface",
       "properties": [
@@ -19979,13 +19521,16 @@
         },
         {
           "name": "state",
-          "type": "literal",
+          "type": "RunState",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "idle",
-          "isLiteral": true
+          "typeRef": {
+            "name": "RunState",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "exitCode",
@@ -20211,15 +19756,6 @@
       "sourceFile": "agent-manager.ts"
     },
     {
-      "name": "DiffImageError",
-      "kind": "union",
-      "unionMembers": [
-        "\"too-large\"",
-        "\"unreadable\""
-      ],
-      "sourceFile": "agent-manager.ts"
-    },
-    {
       "name": "DiffImageSide",
       "kind": "interface",
       "properties": [
@@ -20264,12 +19800,12 @@
         },
         {
           "name": "error",
-          "type": "union",
+          "type": "DiffImageError",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | \"too-large\" | \"unreadable\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "DiffImageError",
             "kind": "union"
           },
           "literalValue": null,
@@ -20484,18 +20020,6 @@
           "literalValue": null,
           "isLiteral": false
         }
-      ],
-      "sourceFile": "agent-manager.ts"
-    },
-    {
-      "name": "AgentManagerApplyWorktreeDiffStatus",
-      "kind": "union",
-      "unionMembers": [
-        "\"success\"",
-        "\"checking\"",
-        "\"applying\"",
-        "\"conflict\"",
-        "\"error\""
       ],
       "sourceFile": "agent-manager.ts"
     },
@@ -20762,6 +20286,91 @@
       "sourceFile": "agent-manager.ts"
     },
     {
+      "name": "WorktreeErrorCode",
+      "kind": "union",
+      "unionMembers": [
+        "\"git_not_found\"",
+        "\"not_git_repo\"",
+        "\"lfs_missing\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "PRState",
+      "kind": "union",
+      "unionMembers": [
+        "\"open\"",
+        "\"draft\"",
+        "\"merged\"",
+        "\"closed\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "ReviewDecision",
+      "kind": "union",
+      "unionMembers": [
+        "\"pending\"",
+        "\"approved\"",
+        "\"changes_requested\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "CheckStatus",
+      "kind": "union",
+      "unionMembers": [
+        "\"success\"",
+        "\"failure\"",
+        "\"pending\"",
+        "\"skipped\"",
+        "\"cancelled\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "AggregateCheckStatus",
+      "kind": "union",
+      "unionMembers": [
+        "\"success\"",
+        "\"failure\"",
+        "\"pending\"",
+        "\"none\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "RunState",
+      "kind": "union",
+      "unionMembers": [
+        "\"idle\"",
+        "\"running\"",
+        "\"stopping\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "DiffImageError",
+      "kind": "union",
+      "unionMembers": [
+        "\"too-large\"",
+        "\"unreadable\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "AgentManagerApplyWorktreeDiffStatus",
+      "kind": "union",
+      "unionMembers": [
+        "\"success\"",
+        "\"checking\"",
+        "\"applying\"",
+        "\"conflict\"",
+        "\"error\""
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
       "name": "ContinueInWorktreeStatus",
       "kind": "union",
       "unionMembers": [
@@ -20774,32 +20383,6 @@
         "\"done\""
       ],
       "sourceFile": "agent-manager.ts"
-    },
-    {
-      "name": "PermissionLevel",
-      "kind": "union",
-      "unionMembers": [
-        "\"allow\"",
-        "\"ask\"",
-        "\"deny\""
-      ],
-      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
-    },
-    {
-      "name": "PermissionRule",
-      "kind": "union",
-      "unionMembers": [
-        "null",
-        "\"allow\"",
-        "\"ask\"",
-        "\"deny\""
-      ],
-      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
-    },
-    {
-      "name": "PermissionConfig",
-      "kind": "typeAlias",
-      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
     },
     {
       "name": "PermissionRuleItem",
@@ -20833,13 +20416,16 @@
         },
         {
           "name": "action",
-          "type": "literal",
+          "type": "PermissionLevel",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "allow",
-          "isLiteral": true
+          "typeRef": {
+            "name": "PermissionLevel",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "sourceFile": "permissions.ts"
@@ -21111,6 +20697,32 @@
         }
       ],
       "sourceFile": "permissions.ts"
+    },
+    {
+      "name": "PermissionLevel",
+      "kind": "union",
+      "unionMembers": [
+        "\"allow\"",
+        "\"ask\"",
+        "\"deny\""
+      ],
+      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
+    },
+    {
+      "name": "PermissionRule",
+      "kind": "union",
+      "unionMembers": [
+        "null",
+        "\"allow\"",
+        "\"ask\"",
+        "\"deny\""
+      ],
+      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
+    },
+    {
+      "name": "PermissionConfig",
+      "kind": "typeAlias",
+      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
     },
     {
       "name": "SkillInfo",
@@ -22166,16 +21778,6 @@
       "sourceFile": "providers.ts"
     },
     {
-      "name": "ProviderAuthState",
-      "kind": "union",
-      "unionMembers": [
-        "\"api\"",
-        "\"oauth\"",
-        "\"wellknown\""
-      ],
-      "sourceFile": "providers.ts"
-    },
-    {
       "name": "ProviderConfig",
       "kind": "interface",
       "properties": [
@@ -22274,9 +21876,14 @@
       "sourceFile": "providers.ts"
     },
     {
-      "name": "SdkIndexingStatus",
-      "kind": "typeAlias",
-      "sourceFile": "config.ts"
+      "name": "ProviderAuthState",
+      "kind": "union",
+      "unionMembers": [
+        "\"api\"",
+        "\"oauth\"",
+        "\"wellknown\""
+      ],
+      "sourceFile": "providers.ts"
     },
     {
       "name": "McpConfig",
@@ -22790,23 +22397,6 @@
       "sourceFile": "config.ts"
     },
     {
-      "name": "IndexingProvider",
-      "kind": "union",
-      "unionMembers": [
-        "\"kilo\"",
-        "\"openai\"",
-        "\"ollama\"",
-        "\"openai-compatible\"",
-        "\"gemini\"",
-        "\"mistral\"",
-        "\"vercel-ai-gateway\"",
-        "\"bedrock\"",
-        "\"openrouter\"",
-        "\"voyage\""
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
       "name": "IndexingConfig",
       "kind": "interface",
       "properties": [
@@ -22825,12 +22415,12 @@
         },
         {
           "name": "provider",
-          "type": "union",
+          "type": "IndexingProvider",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | \"kilo\" | \"openai\" | \"ollama\" | \"openai-compatible\" | \"gemini\" | \"mistral\" | \"vercel-ai-gateway\" | \"bedrock\" | \"openrouter\" | \"voyage\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "IndexingProvider",
             "kind": "union"
           },
           "literalValue": null,
@@ -23100,105 +22690,6 @@
       "sourceFile": "config.ts"
     },
     {
-      "name": "KiloEmbeddingModel",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "id",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "name",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "dimension",
-          "type": "number",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "scoreThreshold",
-          "type": "number",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "note",
-          "type": "string",
-          "optional": true,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        }
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "KiloEmbeddingModelCatalog",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "defaultModel",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "models",
-          "type": "object",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "aliases",
-          "type": "object",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        }
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "IndexingStatus",
-      "kind": "typeAlias",
-      "sourceFile": "config.ts"
-    },
-    {
       "name": "BrowserSettings",
       "kind": "interface",
       "properties": [
@@ -23232,24 +22723,6 @@
           "literalValue": "",
           "isLiteral": true
         }
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "TerminalCommandDisplay",
-      "kind": "union",
-      "unionMembers": [
-        "\"expanded\"",
-        "\"collapsed\""
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "CodeEditDisplay",
-      "kind": "union",
-      "unionMembers": [
-        "\"expanded\"",
-        "\"collapsed\""
       ],
       "sourceFile": "config.ts"
     },
@@ -23480,12 +22953,12 @@
         },
         {
           "name": "terminal_command_display",
-          "type": "union",
+          "type": "TerminalCommandDisplay",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | \"expanded\" | \"collapsed\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "TerminalCommandDisplay",
             "kind": "union"
           },
           "literalValue": null,
@@ -23493,12 +22966,12 @@
         },
         {
           "name": "code_edit_display",
-          "type": "union",
+          "type": "CodeEditDisplay",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | \"expanded\" | \"collapsed\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "CodeEditDisplay",
             "kind": "union"
           },
           "literalValue": null,
@@ -23704,32 +23177,143 @@
       "sourceFile": "config.ts"
     },
     {
-      "name": "ConnectionState",
-      "kind": "union",
-      "unionMembers": [
-        "\"error\"",
-        "\"connecting\"",
-        "\"connected\"",
-        "\"disconnected\""
-      ],
-      "sourceFile": "connection.ts"
+      "name": "SdkIndexingStatus",
+      "kind": "typeAlias",
+      "sourceFile": "config.ts"
     },
     {
-      "name": "SessionStatus",
+      "name": "IndexingProvider",
       "kind": "union",
       "unionMembers": [
-        "\"idle\"",
-        "\"busy\"",
-        "\"retry\"",
-        "\"offline\""
+        "\"kilo\"",
+        "\"openai\"",
+        "\"ollama\"",
+        "\"openai-compatible\"",
+        "\"gemini\"",
+        "\"mistral\"",
+        "\"vercel-ai-gateway\"",
+        "\"bedrock\"",
+        "\"openrouter\"",
+        "\"voyage\""
       ],
-      "sourceFile": "connection.ts"
+      "sourceFile": "config.ts"
     },
     {
-      "name": "SessionStatusInfo",
+      "name": "KiloEmbeddingModel",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "dimension",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "scoreThreshold",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "optional": true,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "KiloEmbeddingModelCatalog",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "defaultModel",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "models",
+          "type": "object",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "aliases",
+          "type": "object",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "IndexingStatus",
+      "kind": "typeAlias",
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "TerminalCommandDisplay",
       "kind": "union",
-      "unionMembers": [],
-      "sourceFile": "connection.ts"
+      "unionMembers": [
+        "\"expanded\"",
+        "\"collapsed\""
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "CodeEditDisplay",
+      "kind": "union",
+      "unionMembers": [
+        "\"expanded\"",
+        "\"collapsed\""
+      ],
+      "sourceFile": "config.ts"
     },
     {
       "name": "ServerInfo",
@@ -23765,31 +23349,21 @@
       "sourceFile": "connection.ts"
     },
     {
-      "name": "DeviceAuthStatus",
-      "kind": "union",
-      "unionMembers": [
-        "\"pending\"",
-        "\"success\"",
-        "\"cancelled\"",
-        "\"idle\"",
-        "\"error\"",
-        "\"initiating\""
-      ],
-      "sourceFile": "connection.ts"
-    },
-    {
       "name": "DeviceAuthState",
       "kind": "interface",
       "properties": [
         {
           "name": "status",
-          "type": "literal",
+          "type": "DeviceAuthStatus",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "pending",
-          "isLiteral": true
+          "typeRef": {
+            "name": "DeviceAuthStatus",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "code",
@@ -23844,10 +23418,47 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "pending"
-      },
+      "sourceFile": "connection.ts"
+    },
+    {
+      "name": "ConnectionState",
+      "kind": "union",
+      "unionMembers": [
+        "\"error\"",
+        "\"connecting\"",
+        "\"connected\"",
+        "\"disconnected\""
+      ],
+      "sourceFile": "connection.ts"
+    },
+    {
+      "name": "SessionStatus",
+      "kind": "union",
+      "unionMembers": [
+        "\"idle\"",
+        "\"busy\"",
+        "\"retry\"",
+        "\"offline\""
+      ],
+      "sourceFile": "connection.ts"
+    },
+    {
+      "name": "SessionStatusInfo",
+      "kind": "union",
+      "unionMembers": [],
+      "sourceFile": "connection.ts"
+    },
+    {
+      "name": "DeviceAuthStatus",
+      "kind": "union",
+      "unionMembers": [
+        "\"success\"",
+        "\"pending\"",
+        "\"cancelled\"",
+        "\"idle\"",
+        "\"error\"",
+        "\"initiating\""
+      ],
       "sourceFile": "connection.ts"
     },
     {
@@ -24023,12 +23634,6 @@
         "value": "partRemoved"
       },
       "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts"
-    },
-    {
-      "name": "ToolState",
-      "kind": "union",
-      "unionMembers": [],
-      "sourceFile": "parts.ts"
     },
     {
       "name": "BasePart",
@@ -24298,12 +23903,12 @@
         },
         {
           "name": "state",
-          "type": "union",
+          "type": "ToolState",
           "optional": false,
           "nullable": false,
-          "elementType": "__type | __type | __type | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "__type",
+            "name": "ToolState",
             "kind": "union"
           },
           "literalValue": null,
@@ -24649,20 +24254,6 @@
       "sourceFile": "parts.ts"
     },
     {
-      "name": "Part",
-      "kind": "union",
-      "unionMembers": [
-        "TextPart",
-        "FilePart",
-        "ToolPart",
-        "ReasoningPart",
-        "StepStartPart",
-        "StepFinishPart",
-        "CompactionPart"
-      ],
-      "sourceFile": "parts.ts"
-    },
-    {
       "name": "PartDelta",
       "kind": "interface",
       "properties": [
@@ -24848,19 +24439,24 @@
       "sourceFile": "parts.ts"
     },
     {
-      "name": "SessionModelUsage",
-      "kind": "typeAlias",
-      "sourceFile": "sessions.ts"
+      "name": "ToolState",
+      "kind": "union",
+      "unionMembers": [],
+      "sourceFile": "parts.ts"
     },
     {
-      "name": "SessionCloseReason",
+      "name": "Part",
       "kind": "union",
       "unionMembers": [
-        "\"error\"",
-        "\"completed\"",
-        "\"interrupted\""
+        "TextPart",
+        "FilePart",
+        "ToolPart",
+        "ReasoningPart",
+        "StepStartPart",
+        "StepFinishPart",
+        "CompactionPart"
       ],
-      "sourceFile": "sessions.ts"
+      "sourceFile": "parts.ts"
     },
     {
       "name": "Message",
@@ -25301,6 +24897,80 @@
       "sourceFile": "sessions.ts"
     },
     {
+      "name": "CloudSessionInfo",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "title",
+          "type": "union",
+          "optional": false,
+          "nullable": false,
+          "elementType": "null | string",
+          "typeRef": {
+            "name": "null",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "sessions.ts"
+    },
+    {
+      "name": "SessionModelUsage",
+      "kind": "typeAlias",
+      "sourceFile": "sessions.ts"
+    },
+    {
+      "name": "SessionCloseReason",
+      "kind": "union",
+      "unionMembers": [
+        "\"error\"",
+        "\"completed\"",
+        "\"interrupted\""
+      ],
+      "sourceFile": "sessions.ts"
+    },
+    {
       "name": "SessionUpdate",
       "kind": "interface",
       "properties": [
@@ -25401,65 +25071,6 @@
       "requiredFields": [
         "id"
       ]
-    },
-    {
-      "name": "CloudSessionInfo",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "session_id",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "title",
-          "type": "union",
-          "optional": false,
-          "nullable": false,
-          "elementType": "null | string",
-          "typeRef": {
-            "name": "null",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "created_at",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "updated_at",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "sourceFile": "sessions.ts"
     },
     {
       "name": "MessageLoadMode",
@@ -26034,26 +25645,6 @@
       "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
     },
     {
-      "name": "WorkStyle",
-      "kind": "union",
-      "unionMembers": [
-        "\"human-in-the-loop\"",
-        "\"autonomous\""
-      ],
-      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
-    },
-    {
-      "name": "WorkStyleState",
-      "kind": "union",
-      "unionMembers": [
-        "\"skipped\"",
-        "\"human-in-the-loop\"",
-        "\"autonomous\"",
-        "\"unset\""
-      ],
-      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
-    },
-    {
       "name": "WorkStyleSettings",
       "kind": "interface",
       "properties": [
@@ -26076,13 +25667,16 @@
       "properties": [
         {
           "name": "style",
-          "type": "literal",
+          "type": "WorkStyle",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "human-in-the-loop",
-          "isLiteral": true
+          "typeRef": {
+            "name": "WorkStyle",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "config",
@@ -26143,6 +25737,26 @@
           "literalValue": null,
           "isLiteral": false
         }
+      ],
+      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
+    },
+    {
+      "name": "WorkStyle",
+      "kind": "union",
+      "unionMembers": [
+        "\"human-in-the-loop\"",
+        "\"autonomous\""
+      ],
+      "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
+    },
+    {
+      "name": "WorkStyleState",
+      "kind": "union",
+      "unionMembers": [
+        "\"skipped\"",
+        "\"human-in-the-loop\"",
+        "\"autonomous\"",
+        "\"unset\""
       ],
       "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
     },
@@ -26873,15 +26487,6 @@
       "sourceFile": "migration.ts"
     },
     {
-      "name": "MigrationSource",
-      "kind": "union",
-      "unionMembers": [
-        "\"legacy\"",
-        "\"roo\""
-      ],
-      "sourceFile": "migration.ts"
-    },
-    {
       "name": "MigrationStateMessage",
       "kind": "interface",
       "properties": [
@@ -26938,13 +26543,16 @@
         },
         {
           "name": "source",
-          "type": "literal",
+          "type": "MigrationSource",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "legacy",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MigrationSource",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "operationId",
@@ -26995,13 +26603,16 @@
         },
         {
           "name": "source",
-          "type": "literal",
+          "type": "MigrationSource",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "legacy",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MigrationSource",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "operationId",
@@ -27060,19 +26671,6 @@
       "sourceFile": "migration.ts"
     },
     {
-      "name": "LegacyMigrationSessionPhase",
-      "kind": "union",
-      "unionMembers": [
-        "\"skipped\"",
-        "\"error\"",
-        "\"done\"",
-        "\"preparing\"",
-        "\"storing\"",
-        "\"summary\""
-      ],
-      "sourceFile": "migration.ts"
-    },
-    {
       "name": "MigrationSessionProgressMessage",
       "kind": "interface",
       "properties": [
@@ -27088,13 +26686,16 @@
         },
         {
           "name": "source",
-          "type": "literal",
+          "type": "MigrationSource",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "legacy",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MigrationSource",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "operationId",
@@ -27150,13 +26751,16 @@
         },
         {
           "name": "phase",
-          "type": "literal",
+          "type": "LegacyMigrationSessionPhase",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "skipped",
-          "isLiteral": true
+          "typeRef": {
+            "name": "LegacyMigrationSessionPhase",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "error",
@@ -27194,13 +26798,16 @@
         },
         {
           "name": "source",
-          "type": "literal",
+          "type": "MigrationSource",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "legacy",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MigrationSource",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "operationId",
@@ -27251,13 +26858,16 @@
         },
         {
           "name": "source",
-          "type": "literal",
+          "type": "MigrationSource",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "legacy",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MigrationSource",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "operationId",
@@ -27395,13 +27005,16 @@
         },
         {
           "name": "source",
-          "type": "literal",
+          "type": "MigrationSource",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "legacy",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MigrationSource",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "operationId",
@@ -27500,52 +27113,26 @@
       "sourceFile": "migration.ts"
     },
     {
-      "name": "MemorySourceFile",
+      "name": "MigrationSource",
       "kind": "union",
       "unionMembers": [
-        "md\""
+        "\"legacy\"",
+        "\"roo\""
       ],
-      "sourceFile": "memory.ts"
+      "sourceFile": "migration.ts"
     },
     {
-      "name": "MemoryOperation",
+      "name": "LegacyMigrationSessionPhase",
       "kind": "union",
       "unionMembers": [
-        "\"auto\"",
-        "\"status\"",
-        "\"enable\"",
-        "\"inspect\"",
-        "\"disable\"",
-        "\"rebuild\"",
-        "\"remember\"",
-        "\"correct\"",
-        "\"forget\"",
-        "\"purge\""
+        "\"skipped\"",
+        "\"error\"",
+        "\"done\"",
+        "\"preparing\"",
+        "\"storing\"",
+        "\"summary\""
       ],
-      "sourceFile": "memory.ts"
-    },
-    {
-      "name": "MemoryResultOperation",
-      "kind": "union",
-      "unionMembers": [
-        "\"auto\"",
-        "\"status\"",
-        "\"enable\"",
-        "\"inspect\"",
-        "\"disable\"",
-        "\"rebuild\"",
-        "\"remember\"",
-        "\"correct\"",
-        "\"forget\"",
-        "\"purge\""
-      ],
-      "sourceFile": "memory.ts"
-    },
-    {
-      "name": "MemoryOperationResponse",
-      "kind": "union",
-      "unionMembers": [],
-      "sourceFile": "memory.ts"
+      "sourceFile": "migration.ts"
     },
     {
       "name": "MemoryLoadedMessage",
@@ -27820,13 +27407,16 @@
         },
         {
           "name": "operation",
-          "type": "literal",
+          "type": "MemoryResultOperation",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "auto",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MemoryResultOperation",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "sessionID",
@@ -27866,12 +27456,12 @@
         },
         {
           "name": "result",
-          "type": "union",
+          "type": "MemoryOperationResponse",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type | __type | __type | __type | __type | __type | __type | __type | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "MemoryOperationResponse",
             "kind": "union"
           },
           "literalValue": null,
@@ -27994,13 +27584,16 @@
         },
         {
           "name": "operation",
-          "type": "literal",
+          "type": "MemoryOperation",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "auto",
-          "isLiteral": true
+          "typeRef": {
+            "name": "MemoryOperation",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "sessionID",
@@ -28082,12 +27675,12 @@
         },
         {
           "name": "file",
-          "type": "union",
+          "type": "MemorySourceFile",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | md\" | md\" | md\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "MemorySourceFile",
             "kind": "union"
           },
           "literalValue": null,
@@ -28111,6 +27704,54 @@
         "field": "type",
         "value": "memoryOperation"
       },
+      "sourceFile": "memory.ts"
+    },
+    {
+      "name": "MemorySourceFile",
+      "kind": "union",
+      "unionMembers": [
+        "md\""
+      ],
+      "sourceFile": "memory.ts"
+    },
+    {
+      "name": "MemoryOperation",
+      "kind": "union",
+      "unionMembers": [
+        "\"auto\"",
+        "\"status\"",
+        "\"enable\"",
+        "\"inspect\"",
+        "\"disable\"",
+        "\"rebuild\"",
+        "\"remember\"",
+        "\"correct\"",
+        "\"forget\"",
+        "\"purge\""
+      ],
+      "sourceFile": "memory.ts"
+    },
+    {
+      "name": "MemoryResultOperation",
+      "kind": "union",
+      "unionMembers": [
+        "\"auto\"",
+        "\"status\"",
+        "\"enable\"",
+        "\"inspect\"",
+        "\"disable\"",
+        "\"rebuild\"",
+        "\"remember\"",
+        "\"correct\"",
+        "\"forget\"",
+        "\"purge\""
+      ],
+      "sourceFile": "memory.ts"
+    },
+    {
+      "name": "MemoryOperationResponse",
+      "kind": "union",
+      "unionMembers": [],
       "sourceFile": "memory.ts"
     },
     {
@@ -28361,13 +28002,16 @@
         },
         {
           "name": "state",
-          "type": "literal",
+          "type": "ConnectionState",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "typeRef": {
+            "name": "ConnectionState",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "error",
@@ -28622,149 +28266,6 @@
       "sourceFile": "extension-messages.ts"
     },
     {
-      "name": "PartUpdatedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "unknown",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": true,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "partUpdated"
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "messageID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "part",
-          "type": "unknown",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "delta",
-          "type": "object",
-          "optional": true,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "partUpdated"
-      },
-      "sourceFile": "extension-messages.ts"
-    },
-    {
-      "name": "PartsUpdatedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "unknown",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": true,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "partsUpdated"
-        },
-        {
-          "name": "updates",
-          "type": "object",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "partsUpdated"
-      },
-      "sourceFile": "extension-messages.ts"
-    },
-    {
-      "name": "PartRemovedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "unknown",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": true,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "partRemoved"
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "messageID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        },
-        {
-          "name": "partID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "isLiteral": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": null
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "partRemoved"
-      },
-      "sourceFile": "extension-messages.ts"
-    },
-    {
       "name": "SessionStatusMessage",
       "kind": "interface",
       "properties": [
@@ -28793,13 +28294,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "SessionStatus",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "idle",
-          "isLiteral": true
+          "typeRef": {
+            "name": "SessionStatus",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "attempt",
@@ -28876,13 +28380,16 @@
         },
         {
           "name": "reason",
-          "type": "literal",
+          "type": "SessionCloseReason",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "typeRef": {
+            "name": "SessionCloseReason",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -32325,13 +31832,16 @@
         },
         {
           "name": "style",
-          "type": "literal",
+          "type": "WorkStyleState",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "skipped",
-          "isLiteral": true
+          "typeRef": {
+            "name": "WorkStyleState",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -32356,13 +31866,16 @@
         },
         {
           "name": "style",
-          "type": "literal",
+          "type": "WorkStyle",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "human-in-the-loop",
-          "isLiteral": true
+          "typeRef": {
+            "name": "WorkStyle",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -32670,12 +32183,12 @@
         },
         {
           "name": "errorCode",
-          "type": "union",
+          "type": "WorktreeErrorCode",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | \"git_not_found\" | \"not_git_repo\" | \"lfs_missing\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "WorktreeErrorCode",
             "kind": "union"
           },
           "literalValue": null,
@@ -33984,12 +33497,12 @@
         },
         {
           "name": "errorCode",
-          "type": "union",
+          "type": "WorktreeErrorCode",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | \"git_not_found\" | \"not_git_repo\" | \"lfs_missing\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "WorktreeErrorCode",
             "kind": "union"
           },
           "literalValue": null,
@@ -34182,13 +33695,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "AgentManagerApplyWorktreeDiffStatus",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "success",
-          "isLiteral": true
+          "typeRef": {
+            "name": "AgentManagerApplyWorktreeDiffStatus",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -35076,11 +34592,6 @@
       "sourceFile": "extension-messages.ts"
     },
     {
-      "name": "DiffViewerNotice",
-      "kind": "typeAlias",
-      "sourceFile": "extension-messages.ts"
-    },
-    {
       "name": "DiffViewerNoticeMessage",
       "kind": "interface",
       "properties": [
@@ -35442,12 +34953,12 @@
         },
         {
           "name": "mpItem",
-          "type": "union",
+          "type": "MarketplaceItem",
           "optional": false,
           "nullable": false,
-          "elementType": "McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem",
+          "elementType": null,
           "typeRef": {
-            "name": "McpMarketplaceItem",
+            "name": "MarketplaceItem",
             "kind": "union"
           },
           "literalValue": null,
@@ -35898,13 +35409,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "ContinueInWorktreeStatus",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "typeRef": {
+            "name": "ContinueInWorktreeStatus",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "detail",
@@ -36025,6 +35539,154 @@
         "field": "type",
         "value": "validateFilesResult"
       },
+      "sourceFile": "extension-messages.ts"
+    },
+    {
+      "name": "PartUpdatedMessage",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "type",
+          "type": "unknown",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": true,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": "partUpdated"
+        },
+        {
+          "name": "sessionID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "messageID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "part",
+          "type": "unknown",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "delta",
+          "type": "object",
+          "optional": true,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        }
+      ],
+      "discriminator": {
+        "field": "type",
+        "value": "partUpdated"
+      },
+      "sourceFile": "extension-messages.ts"
+    },
+    {
+      "name": "PartsUpdatedMessage",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "type",
+          "type": "unknown",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": true,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": "partsUpdated"
+        },
+        {
+          "name": "updates",
+          "type": "object",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        }
+      ],
+      "discriminator": {
+        "field": "type",
+        "value": "partsUpdated"
+      },
+      "sourceFile": "extension-messages.ts"
+    },
+    {
+      "name": "PartRemovedMessage",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "type",
+          "type": "unknown",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": true,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": "partRemoved"
+        },
+        {
+          "name": "sessionID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "messageID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        },
+        {
+          "name": "partID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "isLiteral": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": null
+        }
+      ],
+      "discriminator": {
+        "field": "type",
+        "value": "partRemoved"
+      },
+      "sourceFile": "extension-messages.ts"
+    },
+    {
+      "name": "DiffViewerNotice",
+      "kind": "typeAlias",
       "sourceFile": "extension-messages.ts"
     },
     {
@@ -36703,12 +36365,12 @@
         },
         {
           "name": "mode",
-          "type": "union",
+          "type": "MessageLoadMode",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | \"replace\" | \"prepend\" | \"focus\" | \"reconcile\"",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
+            "name": "MessageLoadMode",
             "kind": "union"
           },
           "literalValue": null,
@@ -39359,13 +39021,16 @@
         },
         {
           "name": "style",
-          "type": "literal",
+          "type": "WorkStyleState",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "skipped",
-          "isLiteral": true
+          "typeRef": {
+            "name": "WorkStyleState",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -39390,13 +39055,16 @@
         },
         {
           "name": "style",
-          "type": "literal",
+          "type": "WorkStyle",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "human-in-the-loop",
-          "isLiteral": true
+          "typeRef": {
+            "name": "WorkStyle",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -44266,12 +43934,12 @@
         },
         {
           "name": "mpItem",
-          "type": "union",
+          "type": "MarketplaceItem",
           "optional": false,
           "nullable": false,
-          "elementType": "McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem",
+          "elementType": null,
           "typeRef": {
-            "name": "McpMarketplaceItem",
+            "name": "MarketplaceItem",
             "kind": "union"
           },
           "literalValue": null,
@@ -44313,12 +43981,12 @@
         },
         {
           "name": "mpItem",
-          "type": "union",
+          "type": "MarketplaceItem",
           "optional": false,
           "nullable": false,
-          "elementType": "McpMarketplaceItem | AgentMarketplaceItem | SkillMarketplaceItem",
+          "elementType": null,
           "typeRef": {
-            "name": "McpMarketplaceItem",
+            "name": "MarketplaceItem",
             "kind": "union"
           },
           "literalValue": null,
@@ -44363,6 +44031,12 @@
         "field": "type",
         "value": "dismissAgentMigrationBanner"
       },
+      "sourceFile": "webview-messages.ts"
+    },
+    {
+      "name": "VSCodeAPI",
+      "kind": "interface",
+      "properties": [],
       "sourceFile": "webview-messages.ts"
     },
     {
@@ -44584,12 +44258,6 @@
         "RequestImageModelsMessage"
       ],
       "sourceFile": "webview-messages.ts"
-    },
-    {
-      "name": "VSCodeAPI",
-      "kind": "interface",
-      "properties": [],
-      "sourceFile": "webview-messages.ts"
     }
   ],
   "diagnostics": {
@@ -44598,8 +44266,8 @@
   },
   "statistics": {
     "totalTypes": 543,
-    "webviewToExtensionMessages": 214,
-    "extensionToWebviewMessages": 191,
+    "webviewToExtensionMessages": 208,
+    "extensionToWebviewMessages": 188,
     "inlineMessagesExtracted": 0
   }
 }

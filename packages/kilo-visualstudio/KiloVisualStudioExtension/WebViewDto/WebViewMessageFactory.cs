@@ -12,6 +12,15 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using KiloVisualStudioExtension.ApiClient.Json;
+using KiloVisualStudioExtension.WebView.Generated.migration;
+using KiloVisualStudioExtension.WebView.Generated.memory;
+using KiloVisualStudioExtension.WebView.Generated.extensionMessages;
+using KiloVisualStudioExtension.WebView.Generated.webviewMessages;
+using KiloVisualStudioExtension.WebView.Generated.Types;
+using KiloVisualStudioExtension.WebView.Generated.agents;
+using KiloVisualStudioExtension.WebView.Generated.parts;
+using KiloVisualStudioExtension.WebView.Generated.sessions;
+using KiloVisualStudioExtension.WebView.Generated.questions;
 
 /// <summary>
 /// Discriminator-based deserialization factory for WebView messages.
@@ -31,9 +40,6 @@ public static class WebViewMessageFactory
 
         return type switch
         {
-            "partUpdated" => typeof(T) == typeof(PartUpdate) ? (T)(object)token.ToObject<PartUpdate>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "partsUpdated" => typeof(T) == typeof(PartBatch) ? (T)(object)token.ToObject<PartBatch>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "partRemoved" => typeof(T) == typeof(PartRemove) ? (T)(object)token.ToObject<PartRemove>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "requestMigrationData" => typeof(T) == typeof(RequestMigrationDataMessage) ? (T)(object)token.ToObject<RequestMigrationDataMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "memoryLoaded" => typeof(T) == typeof(MemoryLoadedMessage) ? (T)(object)token.ToObject<MemoryLoadedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "requestMemory" => typeof(T) == typeof(RequestMemoryMessage) ? (T)(object)token.ToObject<RequestMemoryMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
@@ -245,9 +251,7 @@ public static class WebViewMessageFactory
             "mcp" => typeof(T) == typeof(McpMarketplaceItem) ? (T)(object)token.ToObject<McpMarketplaceItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "agent" => typeof(T) == typeof(AgentMarketplaceItem) ? (T)(object)token.ToObject<AgentMarketplaceItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "skill" => typeof(T) == typeof(SkillMarketplaceItem) ? (T)(object)token.ToObject<SkillMarketplaceItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "pending" => typeof(T) == typeof(PRCheck) ? (T)(object)token.ToObject<PRCheck>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "error" => typeof(T) == typeof(AgentRequirementSkill) ? (T)(object)token.ToObject<AgentRequirementSkill>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "text-delta" => typeof(T) == typeof(PartTextDelta) ? (T)(object)token.ToObject<PartTextDelta>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "text" => typeof(T) == typeof(TextPart) ? (T)(object)token.ToObject<TextPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "file" => typeof(T) == typeof(FilePartSource) ? (T)(object)token.ToObject<FilePartSource>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "tool" => typeof(T) == typeof(ToolPart) ? (T)(object)token.ToObject<ToolPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
@@ -255,7 +259,9 @@ public static class WebViewMessageFactory
             "step-start" => typeof(T) == typeof(StepStartPart) ? (T)(object)token.ToObject<StepStartPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "step-finish" => typeof(T) == typeof(StepFinishPart) ? (T)(object)token.ToObject<StepFinishPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "compaction" => typeof(T) == typeof(CompactionPart) ? (T)(object)token.ToObject<CompactionPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
+            "text-delta" => typeof(T) == typeof(PartDelta) ? (T)(object)token.ToObject<PartDelta>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "user" => typeof(T) == typeof(Message) ? (T)(object)token.ToObject<Message>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
+            "pending" => typeof(T) == typeof(TodoItem) ? (T)(object)token.ToObject<TodoItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "success" => typeof(T) == typeof(MigrationResultItem) ? (T)(object)token.ToObject<MigrationResultItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "migrationState" => typeof(T) == typeof(MigrationStateMessage) ? (T)(object)token.ToObject<MigrationStateMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "migrationData" => typeof(T) == typeof(MigrationDataMessage) ? (T)(object)token.ToObject<MigrationDataMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
