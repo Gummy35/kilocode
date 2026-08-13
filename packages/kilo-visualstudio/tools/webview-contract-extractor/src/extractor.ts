@@ -1,4 +1,28 @@
 #!/usr/bin/env bun
+/**
+ * WebView Contract Extractor
+ * 
+ * This script extracts TypeScript type definitions and message schemas from the VS Code
+ * extension's webview code and generates a structured JSON contract file (WebViewContract.json)
+ * that describes the communication protocol between the webview and the extension host.
+ * 
+ * ## Input
+ * - TypeScript source files from packages/kilo-vscode/webview-ui/src/types/messages/
+ * - Shared types from packages/kilo-vscode/src/shared/
+ * 
+ * ## Processing
+ * - Uses TypeScript Compiler API to parse and analyze source files
+ * - Extracts interfaces, type aliases, and union types
+ * - Identifies message types via discriminator fields (type, status, role)
+ * - Scans for inline messages in postMessage() calls
+ * 
+ * ## Output
+ * - WebViewContract.json: Structured contract describing all types and messages
+ * 
+ * ## Usage
+ *   bun src/extractor.ts
+ */
+
 import * as ts from "typescript"
 import * as path from "path"
 import * as fs from "fs"
@@ -24,6 +48,10 @@ const VS_CODE_SRC_PATH = path.join(PKGS_DIR, "kilo-vscode/src")
 const TSCONFIG_PATH = path.join(PKGS_DIR, "kilo-vscode/webview-ui/tsconfig.json")
 const OUTPUT_PATH = path.join(PKGS_DIR, "kilo-visualstudio/porting/contract/WebViewContract.json")
 
+/**
+ * Recursively find all TypeScript files in a directory
+ * Excludes hidden directories (starting with .) and node_modules
+ */
 function findTsFiles(dir: string, files: string[] = []): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true })
   for (const entry of entries) {
@@ -37,19 +65,25 @@ function findTsFiles(dir: string, files: string[] = []): string[] {
   return files
 }
 
+/**
+ * Extraction context: holds state during the extraction process
+ */
 interface ExtractionContext {
-  program: ts.Program
-  typeChecker: ts.TypeChecker
-  types: Map<string, TypeDefinition>
+  program: ts.Program  // TypeScript program for type checking
+  typeChecker: ts.TypeChecker  // Type checker for resolving types
+  types: Map<string, TypeDefinition>  // Extracted type definitions by name
   messages: {
-    webviewToExtension: MessageType[]
-    extensionToWebview: MessageType[]
+    webviewToExtension: MessageType[]  // Messages from webview to extension
+    extensionToWebview: MessageType[]  // Messages from extension to webview
   }
-  errors: string[]
-  warnings: string[]
-  extractedMessages: Map<string, MessageType> // Track extracted inline messages by discriminator value
+  errors: string[]  // Extraction errors
+  warnings: string[]  // Extraction warnings
+  extractedMessages: Map<string, MessageType>  // Track extracted inline messages by discriminator value
 }
 
+/**
+ * Create a new extraction context
+ */
 function createContext(program: ts.Program): ExtractionContext {
   return {
     program,
@@ -65,6 +99,12 @@ function createContext(program: ts.Program): ExtractionContext {
   }
 }
 
+/**
+ * Get the name of a TypeScript type
+ * - Uses symbol name if available
+ * - Falls back to stringified type name
+ * - Extracts short name from qualified names (e.g., "Module.Type" → "Type")
+ */
 function getTypeName(type: ts.Type, typeChecker: ts.TypeChecker): string {
   const symbol = type.getSymbol()
   if (symbol) {
@@ -74,6 +114,10 @@ function getTypeName(type: ts.Type, typeChecker: ts.TypeChecker): string {
   return stringified.split(".").pop() || stringified
 }
 
+/**
+ * Extract literal value from a TypeScript literal type
+ * Handles string, number, and boolean literals
+ */
 function extractLiteralValue(type: ts.Type): string | number | boolean | undefined {
   if (type.flags & ts.TypeFlags.StringLiteral) {
     return (type as ts.StringLiteralType).value
@@ -87,6 +131,10 @@ function extractLiteralValue(type: ts.Type): string | number | boolean | undefin
   return undefined
 }
 
+/**
+ * Determine the kind of a TypeScript type
+ * Returns a string identifier for the type category
+ */
 function getTypeKind(type: ts.Type): string {
   if (type.flags & ts.TypeFlags.Interface) return "interface"
   if (type.flags & ts.TypeFlags.TypeLiteral) return "typeLiteral"
@@ -100,6 +148,26 @@ function getTypeKind(type: ts.Type): string {
   return "unknown"
 }
 
+/**
+ * Extract a property definition from a TypeScript symbol
+ * 
+ * ## Extraction Process
+ * 1. Get property name and declarations
+ * 2. Determine property type using type checker
+ * 3. Check for optional modifier
+ * 4. Handle special types:
+ *    - Union types: Extract union members
+ *    - Literal types: Extract literal values
+ *    - Arrays: Extract element type
+ *    - Records: Extract value type
+ *    - Type references: Resolve to referenced type
+ * 5. Check if property references a known type alias
+ * 
+ * @param property - TypeScript symbol for the property
+ * @param typeChecker - Type checker for type resolution
+ * @param context - Extraction context
+ * @returns Property definition or null if extraction fails
+ */
 function extractPropertyDefinition(
   property: ts.Symbol,
   typeChecker: ts.TypeChecker,
@@ -212,6 +280,15 @@ function extractPropertyDefinition(
   }
 }
 
+/**
+ * Extract discriminator information from properties
+ * 
+ * Looks for literal properties named "type", "status", or "role"
+ * that can serve as discriminators for polymorphic deserialization.
+ * 
+ * @param properties - Extracted property definitions
+ * @returns Discriminator info if found, null otherwise
+ */
 function extractDiscriminator(properties: PropertyDefinition[]): DiscriminatorInfo | null {
   const discriminatorFields = ["type", "status", "role"]
   
@@ -228,6 +305,19 @@ function extractDiscriminator(properties: PropertyDefinition[]): DiscriminatorIn
   return null
 }
 
+/**
+ * Extract an interface declaration from TypeScript AST
+ * 
+ * ## Extraction Process
+ * 1. Get interface name
+ * 2. Extract all property signatures
+ * 3. Detect discriminator field
+ * 4. Record source file location
+ * 
+ * @param node - Interface declaration node
+ * @param context - Extraction context
+ * @returns Type definition or null if extraction fails
+ */
 function extractInterfaceDeclaration(
   node: ts.InterfaceDeclaration,
   context: ExtractionContext
@@ -260,6 +350,21 @@ function extractInterfaceDeclaration(
   }
 }
 
+/**
+ * Extract a type alias declaration from TypeScript AST
+ * 
+ * ## Handles Multiple Patterns
+ * - **Union types**: Extract all union member type names
+ * - **String literal unions**: Parse source file to preserve literal values
+ * - **Type literals**: Extract inline object structure
+ * - **Type references**: Resolve to referenced type
+ * - **Partial<T> & Pick<T, ...>**: Merge properties with correct optionality
+ * - **Re-exports**: Resolve alias to actual type
+ * 
+ * @param node - Type alias declaration node
+ * @param context - Extraction context
+ * @returns Type definition or null if extraction fails
+ */
 function extractTypeAliasDeclaration(
   node: ts.TypeAliasDeclaration,
   context: ExtractionContext
@@ -521,6 +626,20 @@ function extractTypeAliasDeclaration(
   }
 }
 
+/**
+ * Extract message types from a TypeScript source file
+ * 
+ * ## Multi-Pass Extraction
+ * Uses four passes to handle type dependencies correctly:
+ * 
+ * 1. **First pass**: Extract all interfaces
+ * 2. **Second pass**: Extract all type aliases (interfaces now available for reference)
+ * 3. **Third pass**: Re-extract interfaces (to resolve type alias references)
+ * 4. **Fourth pass**: Process messages (interfaces with discriminators)
+ * 
+ * @param sourceFile - TypeScript source file to process
+ * @param context - Extraction context
+ */
 function extractMessageTypes(
   sourceFile: ts.SourceFile,
   context: ExtractionContext
@@ -605,6 +724,18 @@ function extractMessageTypes(
   visitFourthPass(sourceFile)
 }
 
+/**
+ * Create the WebViewContract from extraction context
+ * 
+ * Includes metadata about the extraction:
+ * - Git branch and commit
+ * - TypeScript version
+ * - Extraction statistics
+ * - Diagnostics (errors and warnings)
+ * 
+ * @param context - Extraction context with all extracted data
+ * @returns Complete WebViewContract object
+ */
 function createContract(context: ExtractionContext): WebViewContract {
   let branch = "unknown"
   let commit = "unknown"
@@ -647,6 +778,14 @@ function createContract(context: ExtractionContext): WebViewContract {
   }
 }
 
+/**
+ * Determine the output folder based on source file name
+ * 
+ * See generator.ts getSourceFileFolder() for detailed documentation
+ * 
+ * @param sourceFile - Source file path
+ * @returns Target folder name
+ */
 function getSourceFileFolder(sourceFile: string): string {
   const normalizedSource = sourceFile.replace(/\\/g, '/')
   
@@ -670,6 +809,14 @@ function getSourceFileFolder(sourceFile: string): string {
   return 'Shared'
 }
 
+/**
+ * Generate a message name from a discriminator value
+ * 
+ * Example: "configLoaded" → "ConfigLoadedMessage"
+ * 
+ * @param discValue - Discriminator value
+ * @returns Generated message name
+ */
 function generateMessageNameFromDiscriminator(discValue: string): string {
   return discValue
     .split(".")
@@ -677,11 +824,27 @@ function generateMessageNameFromDiscriminator(discValue: string): string {
     .join("") + "Message"
 }
 
+/**
+ * Result of extracting properties from a postMessage call
+ */
 interface PostMessageExtractResult {
-  properties: PropertyDefinition[]
-  discriminator: DiscriminatorInfo
+  properties: PropertyDefinition[]  // Extracted properties
+  discriminator: DiscriminatorInfo  // Discriminator information
 }
 
+/**
+ * Extract properties from a postMessage() call expression
+ * 
+ * ## Extraction Process
+ * 1. Verify it's a postMessage or sendMessage call
+ * 2. Extract object literal argument
+ * 3. Parse each property assignment
+ * 4. Determine property types from literals
+ * 5. Identify discriminator field
+ * 
+ * @param node - Call expression node
+ * @returns Extracted properties and discriminator, or null if not a valid postMessage call
+ */
 function extractPostMessageProperties(node: ts.CallExpression): PostMessageExtractResult | null {
   const expression = node.expression
   let methodName: string | undefined
@@ -762,6 +925,23 @@ function extractPostMessageProperties(node: ts.CallExpression): PostMessageExtra
   return { properties, discriminator }
 }
 
+/**
+ * Scan a source file for postMessage() calls and extract inline messages
+ * 
+ * ## Purpose
+ * Not all messages are defined as named interfaces. Some are inline object
+ * literals passed to postMessage(). This function extracts those messages.
+ * 
+ * ## Process
+ * 1. Skip files from node_modules
+ * 2. Traverse AST looking for call expressions
+ * 3. Extract postMessage/sendMessage calls
+ * 4. Deduplicate by discriminator value
+ * 5. Add to extensionToWebview messages (extension sends to webview)
+ * 
+ * @param sourceFile - Source file to scan
+ * @param context - Extraction context
+ */
 function scanPostMessageCalls(
   sourceFile: ts.SourceFile,
   context: ExtractionContext
@@ -802,6 +982,17 @@ function scanPostMessageCalls(
   ts.forEachChild(sourceFile, visit)
 }
 
+/**
+ * Main entry point for the extractor
+ * 
+ * ## Execution Flow
+ * 1. Load TypeScript project from tsconfig
+ * 2. Find all TypeScript source files
+ * 3. Process type definitions from webview types directory
+ * 4. Scan VS Code source files for postMessage calls
+ * 5. Generate contract JSON
+ * 6. Output statistics and diagnostics
+ */
 function main(): void {
   console.log("WebView Contract Extractor")
   console.log("==========================")

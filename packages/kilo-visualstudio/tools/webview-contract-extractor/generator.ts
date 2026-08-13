@@ -1,4 +1,29 @@
 #!/usr/bin/env bun
+/**
+ * WebView Contract Generator
+ * 
+ * This script generates C# DTO (Data Transfer Object) classes from the WebViewContract.json file,
+ * which describes the message types used for communication between the Visual Studio extension's
+ * webview and the extension host.
+ * 
+ * ## Input
+ * - WebViewContract.json: Contains TypeScript type definitions and message schemas
+ * 
+ * ## Output
+ * - C# classes in KiloVisualStudioExtension/WebViewDto/Messages/ organized by namespace
+ * - WebViewMessageFactory.cs: Discriminator-based deserialization factory
+ * 
+ * ## Type Mapping
+ * - Primitive types: string→string, number→double, boolean→bool, etc.
+ * - Interfaces: Generated as C# classes with JsonProperty attributes
+ * - Union types: String literal unions become enums; mixed unions become object or base class
+ * - SDK types: Use ApiClient.TypeName if type exists in ApiClient
+ * - config.ts types: Always generated locally (e.g., Config)
+ * 
+ * ## Usage
+ *   bun tools/webview-contract-extractor/generator.ts
+ */
+
 import * as fs from "fs"
 import * as path from "path"
 
@@ -7,45 +32,66 @@ const VS_DIR = path.resolve(__dirname, "..", "..")
 const CONTRACT_PATH = path.join(VS_DIR, "porting/contract/WebViewContract.json")
 const OUTPUT_PATH = path.join(VS_DIR, "KiloVisualStudioExtension/WebViewDto")
 
+/**
+ * Type reference in a property definition
+ */
 interface TypeReference {
   name: string
   kind: string
 }
 
+/**
+ * Property definition from TypeScript type
+ */
 interface PropertyDefinition {
   name: string
   type: string
   optional: boolean
   nullable: boolean
-  elementType?: string | null
-  typeRef?: TypeReference | null
-  literalValue?: string | number | boolean | null
+  elementType?: string | null  // For arrays and unions
+  typeRef?: TypeReference | null  // Reference to another type
+  literalValue?: string | number | boolean | null  // For literal types
   isLiteral: boolean
   description?: string
 }
 
+/**
+ * Discriminator info for polymorphic types
+ */
 interface DiscriminatorInfo {
-  field: string
-  value: string
+  field: string  // Usually "type"
+  value: string  // Discriminator value (e.g., "configLoaded")
 }
 
+/**
+ * Enum definition for generated enums
+ */
 interface EnumDefinition {
   name: string
-  members: string[]
+  members: string[]  // Original string literal values
 }
 
+/**
+ * Type definition from the contract
+ */
 interface TypeDefinition {
   name: string
-  kind: string
-  properties?: PropertyDefinition[]
-  unionMembers?: string[]
-  discriminator?: DiscriminatorInfo
-  sourceFile: string
+  kind: string  // "interface", "typeAlias", "union", "enum"
+  properties?: PropertyDefinition[]  // For interfaces
+  unionMembers?: string[]  // For unions
+  discriminator?: DiscriminatorInfo  // For message types
+  sourceFile: string  // Original TypeScript source file
   description?: string
 }
 
+/**
+ * Global map of generated enums (to avoid duplicates)
+ */
 let generatedEnums: Map<string, EnumDefinition>
 
+/**
+ * Message type definition
+ */
 interface MessageType {
   name: string
   type: string
@@ -54,13 +100,16 @@ interface MessageType {
   sourceFile: string
 }
 
+/**
+ * WebView contract structure
+ */
 interface WebViewContract {
   schemaVersion: string
   messages: {
-    webviewToExtension: MessageType[]
-    extensionToWebview: MessageType[]
+    webviewToExtension: MessageType[]  // Messages from webview to extension host
+    extensionToWebview: MessageType[]  // Messages from extension host to webview
   }
-  types: TypeDefinition[]
+  types: TypeDefinition[]  // All type definitions
 }
 
 function pascalCase(name: string): string {
@@ -71,13 +120,33 @@ function pascalCase(name: string): string {
   return sanitized.charAt(0).toUpperCase() + sanitized.slice(1)
 }
 
-let contract: WebViewContract
-let typeDefinitions: Map<string, TypeDefinition>
-let generatedTypes: Set<string>
-let neededTypes: Set<string>
-let collectingTypes: Set<string>
-let existingApiTypes: Set<string>
+/**
+ * Global state for code generation
+ */
+let contract: WebViewContract  // Parsed contract data
+let typeDefinitions: Map<string, TypeDefinition>  // Map of type name to definition
+let generatedTypes: Set<string>  // Set of already generated type names
+let neededTypes: Set<string>  // Set of types needed by messages
+let collectingTypes: Set<string>  // Track types being collected (prevent infinite recursion)
+let existingApiTypes: Set<string>  // Set of type names that exist in ApiClient
 
+/**
+ * Convert a string to PascalCase
+ * - Handles kebab-case: "agent-manager" → "AgentManager"
+ * - Sanitizes invalid C# characters
+ * - Ensures valid identifier (returns "Value" if result would be empty)
+ */
+function pascalCase(name: string): string {
+  if (!name) return name
+  const converted = name.replace(/-([a-z])/g, (match) => match.charAt(1).toUpperCase())
+  const sanitized = converted.replace(/[^a-zA-Z0-9_]/g, '')
+  if (!sanitized) return "Value"
+  return sanitized.charAt(0).toUpperCase() + sanitized.slice(1)
+}
+
+/**
+ * Check if a type name is a primitive TypeScript type
+ */
 function isPrimitiveType(typeName: string): boolean {
   const lower = typeName.toLowerCase()
   return lower === 'string' || lower === 'number' || lower === 'integer' || 
@@ -85,7 +154,9 @@ function isPrimitiveType(typeName: string): boolean {
          lower === 'void' || lower === 'null' || lower === 'undefined'
 }
 
-// Common TypeScript types that have C# equivalents
+/**
+ * Map of TypeScript types to their C# equivalents
+ */
 const csharpTypeMap: Map<string, string> = new Map([
   ['array', 'List<object>'],
   ['readonlyarray', 'IReadOnlyList<object>'],
@@ -102,6 +173,10 @@ const csharpTypeMap: Map<string, string> = new Map([
   ['symbol', 'object'],
 ])
 
+/**
+ * Get C# equivalent for common TypeScript types
+ * Returns null if no direct equivalent exists
+ */
 function getCSharpTypeForCommonType(typeName: string): string | null {
   const lower = typeName.toLowerCase()
   if (csharpTypeMap.has(lower)) {
@@ -110,6 +185,17 @@ function getCSharpTypeForCommonType(typeName: string): string | null {
   return null
 }
 
+/**
+ * Check if a type name is an internal/complex TypeScript type
+ * These include:
+ * - Types with @ (namespace)
+ * - Types with : (type operators)
+ * - String literals (start with ")
+ * - Namespaced types (::)
+ * - Intersection types (&)
+ * - Union types (|)
+ * - Internal types (__prefix)
+ */
 function isInternalType(typeName: string): boolean {
   return typeName.includes('@') || typeName.includes(':') || 
          typeName.startsWith('"') || typeName.includes('::') ||
@@ -117,20 +203,36 @@ function isInternalType(typeName: string): boolean {
          typeName.startsWith('__')
 }
 
+/**
+ * Parse a union type string into its members
+ * Example: "string | number | undefined" → ["string", "number", "undefined"]
+ */
 function parseUnionMembers(elementType: string): string[] {
   return elementType.split('|').map(p => p.trim())
 }
 
+/**
+ * Check if a type is a string literal (wrapped in quotes)
+ */
 function isStringLiteral(type: string): boolean {
   if (typeof type !== 'string') return false
   return type.startsWith('"') || type.startsWith("'")
 }
 
+/**
+ * Extract the value from a string literal type
+ * Example: '"hello"' → 'hello'
+ */
 function getStringLiteralValue(type: string): string {
   const trimmed = type.trim()
   return trimmed.slice(1, -1)
 }
 
+/**
+ * Find a common base class for a list of types
+ * Used for union types with multiple class members
+ * Returns null if no common base is found
+ */
 function findCommonBaseClass(typeNames: string[]): string | null {
   const typeDefs = typeNames.map(name => typeDefinitions.get(name)).filter(t => t !== undefined)
   if (typeDefs.length === 0) return null
@@ -189,6 +291,10 @@ function findCommonBaseClass(typeNames: string[]): string | null {
   return null
 }
 
+/**
+ * Generate an enum name from literal values
+ * Example: ["a", "b", "c"] → "ABC"
+ */
 function generateEnumName(literalValues: string[]): string {
   const baseName = literalValues.map(v => {
     const value = isStringLiteral(v) ? getStringLiteralValue(v) : v
@@ -198,6 +304,10 @@ function generateEnumName(literalValues: string[]): string {
   return sanitized || 'EnumValue'
 }
 
+/**
+ * Check if an enum with the same members already exists
+ * Prevents duplicate enum generation
+ */
 function enumExistsWithSameMembers(enumName: string, members: string[]): boolean {
   const enumDef = generatedEnums.get(enumName)
   if (!enumDef) return false
@@ -205,6 +315,11 @@ function enumExistsWithSameMembers(enumName: string, members: string[]): boolean
   return enumDef.members.every((m, i) => m === members[i])
 }
 
+/**
+ * Try to generate an enum from a union type with string literal members
+ * Creates the enum file immediately and returns the enum type name
+ * Returns null if the union cannot be converted to an enum
+ */
 function tryGenerateUnionEnum(elementType: string, prop: PropertyDefinition): { type: string, isNullable: boolean } | null {
   const unionParts = parseUnionMembers(elementType)
   const nonNullParts = unionParts.filter(p => p !== 'undefined' && p !== 'null')
@@ -255,6 +370,28 @@ ${enumDef.members.map((m, i) => `    [JsonProperty("${m}")]\n    ${pascalCase(m)
   return { type: enumName, isNullable: unionParts.some(p => p === 'undefined' || p === 'null') }
 }
 
+/**
+ * Map a TypeScript property definition to its C# type equivalent
+ * 
+ * ## Type Resolution Logic
+ * 1. Handle literal types (string, number, boolean literals)
+ * 2. Map primitive types (string, number, boolean)
+ * 3. Handle arrays (List<T>)
+ * 4. Resolve type references to other types
+ * 5. Handle union types:
+ *    - Single non-null type: use that type
+ *    - String literal unions: generate/use enum
+ *    - Boolean literal unions: use bool
+ *    - Multiple class types: find common base
+ *    - Mixed types: use object
+ * 6. Check ApiClient for type conflicts:
+ *    - SDK types that exist in ApiClient: use ApiClient.TypeName
+ *    - Local types (except config.ts) that exist in ApiClient: use ApiClient.TypeName
+ *    - config.ts types: generate locally even if ApiClient has same name
+ * 
+ * @param prop - TypeScript property definition
+ * @returns Object with C# type, nullability, and original TypeScript type
+ */
 function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType?: string, isNullable: boolean } {
   const baseType = prop.type.toLowerCase()
   
@@ -457,6 +594,18 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
   return { type: 'object', isNullable: prop.optional || prop.nullable }
 }
 
+/**
+ * Recursively collect all types needed by a property
+ * 
+ * This function traverses the type graph to find all types that need to be generated
+ * for a given property. It handles:
+ * - Array element types
+ * - Union type members
+ * - Type references
+ * - Type aliases and unions
+ * 
+ * Uses collectingTypes set to prevent infinite recursion on circular references.
+ */
 function collectNeededTypes(prop: PropertyDefinition) {
   const baseType = prop.type.toLowerCase()
   
@@ -564,6 +713,27 @@ function collectNeededTypes(prop: PropertyDefinition) {
   }
 }
 
+/**
+ * Generate a C# class for a type definition
+ * 
+ * ## Generated Code Structure
+ * - Auto-generated header comment
+ * - #nullable enable directive
+ * - Namespace declaration (base namespace for Shared, nested for others)
+ * - Using statements (System, Collections, Newtonsoft.Json, ApiClient if needed)
+ * - XML documentation comments
+ * - Class declaration with inheritance if applicable
+ * - Properties with JsonProperty attributes
+ * 
+ * ## ApiClient Integration
+ * - Checks if referenced types exist in ApiClient
+ * - Adds using KiloVisualStudioExtension.ApiClient if needed
+ * - Uses ApiClient.TypeName for SDK types that exist in ApiClient
+ * 
+ * @param typeDef - Type definition from contract
+ * @param folder - Target folder/namespace for the generated class
+ * @returns Generated C# code as string
+ */
 function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
   const sb: string[] = []
   
@@ -730,6 +900,21 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
   return sb.join("\n")
 }
 
+/**
+ * Determine the output folder based on the TypeScript source file path
+ * 
+ * ## Folder Mapping Rules
+ * - src/shared/* → Shared
+ * - sdk/js/src/v2/gen/types.gen.ts → Shared (SDK types)
+ * - extension-messages.ts → ExtensionMessages
+ * - webview-messages.ts → WebviewMessages
+ * - marketplace.ts → Shared
+ * - config.ts → KiloConfig (special handling to avoid ApiClient conflict)
+ * - *.ts → PascalCase folder name (e.g., agent-manager.ts → AgentManager)
+ * 
+ * @param sourceFile - Original TypeScript source file path
+ * @returns Target folder name
+ */
 function getSourceFileFolder(sourceFile: string): string {
   const normalizedSource = sourceFile.replace(/\\/g, '/')
   
@@ -761,6 +946,25 @@ function getSourceFileFolder(sourceFile: string): string {
   return 'Shared'
 }
 
+/**
+ * Generate a C# class for a WebView message
+ * 
+ * ## Message Class Structure
+ * - Auto-generated header
+ * - Discriminator property with default value (e.g., `public string Type { get; set; } = "configLoaded";`)
+ * - Other properties with JsonProperty attributes
+ * - XML documentation with discriminator information
+ * 
+ * ## ApiClient Integration
+ * - Checks if any property references a type that exists in ApiClient
+ * - Adds using KiloVisualStudioExtension.ApiClient if needed
+ * - Uses ApiClient.TypeName for SDK types and local types (except config.ts)
+ * 
+ * @param message - Message definition from contract
+ * @param ns - Base namespace
+ * @param folder - Target folder for the message
+ * @returns Generated C# code as string
+ */
 function generateMessageClass(message: MessageType, ns: string, folder: string): string {
   const sb: string[] = []
   
@@ -870,6 +1074,37 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
   return sb.join("\n")
 }
 
+/**
+ * Generate the WebViewMessageFactory class for discriminator-based deserialization
+ * 
+ * ## Factory Pattern
+ * The generated factory provides two methods:
+ * - `Deserialize<T>(JToken token)`: Deserialize from JToken using discriminator
+ * - `Deserialize<T>(string json)`: Deserialize from JSON string
+ * 
+ * ## Discriminator-Based Routing
+ * Uses C# switch expression to route to the correct type based on the "type" field:
+ * ```csharp
+ * return type switch
+ * {
+ *     "configLoaded" => typeof(T) == typeof(ConfigLoadedMessage) 
+ *         ? (T)(object)token.ToObject<ConfigLoadedMessage>(Serializer)! 
+ *         : throw new JsonSerializationException("Type mismatch"),
+ *     // ... more cases
+ *     _ => throw new JsonSerializationException("Unknown message type: " + type)
+ * };
+ * ```
+ * 
+ * ## Design Decisions
+ * - Uses explicit discriminator checking instead of JsonConverter inheritance
+ * - Reuses KiloJsonSerializer from ApiClient (PORT-INFRA-003)
+ * - Avoids issues with nullable annotations and generic converters
+ * 
+ * @param webviewToExt - Messages from webview to extension
+ * @param extToWebview - Messages from extension to webview
+ * @param ns - Base namespace
+ * @returns Generated C# code as string
+ */
 function generateDiscriminatorFactory(
   webviewToExt: MessageType[], 
   extToWebview: MessageType[], 
