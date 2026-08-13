@@ -11,6 +11,7 @@ namespace KiloVisualStudioExtension.WebView.Generated.Connection;
 /// <summary>
 /// Enum: SessionStatus
 /// Generated from union type
+/// Source: connection.ts
 /// </summary>
 public enum SessionStatus
 {

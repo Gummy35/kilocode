@@ -576,11 +576,21 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
         }
         return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.elementType || refName }
       }
-      // For types that exist in ApiClient, use fully qualified name
-      // Exception: types from config.ts should be generated locally
+      // For types that exist in both local generation and ApiClient, use local type
+      // For SDK types that only exist in ApiClient, use ApiClient.TypeName
+      // Exception: types from config.ts should be generated locally even if ApiClient has same name
       const isConfigType = typeDef.sourceFile.includes('config.ts')
-      if (!isConfigType && existingApiTypes.has(refName)) {
+      const isSdkType = typeDef.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
+      
+      if (isConfigType) {
+        // Always use local type for config.ts types
+        return { type: refName, isNullable: prop.optional || prop.nullable, originalType: refName }
+      } else if (isSdkType && existingApiTypes.has(refName)) {
+        // SDK types that exist in ApiClient: use ApiClient.TypeName
         return { type: 'ApiClient.' + refName, isNullable: prop.optional || prop.nullable, originalType: refName }
+      } else if (!isSdkType && existingApiTypes.has(refName)) {
+        // Local types (non-SDK) that exist in ApiClient: use local type (priority over ApiClient)
+        return { type: refName, isNullable: prop.optional || prop.nullable, originalType: refName }
       }
       return { type: refName, isNullable: prop.optional || prop.nullable }
     }
@@ -980,10 +990,13 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
       const isSdkType = refTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
       const isConfigType = refTypeDef?.sourceFile.includes('config.ts')
       
-      // Use ApiClient reference for SDK types or local types (except config.ts types) that exist in ApiClient
-      if (existsInApiClient && (!refTypeDef || isSdkType || !isConfigType)) {
+      // Use ApiClient reference only for SDK types that don't have a local definition
+      // Local types (including config.ts) take priority over ApiClient
+      if (existsInApiClient && isSdkType && !refTypeDef) {
+        // SDK type exists in ApiClient but not locally - use ApiClient reference
         needsApiClientReference = true
       } else if (refTypeDef) {
+        // Local type exists - use local reference (even if ApiClient has same name)
         const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
         if (refFolder !== folder) {
           const refNs = refFolder === 'Shared' ? ns : (ns + "." + refFolder)
@@ -999,12 +1012,12 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
           const refTypeDef = typeDefinitions.get(part)
           const existsInApiClient = existingApiTypes.has(part)
           const isSdkType = refTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
-          const isConfigType = refTypeDef?.sourceFile.includes('config.ts')
           
-          // Use ApiClient reference for SDK types or local types (except config.ts types) that exist in ApiClient
-          if (existsInApiClient && (!refTypeDef || isSdkType || !isConfigType)) {
+          // Use ApiClient reference only for SDK types that don't have a local definition
+          if (existsInApiClient && isSdkType && !refTypeDef) {
             needsApiClientReference = true
           } else if (refTypeDef) {
+            // Local type exists - use local reference
             const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
             if (refFolder !== folder) {
               const refNs = refFolder === 'Shared' ? ns : (ns + "." + refFolder)
@@ -1506,9 +1519,11 @@ for (const [typeName, typeDef] of typeDefinitions) {
     normalizedSource.includes('extension-messages.ts') ||
     normalizedSource.includes('webview-messages.ts')
   
-  // Skip types that already exist in ApiClient
-  if (existingApiTypes.has(typeName)) {
-    console.log(`  Skipping ${typeName} - already exists in ApiClient`)
+  // Skip types that already exist in ApiClient ONLY if they are SDK types
+  // Local types (from VS Code extension) should be added to generation list even if ApiClient has same name
+  const isSdkType = normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts')
+  if (isSdkType && existingApiTypes.has(typeName)) {
+    console.log(`  Skipping ${typeName} - SDK type already exists in ApiClient`)
     continue
   }
   
@@ -1529,10 +1544,11 @@ for (const typeName of generatedOrder) {
   // Normalize source file path
   const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
   
-  // Skip types that already exist in ApiClient - they will be referenced via using statement
-  // But don't skip types from config.ts (like Config) - they should be generated locally
-  const isConfigType = normalizedSource.includes('config.ts')
-  if (!isConfigType && existingApiTypes.has(typeName)) {
+  // Skip types that already exist in ApiClient ONLY if they are SDK types
+  // Local types (from VS Code extension) should be generated locally even if ApiClient has same name
+  const isSdkType = normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts')
+  if (isSdkType && existingApiTypes.has(typeName)) {
+    console.log(`  Skipping ${typeName} - SDK type already exists in ApiClient`)
     continue
   }
   

@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.WebView.Generated.Providers;
 
 /// <summary>
 /// WebView message: SaveCustomProviderMessage

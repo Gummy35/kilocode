@@ -9,11 +9,7 @@
 namespace KiloVisualStudioExtension.WebView.Generated.Parts;
 
 /// <summary>
-/// Enum: ToolState
-/// Generated from union type
+/// Type: Part (placeholder for union)
 /// Source: parts.ts
 /// </summary>
-public enum ToolState
-{
-
-}
+public class Part { }

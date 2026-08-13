@@ -6,14 +6,10 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.Parts;
+namespace KiloVisualStudioExtension.WebView.Generated.KiloConfig;
 
 /// <summary>
-/// Enum: ToolState
-/// Generated from union type
-/// Source: parts.ts
+/// Type: IndexingStatus (placeholder for typeAlias)
+/// Source: config.ts
 /// </summary>
-public enum ToolState
-{
-
-}
+public class IndexingStatus { }
