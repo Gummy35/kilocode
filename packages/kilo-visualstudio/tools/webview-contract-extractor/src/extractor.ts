@@ -727,6 +727,91 @@ function categorizeMessageByDiscriminator(discValue: string): "webviewToExtensio
     : "extensionToWebview"
 }
 
+interface PostMessageExtractResult {
+  properties: PropertyDefinition[]
+  discriminator: DiscriminatorInfo
+}
+
+function extractPostMessageProperties(node: ts.CallExpression): PostMessageExtractResult | null {
+  const expression = node.expression
+  let methodName: string | undefined
+  
+  if (ts.isPropertyAccessExpression(expression)) {
+    methodName = expression.name.getText()
+  } else if (ts.isCallExpression(expression)) {
+    return null
+  }
+  
+  if (methodName !== "postMessage" && methodName !== "sendMessage") {
+    return null
+  }
+  
+  const args = node.arguments
+  if (args.length === 0 || !ts.isObjectLiteralExpression(args[0])) {
+    return null
+  }
+  
+  const properties: PropertyDefinition[] = []
+  let discriminator: DiscriminatorInfo | undefined
+  
+  for (const prop of args[0].properties) {
+    if (!ts.isPropertyAssignment(prop)) {
+      continue
+    }
+    
+    const propName = prop.name.getText()
+    const propValue = prop.initializer
+    
+    let propType: string
+    let literalValue: string | number | boolean | null = null
+    let isLiteral = false
+    
+    if (ts.isStringLiteral(propValue)) {
+      propType = "literal"
+      literalValue = propValue.text
+      isLiteral = true
+    } else if (ts.isNumericLiteral(propValue)) {
+      propType = "literal"
+      literalValue = parseFloat(propValue.text)
+      isLiteral = true
+    } else if (propValue.kind === ts.SyntaxKind.TrueKeyword) {
+      propType = "boolean"
+      literalValue = true
+      isLiteral = true
+    } else if (propValue.kind === ts.SyntaxKind.FalseKeyword) {
+      propType = "boolean"
+      literalValue = false
+      isLiteral = true
+    } else {
+      propType = "object"
+    }
+    
+    properties.push({
+      name: propName,
+      type: propType,
+      optional: false,
+      nullable: false,
+      elementType: null,
+      typeRef: null,
+      literalValue,
+      isLiteral,
+    })
+    
+    if (propName === "type" && isLiteral && typeof literalValue === "string") {
+      discriminator = {
+        field: "type",
+        value: literalValue,
+      }
+    }
+  }
+  
+  if (properties.length === 0 || !discriminator) {
+    return null
+  }
+  
+  return { properties, discriminator }
+}
+
 function scanPostMessageCalls(
   sourceFile: ts.SourceFile,
   context: ExtractionContext
@@ -741,107 +826,28 @@ function scanPostMessageCalls(
   
   const visit = (node: ts.Node): void => {
     if (ts.isCallExpression(node)) {
-      const expression = node.expression
-      let methodName: string | undefined
-      
-      if (ts.isPropertyAccessExpression(expression)) {
-        methodName = expression.name.getText()
-      } else if (ts.isCallExpression(expression)) {
-        return
-      }
-      
-      if (methodName === "postMessage" || methodName === "sendMessage") {
-        const args = node.arguments
-        if (args.length > 0) {
-          const firstArg = args[0]
-          if (ts.isObjectLiteralExpression(firstArg)) {
-            const properties: PropertyDefinition[] = []
-            let discriminator: DiscriminatorInfo | undefined
-            
-            for (const prop of firstArg.properties) {
-              if (ts.isPropertyAssignment(prop)) {
-                const propName = prop.name.getText()
-                const propValue = prop.initializer
-                
-                let propType: string
-                let literalValue: string | number | boolean | null = null
-                let isLiteral = false
-                let typeRef: TypeReference | null = null
-                let elementType: string | null = null
-                
-                if (ts.isStringLiteral(propValue)) {
-                  propType = "literal"
-                  literalValue = propValue.text
-                  isLiteral = true
-                  typeRef = { name: "string", kind: "string" }
-                } else if (ts.isNumericLiteral(propValue)) {
-                  propType = "literal"
-                  literalValue = parseFloat(propValue.text)
-                  isLiteral = true
-                  typeRef = { name: "number", kind: "number" }
-                } else if (ts.isIdentifier(propValue) && (propValue.text === "true" || propValue.text === "false")) {
-                  propType = "literal"
-                  literalValue = propValue.text === "true"
-                  isLiteral = true
-                  typeRef = { name: "boolean", kind: "boolean" }
-                } else if (ts.isArrayLiteralExpression(propValue)) {
-                  propType = "array"
-                  typeRef = { name: "any", kind: "any" }
-                  elementType = "any"
-                } else if (ts.isObjectLiteralExpression(propValue)) {
-                  propType = "object"
-                  typeRef = { name: "object", kind: "object" }
-                } else {
-                  const inferredType = typeChecker.getTypeAtLocation(propValue)
-                  propType = getTypeName(inferredType, typeChecker)
-                  typeRef = { name: propType, kind: getTypeKind(inferredType) }
-                }
-                
-                const propDef: PropertyDefinition = {
-                  name: propName,
-                  type: propType,
-                  optional: false,
-                  nullable: false,
-                  elementType,
-                  typeRef,
-                  literalValue,
-                  isLiteral,
-                }
-                
-                properties.push(propDef)
-                
-                if (propName === "type" && isLiteral && literalValue) {
-                  discriminator = {
-                    field: "type",
-                    value: String(literalValue),
-                  }
-                }
-              }
-            }
-            
-            if (properties.length > 0 && discriminator) {
-              const discValue = discriminator.value
-              const messageKey = `${discriminator.field}:${discriminator.value}`
-              
-              if (!context.extractedMessages.has(messageKey)) {
-                const messageType: MessageType = {
-                  name: `Inline${discriminator.value.charAt(0).toUpperCase() + discriminator.value.slice(1)}Message`,
-                  type: "inline",
-                  discriminator,
-                  properties,
-                  sourceFile: path.relative(VS_CODE_SRC_PATH, sourceFile.fileName),
-                }
-                
-                context.extractedMessages.set(messageKey, messageType)
-                
-                const direction = categorizeMessageByDiscriminator(discValue)
-                if (direction === "webviewToExtension") {
-                  context.messages.webviewToExtension.push(messageType)
-                } else {
-                  context.messages.extensionToWebview.push(messageType)
-                }
-              }
-            }
+      const result = extractPostMessageProperties(node)
+      if (result) {
+        const { properties, discriminator } = result
+        const discValue = discriminator.value
+        const messageKey = `${discriminator.field}:${discriminator.value}`
+        
+        if (!context.extractedMessages.has(messageKey)) {
+          const messageType: MessageType = {
+            name: `Inline${discriminator.value.charAt(0).toUpperCase() + discriminator.value.slice(1)}Message`,
+            type: "inline",
+            discriminator,
+            properties,
+            sourceFile: path.relative(VS_CODE_SRC_PATH, sourceFile.fileName),
+          }
+          
+          context.extractedMessages.set(messageKey, messageType)
+          
+          const direction = categorizeMessageByDiscriminator(discValue)
+          if (direction === "webviewToExtension") {
+            context.messages.webviewToExtension.push(messageType)
+          } else {
+            context.messages.extensionToWebview.push(messageType)
           }
         }
       }
@@ -909,9 +915,7 @@ function main(): void {
 
   console.log()
   console.log("Scanning VS Code source files for postMessage calls...")
-  const vsCodeSrcPathNormalized = VS_CODE_SRC_PATH.replace(/\\/g, "/")
   
-  // Scan actual files on disk using simple AST parsing (no type checking)
   const allTsFiles = findTsFiles(VS_CODE_SRC_PATH).filter(f => 
     !f.includes("node_modules") && 
     !f.includes("webview-ui") &&
@@ -929,102 +933,42 @@ function main(): void {
       ts.ScriptTarget.Latest,
       true
     )
-    // Use a simpler visitor that doesn't require type checking
+    
     const visit = (node: ts.Node): void => {
       if (ts.isCallExpression(node)) {
-        const expression = node.expression
-        let methodName: string | undefined
-        
-        if (ts.isPropertyAccessExpression(expression)) {
-          methodName = expression.name.getText()
-        }
-        
-        if (methodName === "postMessage" || methodName === "sendMessage") {
-          const args = node.arguments
-          if (args.length > 0 && ts.isObjectLiteralExpression(args[0])) {
-            const properties: PropertyDefinition[] = []
-            let discriminator: DiscriminatorInfo | undefined
-            
-            for (const prop of args[0].properties) {
-              if (ts.isPropertyAssignment(prop)) {
-                const propName = prop.name.getText()
-                const propValue = prop.initializer
-                
-                let propType: string
-                let literalValue: string | number | boolean | null = null
-                let isLiteral = false
-                
-                if (ts.isStringLiteral(propValue)) {
-                  propType = "literal"
-                  literalValue = propValue.text
-                  isLiteral = true
-                } else if (ts.isNumericLiteral(propValue)) {
-                  propType = "literal"
-                  literalValue = parseFloat(propValue.text)
-                  isLiteral = true
-                } else if (propValue.kind === ts.SyntaxKind.TrueKeyword) {
-                  propType = "boolean"
-                  literalValue = true
-                  isLiteral = true
-                } else if (propValue.kind === ts.SyntaxKind.FalseKeyword) {
-                  propType = "boolean"
-                  literalValue = false
-                  isLiteral = true
-                } else {
-                  propType = "object"
-                }
-                
-                properties.push({
-                  name: propName,
-                  type: propType,
-                  optional: false,
-                  nullable: false,
-                  elementType: null,
-                  typeRef: null,
-                  literalValue,
-                  isLiteral,
-                })
-                
-                if (propName === "type" && isLiteral && typeof literalValue === "string") {
-                  discriminator = {
-                    field: "type",
-                    value: literalValue,
-                  }
-                }
-              }
-            }
-            
-            if (properties.length > 0 && discriminator) {
-              // Skip if this message already exists in either direction
-              const existingTypedMessage = context.messages.webviewToExtension.find(
-                m => m.discriminator.value === discriminator.value
-              )
-              const existingTypedMessageExtToWeb = context.messages.extensionToWebview.find(
-                m => m.discriminator.value === discriminator.value
-              )
-              if (!existingTypedMessage && !existingTypedMessageExtToWeb) {
-                const existingMessage = context.extractedMessages.get(discriminator.value)
-                if (!existingMessage) {
-                  const messageName = discriminator.value
-                    .split(".")
-                    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-                    .join("") + "Message"
-                  context.extractedMessages.set(discriminator.value, {
-                    name: messageName,
-                    type: "interface",
-                    discriminator,
-                    properties,
-                    sourceFile: relativePath,
-                  })
-                  context.messages.webviewToExtension.push({
-                    name: messageName,
-                    type: "interface",
-                    discriminator,
-                    properties,
-                    sourceFile: relativePath,
-                  })
-                }
-              }
+        const result = extractPostMessageProperties(node)
+        if (result) {
+          const { properties, discriminator } = result
+          
+          // Skip if this message already exists in either direction
+          const existingTypedMessage = context.messages.webviewToExtension.find(
+            m => m.discriminator.value === discriminator.value
+          )
+          const existingTypedMessageExtToWeb = context.messages.extensionToWebview.find(
+            m => m.discriminator.value === discriminator.value
+          )
+          
+          if (!existingTypedMessage && !existingTypedMessageExtToWeb) {
+            const existingMessage = context.extractedMessages.get(discriminator.value)
+            if (!existingMessage) {
+              const messageName = discriminator.value
+                .split(".")
+                .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+                .join("") + "Message"
+              context.extractedMessages.set(discriminator.value, {
+                name: messageName,
+                type: "interface",
+                discriminator,
+                properties,
+                sourceFile: relativePath,
+              })
+              context.messages.webviewToExtension.push({
+                name: messageName,
+                type: "interface",
+                discriminator,
+                properties,
+                sourceFile: relativePath,
+              })
             }
           }
         }
