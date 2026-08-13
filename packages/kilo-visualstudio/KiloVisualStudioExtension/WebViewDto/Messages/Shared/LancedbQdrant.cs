@@ -8,11 +8,18 @@
 
 namespace KiloVisualStudioExtension.WebView.Generated;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: AnacondaDesktopExtensionMessage
+/// Enum: LancedbQdrant
 /// Generated from union type
 /// </summary>
-public enum AnacondaDesktopExtensionMessage
+[JsonConverter(typeof(StringEnumConverter))]
+public enum LancedbQdrant
 {
-
+    [JsonProperty("lancedb")]
+    Lancedb,
+    [JsonProperty("qdrant")]
+    Qdrant
 }

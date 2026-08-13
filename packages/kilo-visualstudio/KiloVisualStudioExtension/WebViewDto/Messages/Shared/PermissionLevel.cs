@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace KiloVisualStudioExtension.WebView.Generated.Shared;
+namespace KiloVisualStudioExtension.WebView.Generated;
 
 /// <summary>
 /// Enum: PermissionLevel

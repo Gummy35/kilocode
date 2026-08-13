@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloVisualStudioExtension.WebView.Generated.Shared;
+using KiloVisualStudioExtension.WebView.Generated;
 
 /// <summary>
 /// WebView message: RemoveInstalledMarketplaceItemMessage

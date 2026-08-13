@@ -63,8 +63,6 @@ interface WebViewContract {
   types: TypeDefinition[]
 }
 
-let contract: WebViewContract
-
 function pascalCase(name: string): string {
   if (!name) return name
   const converted = name.replace(/-([a-z])/g, (match) => match.charAt(1).toUpperCase())
@@ -76,7 +74,6 @@ function pascalCase(name: string): string {
 let contract: WebViewContract
 let typeDefinitions: Map<string, TypeDefinition>
 let generatedTypes: Set<string>
-let processingTypes: Set<string>
 let neededTypes: Set<string>
 let collectingTypes: Set<string>
 let existingApiTypes: Set<string>
@@ -442,8 +439,19 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
         }
         return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.elementType || refName }
       }
+      // For types that exist in ApiClient, use fully qualified name
+      // Exception: types from config.ts should be generated locally
+      const isConfigType = typeDef.sourceFile.includes('config.ts')
+      if (!isConfigType && existingApiTypes.has(refName)) {
+        return { type: 'ApiClient.' + refName, isNullable: prop.optional || prop.nullable, originalType: refName }
+      }
       return { type: refName, isNullable: prop.optional || prop.nullable }
     }
+    // Type not in typeDefinitions but might exist in ApiClient
+    if (existingApiTypes.has(refName)) {
+      return { type: 'ApiClient.' + refName, isNullable: prop.optional || prop.nullable, originalType: refName }
+    }
+    return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
   }
   
   return { type: 'object', isNullable: prop.optional || prop.nullable }
@@ -569,7 +577,6 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
       
       if (typeName) {
         // Only check ApiClient for SDK types (from sdk/js/src/v2/gen/types.gen.ts)
-        // WebView contract message types should always be generated even if they have the same name
         const refTypeDef = typeDefinitions.get(typeName)
         const isSdkType = refTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
         
@@ -579,24 +586,29 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
         } else if (refTypeDef) {
           // Non-SDK type or SDK type not in ApiClient - generate reference
           const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
-          if (refFolder !== folder && refFolder !== 'extensionMessages' && refFolder !== 'webviewMessages') {
-            const refNs = refFolder === 'Types' ? ns : (ns + "." + refFolder)
+          if (refFolder !== folder && refFolder !== 'ExtensionMessages' && refFolder !== 'WebviewMessages') {
+            const refNs = refFolder === 'Shared' ? ns : (ns + "." + refFolder)
             referencedNamespaces.add(refNs)
           }
         }
       }
       // Check elementType for union types
       if (prop.elementType) {
-        const elemTypeDef = typeDefinitions.get(prop.elementType)
-        const isSdkType = elemTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
-        
-        if (isSdkType && existingApiTypes.has(prop.elementType)) {
-          needsApiClientReference = true
-        } else if (elemTypeDef) {
-          const elemFolder = getSourceFileFolder(elemTypeDef.sourceFile)
-          if (elemFolder !== folder && elemFolder !== 'extensionMessages' && elemFolder !== 'webviewMessages') {
-            const elemNs = elemFolder === 'Types' ? ns : (ns + "." + elemFolder)
-            referencedNamespaces.add(elemNs)
+        const typeParts = prop.elementType.split('|').map(p => p.trim())
+        for (const part of typeParts) {
+          if (part && part !== 'undefined' && part !== 'null' && !part.startsWith('"')) {
+            const elemTypeDef = typeDefinitions.get(part)
+            const isSdkType = elemTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
+            
+            if (isSdkType && existingApiTypes.has(part)) {
+              needsApiClientReference = true
+            } else if (elemTypeDef) {
+              const elemFolder = getSourceFileFolder(elemTypeDef.sourceFile)
+              if (elemFolder !== folder && elemFolder !== 'ExtensionMessages' && elemFolder !== 'WebviewMessages') {
+                const elemNs = elemFolder === 'Shared' ? ns : (ns + "." + elemFolder)
+                referencedNamespaces.add(elemNs)
+              }
+            }
           }
         }
       }
@@ -759,19 +771,19 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
     // Check typeRef first
     if (prop.typeRef?.name) {
       const refTypeDef = typeDefinitions.get(prop.typeRef.name)
-      // Only check ApiClient for SDK types
+      // Check if type exists in ApiClient
+      const existsInApiClient = existingApiTypes.has(prop.typeRef.name)
       const isSdkType = refTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
+      const isConfigType = refTypeDef?.sourceFile.includes('config.ts')
       
-      if (isSdkType && existingApiTypes.has(prop.typeRef.name)) {
+      // Use ApiClient reference for SDK types or local types (except config.ts types) that exist in ApiClient
+      if (existsInApiClient && (!refTypeDef || isSdkType || !isConfigType)) {
         needsApiClientReference = true
       } else if (refTypeDef) {
         const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
         if (refFolder !== folder) {
-          if (refFolder === 'Types') {
-            referencedNamespaces.add(ns)
-          } else {
-            referencedNamespaces.add(ns + "." + refFolder)
-          }
+          const refNs = refFolder === 'Shared' ? ns : (ns + "." + refFolder)
+          referencedNamespaces.add(refNs)
         }
       }
     }
@@ -779,21 +791,20 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
     if (prop.elementType) {
       const typeParts = prop.elementType.split('|').map(p => p.trim())
       for (const part of typeParts) {
-        if (part && part !== 'undefined' && part !== 'null') {
+        if (part && part !== 'undefined' && part !== 'null' && !part.startsWith('"')) {
           const refTypeDef = typeDefinitions.get(part)
-          // Only check ApiClient for SDK types
+          const existsInApiClient = existingApiTypes.has(part)
           const isSdkType = refTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
+          const isConfigType = refTypeDef?.sourceFile.includes('config.ts')
           
-          if (isSdkType && existingApiTypes.has(part)) {
+          // Use ApiClient reference for SDK types or local types (except config.ts types) that exist in ApiClient
+          if (existsInApiClient && (!refTypeDef || isSdkType || !isConfigType)) {
             needsApiClientReference = true
           } else if (refTypeDef) {
             const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
             if (refFolder !== folder) {
-              if (refFolder === 'Types') {
-                referencedNamespaces.add(ns)
-              } else {
-                referencedNamespaces.add(ns + "." + refFolder)
-              }
+              const refNs = refFolder === 'Shared' ? ns : (ns + "." + refFolder)
+              referencedNamespaces.add(refNs)
             }
           }
         }
@@ -981,7 +992,6 @@ for (const typeDef of contract.types) {
 
 neededTypes = new Set()
 generatedTypes = new Set()
-processingTypes = new Set()
 collectingTypes = new Set()
 generatedEnums = new Map()
 
@@ -1077,8 +1087,8 @@ for (const [typeName, typeDef] of typeDefinitions) {
         const enumDef: EnumDefinition = { name: enumName, members: literalValues }
         generatedEnums.set(enumName, enumDef)
         
-        // Use base namespace for Types folder, folder namespace for others
-        const enumNamespace = enumFolder === 'Types' ? ns : (ns + "." + enumFolder)
+      // Use base namespace for Shared folder, folder namespace for others
+      const enumNamespace = enumFolder === 'Shared' ? ns : (ns + "." + enumFolder)
         
         const enumCode = `// <auto-generated>
 //     This code was generated by WebViewContractGenerator.
@@ -1130,8 +1140,8 @@ for (const [enumName, enumDef] of generatedEnums) {
     }
   }
   
-  // Use base namespace for Types folder, folder namespace for others
-  const enumNamespace = enumFolder === 'Types' ? ns : (ns + "." + enumFolder)
+  // Use base namespace for Shared folder, folder namespace for others
+  const enumNamespace = enumFolder === 'Shared' ? ns : (ns + "." + enumFolder)
   
   const enumCode = `// <auto-generated>
 //     This code was generated by WebViewContractGenerator.
@@ -1281,8 +1291,13 @@ for (const typeName of generatedOrder) {
   const typeDef = typeDefinitions.get(typeName)
   if (!typeDef) continue
   
+  // Normalize source file path
+  const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
+  
   // Skip types that already exist in ApiClient - they will be referenced via using statement
-  if (existingApiTypes.has(typeName)) {
+  // But don't skip types from config.ts (like Config) - they should be generated locally
+  const isConfigType = normalizedSource.includes('config.ts')
+  if (!isConfigType && existingApiTypes.has(typeName)) {
     continue
   }
   
@@ -1308,7 +1323,6 @@ for (const typeName of generatedOrder) {
   }
   
   // Skip types from node_modules
-  const normalizedSource = typeDef.sourceFile.replace(/\\/g, '/')
   const isNodeModules = normalizedSource.includes('node_modules')
   if (isNodeModules) {
     continue
@@ -1335,7 +1349,7 @@ for (const typeName of generatedOrder) {
       // Generate as enum
       const enumName = typeName
       const enumFolder = typeFolder
-      const enumNamespace = enumFolder === 'Types' ? ns : (ns + "." + enumFolder)
+      const enumNamespace = enumFolder === 'Shared' ? ns : (ns + "." + enumFolder)
       
       const literalValues = typeDef.unionMembers.map(v => {
         if (v.startsWith('"') || v.startsWith("'")) {
@@ -1383,13 +1397,18 @@ ${literalValues.map((m, i) => `    ${pascalCase(m)}${i < literalValues.length - 
       // Check if the referenced type is an SDK type that exists in ApiClient
       const refTypeDef = typeDefinitions.get(referencedTypeName)
       const isSdkType = refTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
-      const needsApiClientReference = isSdkType && existingApiTypes.has(referencedTypeName)
+      // Also check if the referenced type exists in ApiClient (even if not an SDK type)
+      const existsInApiClient = existingApiTypes.has(referencedTypeName)
+      const needsApiClientReference = (isSdkType || existsInApiClient)
       
       // Generate as a type alias (using the referenced type)
-      const namespace = typeFolder === 'Types' ? ns : (ns + "." + typeFolder)
+      const namespace = typeFolder === 'Shared' ? ns : (ns + "." + typeFolder)
       const usingStatements = needsApiClientReference 
         ? 'using KiloVisualStudioExtension.ApiClient;\n' 
         : ''
+      const baseTypeName = needsApiClientReference 
+        ? `ApiClient.${pascalCase(referencedTypeName)}` 
+        : pascalCase(referencedTypeName)
       const code = `// <auto-generated>
 //     This code was generated by WebViewContractGenerator.
 //     Do not modify this file directly as changes will be lost on regeneration.
@@ -1404,7 +1423,7 @@ ${usingStatements}/// <summary>
 /// Type: ${typeName} (alias for ${referencedTypeName})
 /// Source: ${typeDef.sourceFile}
 /// </summary>
-public class ${pascalCase(typeName)} : ${pascalCase(referencedTypeName)} { }
+public class ${pascalCase(typeName)} : ${baseTypeName} { }
 `
       const typeTargetDir = getDirectoryForFolder(typeFolder)
       const filePath = path.join(typeTargetDir, `${pascalCase(typeName)}.cs`)
@@ -1414,8 +1433,8 @@ public class ${pascalCase(typeName)} : ${pascalCase(referencedTypeName)} { }
       continue
     }
     
-    // Use base namespace for Types folder
-    const namespace = typeFolder === 'Types' ? ns : (ns + "." + typeFolder)
+    // Use base namespace for Shared folder
+    const namespace = typeFolder === 'Shared' ? ns : (ns + "." + typeFolder)
     // Generate a placeholder class for needed type aliases/unions
     const code = `// <auto-generated>
 //     This code was generated by WebViewContractGenerator.

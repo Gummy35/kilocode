@@ -8,11 +8,20 @@
 
 namespace KiloVisualStudioExtension.WebView.Generated;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: AnacondaDesktopExtensionMessage
+/// Enum: DisabledManualAuto
 /// Generated from union type
 /// </summary>
-public enum AnacondaDesktopExtensionMessage
+[JsonConverter(typeof(StringEnumConverter))]
+public enum DisabledManualAuto
 {
-
+    [JsonProperty("disabled")]
+    Disabled,
+    [JsonProperty("manual")]
+    Manual,
+    [JsonProperty("auto")]
+    Auto
 }

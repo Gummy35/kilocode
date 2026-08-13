@@ -8,8 +8,9 @@
 
 namespace KiloVisualStudioExtension.WebView.Generated.KiloConfig;
 
+using KiloVisualStudioExtension.ApiClient;
 /// <summary>
 /// Type: SdkIndexingStatus (alias for IndexingStatus)
 /// Source: config.ts
 /// </summary>
-public class SdkIndexingStatus : IndexingStatus { }
+public class SdkIndexingStatus : ApiClient.IndexingStatus { }
