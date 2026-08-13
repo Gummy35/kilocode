@@ -588,8 +588,9 @@ function extractMessageTypes(
       sourceFile: typeDef.sourceFile,
     }
     
-    const direction = categorizeMessageByDiscriminator(typeDef.discriminator.value)
-    const targetArray = direction === "webviewToExtension" 
+    // Determine direction based on source file: webview-messages.ts → webviewToExtension, extension-messages.ts → extensionToWebview
+    const folder = getSourceFileFolder(typeDef.sourceFile)
+    const targetArray = folder === 'WebviewMessages' 
       ? context.messages.webviewToExtension 
       : context.messages.extensionToWebview
     
@@ -646,24 +647,34 @@ function createContract(context: ExtractionContext): WebViewContract {
   }
 }
 
-function categorizeMessageByDiscriminator(discValue: string): "webviewToExtension" | "extensionToWebview" {
-  const webviewToExtensionKeywords = [
-    "continueInWorktree", "action", "diffViewer", "chat", "terminal",
-    "agentManager", "sendMessage", "abort", "createSession", "request",
-    "Reply", "Response", "Accept", "Dismiss", "Delete", "Update",
-    "Open", "Close", "Login", "Logout", "Select", "Set", "Validate",
-    "Compact", "Export", "Rename", "Clear", "Load", "Import",
-    "Refresh", "Telemetry", "Copy", "Preview", "Save", "Continue",
-    "Persist", "Forget", "Promote", "Fork", "Remove", "Filter",
-    "Install", "Connect", "Disconnect", "Authorize", "Fetch",
-    "Toggle", "Reset", "Retry", "Reload", "Enhance", "Apply",
-    "Revert", "Move", "Configure", "Run", "Stop", "Show", "Hide",
-    "Ready", "Focus", "Visible", "FocusChanged"
-  ]
+function getSourceFileFolder(sourceFile: string): string {
+  const normalizedSource = sourceFile.replace(/\\/g, '/')
   
-  return webviewToExtensionKeywords.some(k => discValue.includes(k))
-    ? "webviewToExtension"
-    : "extensionToWebview"
+  // Extract filename from path
+  const filename = normalizedSource.split('/').pop() || ''
+  
+  // Special handling for extension-messages.ts and webview-messages.ts
+  if (filename === 'extension-messages.ts') return 'ExtensionMessages'
+  if (filename === 'webview-messages.ts') return 'WebviewMessages'
+  
+  // marketplace.ts goes to Shared folder (not a message file)
+  if (filename === 'marketplace.ts') return 'Shared'
+  
+  // Derive folder name from filename with PascalCase (e.g., agent-manager.ts → AgentManager)
+  if (filename.endsWith('.ts')) {
+    const baseName = filename.slice(0, -3) // Remove .ts
+    const camelCase = baseName.replace(/-([a-z])/g, (match) => match.charAt(1).toUpperCase())
+    return camelCase.charAt(0).toUpperCase() + camelCase.slice(1)
+  }
+  
+  return 'Shared'
+}
+
+function generateMessageNameFromDiscriminator(discValue: string): string {
+  return discValue
+    .split(".")
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+    .join("") + "Message"
 }
 
 interface PostMessageExtractResult {
@@ -760,20 +771,16 @@ function scanPostMessageCalls(
     return
   }
   
-  const typeChecker = context.typeChecker
-  const sourceText = sourceFile.getFullText()
-  
   const visit = (node: ts.Node): void => {
     if (ts.isCallExpression(node)) {
       const result = extractPostMessageProperties(node)
       if (result) {
         const { properties, discriminator } = result
-        const discValue = discriminator.value
         const messageKey = `${discriminator.field}:${discriminator.value}`
         
         if (!context.extractedMessages.has(messageKey)) {
           const messageType: MessageType = {
-            name: `Inline${discriminator.value.charAt(0).toUpperCase() + discriminator.value.slice(1)}Message`,
+            name: generateMessageNameFromDiscriminator(discriminator.value),
             type: "inline",
             discriminator,
             properties,
@@ -782,12 +789,9 @@ function scanPostMessageCalls(
           
           context.extractedMessages.set(messageKey, messageType)
           
-          const direction = categorizeMessageByDiscriminator(discValue)
-          if (direction === "webviewToExtension") {
-            context.messages.webviewToExtension.push(messageType)
-          } else {
-            context.messages.extensionToWebview.push(messageType)
-          }
+          // Inline messages from VS Code extension source files are always extensionToWebview
+          // since the extension is sending them to the webview
+          context.messages.extensionToWebview.push(messageType)
         }
       }
     }
@@ -890,10 +894,7 @@ function main(): void {
           if (!existingTypedMessage && !existingTypedMessageExtToWeb) {
             const existingMessage = context.extractedMessages.get(discriminator.value)
             if (!existingMessage) {
-              const messageName = discriminator.value
-                .split(".")
-                .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-                .join("") + "Message"
+              const messageName = generateMessageNameFromDiscriminator(discriminator.value)
               context.extractedMessages.set(discriminator.value, {
                 name: messageName,
                 type: "interface",

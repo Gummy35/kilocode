@@ -77,8 +77,6 @@ let generatedTypes: Set<string>
 let processingTypes: Set<string>
 let neededTypes: Set<string>
 let collectingTypes: Set<string>
-let typesDir: string
-let ns: string
 let existingApiTypes: Set<string>
 
 function isPrimitiveType(typeName: string): boolean {
@@ -250,7 +248,8 @@ public enum ${enumName}
 ${enumDef.members.map((m, i) => `    [JsonProperty("${m}")]\n    ${pascalCase(m)}${i < enumDef.members.length - 1 ? ',' : ''}`).join('\n')}
 }
 `
-  const enumFilePath = path.join(typesDir, `${enumName}.cs`)
+  const enumTargetDir = getDirectoryForFolder('Shared')
+  const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
   fs.writeFileSync(enumFilePath, enumCode)
   console.log(`  Generated enum: ${enumName}`)
   
@@ -579,7 +578,8 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
           // Non-SDK type or SDK type not in ApiClient - generate reference
           const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
           if (refFolder !== folder && refFolder !== 'extensionMessages' && refFolder !== 'webviewMessages') {
-            referencedNamespaces.add(ns + "." + refFolder)
+            const refNs = refFolder === 'Types' ? ns : (ns + "." + refFolder)
+            referencedNamespaces.add(refNs)
           }
         }
       }
@@ -593,7 +593,8 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
         } else if (elemTypeDef) {
           const elemFolder = getSourceFileFolder(elemTypeDef.sourceFile)
           if (elemFolder !== folder && elemFolder !== 'extensionMessages' && elemFolder !== 'webviewMessages') {
-            referencedNamespaces.add(ns + "." + elemFolder)
+            const elemNs = elemFolder === 'Types' ? ns : (ns + "." + elemFolder)
+            referencedNamespaces.add(elemNs)
           }
         }
       }
@@ -605,8 +606,8 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
   sb.push("")
   sb.push("#nullable enable")
   sb.push("")
-  // Use base namespace for Types folder, folder namespace for others
-  const namespace = folder === 'Types' ? ns : (ns + "." + folder)
+  // Use base namespace for Shared folder, folder namespace for others
+  const namespace = folder === 'Shared' ? ns : (ns + "." + folder)
   sb.push("namespace " + namespace + ";")
   sb.push("")
   sb.push("using System;")
@@ -717,24 +718,33 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
 
 function getSourceFileFolder(sourceFile: string): string {
   const normalizedSource = sourceFile.replace(/\\/g, '/')
-  if (normalizedSource.includes('connection.ts')) return 'connection'
-  if (normalizedSource.includes('parts.ts')) return 'parts'
-  if (normalizedSource.includes('sessions.ts')) return 'sessions'
-  if (normalizedSource.includes('permissions.ts')) return 'permissions'
-  if (normalizedSource.includes('questions.ts')) return 'questions'
-  if (normalizedSource.includes('providers.ts')) return 'providers'
-  if (normalizedSource.includes('agents.ts')) return 'agents'
-  if (normalizedSource.includes('config.ts')) return 'config'
-  if (normalizedSource.includes('profile.ts')) return 'profile'
-  if (normalizedSource.includes('agent-manager.ts')) return 'agentManager'
-  if (normalizedSource.includes('migration.ts')) return 'migration'
-  if (normalizedSource.includes('memory.ts')) return 'memory'
-  if (normalizedSource.includes('extension-messages.ts')) return 'extensionMessages'
-  if (normalizedSource.includes('webview-messages.ts')) return 'webviewMessages'
-  // Types from src/shared or SDK go in the base Types folder
-  if (normalizedSource.includes('src/shared')) return 'Types'
-  if (normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts')) return 'Types'
-  return 'Types'
+  
+  // Types from src/shared or SDK go in the Shared folder
+  if (normalizedSource.includes('src/shared') || normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts')) {
+    return 'Shared'
+  }
+  
+  // Extract filename from path
+  const filename = normalizedSource.split('/').pop() || ''
+  
+  // Special handling for extension-messages.ts and webview-messages.ts
+  if (filename === 'extension-messages.ts') return 'ExtensionMessages'
+  if (filename === 'webview-messages.ts') return 'WebviewMessages'
+  
+  // marketplace.ts goes to Shared folder (not a message file)
+  if (filename === 'marketplace.ts') return 'Shared'
+  
+  // config.ts uses KiloConfig to avoid namespace conflict with Config type from ApiClient
+  if (filename === 'config.ts') return 'KiloConfig'
+  
+  // Derive folder name from filename with PascalCase (e.g., agent-manager.ts → AgentManager)
+  if (filename.endsWith('.ts')) {
+    const baseName = filename.slice(0, -3) // Remove .ts
+    const camelCase = baseName.replace(/-([a-z])/g, (match) => match.charAt(1).toUpperCase())
+    return camelCase.charAt(0).toUpperCase() + camelCase.slice(1)
+  }
+  
+  return 'Shared'
 }
 
 function generateMessageClass(message: MessageType, ns: string, folder: string): string {
@@ -979,41 +989,36 @@ console.log(`WebView→Extension messages: ${contract.messages.webviewToExtensio
 console.log(`Extension→WebView messages: ${contract.messages.extensionToWebview.length}`)
 console.log()
 
-// Create namespace-based folder structure
-const connectionDir = path.join(OUTPUT_PATH, "Messages", "connection")
-const partsDir = path.join(OUTPUT_PATH, "Messages", "parts")
-const sessionsDir = path.join(OUTPUT_PATH, "Messages", "sessions")
-const permissionsDir = path.join(OUTPUT_PATH, "Messages", "permissions")
-const questionsDir = path.join(OUTPUT_PATH, "Messages", "questions")
-const providersDir = path.join(OUTPUT_PATH, "Messages", "providers")
-const agentsDir = path.join(OUTPUT_PATH, "Messages", "agents")
-const configDir = path.join(OUTPUT_PATH, "Messages", "config")
-const profileDir = path.join(OUTPUT_PATH, "Messages", "profile")
-const agentManagerDir = path.join(OUTPUT_PATH, "Messages", "agentManager")
-const migrationDir = path.join(OUTPUT_PATH, "Messages", "migration")
-const memoryDir = path.join(OUTPUT_PATH, "Messages", "memory")
-const extensionMessagesDir = path.join(OUTPUT_PATH, "Messages", "extensionMessages")
-const webviewMessagesDir = path.join(OUTPUT_PATH, "Messages", "webviewMessages")
-typesDir = path.join(OUTPUT_PATH, "Types")
+// Create namespace-based folder structure with PascalCase folder names
+const DIRECTORY_MAP: Record<string, string> = {
+  'Shared': path.join(OUTPUT_PATH, "Messages", "Shared"),
+  'Connection': path.join(OUTPUT_PATH, "Messages", "Connection"),
+  'Parts': path.join(OUTPUT_PATH, "Messages", "Parts"),
+  'Sessions': path.join(OUTPUT_PATH, "Messages", "Sessions"),
+  'Permissions': path.join(OUTPUT_PATH, "Messages", "Permissions"),
+  'Questions': path.join(OUTPUT_PATH, "Messages", "Questions"),
+  'Providers': path.join(OUTPUT_PATH, "Messages", "Providers"),
+  'Agents': path.join(OUTPUT_PATH, "Messages", "Agents"),
+  'KiloConfig': path.join(OUTPUT_PATH, "Messages", "KiloConfig"),
+  'Profile': path.join(OUTPUT_PATH, "Messages", "Profile"),
+  'AgentManager': path.join(OUTPUT_PATH, "Messages", "AgentManager"),
+  'Migration': path.join(OUTPUT_PATH, "Messages", "Migration"),
+  'Memory': path.join(OUTPUT_PATH, "Messages", "Memory"),
+  'ExtensionMessages': path.join(OUTPUT_PATH, "Messages", "ExtensionMessages"),
+  'WebviewMessages': path.join(OUTPUT_PATH, "Messages", "WebviewMessages"),
+}
 
-ns = "KiloVisualStudioExtension.WebView.Generated"
+function getDirectoryForFolder(folder: string): string {
+  return DIRECTORY_MAP[folder] || DIRECTORY_MAP['Shared']
+}
+
+const ns = "KiloVisualStudioExtension.WebView.Generated"
 
 // Create all directories
-fs.mkdirSync(connectionDir, { recursive: true })
-fs.mkdirSync(partsDir, { recursive: true })
-fs.mkdirSync(sessionsDir, { recursive: true })
-fs.mkdirSync(permissionsDir, { recursive: true })
-fs.mkdirSync(questionsDir, { recursive: true })
-fs.mkdirSync(providersDir, { recursive: true })
-fs.mkdirSync(agentsDir, { recursive: true })
-fs.mkdirSync(configDir, { recursive: true })
-fs.mkdirSync(profileDir, { recursive: true })
-fs.mkdirSync(agentManagerDir, { recursive: true })
-fs.mkdirSync(migrationDir, { recursive: true })
-fs.mkdirSync(memoryDir, { recursive: true })
-fs.mkdirSync(extensionMessagesDir, { recursive: true })
-fs.mkdirSync(webviewMessagesDir, { recursive: true })
-fs.mkdirSync(typesDir, { recursive: true })
+for (const dir of Object.values(DIRECTORY_MAP)) {
+  fs.mkdirSync(dir, { recursive: true })
+}
+const sharedDir = DIRECTORY_MAP['Shared']
 
 // Collect message names to avoid generating them as types
 const messageNames = new Set<string>()
@@ -1093,25 +1098,7 @@ public enum ${enumName}
 ${enumDef.members.map((m, i) => `    ${pascalCase(m)}${i < enumDef.members.length - 1 ? ',' : ''}`).join('\n')}
 }
 `
-        let enumTargetDir: string
-        switch (enumFolder) {
-          case 'connection': enumTargetDir = connectionDir; break
-          case 'parts': enumTargetDir = partsDir; break
-          case 'sessions': enumTargetDir = sessionsDir; break
-          case 'permissions': enumTargetDir = permissionsDir; break
-          case 'questions': enumTargetDir = questionsDir; break
-          case 'providers': enumTargetDir = providersDir; break
-          case 'agents': enumTargetDir = agentsDir; break
-          case 'config': enumTargetDir = configDir; break
-          case 'profile': enumTargetDir = profileDir; break
-          case 'agentManager': enumTargetDir = agentManagerDir; break
-          case 'migration': enumTargetDir = migrationDir; break
-          case 'memory': enumTargetDir = memoryDir; break
-          case 'extensionMessages': enumTargetDir = extensionMessagesDir; break
-          case 'webviewMessages': enumTargetDir = webviewMessagesDir; break
-          case 'Types': enumTargetDir = typesDir; break
-          default: enumTargetDir = typesDir; break
-        }
+        const enumTargetDir = getDirectoryForFolder(enumFolder)
         const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
         fs.writeFileSync(enumFilePath, enumCode)
         console.log(`  Generated enum: ${enumName} (${enumFolder})`)
@@ -1163,24 +1150,7 @@ public enum ${enumName}
 ${enumDef.members.map((m, i) => `    ${pascalCase(m)}${i < enumDef.members.length - 1 ? ',' : ''}`).join('\n')}
 }
 `
-  let enumTargetDir: string
-  switch (enumFolder) {
-    case 'connection': enumTargetDir = connectionDir; break
-    case 'parts': enumTargetDir = partsDir; break
-    case 'sessions': enumTargetDir = sessionsDir; break
-    case 'permissions': enumTargetDir = permissionsDir; break
-    case 'questions': enumTargetDir = questionsDir; break
-    case 'providers': enumTargetDir = providersDir; break
-    case 'agents': enumTargetDir = agentsDir; break
-    case 'config': enumTargetDir = configDir; break
-    case 'profile': enumTargetDir = profileDir; break
-    case 'agentManager': enumTargetDir = agentManagerDir; break
-    case 'migration': enumTargetDir = migrationDir; break
-    case 'memory': enumTargetDir = memoryDir; break
-    case 'extensionMessages': enumTargetDir = extensionMessagesDir; break
-    case 'webviewMessages': enumTargetDir = webviewMessagesDir; break
-    default: enumTargetDir = typesDir; break
-  }
+  const enumTargetDir = getDirectoryForFolder(enumFolder)
   const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
   fs.writeFileSync(enumFilePath, enumCode)
   console.log(`  Generated enum: ${enumName} (${enumFolder})`)
@@ -1392,25 +1362,7 @@ public enum ${enumName}
 ${literalValues.map((m, i) => `    ${pascalCase(m)}${i < literalValues.length - 1 ? ',' : ''}`).join('\n')}
 }
 `
-      let enumTargetDir: string
-      switch (enumFolder) {
-        case 'connection': enumTargetDir = connectionDir; break
-        case 'parts': enumTargetDir = partsDir; break
-        case 'sessions': enumTargetDir = sessionsDir; break
-        case 'permissions': enumTargetDir = permissionsDir; break
-        case 'questions': enumTargetDir = questionsDir; break
-        case 'providers': enumTargetDir = providersDir; break
-        case 'agents': enumTargetDir = agentsDir; break
-        case 'config': enumTargetDir = configDir; break
-        case 'profile': enumTargetDir = profileDir; break
-        case 'agentManager': enumTargetDir = agentManagerDir; break
-        case 'migration': enumTargetDir = migrationDir; break
-        case 'memory': enumTargetDir = memoryDir; break
-        case 'extensionMessages': enumTargetDir = extensionMessagesDir; break
-        case 'webviewMessages': enumTargetDir = webviewMessagesDir; break
-        case 'Types': enumTargetDir = typesDir; break
-        default: enumTargetDir = typesDir; break
-      }
+      const enumTargetDir = getDirectoryForFolder(enumFolder)
       const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
       fs.writeFileSync(enumFilePath, enumCode)
       generatedTypes.add(typeName)
@@ -1452,25 +1404,7 @@ ${usingStatements}/// <summary>
 /// </summary>
 public class ${pascalCase(typeName)} : ${pascalCase(referencedTypeName)} { }
 `
-      let typeTargetDir: string
-      switch (typeFolder) {
-        case 'connection': typeTargetDir = connectionDir; break
-        case 'parts': typeTargetDir = partsDir; break
-        case 'sessions': typeTargetDir = sessionsDir; break
-        case 'permissions': typeTargetDir = permissionsDir; break
-        case 'questions': typeTargetDir = questionsDir; break
-        case 'providers': typeTargetDir = providersDir; break
-        case 'agents': typeTargetDir = agentsDir; break
-        case 'config': typeTargetDir = configDir; break
-        case 'profile': typeTargetDir = profileDir; break
-        case 'agentManager': typeTargetDir = agentManagerDir; break
-        case 'migration': typeTargetDir = migrationDir; break
-        case 'memory': typeTargetDir = memoryDir; break
-        case 'extensionMessages': typeTargetDir = extensionMessagesDir; break
-        case 'webviewMessages': typeTargetDir = webviewMessagesDir; break
-        case 'Types': typeTargetDir = typesDir; break
-        default: typeTargetDir = typesDir; break
-      }
+      const typeTargetDir = getDirectoryForFolder(typeFolder)
       const filePath = path.join(typeTargetDir, `${pascalCase(typeName)}.cs`)
       fs.writeFileSync(filePath, code)
       generatedTypes.add(typeName)
@@ -1497,25 +1431,7 @@ namespace ${namespace};
 /// </summary>
 public class ${pascalCase(typeName)} { }
 `
-    let typeTargetDir: string
-    switch (typeFolder) {
-      case 'connection': typeTargetDir = connectionDir; break
-      case 'parts': typeTargetDir = partsDir; break
-      case 'sessions': typeTargetDir = sessionsDir; break
-      case 'permissions': typeTargetDir = permissionsDir; break
-      case 'questions': typeTargetDir = questionsDir; break
-      case 'providers': typeTargetDir = providersDir; break
-      case 'agents': typeTargetDir = agentsDir; break
-      case 'config': typeTargetDir = configDir; break
-      case 'profile': typeTargetDir = profileDir; break
-      case 'agentManager': typeTargetDir = agentManagerDir; break
-      case 'migration': typeTargetDir = migrationDir; break
-      case 'memory': typeTargetDir = memoryDir; break
-      case 'extensionMessages': typeTargetDir = extensionMessagesDir; break
-      case 'webviewMessages': typeTargetDir = webviewMessagesDir; break
-      case 'Types': typeTargetDir = typesDir; break
-      default: typeTargetDir = typesDir; break
-    }
+    const typeTargetDir = getDirectoryForFolder(typeFolder)
     const filePath = path.join(typeTargetDir, `${pascalCase(typeName)}.cs`)
     fs.writeFileSync(filePath, code)
     generatedTypes.add(typeName)
@@ -1531,25 +1447,7 @@ public class ${pascalCase(typeName)} { }
   }
   
   const code = generateTypeClass(typeDef, typeFolder)
-  let typeTargetDir: string
-  switch (typeFolder) {
-    case 'connection': typeTargetDir = connectionDir; break
-    case 'parts': typeTargetDir = partsDir; break
-    case 'sessions': typeTargetDir = sessionsDir; break
-    case 'permissions': typeTargetDir = permissionsDir; break
-    case 'questions': typeTargetDir = questionsDir; break
-    case 'providers': typeTargetDir = providersDir; break
-    case 'agents': typeTargetDir = agentsDir; break
-    case 'config': typeTargetDir = configDir; break
-    case 'profile': typeTargetDir = profileDir; break
-    case 'agentManager': typeTargetDir = agentManagerDir; break
-    case 'migration': typeTargetDir = migrationDir; break
-    case 'memory': typeTargetDir = memoryDir; break
-    case 'extensionMessages': typeTargetDir = extensionMessagesDir; break
-    case 'webviewMessages': typeTargetDir = webviewMessagesDir; break
-    case 'Types': typeTargetDir = typesDir; break
-    default: typeTargetDir = typesDir; break
-  }
+  const typeTargetDir = getDirectoryForFolder(typeFolder)
   const filePath = path.join(typeTargetDir, `${typeDef.name}.cs`)
   fs.writeFileSync(filePath, code)
   generatedTypes.add(typeDef.name)
@@ -1571,24 +1469,7 @@ for (const message of contract.messages.webviewToExtension) {
   }
   const folder = getSourceFileFolder(message.sourceFile)
   const code = generateMessageClass(message, ns, folder)
-  let targetDir: string
-  switch (folder) {
-    case 'connection': targetDir = connectionDir; break
-    case 'parts': targetDir = partsDir; break
-    case 'sessions': targetDir = sessionsDir; break
-    case 'permissions': targetDir = permissionsDir; break
-    case 'questions': targetDir = questionsDir; break
-    case 'providers': targetDir = providersDir; break
-    case 'agents': targetDir = agentsDir; break
-    case 'config': targetDir = configDir; break
-    case 'profile': targetDir = profileDir; break
-    case 'agentManager': targetDir = agentManagerDir; break
-    case 'migration': targetDir = migrationDir; break
-    case 'memory': targetDir = memoryDir; break
-    case 'extensionMessages': targetDir = extensionMessagesDir; break
-    case 'webviewMessages': targetDir = webviewMessagesDir; break
-    default: targetDir = extensionMessagesDir; break
-  }
+  const targetDir = getDirectoryForFolder(folder)
   const filePath = path.join(targetDir, `${pascalCase(message.name)}.cs`)
   fs.writeFileSync(filePath, code)
   generatedCount++
@@ -1606,24 +1487,7 @@ for (const message of contract.messages.extensionToWebview) {
   }
   const folder = getSourceFileFolder(message.sourceFile)
   const code = generateMessageClass(message, ns, folder)
-  let targetDir: string
-  switch (folder) {
-    case 'connection': targetDir = connectionDir; break
-    case 'parts': targetDir = partsDir; break
-    case 'sessions': targetDir = sessionsDir; break
-    case 'permissions': targetDir = permissionsDir; break
-    case 'questions': targetDir = questionsDir; break
-    case 'providers': targetDir = providersDir; break
-    case 'agents': targetDir = agentsDir; break
-    case 'config': targetDir = configDir; break
-    case 'profile': targetDir = profileDir; break
-    case 'agentManager': targetDir = agentManagerDir; break
-    case 'migration': targetDir = migrationDir; break
-    case 'memory': targetDir = memoryDir; break
-    case 'extensionMessages': targetDir = extensionMessagesDir; break
-    case 'webviewMessages': targetDir = webviewMessagesDir; break
-    default: targetDir = extensionMessagesDir; break
-  }
+  const targetDir = getDirectoryForFolder(folder)
   const filePath = path.join(targetDir, `${pascalCase(message.name)}.cs`)
   fs.writeFileSync(filePath, code)
   generatedCount++
