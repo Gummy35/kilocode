@@ -28,14 +28,13 @@ public class MessagesLoadedMessage
     [JsonProperty("messages")]
     public List<Message> Messages { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "replace" | "prepend" | "reconcile"
-    public object? Mode { get; set; }
+    public ReplacePrependReconcile? Mode { get; set; }
     [JsonProperty("cursor", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Cursor { get; set; }
     [JsonProperty("hasMore", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? HasMore { get; set; }
+    public bool? HasMore { get; set; }
     [JsonProperty("since", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number
     public double? Since { get; set; }

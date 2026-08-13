@@ -65,22 +65,19 @@ public class Config
     public SkillsConfig? Skills { get; set; }
     [JsonProperty("snapshot", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Snapshot { get; set; }
+    public bool? Snapshot { get; set; }
     [JsonProperty("remote_control", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Remote_control { get; set; }
+    public bool? Remote_control { get; set; }
     [JsonProperty("terminal_command_display", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "expanded" | "collapsed"
-    public object? Terminal_command_display { get; set; }
+    public ExpandedCollapsed? Terminal_command_display { get; set; }
     [JsonProperty("code_edit_display", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "expanded" | "collapsed"
-    public object? Code_edit_display { get; set; }
+    public ExpandedCollapsed? Code_edit_display { get; set; }
     [JsonProperty("hide_prompt_training_models", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Hide_prompt_training_models { get; set; }
+    public bool? Hide_prompt_training_models { get; set; }
     [JsonProperty("share", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "disabled" | "manual" | "auto"
-    public object? Share { get; set; }
+    public DisabledManualAuto? Share { get; set; }
     [JsonProperty("username", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Username { get; set; }
@@ -104,7 +101,7 @@ public class Config
     public object? Tools { get; set; }
     [JsonProperty("auto_collapse_reasoning", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Auto_collapse_reasoning { get; set; }
+    public bool? Auto_collapse_reasoning { get; set; }
     [JsonProperty("experimental", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | ExperimentalConfig
     public ExperimentalConfig? Experimental { get; set; }

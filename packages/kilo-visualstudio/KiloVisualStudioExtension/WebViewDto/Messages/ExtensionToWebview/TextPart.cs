@@ -27,7 +27,7 @@ public class TextPart
     public string Text { get; set; }
     [JsonProperty("synthetic", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Synthetic { get; set; }
+    public bool? Synthetic { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Time { get; set; }

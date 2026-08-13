@@ -30,11 +30,10 @@ public class MemoryOperationMessage
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "status" | "on" | "off"
-    public object? Mode { get; set; }
+    public StatusOnOff? Mode { get; set; }
     [JsonProperty("confirm", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Confirm { get; set; }
+    public bool? Confirm { get; set; }
     [JsonProperty("text", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Text { get; set; }

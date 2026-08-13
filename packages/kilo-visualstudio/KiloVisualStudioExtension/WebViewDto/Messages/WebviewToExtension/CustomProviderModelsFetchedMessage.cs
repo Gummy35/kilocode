@@ -33,5 +33,5 @@ public class CustomProviderModelsFetchedMessage
     public string? Error { get; set; }
     [JsonProperty("auth", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Auth { get; set; }
+    public bool? Auth { get; set; }
 }

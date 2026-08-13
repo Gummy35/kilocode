@@ -20,22 +20,22 @@ public class ExperimentalConfig
 {
     [JsonProperty("batch_tool", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Batch_tool { get; set; }
+    public bool? Batch_tool { get; set; }
     [JsonProperty("codebase_search", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Codebase_search { get; set; }
+    public bool? Codebase_search { get; set; }
     [JsonProperty("image_generation", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Image_generation { get; set; }
+    public bool? Image_generation { get; set; }
     [JsonProperty("image_generation_model", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Image_generation_model { get; set; }
     [JsonProperty("agent_requirements", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Agent_requirements { get; set; }
+    public bool? Agent_requirements { get; set; }
     [JsonProperty("native_notebook_tools", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Native_notebook_tools { get; set; }
+    public bool? Native_notebook_tools { get; set; }
     [JsonProperty("speech_to_text_model", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Speech_to_text_model { get; set; }
@@ -44,13 +44,13 @@ public class ExperimentalConfig
     public object? Primary_tools { get; set; }
     [JsonProperty("continue_loop_on_deny", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Continue_loop_on_deny { get; set; }
+    public bool? Continue_loop_on_deny { get; set; }
     [JsonProperty("mcp_timeout", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number
     public double? Mcp_timeout { get; set; }
     [JsonProperty("swe_pruner", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Swe_pruner { get; set; }
+    public bool? Swe_pruner { get; set; }
     [JsonProperty("swe_pruner_model", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Swe_pruner_model { get; set; }

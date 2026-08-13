@@ -29,5 +29,5 @@ public class GitChangesContextResultMessage
     public string Content { get; set; }
     [JsonProperty("truncated", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Truncated { get; set; }
+    public bool? Truncated { get; set; }
 }

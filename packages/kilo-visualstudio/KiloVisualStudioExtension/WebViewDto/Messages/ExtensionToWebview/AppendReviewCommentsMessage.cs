@@ -27,5 +27,5 @@ public class AppendReviewCommentsMessage
     public List<ReviewCommentData> Comments { get; set; }
     [JsonProperty("autoSend", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? AutoSend { get; set; }
+    public bool? AutoSend { get; set; }
 }

@@ -19,8 +19,7 @@ using Newtonsoft.Json;
 public class InstallMarketplaceItemOptions
 {
     [JsonProperty("target", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "global" | "project"
-    public object? Target { get; set; }
+    public GlobalProject? Target { get; set; }
     [JsonProperty("parameters", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Parameters { get; set; }

@@ -34,5 +34,5 @@ public class BranchInfo
     public string? LastCommitDate { get; set; }
     [JsonProperty("isCheckedOut", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? IsCheckedOut { get; set; }
+    public bool? IsCheckedOut { get; set; }
 }

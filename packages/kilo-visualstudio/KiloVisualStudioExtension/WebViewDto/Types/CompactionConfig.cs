@@ -20,11 +20,11 @@ public class CompactionConfig
 {
     [JsonProperty("auto", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Auto { get; set; }
+    public bool? Auto { get; set; }
     [JsonProperty("threshold_percent", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | null | number
     public double? Threshold_percent { get; set; }
     [JsonProperty("prune", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Prune { get; set; }
+    public bool? Prune { get; set; }
 }

@@ -29,6 +29,5 @@ public class AgentManagerPRStatusMessage
     // Original TypeScript type: null | PRStatus
     public PRStatus? Pr { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "gh_missing" | "gh_auth" | "fetch_failed"
-    public object? Error { get; set; }
+    public GhmissingGhauthFetchfailed? Error { get; set; }
 }

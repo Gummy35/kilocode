@@ -26,10 +26,10 @@ public class QuestionRequest
     public List<QuestionInfo> Questions { get; set; }
     [JsonProperty("blocking", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Blocking { get; set; }
+    public bool? Blocking { get; set; }
     [JsonProperty("autoSubmit", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? AutoSubmit { get; set; }
+    public bool? AutoSubmit { get; set; }
     [JsonProperty("dismissResponse", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | "continue"
     public string? DismissResponse { get; set; }

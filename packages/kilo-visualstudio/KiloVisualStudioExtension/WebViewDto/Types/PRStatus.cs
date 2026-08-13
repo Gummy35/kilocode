@@ -28,8 +28,7 @@ public class PRStatus
     // Original TypeScript type: literal
     public string State { get; set; }
     [JsonProperty("review", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: null | "approved" | "changes_requested" | "pending"
-    public object? Review { get; set; }
+    public ApprovedChangesrequestedPending? Review { get; set; }
     [JsonProperty("checks")]
     // Original TypeScript type: __type
     public object Checks { get; set; }

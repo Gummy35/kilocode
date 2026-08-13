@@ -26,10 +26,10 @@ public class QuestionInfo
     public List<QuestionOption> Options { get; set; }
     [JsonProperty("multiple", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Multiple { get; set; }
+    public bool? Multiple { get; set; }
     [JsonProperty("custom", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Custom { get; set; }
+    public bool? Custom { get; set; }
     [JsonProperty("questionKey", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? QuestionKey { get; set; }

@@ -26,6 +26,5 @@ public class DiffImageSide
     // Original TypeScript type: undefined | string
     public string? Data { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "too-large" | "unreadable"
-    public object? Error { get; set; }
+    public TooLargeUnreadable? Error { get; set; }
 }

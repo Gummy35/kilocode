@@ -27,5 +27,5 @@ public class PermissionErrorMessage
     public string PermissionID { get; set; }
     [JsonProperty("stale", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Stale { get; set; }
+    public bool? Stale { get; set; }
 }

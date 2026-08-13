@@ -41,19 +41,18 @@ public class AgentManagerStateMessage
     public object? WorktreeOrder { get; set; }
     [JsonProperty("sessionsCollapsed", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? SessionsCollapsed { get; set; }
+    public bool? SessionsCollapsed { get; set; }
     [JsonProperty("sidebarCollapsed", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? SidebarCollapsed { get; set; }
+    public bool? SidebarCollapsed { get; set; }
     [JsonProperty("reviewDiffStyle", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "unified" | "split"
-    public object? ReviewDiffStyle { get; set; }
+    public UnifiedSplit? ReviewDiffStyle { get; set; }
     [JsonProperty("reviewMarkdownRender", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? ReviewMarkdownRender { get; set; }
+    public bool? ReviewMarkdownRender { get; set; }
     [JsonProperty("isGitRepo", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? IsGitRepo { get; set; }
+    public bool? IsGitRepo { get; set; }
     [JsonProperty("defaultBaseBranch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? DefaultBaseBranch { get; set; }
@@ -62,7 +61,7 @@ public class AgentManagerStateMessage
     public object? RunStatuses { get; set; }
     [JsonProperty("runScriptConfigured", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? RunScriptConfigured { get; set; }
+    public bool? RunScriptConfigured { get; set; }
     [JsonProperty("runScriptPath", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? RunScriptPath { get; set; }

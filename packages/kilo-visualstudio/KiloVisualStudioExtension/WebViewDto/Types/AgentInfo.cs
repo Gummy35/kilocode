@@ -31,13 +31,13 @@ public class AgentInfo
     public string Mode { get; set; }
     [JsonProperty("native", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Native { get; set; }
+    public bool? Native { get; set; }
     [JsonProperty("hidden", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Hidden { get; set; }
+    public bool? Hidden { get; set; }
     [JsonProperty("deprecated", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Deprecated { get; set; }
+    public bool? Deprecated { get; set; }
     [JsonProperty("color", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Color { get; set; }

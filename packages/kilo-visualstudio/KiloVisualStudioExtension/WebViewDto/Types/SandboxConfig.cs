@@ -20,10 +20,9 @@ public class SandboxConfig
 {
     [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Enabled { get; set; }
+    public bool? Enabled { get; set; }
     [JsonProperty("network", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "allow" | "deny"
-    public object? Network { get; set; }
+    public AllowDeny? Network { get; set; }
     [JsonProperty("writable_paths", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array
     public object? Writable_paths { get; set; }

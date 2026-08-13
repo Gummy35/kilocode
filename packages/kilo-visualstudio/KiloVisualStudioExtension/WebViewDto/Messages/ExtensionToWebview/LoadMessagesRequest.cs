@@ -26,8 +26,7 @@ public class LoadMessagesRequest
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "replace" | "prepend" | "focus" | "reconcile"
-    public object? Mode { get; set; }
+    public ReplacePrependFocusReconcile? Mode { get; set; }
     [JsonProperty("before", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Before { get; set; }

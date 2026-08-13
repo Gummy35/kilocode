@@ -35,5 +35,5 @@ public class MarketplaceDataMessage
     public object? Errors { get; set; }
     [JsonProperty("showAgentMigrationBanner", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? ShowAgentMigrationBanner { get; set; }
+    public bool? ShowAgentMigrationBanner { get; set; }
 }

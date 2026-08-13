@@ -57,5 +57,5 @@ public class CreateMultiVersionRequest
     public object? ModelAllocations { get; set; }
     [JsonProperty("sandbox", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Sandbox { get; set; }
+    public bool? Sandbox { get; set; }
 }

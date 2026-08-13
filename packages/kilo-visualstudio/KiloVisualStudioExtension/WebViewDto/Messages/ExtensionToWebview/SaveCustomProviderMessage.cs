@@ -34,5 +34,5 @@ public class SaveCustomProviderMessage
     public string? ApiKey { get; set; }
     [JsonProperty("apiKeyChanged", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? ApiKeyChanged { get; set; }
+    public bool? ApiKeyChanged { get; set; }
 }

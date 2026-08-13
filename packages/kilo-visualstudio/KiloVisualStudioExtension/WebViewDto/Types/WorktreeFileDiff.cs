@@ -32,17 +32,16 @@ public class WorktreeFileDiff
     [JsonProperty("deletions")]
     public double Deletions { get; set; }
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "added" | "deleted" | "modified"
-    public object? Status { get; set; }
+    public AddedDeletedModified? Status { get; set; }
     [JsonProperty("tracked", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Tracked { get; set; }
+    public bool? Tracked { get; set; }
     [JsonProperty("generatedLike", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? GeneratedLike { get; set; }
+    public bool? GeneratedLike { get; set; }
     [JsonProperty("summarized", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Summarized { get; set; }
+    public bool? Summarized { get; set; }
     [JsonProperty("stamp", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Stamp { get; set; }

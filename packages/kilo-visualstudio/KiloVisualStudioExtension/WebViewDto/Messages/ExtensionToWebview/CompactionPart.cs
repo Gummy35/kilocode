@@ -28,7 +28,7 @@ public class CompactionPart
     public string Auto { get; set; }
     [JsonProperty("overflow", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Overflow { get; set; }
+    public bool? Overflow { get; set; }
     [JsonProperty("tail_start_id", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Tail_start_id { get; set; }

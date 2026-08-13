@@ -28,7 +28,7 @@ public class SuggestionRequest
     public List<SuggestionAction> Actions { get; set; }
     [JsonProperty("blocking", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Blocking { get; set; }
+    public bool? Blocking { get; set; }
     [JsonProperty("tool", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Tool { get; set; }

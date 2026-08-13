@@ -32,5 +32,5 @@ public class RequestAgentRequirementsMessage
     public string? SessionID { get; set; }
     [JsonProperty("force", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Force { get; set; }
+    public bool? Force { get; set; }
 }

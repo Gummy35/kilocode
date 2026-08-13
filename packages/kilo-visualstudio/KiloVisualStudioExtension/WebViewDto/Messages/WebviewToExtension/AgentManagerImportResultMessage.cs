@@ -29,6 +29,5 @@ public class AgentManagerImportResultMessage
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("errorCode", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "git_not_found" | "not_git_repo" | "lfs_missing"
-    public object? ErrorCode { get; set; }
+    public GitnotfoundNotgitrepoLfsmissing? ErrorCode { get; set; }
 }

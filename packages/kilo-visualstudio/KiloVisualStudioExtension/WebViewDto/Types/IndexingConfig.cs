@@ -20,10 +20,9 @@ public class IndexingConfig
 {
     [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Enabled { get; set; }
+    public bool? Enabled { get; set; }
     [JsonProperty("provider", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "kilo" | "openai" | "ollama" | "openai-compatible" | "gemini" | "mistral" | "vercel-ai-gateway" | "bedrock" | "openrouter" | "voyage"
-    public object? Provider { get; set; }
+    public KiloOpenaiOllamaOpenaiCompatibleGeminiMistralVercelAiGatewayBedrockOpenrouterVoyage? Provider { get; set; }
     [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | null | string
     public string? Model { get; set; }
@@ -31,8 +30,7 @@ public class IndexingConfig
     // Original TypeScript type: undefined | null | number
     public double? Dimension { get; set; }
     [JsonProperty("vectorStore", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "lancedb" | "qdrant"
-    public object? VectorStore { get; set; }
+    public LancedbQdrant? VectorStore { get; set; }
     [JsonProperty("kilo", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Kilo { get; set; }

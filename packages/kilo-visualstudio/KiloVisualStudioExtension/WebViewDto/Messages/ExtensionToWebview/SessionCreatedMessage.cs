@@ -30,5 +30,5 @@ public class SessionCreatedMessage
     public string? DraftID { get; set; }
     [JsonProperty("activate", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
-    public object? Activate { get; set; }
+    public bool? Activate { get; set; }
 }
