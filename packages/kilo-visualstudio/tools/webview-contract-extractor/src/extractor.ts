@@ -707,6 +707,26 @@ function createContract(context: ExtractionContext): WebViewContract {
   }
 }
 
+function categorizeMessageByDiscriminator(discValue: string): "webviewToExtension" | "extensionToWebview" {
+  const webviewToExtensionKeywords = [
+    "continueInWorktree", "action", "diffViewer", "chat", "terminal",
+    "agentManager", "sendMessage", "abort", "createSession", "request",
+    "Reply", "Response", "Accept", "Dismiss", "Delete", "Update",
+    "Open", "Close", "Login", "Logout", "Select", "Set", "Validate",
+    "Compact", "Export", "Rename", "Clear", "Load", "Import",
+    "Refresh", "Telemetry", "Copy", "Preview", "Save", "Continue",
+    "Persist", "Forget", "Promote", "Fork", "Remove", "Filter",
+    "Install", "Connect", "Disconnect", "Authorize", "Fetch",
+    "Toggle", "Reset", "Retry", "Reload", "Enhance", "Apply",
+    "Revert", "Move", "Configure", "Run", "Stop", "Show", "Hide",
+    "Ready", "Focus", "Visible", "FocusChanged"
+  ]
+  
+  return webviewToExtensionKeywords.some(k => discValue.includes(k))
+    ? "webviewToExtension"
+    : "extensionToWebview"
+}
+
 function scanPostMessageCalls(
   sourceFile: ts.SourceFile,
   context: ExtractionContext
@@ -814,11 +834,8 @@ function scanPostMessageCalls(
                 
                 context.extractedMessages.set(messageKey, messageType)
                 
-                if (discValue.includes("continueInWorktree") ||
-                    discValue.includes("action") ||
-                    discValue.includes("diffViewer") ||
-                    discValue.includes("chat") ||
-                    discValue.includes("terminal")) {
+                const direction = categorizeMessageByDiscriminator(discValue)
+                if (direction === "webviewToExtension") {
                   context.messages.webviewToExtension.push(messageType)
                 } else {
                   context.messages.extensionToWebview.push(messageType)
