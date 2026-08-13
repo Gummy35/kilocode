@@ -844,20 +844,128 @@ function main(): void {
   console.log("Scanning VS Code source files for postMessage calls...")
   const vsCodeSrcPathNormalized = VS_CODE_SRC_PATH.replace(/\\/g, "/")
   
-  const allSourceFiles = program.getSourceFiles()
-  
-  const filesToScan = allSourceFiles.filter(f => 
-    f.fileName.replace(/\\/g, "/").includes(vsCodeSrcPathNormalized) && 
-    !f.fileName.includes("node_modules") &&
-    !f.fileName.includes("webview-ui") &&
-    !f.fileName.includes("test")
+  // Scan actual files on disk using simple AST parsing (no type checking)
+  const allTsFiles = findTsFiles(VS_CODE_SRC_PATH).filter(f => 
+    !f.includes("node_modules") && 
+    !f.includes("webview-ui") &&
+    !f.includes("test")
   )
   
-  console.log(`Found ${filesToScan.length} VS Code source files to scan`)
+  console.log(`Found ${allTsFiles.length} VS Code source files to scan`)
   
-  for (const sourceFile of filesToScan) {
-    const relativePath = path.relative(VS_CODE_SRC_PATH, sourceFile.fileName)
-    scanPostMessageCalls(sourceFile, context)
+  for (const filePath of allTsFiles) {
+    const relativePath = path.relative(VS_CODE_SRC_PATH, filePath)
+    const sourceText = fs.readFileSync(filePath, "utf-8")
+    const sourceFile = ts.createSourceFile(
+      filePath,
+      sourceText,
+      ts.ScriptTarget.Latest,
+      true
+    )
+    // Use a simpler visitor that doesn't require type checking
+    const visit = (node: ts.Node): void => {
+      if (ts.isCallExpression(node)) {
+        const expression = node.expression
+        let methodName: string | undefined
+        
+        if (ts.isPropertyAccessExpression(expression)) {
+          methodName = expression.name.getText()
+        }
+        
+        if (methodName === "postMessage" || methodName === "sendMessage") {
+          const args = node.arguments
+          if (args.length > 0 && ts.isObjectLiteralExpression(args[0])) {
+            const properties: PropertyDefinition[] = []
+            let discriminator: DiscriminatorInfo | undefined
+            
+            for (const prop of args[0].properties) {
+              if (ts.isPropertyAssignment(prop)) {
+                const propName = prop.name.getText()
+                const propValue = prop.initializer
+                
+                let propType: string
+                let literalValue: string | number | boolean | null = null
+                let isLiteral = false
+                
+                if (ts.isStringLiteral(propValue)) {
+                  propType = "literal"
+                  literalValue = propValue.text
+                  isLiteral = true
+                } else if (ts.isNumericLiteral(propValue)) {
+                  propType = "literal"
+                  literalValue = parseFloat(propValue.text)
+                  isLiteral = true
+                } else if (propValue.kind === ts.SyntaxKind.TrueKeyword) {
+                  propType = "boolean"
+                  literalValue = true
+                  isLiteral = true
+                } else if (propValue.kind === ts.SyntaxKind.FalseKeyword) {
+                  propType = "boolean"
+                  literalValue = false
+                  isLiteral = true
+                } else {
+                  propType = "object"
+                }
+                
+                properties.push({
+                  name: propName,
+                  type: propType,
+                  optional: false,
+                  nullable: false,
+                  elementType: null,
+                  typeRef: null,
+                  literalValue,
+                  isLiteral,
+                })
+                
+                if (propName === "type" && isLiteral && typeof literalValue === "string") {
+                  discriminator = {
+                    field: "type",
+                    value: literalValue,
+                  }
+                }
+              }
+            }
+            
+            if (properties.length > 0 && discriminator) {
+              // Skip if this message already exists in either direction
+              const existingTypedMessage = context.messages.webviewToExtension.find(
+                m => m.discriminator.value === discriminator.value
+              )
+              const existingTypedMessageExtToWeb = context.messages.extensionToWebview.find(
+                m => m.discriminator.value === discriminator.value
+              )
+              if (!existingTypedMessage && !existingTypedMessageExtToWeb) {
+                const existingMessage = context.extractedMessages.get(discriminator.value)
+                if (!existingMessage) {
+                  const messageName = discriminator.value
+                    .split(".")
+                    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+                    .join("") + "Message"
+                  context.extractedMessages.set(discriminator.value, {
+                    name: messageName,
+                    type: "interface",
+                    discriminator,
+                    properties,
+                    sourceFile: relativePath,
+                  })
+                  context.messages.webviewToExtension.push({
+                    name: messageName,
+                    type: "interface",
+                    discriminator,
+                    properties,
+                    sourceFile: relativePath,
+                  })
+                }
+              }
+            }
+          }
+        }
+      }
+      ts.forEachChild(node, visit)
+    }
+    
+    visit(sourceFile)
   }
 
   console.log()
