@@ -8,8 +8,9 @@
 
 namespace KiloVisualStudioExtension.WebView.Generated.config;
 
+using KiloVisualStudioExtension.ApiClient;
 /// <summary>
-/// Type: SdkIndexingStatus (placeholder for typeAlias)
+/// Type: SdkIndexingStatus (alias for IndexingStatus)
 /// Source: config.ts
 /// </summary>
-public class SdkIndexingStatus { }
+public class SdkIndexingStatus : IndexingStatus { }

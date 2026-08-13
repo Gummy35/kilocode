@@ -11,7 +11,6 @@ namespace KiloVisualStudioExtension.WebView.Generated.parts;
 /// <summary>
 /// Enum: ToolState
 /// Generated from union type
-/// Source: parts.ts
 /// </summary>
 public enum ToolState
 {
