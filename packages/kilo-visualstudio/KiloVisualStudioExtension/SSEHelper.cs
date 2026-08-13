@@ -372,7 +372,7 @@ namespace KiloVisualStudioExtension
             
             PostMessage(new SessionUpdatedMessage
             {
-                Session = new SessionInfo
+                Session = new SessionUpdate
                 {
                     Id = sessionID,
                     ParentID = info.ParentID,

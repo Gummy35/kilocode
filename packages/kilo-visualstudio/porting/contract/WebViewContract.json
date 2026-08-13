@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "9707620cdf7ca652484c51205d821c75850bc6e8",
-    "generatedAt": "2026-08-13T08:05:34.139Z"
+    "commit": "1095caf36e978a4950dcaa2020f50961c2078c88",
+    "generatedAt": "2026-08-13T09:22:10.291Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -25302,8 +25302,105 @@
     },
     {
       "name": "SessionUpdate",
-      "kind": "typeAlias",
-      "sourceFile": "sessions.ts"
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "parentID",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | null | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "title",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "createdAt",
+          "type": "string",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "string",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "revert",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | null | __type",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "summary",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | null | __type",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "sessions.ts",
+      "baseType": "SessionInfo",
+      "requiredFields": [
+        "id"
+      ]
     },
     {
       "name": "CloudSessionInfo",
