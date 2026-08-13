@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: AgentMarketplaceItem
 /// Discriminator: type = "agent"
-/// Source: ..\..\..\..\src\services\marketplace\types.ts
+/// Source: ..\marketplace.ts
 /// </summary>
 public class AgentMarketplaceItem
 {

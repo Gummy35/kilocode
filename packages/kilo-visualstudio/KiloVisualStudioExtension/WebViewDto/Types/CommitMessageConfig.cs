@@ -13,11 +13,12 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Type: KilocodeBalance
-/// Source: profile.ts
+/// Type: CommitMessageConfig
+/// Source: config.ts
 /// </summary>
-public class KilocodeBalance
+public class CommitMessageConfig
 {
-    [JsonProperty("balance")]
-    public double Balance { get; set; }
+    [JsonProperty("prompt", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? Prompt { get; set; }
 }

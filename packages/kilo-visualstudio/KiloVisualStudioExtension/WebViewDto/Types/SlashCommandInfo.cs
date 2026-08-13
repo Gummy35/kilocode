@@ -24,7 +24,7 @@ public class SlashCommandInfo
     // Original TypeScript type: undefined | string
     public string? Description { get; set; }
     [JsonProperty("source", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "command" | "mcp" | "skill"
+    // Original TypeScript type: undefined | "mcp" | "skill" | "command"
     public object? Source { get; set; }
     [JsonProperty("hints")]
     public List<string> Hints { get; set; }

@@ -16,19 +16,14 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: StepStartPart
 /// Discriminator: type = "step-start"
-/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
+/// Source: parts.ts
 /// </summary>
 public class StepStartPart
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
-    [JsonProperty("sessionID")]
-    public string SessionID { get; set; }
-    [JsonProperty("messageID")]
-    public string MessageID { get; set; }
     [JsonProperty("type")]
-    // Original TypeScript type: unknown
+    // Original TypeScript type: literal
     public string Type { get; set; } = "step-start";
-    [JsonProperty("snapshot", NullValueHandling = NullValueHandling.Ignore)]
-    public string? Snapshot { get; set; }
+    [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
+    public object? Time { get; set; }
 }

@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: SkillMarketplaceItem
 /// Discriminator: type = "skill"
-/// Source: ..\..\..\..\src\services\marketplace\types.ts
+/// Source: ..\marketplace.ts
 /// </summary>
 public class SkillMarketplaceItem
 {

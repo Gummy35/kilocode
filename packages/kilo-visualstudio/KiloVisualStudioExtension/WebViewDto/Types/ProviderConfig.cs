@@ -14,26 +14,29 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: ProviderConfig
-/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
+/// Source: providers.ts
 /// </summary>
 public class ProviderConfig
 {
-    [JsonProperty("api", NullValueHandling = NullValueHandling.Ignore)]
-    public string? Api { get; set; }
     [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
     public string? Name { get; set; }
-    [JsonProperty("env", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Env { get; set; }
-    [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
-    public string? Id { get; set; }
-    [JsonProperty("npm", NullValueHandling = NullValueHandling.Ignore)]
-    public string? Npm { get; set; }
+    [JsonProperty("api_key", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? Api_key { get; set; }
+    [JsonProperty("base_url", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? Base_url { get; set; }
     [JsonProperty("models", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
     public object? Models { get; set; }
-    [JsonProperty("whitelist", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Whitelist { get; set; }
-    [JsonProperty("blacklist", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Blacklist { get; set; }
+    [JsonProperty("npm", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? Npm { get; set; }
+    [JsonProperty("env", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | Array
+    public object? Env { get; set; }
     [JsonProperty("options", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
     public object? Options { get; set; }
 }

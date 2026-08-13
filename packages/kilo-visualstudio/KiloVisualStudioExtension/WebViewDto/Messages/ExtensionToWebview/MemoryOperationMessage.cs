@@ -30,7 +30,7 @@ public class MemoryOperationMessage
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: undefined | "off" | "on" | "status"
+    // Original TypeScript type: undefined | "status" | "on" | "off"
     public object? Mode { get; set; }
     [JsonProperty("confirm", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

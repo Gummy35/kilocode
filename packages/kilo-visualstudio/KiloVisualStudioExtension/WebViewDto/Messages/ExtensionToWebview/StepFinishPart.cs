@@ -16,25 +16,35 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: StepFinishPart
 /// Discriminator: type = "step-finish"
-/// Source: ..\..\..\..\..\sdk\js\src\gen\types.gen.ts
+/// Source: parts.ts
 /// </summary>
 public class StepFinishPart
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
-    [JsonProperty("sessionID")]
-    public string SessionID { get; set; }
-    [JsonProperty("messageID")]
-    public string MessageID { get; set; }
     [JsonProperty("type")]
-    // Original TypeScript type: unknown
+    // Original TypeScript type: literal
     public string Type { get; set; } = "step-finish";
-    [JsonProperty("reason")]
-    public string Reason { get; set; }
-    [JsonProperty("snapshot", NullValueHandling = NullValueHandling.Ignore)]
-    public string? Snapshot { get; set; }
-    [JsonProperty("cost")]
-    public double Cost { get; set; }
-    [JsonProperty("tokens")]
-    public object Tokens { get; set; }
+    [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? Reason { get; set; }
+    [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
+    public object? Time { get; set; }
+    [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
+    public object? Model { get; set; }
+    [JsonProperty("generationID", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? GenerationID { get; set; }
+    [JsonProperty("vercelID", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? VercelID { get; set; }
+    [JsonProperty("cost", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | number
+    public double? Cost { get; set; }
+    [JsonProperty("tokens", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
+    public object? Tokens { get; set; }
+    [JsonProperty("metrics", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | StepThroughputMetrics
+    public StepThroughputMetrics? Metrics { get; set; }
 }

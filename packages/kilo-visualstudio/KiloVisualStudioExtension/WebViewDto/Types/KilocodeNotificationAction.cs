@@ -13,11 +13,13 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Type: KilocodeBalance
+/// Type: KilocodeNotificationAction
 /// Source: profile.ts
 /// </summary>
-public class KilocodeBalance
+public class KilocodeNotificationAction
 {
-    [JsonProperty("balance")]
-    public double Balance { get; set; }
+    [JsonProperty("actionText")]
+    public string ActionText { get; set; }
+    [JsonProperty("actionURL")]
+    public string ActionURL { get; set; }
 }

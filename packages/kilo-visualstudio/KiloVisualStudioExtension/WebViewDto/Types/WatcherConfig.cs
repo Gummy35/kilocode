@@ -13,11 +13,12 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Type: KilocodeBalance
-/// Source: profile.ts
+/// Type: WatcherConfig
+/// Source: config.ts
 /// </summary>
-public class KilocodeBalance
+public class WatcherConfig
 {
-    [JsonProperty("balance")]
-    public double Balance { get; set; }
+    [JsonProperty("ignore", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | Array
+    public object? Ignore { get; set; }
 }

@@ -24,7 +24,7 @@ public class SetAvailableSourcesMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "setAvailableSources";
     [JsonProperty("descriptors")]
-    public List<DiffSourceDescriptor> Descriptors { get; set; }
+    public List<object> Descriptors { get; set; }
     [JsonProperty("currentId")]
     public string CurrentId { get; set; }
 }

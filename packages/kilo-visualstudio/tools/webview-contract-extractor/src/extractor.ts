@@ -384,6 +384,33 @@ function extractTypeAliasDeclaration(
       }
     }
   }
+  
+  // For re-export type aliases (export type { X as Y } from "..."), use the type checker to resolve
+  // The type checker should resolve the alias to the actual type
+  const resolvedType = typeChecker.getTypeAtLocation(node)
+  const resolvedSymbol = resolvedType.getSymbol()
+  if (resolvedSymbol) {
+    const resolvedDeclarations = resolvedSymbol.getDeclarations()
+    if (resolvedDeclarations && resolvedDeclarations.length > 0) {
+      const resolvedDeclaration = resolvedDeclarations[0]
+      const resolvedSourceFile = resolvedDeclaration.getSourceFile()
+      const resolvedTypeName = resolvedSymbol.getName()
+      
+      // If the resolved type is from a different file, check if we have it in context.types
+      if (resolvedTypeName && context.types.has(resolvedTypeName)) {
+        const resolvedTypeDef = context.types.get(resolvedTypeName)!
+        if (resolvedTypeDef.properties && resolvedTypeDef.properties.length > 0) {
+          return {
+            name,
+            kind: resolvedTypeDef.kind,
+            properties: resolvedTypeDef.properties,
+            discriminator: resolvedTypeDef.discriminator,
+            sourceFile: path.relative(VS_CODE_TYPES_PATH, resolvedSourceFile.fileName),
+          }
+        }
+      }
+    }
+  }
 
   return {
     name,
@@ -408,7 +435,19 @@ function extractMessageTypes(
     }
 
     if (typeDef) {
-      context.types.set(typeDef.name, typeDef)
+      // Check if there's already a type with the same name
+      const existingType = context.types.get(typeDef.name)
+      
+      // Prefer interface over typeAlias - if existing is interface and new is typeAlias, skip
+      if (existingType && existingType.kind === 'interface' && typeDef.kind === 'typeAlias') {
+        // Keep the existing interface, skip the typeAlias
+      } else if (existingType && existingType.kind === 'typeAlias' && typeDef.kind === 'interface') {
+        // Replace the typeAlias with the interface
+        context.types.set(typeDef.name, typeDef)
+      } else {
+        // No conflict or same kind - just add/update
+        context.types.set(typeDef.name, typeDef)
+      }
       
       if (typeDef.discriminator && typeDef.properties) {
         const messageType: MessageType = {
@@ -695,7 +734,7 @@ function main(): void {
   )
   
   const program = ts.createProgram({
-    rootNames: [...parsedConfig.fileNames.filter(f => f.includes("webview-ui/src/types/messages") || f.includes("src/shared/stream-messages")), ...vsCodeSrcFiles],
+    rootNames: parsedConfig.fileNames.filter(f => f.includes("webview-ui/src/types") || f.includes("src/shared")),
     options: parsedConfig.options,
   })
 
@@ -707,6 +746,12 @@ function main(): void {
   console.log()
 
   for (const sourceFile of sourceFiles) {
+    // Only process files from the webview-ui/src/types directory or src/shared
+    if (!sourceFile.fileName.includes("webview-ui/src/types") && 
+        !sourceFile.fileName.includes("src/shared")) {
+      continue
+    }
+    
     const relativePath = path.relative(VS_CODE_TYPES_PATH, sourceFile.fileName)
     console.log(`Processing: ${relativePath}`)
     extractMessageTypes(sourceFile, context)

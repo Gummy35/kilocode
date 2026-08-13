@@ -15,14 +15,14 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// WebView message: DeviceAuthState
-/// Discriminator: status = "error"
+/// Discriminator: status = "pending"
 /// Source: connection.ts
 /// </summary>
 public class DeviceAuthState
 {
     [JsonProperty("status")]
     // Original TypeScript type: literal
-    public string Status { get; set; } = "error";
+    public string Status { get; set; } = "pending";
     [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Code { get; set; }

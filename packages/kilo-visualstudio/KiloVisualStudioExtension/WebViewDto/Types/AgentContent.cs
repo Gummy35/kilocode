@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: AgentContent
-/// Source: ..\..\..\..\src\services\marketplace\types.ts
+/// Source: ..\marketplace.ts
 /// </summary>
 public class AgentContent
 {

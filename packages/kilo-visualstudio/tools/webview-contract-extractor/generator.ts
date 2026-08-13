@@ -135,6 +135,24 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
     return { type: `List<${elemType.type}>`, isNullable: prop.optional || prop.nullable }
   }
   if (baseType === 'record') return { type: 'Dictionary<string, object>', isNullable: prop.optional || prop.nullable }
+  
+  // Handle type references (when type is a name like "ReviewCommentData")
+  if (!isPrimitiveType(baseType) && !isInternalType(baseType) && typeDefinitions.has(baseType)) {
+    const typeDef = typeDefinitions.get(baseType)!
+    const isNodeModules = typeDef.sourceFile.includes('node_modules')
+    if (isNodeModules) {
+      return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: baseType }
+    }
+    if (typeDef.kind === 'typeAlias') {
+      return { type: pascalCase(baseType), isNullable: prop.optional || prop.nullable, originalType: baseType }
+    }
+    if (typeDef.kind === 'union') {
+      return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: baseType }
+    }
+    // For interface types, use the type name
+    return { type: pascalCase(baseType), isNullable: prop.optional || prop.nullable, originalType: baseType }
+  }
+  
   if (baseType === 'union') {
     // Use elementType if it contains the full union string (e.g., "string | undefined")
     if (prop.elementType && !prop.elementType.startsWith('List<')) {
@@ -166,15 +184,6 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
         if (isInternalType(actualType)) {
           return { type: 'object', isNullable: true, originalType: prop.elementType }
         }
-        // Check if the type exists in the contract and has no properties (from node_modules)
-        if (typeDefinitions.has(actualType)) {
-          const typeDef = typeDefinitions.get(actualType)!
-          const isNodeModules = typeDef.sourceFile.includes('node_modules')
-          const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
-          if (isNodeModules && hasNoProperties) {
-            return { type: 'object', isNullable: true, originalType: prop.elementType }
-          }
-        }
         // Check if the type exists in the contract
         if (!typeDefinitions.has(actualType)) {
           return { type: 'object', isNullable: true, originalType: prop.elementType }
@@ -183,10 +192,6 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
         const actualTypeDef = typeDefinitions.get(actualType)!
         const isNodeModules = actualTypeDef.sourceFile.includes('node_modules')
         if (isNodeModules) {
-          return { type: 'object', isNullable: true, originalType: prop.elementType }
-        }
-        // Check if it's a type alias or union - map to object
-        if (actualTypeDef.kind === 'typeAlias' || actualTypeDef.kind === 'union') {
           return { type: 'object', isNullable: true, originalType: prop.elementType }
         }
         // For reference types, use Type?
@@ -223,13 +228,15 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
     }
     if (typeDefinitions.has(refName)) {
       const typeDef = typeDefinitions.get(refName)!
-      // Check if the type is from node_modules - map to object
+      // Check if the type is from node_modules with no properties
       const isNodeModules = typeDef.sourceFile.includes('node_modules')
-      if (isNodeModules) {
+      const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
+      if (isNodeModules && hasNoProperties) {
         return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
       }
       if (typeDef.kind === 'typeAlias') {
-        return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
+        // Type aliases will be generated as placeholder classes if needed
+        return { type: pascalCase(refName), isNullable: prop.optional || prop.nullable, originalType: refName }
       }
       if (typeDef.kind === 'union') {
         if (typeDef.unionMembers && typeDef.unionMembers.length > 0) {
@@ -294,6 +301,9 @@ function collectNeededTypes(prop: PropertyDefinition) {
           for (const p of elemTypeDef.properties) {
             collectNeededTypes(p)
           }
+        } else if (elemTypeDef.kind === 'typeAlias' || elemTypeDef.kind === 'union') {
+          // Add type aliases and unions to neededTypes
+          neededTypes.add(prop.elementType)
         }
         collectingTypes.delete(prop.elementType)
       }
@@ -306,6 +316,9 @@ function collectNeededTypes(prop: PropertyDefinition) {
           for (const p of typeDef.properties) {
             collectNeededTypes(p)
           }
+        } else if (typeDef.kind === 'typeAlias' || typeDef.kind === 'union') {
+          // Add type aliases and unions to neededTypes
+          neededTypes.add(prop.typeRef.name)
         }
         collectingTypes.delete(prop.typeRef.name)
       }
@@ -350,25 +363,25 @@ function collectNeededTypes(prop: PropertyDefinition) {
     if (typeDefinitions.has(prop.typeRef.name)) {
       collectingTypes.add(prop.typeRef.name)
       const typeDef = typeDefinitions.get(prop.typeRef.name)!
-      
-      // Map type aliases and unions to object
-      if (typeDef.kind === 'typeAlias' || typeDef.kind === 'union') {
-        collectingTypes.delete(prop.typeRef.name)
-        return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.typeRef.name }
-      }
-      
-      // Check if the type is from node_modules - map to object
-      const isNodeModules = typeDef.sourceFile.includes('node_modules')
-      if (isNodeModules) {
-        collectingTypes.delete(prop.typeRef.name)
-        return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.typeRef.name }
-      }
-      
-      if (typeDef.kind === 'interface') {
+      if (typeDef.kind === 'interface' && typeDef.properties) {
         neededTypes.add(prop.typeRef.name)
-        if (typeDef.properties) {
-          for (const p of typeDef.properties) {
-            collectNeededTypes(p)
+        for (const p of typeDef.properties) {
+          collectNeededTypes(p)
+        }
+      } else if (typeDef.kind === 'typeAlias') {
+        // Type aliases are added to neededTypes and will be generated as placeholder classes
+        neededTypes.add(prop.typeRef.name)
+      } else if (typeDef.kind === 'union' && typeDef.unionMembers) {
+        for (const memberName of typeDef.unionMembers) {
+          if (typeDefinitions.has(memberName)) {
+            const memberDef = typeDefinitions.get(memberName)!
+            // Generate union members that are interfaces OR type aliases with properties
+            if ((memberDef.kind === 'interface' || memberDef.kind === 'typeAlias') && memberDef.properties) {
+              neededTypes.add(memberName)
+              for (const p of memberDef.properties) {
+                collectNeededTypes(p)
+              }
+            }
           }
         }
       }
@@ -700,10 +713,10 @@ function generateTypeWithDeps(typeName: string) {
   visited.add(typeName)
   
   const typeDef = typeDefinitions.get(typeName)
-  if (!typeDef || typeDef.kind !== 'interface') return
+  if (!typeDef) return
   
-  // First generate all dependencies
-  if (typeDef.properties) {
+  // For interfaces, generate all dependencies first
+  if (typeDef.kind === 'interface' && typeDef.properties) {
     for (const prop of typeDef.properties) {
       if (prop.typeRef?.name && neededTypes.has(prop.typeRef.name)) {
         generateTypeWithDeps(prop.typeRef.name)
@@ -751,8 +764,29 @@ for (const typeName of generatedOrder) {
     continue
   }
   
-  // Skip type aliases and unions (they map to object)
+  // For type aliases and unions that are needed, generate placeholder classes
   if (typeDef.kind === 'typeAlias' || typeDef.kind === 'union') {
+    // Generate a placeholder class for needed type aliases/unions
+    const code = `// <auto-generated>
+//     This code was generated by WebViewContractGenerator.
+//     Do not modify this file directly as changes will be lost on regeneration.
+//     Source: WebViewContract.json schema version ${contract.schemaVersion}
+// </auto-generated>
+
+#nullable enable
+
+namespace ${ns};
+
+/// <summary>
+/// Type: ${typeName} (placeholder for ${typeDef.kind})
+/// Source: ${typeDef.sourceFile}
+/// </summary>
+public class ${pascalCase(typeName)} { }
+`
+    const filePath = path.join(typesDir, `${pascalCase(typeName)}.cs`)
+    fs.writeFileSync(filePath, code)
+    generatedTypes.add(typeName)
+    console.log(`  Generated: ${typeName} (placeholder)`)
     continue
   }
   

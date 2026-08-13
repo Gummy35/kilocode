@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: PRStatus
-/// Source: ..\..\..\..\src\agent-manager\types.ts
+/// Source: agent-manager.ts
 /// </summary>
 public class PRStatus
 {
@@ -28,7 +28,7 @@ public class PRStatus
     // Original TypeScript type: literal
     public string State { get; set; }
     [JsonProperty("review", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: null | "pending" | "approved" | "changes_requested"
+    // Original TypeScript type: null | "approved" | "changes_requested" | "pending"
     public object? Review { get; set; }
     [JsonProperty("checks")]
     // Original TypeScript type: __type

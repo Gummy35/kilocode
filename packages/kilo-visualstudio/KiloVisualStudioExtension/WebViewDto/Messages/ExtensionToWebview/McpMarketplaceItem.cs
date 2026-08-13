@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// WebView message: McpMarketplaceItem
 /// Discriminator: type = "mcp"
-/// Source: ..\..\..\..\src\services\marketplace\types.ts
+/// Source: ..\marketplace.ts
 /// </summary>
 public class McpMarketplaceItem
 {

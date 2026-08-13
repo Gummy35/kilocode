@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// WebView message: TodoItem
-/// Discriminator: status = "completed"
+/// Discriminator: status = "pending"
 /// Source: questions.ts
 /// </summary>
 public class TodoItem
@@ -26,5 +26,5 @@ public class TodoItem
     public string Content { get; set; }
     [JsonProperty("status")]
     // Original TypeScript type: literal
-    public string Status { get; set; } = "completed";
+    public string Status { get; set; } = "pending";
 }

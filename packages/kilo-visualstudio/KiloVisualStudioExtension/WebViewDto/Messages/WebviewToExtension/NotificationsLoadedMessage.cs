@@ -24,7 +24,7 @@ public class NotificationsLoadedMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "notificationsLoaded";
     [JsonProperty("notifications")]
-    public List<object> Notifications { get; set; }
+    public List<KilocodeNotification> Notifications { get; set; }
     [JsonProperty("dismissedIds")]
     public List<string> DismissedIds { get; set; }
 }

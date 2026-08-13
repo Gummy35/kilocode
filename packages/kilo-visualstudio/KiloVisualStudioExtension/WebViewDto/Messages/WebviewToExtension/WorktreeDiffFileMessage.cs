@@ -29,5 +29,5 @@ public class WorktreeDiffFileMessage
     public string File { get; set; }
     [JsonProperty("diff", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | WorktreeDiffEntry
-    public object? Diff { get; set; }
+    public WorktreeDiffEntry? Diff { get; set; }
 }

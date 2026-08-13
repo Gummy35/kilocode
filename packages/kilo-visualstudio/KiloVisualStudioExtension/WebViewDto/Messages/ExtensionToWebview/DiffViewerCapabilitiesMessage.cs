@@ -24,5 +24,5 @@ public class DiffViewerCapabilitiesMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "diffViewer.capabilities";
     [JsonProperty("capabilities")]
-    public DiffSourceCapabilities Capabilities { get; set; }
+    public object Capabilities { get; set; }
 }

@@ -13,13 +13,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Type: TerminalFont
+/// Type: DiffImage
 /// Source: agent-manager.ts
 /// </summary>
-public class TerminalFont
+public class DiffImage
 {
-    [JsonProperty("fontFamily")]
-    public string FontFamily { get; set; }
-    [JsonProperty("fontSize")]
-    public double FontSize { get; set; }
+    [JsonProperty("before", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | DiffImageSide
+    public DiffImageSide? Before { get; set; }
+    [JsonProperty("after", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | DiffImageSide
+    public DiffImageSide? After { get; set; }
 }

@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: MigrationSessionInfo
-/// Source: ..\..\..\..\src\legacy-migration\legacy-types.ts
+/// Source: migration.ts
 /// </summary>
 public class MigrationSessionInfo
 {

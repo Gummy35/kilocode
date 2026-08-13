@@ -24,7 +24,7 @@ public class StateMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "agentManager.state";
     [JsonProperty("worktrees")]
-    public List<object> Worktrees { get; set; }
+    public List<Worktree> Worktrees { get; set; }
     [JsonProperty("sessions")]
     public List<ManagedSession> Sessions { get; set; }
     [JsonProperty("sections", NullValueHandling = NullValueHandling.Ignore)]

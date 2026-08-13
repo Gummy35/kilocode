@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: AgentRequirementResult
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: agents.ts
 /// </summary>
 public class AgentRequirementResult
 {
@@ -22,16 +22,19 @@ public class AgentRequirementResult
     public string Agent { get; set; }
     [JsonProperty("directory")]
     public string Directory { get; set; }
-    [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
-    public object? Enabled { get; set; }
-    [JsonProperty("state", NullValueHandling = NullValueHandling.Ignore)]
-    public object? State { get; set; }
+    [JsonProperty("enabled")]
+    // Original TypeScript type: literal
+    public string Enabled { get; set; }
+    [JsonProperty("state")]
+    // Original TypeScript type: literal
+    public string State { get; set; }
     [JsonProperty("skills")]
-    public object Skills { get; set; }
+    public List<AgentRequirementSkill> Skills { get; set; }
     [JsonProperty("mcps")]
-    public object Mcps { get; set; }
+    public List<AgentRequirementMCP> Mcps { get; set; }
     [JsonProperty("vscode_extensions")]
-    public object Vscode_extensions { get; set; }
+    public List<AgentRequirementVSCodeExtension> Vscode_extensions { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
     public object? Error { get; set; }
 }

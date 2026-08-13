@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: PermissionRequest
-/// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Source: permissions.ts
 /// </summary>
 public class PermissionRequest
 {
@@ -22,14 +22,19 @@ public class PermissionRequest
     public string Id { get; set; }
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
-    [JsonProperty("permission")]
-    public string Permission { get; set; }
+    [JsonProperty("toolName")]
+    public string ToolName { get; set; }
     [JsonProperty("patterns")]
-    public object Patterns { get; set; }
-    [JsonProperty("metadata")]
-    public object Metadata { get; set; }
+    public List<string> Patterns { get; set; }
     [JsonProperty("always")]
-    public object Always { get; set; }
+    public List<string> Always { get; set; }
+    [JsonProperty("args")]
+    // Original TypeScript type: Record<string, unknown> & { rules?: string[] | undefined; diff?: string | undefined; filepath?: string | undefined; filediff?: PermissionFileDiff | undefined; files?: PermissionPatchFile[] | undefined; description?: string | undefined; heredoc?: boolean | undefined; }
+    public object Args { get; set; }
+    [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | string
+    public string? Message { get; set; }
     [JsonProperty("tool", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
     public object? Tool { get; set; }
 }
