@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "982b98e5afe9ec75b99bf5053086ee6df79e1173",
-    "generatedAt": "2026-08-13T14:57:14.784Z"
+    "commit": "9b4047ad3652df67ea038648e87ef0fd5e993c0a",
+    "generatedAt": "2026-08-13T15:12:32.904Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -13,6 +13,63 @@
   },
   "messages": {
     "webviewToExtension": [
+      {
+        "name": "CompactionPart",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "compaction"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "compaction",
+            "isLiteral": true
+          },
+          {
+            "name": "auto",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "",
+            "isLiteral": true
+          },
+          {
+            "name": "overflow",
+            "type": "union",
+            "optional": true,
+            "nullable": false,
+            "elementType": "undefined | false | true",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "tail_start_id",
+            "type": "union",
+            "optional": true,
+            "nullable": false,
+            "elementType": "undefined | string",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "parts.ts"
+      },
       {
         "name": "RequestMigrationDataMessage",
         "type": "interface",
@@ -1011,6 +1068,40 @@
         "sourceFile": "extension-messages.ts"
       },
       {
+        "name": "ActionMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "action"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "action",
+            "isLiteral": true
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
         "name": "IndexingStatusLoadedMessage",
         "type": "interface",
         "discriminator": {
@@ -1468,6 +1559,160 @@
             "typeRef": {
               "name": "__type",
               "kind": "object"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "ChatCompletionResultMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "chatCompletionResult"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "chatCompletionResult",
+            "isLiteral": true
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "requestId",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "TerminalContextResultMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "terminalContextResult"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "terminalContextResult",
+            "isLiteral": true
+          },
+          {
+            "name": "requestId",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "content",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "truncated",
+            "type": "union",
+            "optional": true,
+            "nullable": false,
+            "elementType": "undefined | false | true",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "TerminalContextErrorMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "terminalContextError"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "terminalContextError",
+            "isLiteral": true
+          },
+          {
+            "name": "requestId",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
             },
             "literalValue": null,
             "isLiteral": false
@@ -3896,6 +4141,370 @@
         "sourceFile": "extension-messages.ts"
       },
       {
+        "name": "DiffViewerDiffsMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.diffs"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.diffs",
+            "isLiteral": true
+          },
+          {
+            "name": "diffs",
+            "type": "array",
+            "optional": false,
+            "nullable": false,
+            "elementType": "WorktreeFileDiff",
+            "typeRef": {
+              "name": "WorktreeFileDiff",
+              "kind": "object"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "DiffViewerLoadingMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.loading"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.loading",
+            "isLiteral": true
+          },
+          {
+            "name": "loading",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "",
+            "isLiteral": true
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "DiffViewerRevertFileResultMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.revertFileResult"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.revertFileResult",
+            "isLiteral": true
+          },
+          {
+            "name": "file",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "status",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "success",
+            "isLiteral": true
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "DiffViewerDiffFileMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.diffFile"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.diffFile",
+            "isLiteral": true
+          },
+          {
+            "name": "file",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "diff",
+            "type": "union",
+            "optional": false,
+            "nullable": false,
+            "elementType": "null | WorktreeFileDiff",
+            "typeRef": {
+              "name": "null",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "DiffViewerMarkdownRenderMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.markdownRender"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.markdownRender",
+            "isLiteral": true
+          },
+          {
+            "name": "render",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "",
+            "isLiteral": true
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "DiffViewerCapabilitiesMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.capabilities"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.capabilities",
+            "isLiteral": true
+          },
+          {
+            "name": "capabilities",
+            "type": "DiffSourceCapabilities",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "DiffSourceCapabilities",
+              "kind": "object"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "DiffViewerNoticeMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.notice"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.notice",
+            "isLiteral": true
+          },
+          {
+            "name": "notice",
+            "type": "union",
+            "optional": false,
+            "nullable": false,
+            "elementType": "undefined | \"snapshots-disabled\"",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "DiffViewerBranchesLoadedMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.branches"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.branches",
+            "isLiteral": true
+          },
+          {
+            "name": "branches",
+            "type": "array",
+            "optional": false,
+            "nullable": false,
+            "elementType": "BranchInfo",
+            "typeRef": {
+              "name": "BranchInfo",
+              "kind": "object"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "defaultBranch",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "autoBase",
+            "type": "union",
+            "optional": false,
+            "nullable": false,
+            "elementType": "undefined | string",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "currentBase",
+            "type": "union",
+            "optional": false,
+            "nullable": false,
+            "elementType": "undefined | string",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "isAuto",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "",
+            "isLiteral": true
+          },
+          {
+            "name": "currentBranch",
+            "type": "union",
+            "optional": false,
+            "nullable": false,
+            "elementType": "undefined | string",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
         "name": "ExtensionDataReadyMessage",
         "type": "interface",
         "discriminator": {
@@ -4318,6 +4927,66 @@
             "typeRef": {
               "name": "__type",
               "kind": "object"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "extension-messages.ts"
+      },
+      {
+        "name": "ContinueInWorktreeProgressMessage",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "continueInWorktreeProgress"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "continueInWorktreeProgress",
+            "isLiteral": true
+          },
+          {
+            "name": "status",
+            "type": "ContinueInWorktreeStatus",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "ContinueInWorktreeStatus",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "detail",
+            "type": "union",
+            "optional": true,
+            "nullable": false,
+            "elementType": "undefined | string",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "error",
+            "type": "union",
+            "optional": true,
+            "nullable": false,
+            "elementType": "undefined | string",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
             },
             "literalValue": null,
             "isLiteral": false
@@ -8097,6 +8766,146 @@
         "sourceFile": "webview-messages.ts"
       },
       {
+        "name": "DiffViewerSendCommentsRequest",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.sendComments"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.sendComments",
+            "isLiteral": true
+          },
+          {
+            "name": "comments",
+            "type": "array",
+            "optional": false,
+            "nullable": false,
+            "elementType": "ReviewCommentData",
+            "typeRef": {
+              "name": "ReviewCommentData",
+              "kind": "object"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          },
+          {
+            "name": "autoSend",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "",
+            "isLiteral": true
+          }
+        ],
+        "sourceFile": "webview-messages.ts"
+      },
+      {
+        "name": "DiffViewerSetDiffStyleRequest",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.setDiffStyle"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.setDiffStyle",
+            "isLiteral": true
+          },
+          {
+            "name": "style",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "unified",
+            "isLiteral": true
+          }
+        ],
+        "sourceFile": "webview-messages.ts"
+      },
+      {
+        "name": "DiffViewerSetMarkdownRenderRequest",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.setMarkdownRender"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.setMarkdownRender",
+            "isLiteral": true
+          },
+          {
+            "name": "render",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "",
+            "isLiteral": true
+          }
+        ],
+        "sourceFile": "webview-messages.ts"
+      },
+      {
+        "name": "DiffViewerRevertFileRequest",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.revertFile"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.revertFile",
+            "isLiteral": true
+          },
+          {
+            "name": "file",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
+          }
+        ],
+        "sourceFile": "webview-messages.ts"
+      },
+      {
         "name": "DiffViewerRequestFileRequest",
         "type": "interface",
         "discriminator": {
@@ -8131,6 +8940,27 @@
         "sourceFile": "webview-messages.ts"
       },
       {
+        "name": "DiffViewerCloseRequest",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.close"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.close",
+            "isLiteral": true
+          }
+        ],
+        "sourceFile": "webview-messages.ts"
+      },
+      {
         "name": "DiffViewerRequestBranchesRequest",
         "type": "interface",
         "discriminator": {
@@ -8147,6 +8977,40 @@
             "typeRef": null,
             "literalValue": "diffViewer.requestBranches",
             "isLiteral": true
+          }
+        ],
+        "sourceFile": "webview-messages.ts"
+      },
+      {
+        "name": "DiffViewerSetBaseBranchRequest",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "diffViewer.setBaseBranch"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "diffViewer.setBaseBranch",
+            "isLiteral": true
+          },
+          {
+            "name": "branch",
+            "type": "union",
+            "optional": false,
+            "nullable": false,
+            "elementType": "undefined | string",
+            "typeRef": {
+              "name": "undefined",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -8615,6 +9479,40 @@
             "typeRef": null,
             "literalValue": "requestModelSelections",
             "isLiteral": true
+          }
+        ],
+        "sourceFile": "webview-messages.ts"
+      },
+      {
+        "name": "ContinueInWorktreeRequest",
+        "type": "interface",
+        "discriminator": {
+          "field": "type",
+          "value": "continueInWorktree"
+        },
+        "properties": [
+          {
+            "name": "type",
+            "type": "literal",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": null,
+            "literalValue": "continueInWorktree",
+            "isLiteral": true
+          },
+          {
+            "name": "sessionId",
+            "type": "string",
+            "optional": false,
+            "nullable": false,
+            "elementType": null,
+            "typeRef": {
+              "name": "string",
+              "kind": "string"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -9764,63 +10662,6 @@
             "optional": true,
             "nullable": false,
             "elementType": "undefined | StepThroughputMetrics",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "parts.ts"
-      },
-      {
-        "name": "CompactionPart",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "compaction"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "compaction",
-            "isLiteral": true
-          },
-          {
-            "name": "auto",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
-          },
-          {
-            "name": "overflow",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | false | true",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "tail_start_id",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
             "typeRef": {
               "name": "undefined",
               "kind": "union"
@@ -11841,40 +12682,6 @@
         "sourceFile": "extension-messages.ts"
       },
       {
-        "name": "ActionMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "action"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "action",
-            "isLiteral": true
-          },
-          {
-            "name": "action",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
         "name": "SetChatBoxMessage",
         "type": "interface",
         "discriminator": {
@@ -12345,53 +13152,6 @@
         "sourceFile": "extension-messages.ts"
       },
       {
-        "name": "ChatCompletionResultMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "chatCompletionResult"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "chatCompletionResult",
-            "isLiteral": true
-          },
-          {
-            "name": "text",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "requestId",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
         "name": "SpeechToTextResultMessage",
         "type": "interface",
         "discriminator": {
@@ -12753,113 +13513,6 @@
           },
           {
             "name": "requestId",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "TerminalContextResultMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "terminalContextResult"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "terminalContextResult",
-            "isLiteral": true
-          },
-          {
-            "name": "requestId",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "content",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "truncated",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | false | true",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "TerminalContextErrorMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "terminalContextError"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "terminalContextError",
-            "isLiteral": true
-          },
-          {
-            "name": "requestId",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "error",
             "type": "string",
             "optional": false,
             "nullable": false,
@@ -13781,206 +14434,6 @@
         "sourceFile": "extension-messages.ts"
       },
       {
-        "name": "DiffViewerDiffsMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.diffs"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.diffs",
-            "isLiteral": true
-          },
-          {
-            "name": "diffs",
-            "type": "array",
-            "optional": false,
-            "nullable": false,
-            "elementType": "WorktreeFileDiff",
-            "typeRef": {
-              "name": "WorktreeFileDiff",
-              "kind": "object"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "DiffViewerLoadingMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.loading"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.loading",
-            "isLiteral": true
-          },
-          {
-            "name": "loading",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "DiffViewerRevertFileResultMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.revertFileResult"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.revertFileResult",
-            "isLiteral": true
-          },
-          {
-            "name": "file",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "success",
-            "isLiteral": true
-          },
-          {
-            "name": "message",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "DiffViewerDiffFileMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.diffFile"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.diffFile",
-            "isLiteral": true
-          },
-          {
-            "name": "file",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "diff",
-            "type": "union",
-            "optional": false,
-            "nullable": false,
-            "elementType": "null | WorktreeFileDiff",
-            "typeRef": {
-              "name": "null",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "DiffViewerMarkdownRenderMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.markdownRender"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.markdownRender",
-            "isLiteral": true
-          },
-          {
-            "name": "render",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
         "name": "SetAvailableSourcesMessage",
         "type": "interface",
         "discriminator": {
@@ -14020,170 +14473,6 @@
             "typeRef": {
               "name": "string",
               "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "DiffViewerCapabilitiesMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.capabilities"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.capabilities",
-            "isLiteral": true
-          },
-          {
-            "name": "capabilities",
-            "type": "DiffSourceCapabilities",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "DiffSourceCapabilities",
-              "kind": "object"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "DiffViewerNoticeMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.notice"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.notice",
-            "isLiteral": true
-          },
-          {
-            "name": "notice",
-            "type": "union",
-            "optional": false,
-            "nullable": false,
-            "elementType": "undefined | \"snapshots-disabled\"",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "DiffViewerBranchesLoadedMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.branches"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.branches",
-            "isLiteral": true
-          },
-          {
-            "name": "branches",
-            "type": "array",
-            "optional": false,
-            "nullable": false,
-            "elementType": "BranchInfo",
-            "typeRef": {
-              "name": "BranchInfo",
-              "kind": "object"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "defaultBranch",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "autoBase",
-            "type": "union",
-            "optional": false,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "currentBase",
-            "type": "union",
-            "optional": false,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "isAuto",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
-          },
-          {
-            "name": "currentBranch",
-            "type": "union",
-            "optional": false,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
             },
             "literalValue": null,
             "isLiteral": false
@@ -14416,66 +14705,6 @@
             "typeRef": null,
             "literalValue": "disabled",
             "isLiteral": true
-          },
-          {
-            "name": "error",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "ContinueInWorktreeProgressMessage",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "continueInWorktreeProgress"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "continueInWorktreeProgress",
-            "isLiteral": true
-          },
-          {
-            "name": "status",
-            "type": "ContinueInWorktreeStatus",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "ContinueInWorktreeStatus",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "detail",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
           },
           {
             "name": "error",
@@ -16791,201 +17020,6 @@
         "sourceFile": "webview-messages.ts"
       },
       {
-        "name": "DiffViewerSendCommentsRequest",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.sendComments"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.sendComments",
-            "isLiteral": true
-          },
-          {
-            "name": "comments",
-            "type": "array",
-            "optional": false,
-            "nullable": false,
-            "elementType": "ReviewCommentData",
-            "typeRef": {
-              "name": "ReviewCommentData",
-              "kind": "object"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "autoSend",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
-          }
-        ],
-        "sourceFile": "webview-messages.ts"
-      },
-      {
-        "name": "DiffViewerSetDiffStyleRequest",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.setDiffStyle"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.setDiffStyle",
-            "isLiteral": true
-          },
-          {
-            "name": "style",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "unified",
-            "isLiteral": true
-          }
-        ],
-        "sourceFile": "webview-messages.ts"
-      },
-      {
-        "name": "DiffViewerSetMarkdownRenderRequest",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.setMarkdownRender"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.setMarkdownRender",
-            "isLiteral": true
-          },
-          {
-            "name": "render",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
-          }
-        ],
-        "sourceFile": "webview-messages.ts"
-      },
-      {
-        "name": "DiffViewerRevertFileRequest",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.revertFile"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.revertFile",
-            "isLiteral": true
-          },
-          {
-            "name": "file",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "webview-messages.ts"
-      },
-      {
-        "name": "DiffViewerCloseRequest",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.close"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.close",
-            "isLiteral": true
-          }
-        ],
-        "sourceFile": "webview-messages.ts"
-      },
-      {
-        "name": "DiffViewerSetBaseBranchRequest",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "diffViewer.setBaseBranch"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "diffViewer.setBaseBranch",
-            "isLiteral": true
-          },
-          {
-            "name": "branch",
-            "type": "union",
-            "optional": false,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "webview-messages.ts"
-      },
-      {
         "name": "DiffVirtualSetMarkdownRenderRequest",
         "type": "interface",
         "discriminator": {
@@ -17930,40 +17964,6 @@
           },
           {
             "name": "modelID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "webview-messages.ts"
-      },
-      {
-        "name": "ContinueInWorktreeRequest",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "continueInWorktree"
-        },
-        "properties": [
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "continueInWorktree",
-            "isLiteral": true
-          },
-          {
-            "name": "sessionId",
             "type": "string",
             "optional": false,
             "nullable": false,
@@ -44266,8 +44266,8 @@
   },
   "statistics": {
     "totalTypes": 543,
-    "webviewToExtensionMessages": 208,
-    "extensionToWebviewMessages": 188,
+    "webviewToExtensionMessages": 229,
+    "extensionToWebviewMessages": 167,
     "inlineMessagesExtracted": 0
   }
 }

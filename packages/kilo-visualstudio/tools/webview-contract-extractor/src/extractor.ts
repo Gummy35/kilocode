@@ -569,94 +569,33 @@ function extractMessageTypes(
   
   // Fourth pass: Process messages (interfaces with discriminators)
   const visitFourthPass = (node: ts.Node): void => {
-    let typeDef: TypeDefinition | null = null
+    if (!ts.isInterfaceDeclaration(node)) {
+      ts.forEachChild(node, visitFourthPass)
+      return
+    }
     
-    if (ts.isInterfaceDeclaration(node)) {
-      typeDef = context.types.get(node.name.text) || null
+    const typeDef = context.types.get(node.name.text)
+    if (!typeDef || !typeDef.discriminator || !typeDef.properties) {
+      ts.forEachChild(node, visitFourthPass)
+      return
     }
 
-    if (typeDef && typeDef.discriminator && typeDef.properties) {
-      const messageType: MessageType = {
-        name: typeDef.name,
-        type: "interface",
-        discriminator: typeDef.discriminator,
-        properties: typeDef.properties,
-        sourceFile: typeDef.sourceFile,
-      }
-      
-      // Categorize based on discriminator value
-      const discValue = typeDef.discriminator.value
-      if (discValue.includes("agentManager") || 
-          discValue.includes("sendMessage") ||
-          discValue.includes("abort") ||
-          discValue.includes("createSession") ||
-          discValue.includes("request") ||
-          discValue.includes("Reply") ||
-          discValue.includes("Response") ||
-          discValue.includes("Accept") ||
-          discValue.includes("Dismiss") ||
-          discValue.includes("Delete") ||
-          discValue.includes("Update") ||
-          discValue.includes("Open") ||
-          discValue.includes("Close") ||
-          discValue.includes("Login") ||
-          discValue.includes("Logout") ||
-          discValue.includes("Select") ||
-          discValue.includes("Set") ||
-          discValue.includes("Validate") ||
-          discValue.includes("Compact") ||
-          discValue.includes("Export") ||
-          discValue.includes("Rename") ||
-          discValue.includes("Clear") ||
-          discValue.includes("Load") ||
-          discValue.includes("Import") ||
-          discValue.includes("Refresh") ||
-          discValue.includes("Telemetry") ||
-          discValue.includes("Copy") ||
-          discValue.includes("Preview") ||
-          discValue.includes("Save") ||
-          discValue.includes("Continue") ||
-          discValue.includes("Persist") ||
-          discValue.includes("Forget") ||
-          discValue.includes("Promote") ||
-          discValue.includes("Fork") ||
-          discValue.includes("Remove") ||
-          discValue.includes("Filter") ||
-          discValue.includes("Install") ||
-          discValue.includes("Connect") ||
-          discValue.includes("Disconnect") ||
-          discValue.includes("Authorize") ||
-          discValue.includes("Fetch") ||
-          discValue.includes("Toggle") ||
-          discValue.includes("Reset") ||
-          discValue.includes("Retry") ||
-          discValue.includes("Reload") ||
-          discValue.includes("Enhance") ||
-          discValue.includes("Apply") ||
-          discValue.includes("Revert") ||
-          discValue.includes("Move") ||
-          discValue.includes("Configure") ||
-          discValue.includes("Run") ||
-          discValue.includes("Stop") ||
-          discValue.includes("Show") ||
-          discValue.includes("Hide") ||
-          discValue.includes("Ready") ||
-          discValue.includes("Focus") ||
-          discValue.includes("Visible") ||
-          discValue.includes("FocusChanged") ||
-          discValue.includes("Focus")) {
-        // Check if already added
-        const existing = context.messages.webviewToExtension.find(m => m.name === typeDef.name)
-        if (!existing) {
-          context.messages.webviewToExtension.push(messageType)
-        }
-      } else {
-        // Check if already added
-        const existing = context.messages.extensionToWebview.find(m => m.name === typeDef.name)
-        if (!existing) {
-          context.messages.extensionToWebview.push(messageType)
-        }
-      }
+    const messageType: MessageType = {
+      name: typeDef.name,
+      type: "interface",
+      discriminator: typeDef.discriminator,
+      properties: typeDef.properties,
+      sourceFile: typeDef.sourceFile,
+    }
+    
+    const direction = categorizeMessageByDiscriminator(typeDef.discriminator.value)
+    const targetArray = direction === "webviewToExtension" 
+      ? context.messages.webviewToExtension 
+      : context.messages.extensionToWebview
+    
+    const existing = targetArray.find(m => m.name === typeDef.name)
+    if (!existing) {
+      targetArray.push(messageType)
     }
 
     ts.forEachChild(node, visitFourthPass)
