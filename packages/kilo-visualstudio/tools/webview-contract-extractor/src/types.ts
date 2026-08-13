@@ -43,6 +43,8 @@ export interface TypeDefinition {
   sourceFile: string
   description?: string
   typeRef?: TypeReference
+  baseType?: string  // For Partial<T> & Pick<T, ...> pattern
+  requiredFields?: string[]  // Required fields from Pick<T, ...>
 }
 
 export interface PropertyDefinition {

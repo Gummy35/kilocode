@@ -617,11 +617,20 @@ function generateTypeClass(typeDef: TypeDefinition): string {
     if (sourceComment) sb.push(sourceComment)
   }
   
-  sb.push(`public class ${typeDef.name}`)
+  // Handle inheritance for Partial<T> & Pick<T, ...> pattern
+  if (typeDef.baseType) {
+    sb.push(`public class ${typeDef.name} : ${pascalCase(typeDef.baseType)}`)
+  } else {
+    sb.push(`public class ${typeDef.name}`)
+  }
   sb.push("{")
 
   if (typeDef.properties) {
     for (const prop of typeDef.properties) {
+      // Skip properties that are in the base type - they're inherited
+      if (typeDef.baseType && typeDef.requiredFields && !typeDef.requiredFields.includes(prop.name)) {
+        continue
+      }
       const mapped = mapToCSharpType(prop)
       const nullable = mapped.isNullable ? "?" : ""
       const jsonAttr = `    [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`

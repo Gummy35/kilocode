@@ -383,6 +383,89 @@ function extractTypeAliasDeclaration(
         }
       }
     }
+    
+    // Handle Partial<T> & Pick<T, "field1" | "field2"> pattern
+    if (ts.isIntersectionTypeNode(node.type)) {
+      const intersectionType = node.type
+      const partialTypes: string[] = []
+      const pickTypes: { typeName: string, fields: string[] }[] = []
+      
+      for (const typeNode of intersectionType.types) {
+        if (ts.isTypeReferenceNode(typeNode)) {
+          const typeName = typeNode.typeName.getText()
+          
+          // Check if it's Partial<T>
+          if (typeName === 'Partial' && typeNode.typeArguments && typeNode.typeArguments.length > 0) {
+            const argType = typeNode.typeArguments[0]
+            if (ts.isTypeReferenceNode(argType)) {
+              partialTypes.push(argType.typeName.getText())
+            }
+          }
+          
+          // Check if it's Pick<T, "field1" | "field2">
+          if (typeName === 'Pick' && typeNode.typeArguments && typeNode.typeArguments.length >= 2) {
+            const baseType = typeNode.typeArguments[0]
+            const fieldsType = typeNode.typeArguments[1]
+            
+            if (ts.isTypeReferenceNode(baseType)) {
+              const baseTypeName = baseType.typeName.getText()
+              const fields: string[] = []
+              
+              // Extract fields from union type or single literal
+              if (ts.isUnionTypeNode(fieldsType)) {
+                for (const field of fieldsType.types) {
+                  if (ts.isLiteralTypeNode(field) && ts.isStringLiteral(field.literal)) {
+                    fields.push(field.literal.text)
+                  }
+                }
+              } else if (ts.isLiteralTypeNode(fieldsType) && ts.isStringLiteral(fieldsType.literal)) {
+                fields.push(fieldsType.literal.text)
+              }
+              
+              if (fields.length > 0) {
+                pickTypes.push({ typeName: baseTypeName, fields })
+              }
+            }
+          }
+        }
+      }
+      
+      // If we found Partial<T> and Pick<T, ...>, merge them
+      if (partialTypes.length > 0 && pickTypes.length > 0) {
+        for (const partialType of partialTypes) {
+          if (context.types.has(partialType)) {
+            const baseType = context.types.get(partialType)!
+            if (baseType.properties && baseType.properties.length > 0) {
+              // Get required fields from Pick
+              const requiredFields = new Set<string>()
+              for (const pick of pickTypes) {
+                if (pick.typeName === partialType) {
+                  for (const field of pick.fields) {
+                    requiredFields.add(field)
+                  }
+                }
+              }
+              
+              // Make all properties optional except the picked ones
+              const mergedProperties = baseType.properties.map(prop => ({
+                ...prop,
+                optional: !requiredFields.has(prop.name),
+              }))
+              
+              return {
+                name,
+                kind: "interface",
+                properties: mergedProperties,
+                discriminator: baseType.discriminator,
+                sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
+                baseType: partialType,
+                requiredFields: Array.from(requiredFields),
+              }
+            }
+          }
+        }
+      }
+    }
   }
   
   // For re-export type aliases (export type { X as Y } from "..."), use the type checker to resolve
