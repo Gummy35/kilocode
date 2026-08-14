@@ -358,7 +358,7 @@ bun run generator.ts        # Generate C# DTOs from contract
 
 ### `PORT-SSE-001`
 
-**Status:** `REVIEW` - Completed 2026-08-14
+**Status:** `REVIEW` - Completed 2026-08-14 (Updated 2026-08-14)
 
 **Summary:**
 - **Centralized session ID resolution:** `ResolveSessionId()` method added to `SSEHelper.cs`
@@ -367,6 +367,7 @@ bun run generator.ts        # Generate C# DTOs from contract
 - **Project filtering:** `IsEventFromForeignProject()` method for foreign project event rejection
 - **Missing event handlers:** `session.turn.open`, `session.network.*` family added
 - **Generated DTOs:** `SessionStatusMessage`, `PartUpdate` used instead of anonymous objects
+- **Sync event unwrapping:** `UnwrapSyncEvent()` and `NormalizeEvent()` added to `SseEventDeserializer.cs`
 - **Unit tests:** 4 test classes created with focused coverage
 
 **Key Deliverables:**
@@ -376,6 +377,8 @@ bun run generator.ts        # Generate C# DTOs from contract
 - ✅ `SSEHelper.IsEventFromForeignProject()` - Project-based filtering
 - ✅ `HandleSessionTurnOpen()` - Session turn open handler
 - ✅ `HandleNetworkEvent()` - Network event handling (asked, replied, rejected, restored)
+- ✅ `SseEventDeserializer.UnwrapSyncEvent()` - Sync event unwrapping matching VS Code
+- ✅ `SseEventDeserializer.NormalizeEvent()` - Sync event normalization
 - ✅ `SseEventResolutionTests.cs` - 4 test classes, 20+ test cases
 
 **Test Coverage:**

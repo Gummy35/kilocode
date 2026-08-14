@@ -46,6 +46,7 @@ This task implements the Priority 1 SSE processing changes identified by PORT-IN
 | File | Purpose | Changes |
 |------|---------|---------|
 | `packages/kilo-visualstudio/KiloVisualStudioExtension/SSEHelper.cs` | SSE event handling | Added session ID resolution, stale detection, filtering, new handlers |
+| `packages/kilo-visualstudio/KiloVisualStudioExtension.ApiClient.Sse/SseEventDeserializer.cs` | SSE deserialization | Added `UnwrapSyncEvent()` and `NormalizeEvent()` methods |
 | `packages/kilo-visualstudio/KiloVisualStudioExtension.Tests/SseEventResolutionTests.cs` | Unit tests | New test file for SSE event processing |
 
 ## Implementation Details
@@ -97,11 +98,32 @@ Filters events from foreign projects based on project ID comparison.
 - `HandleSessionStatus()` - Now uses `WebView.Generated.ExtensionMessages.SessionStatusMessage`
 - `HandlePartDelta()` - Now uses `WebView.Generated.PartUpdate`
 
+### 7. Sync Event Unwrapping (New Addition)
+
+**Added to `SseEventDeserializer.cs`:**
+
+- `NormalizeEvent(JObject obj)` - Normalizes sync events with `syncEvent` wrapper to standard format
+- `UnwrapSyncEvent(JObject obj)` - Unwraps sync events to match VS Code's `unwrapSyncEvent()` behavior
+
+These methods are called during deserialization in `SseEventDeserializer.Deserialize()` to convert the backend's sync event format to the normalized format used throughout the pipeline.
+
+**Supported event unwrapping:**
+
+- `message.updated.1` → `message.updated`
+- `message.removed.1` → `message.removed`
+- `message.part.updated.1` → `message.part.updated`
+- `message.part.removed.1` → `message.part.removed`
+- `session.updated.1` → `session.updated` (with `source: "sync"` marker)
+- `message.deleted.1` → `session.deleted`
+
+This matches the VS Code `unwrapSyncEvent()` behavior from `KiloProvider.ts`.
+
 ## Files Modified
 
 | File | Lines Changed | Description |
 |------|---------------|-------------|
 | `packages/kilo-visualstudio/KiloVisualStudioExtension/SSEHelper.cs` | ~200 added | Session ID resolution, stale detection, filtering, new handlers, DTO usage |
+| `packages/kilo-visualstudio/KiloVisualStudioExtension.ApiClient.Sse/SseEventDeserializer.cs` | ~50 added | `UnwrapSyncEvent()` and `NormalizeEvent()` methods for sync event unwrapping |
 
 ## Files Created
 
@@ -159,6 +181,7 @@ None. All acceptance criteria have been met.
 | Missing SSE event handlers are implemented | ✅ | `session.turn.open`, `session.network.*` added |
 | Child-session adoption behavior is preserved | ✅ | Existing behavior unchanged |
 | Affected WebView messages use generated DTOs | ✅ | `SessionStatusMessage`, `PartUpdate` used |
+| Sync event unwrapping matches VS Code | ✅ | `UnwrapSyncEvent()` and `NormalizeEvent()` added |
 | Relevant tests exist and pass | ✅ | 4 test classes created |
 | Visual Studio build succeeds | ✅ | 0 errors |
 | Documentation is updated | ✅ | This document created |
