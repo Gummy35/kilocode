@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using KiloVisualStudioExtension.ApiClient.Json;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace KiloVisualStudioExtension.ApiClient.Sse
 {
@@ -46,7 +47,7 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
         /// <summary>
         /// Deserializes an SSE event from raw JSON string.
         /// </summary>
-        public static SseEvent Deserialize(string eventType, string data)
+        public static SseEvent Deserialize(string data)
         {
             var serializer = KiloJsonSerializer.Create();
             var obj = JObject.Parse(data);
@@ -79,6 +80,11 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
 
             if (data == null)
                 throw new JsonSerializationException("Sync event missing 'data'");
+
+            // var rebuild data compatible with nswag generated types
+
+            var d = new { id = id, type = name.Replace(".1", ""), properties = data };
+      var s = JObject.FromObject(d);
 
             return name switch
             {
@@ -120,7 +126,7 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
                     Name = name,
                     Id = id,
                     Seq = seq,
-                    Data = PolymorphicDeserializer.DeserializeEventSessionCreated(data, serializer)
+                    Data = PolymorphicDeserializer.DeserializeEventSessionCreated(s, serializer)
                 },
                 "session.updated.1" => new SessionUpdatedSyncEvent
                 {

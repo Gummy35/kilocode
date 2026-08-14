@@ -8,7 +8,6 @@ using KiloVisualStudioExtension.ApiClient.Sse;
 using KiloVisualStudioExtension.WebView.Generated;
 using KiloVisualStudioExtension.WebView.Generated.Sessions;
 using KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
-using KiloVisualStudioExtension.WebView.Generated;
 using KiloVisualStudioExtension.WebView.Generated.Parts;
 using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
 using WebViewMessage = KiloVisualStudioExtension.WebView.Generated.Sessions.Message;
@@ -69,7 +68,8 @@ namespace KiloVisualStudioExtension
         {
             try
             {
-                var sseEvent = SseEventDeserializer.Deserialize(eventType, data);
+                System.Diagnostics.Debug.WriteLine($"SSE Event received : {eventType} : {data}");
+                var sseEvent = SseEventDeserializer.Deserialize(data);
 
                 if (sseEvent is SyncEvent syncEvent)
                 {
