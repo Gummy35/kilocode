@@ -22,4 +22,10 @@
     <ProjectReference Include="..\KiloVisualStudioExtension\KiloVisualStudioExtension.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Fixtures\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

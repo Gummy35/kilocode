@@ -1,0 +1,19 @@
+{
+  "directory": "C:\\prog\\kilocode\\kilocode",
+  "project": "1964d2a94e8019106135ae62a9554d1484853591",
+  "payload": {
+    "id": "evt_000191e76001j68utheQHccIJv",
+    "type": "message.part.updated",
+    "properties": {
+      "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+      "part": {
+        "id": "prt_000191e66001EvgiiWeEGdi8ga",
+        "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+        "messageID": "msg_0001919b300108vxNativqJTk0",
+        "type": "text",
+        "text": "list files in current directory"
+      },
+      "time": 1786708041334
+    }
+  }
+}

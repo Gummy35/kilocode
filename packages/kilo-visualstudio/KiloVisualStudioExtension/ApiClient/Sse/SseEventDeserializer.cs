@@ -1,8 +1,9 @@
-using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.ApiClient.Json;
 using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 
 namespace KiloVisualStudioExtension.ApiClient.Sse
 {
@@ -44,6 +45,46 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
     /// </summary>
     public static class SseEventDeserializer
     {
+
+    public static JObject NormalizeEvent(JObject obj)
+    {
+      var type = obj["type"]?.Value<string>() ?? "";
+      if (type != "sync") return obj;
+      var ev = obj["syncEvent"];
+      return JObject.FromObject(new
+      {
+        type = "sync",
+        name = ev["type"],
+        id = ev["id"],
+        seq = ev["seq"],
+        aggregateID = ev["aggregateID"],
+        data = ev["data"]
+      });
+     }
+    
+    public static JObject UnwrapSyncEvent(JObject obj)
+    {
+      var type = obj["type"]?.Value<string>() ?? "";
+      if (type != "sync") return obj;
+      
+      var payload = obj.ContainsKey("syncEvent") ? NormalizeEvent(obj) : obj;
+      var name = payload["name"]?.Value<string>() ?? "";
+
+      return name switch
+      {
+        "message.updated.1" => JObject.FromObject(new { id = payload["id"], type = "message.updated", properties = payload["data"] }),
+        "message.removed.1" => JObject.FromObject(new { id = payload["id"], type = "message.removed", properties = payload["data"] }),
+        "message.part.updated.1" => JObject.FromObject(new { id = payload["id"], type = "message.part.updated", properties = payload["data"] }),
+        "message.part.removed.1" => JObject.FromObject(new { id = payload["id"], type = "message.part.removed", properties = payload["data"] }),
+        "message.created.1" => JObject.FromObject(new { id = payload["id"], type = "message.created", properties = payload["data"] }),
+        "session.updated.1" => JObject.FromObject(new { source = "sync", id = payload["id"], seq = payload["seq"], type = "session.updated", properties = payload["data"] }),
+        "message.deleted.1" => JObject.FromObject(new { id = payload["id"], type = "session.deleted", properties = payload["data"] }),
+        _ => null
+      };
+    }
+
+    
+    
         /// <summary>
         /// Deserializes an SSE event from raw JSON string.
         /// </summary>
@@ -55,6 +96,9 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
             // Check for "payload" wrapper
             if (obj.TryGetValue("payload", out var payload))
                 obj = (JObject)payload;
+
+            obj = UnwrapSyncEvent(obj);
+
 
             // Route based on structure
             if (obj.TryGetValue("name", out var nameToken))

@@ -70,12 +70,12 @@ namespace KiloVisualStudioExtension.Tests.ApiClient
             info["agent"].Value<string>().Should().Be("code");
         }
 
+   
         [Fact]
         public void Deserialize_MessagePartUpdated_StreamEvent_Trace1ca()
         {
-            // Arrange - EXACT data from trace 1ca/23f
-            var data = @"{""directory"":""C:\\prog\\kilocode\\kilocode"",""project"":""1964d2a94e8019106135ae62a9554d1484853591"",""payload"":{""id"":""evt_000191e76001j68utheQHccIJv"",""type"":""message.part.updated"",""properties"":{""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""part"":{""id"":""prt_000191e66001EvgiiWeEGdi8ga"",""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""messageID"":""msg_0001919b300108vxNativqJTk0"",""type"":""text"",""text"":""list files in current directory""},""time"":1786708041334}}}";
-
+            // Arrange 
+            var data = FixtureLoader.Load("Sse\\message-part-updated\\message.part.updated.json");
             // Act
             var result = SseEventDeserializer.Deserialize(data);
 
@@ -93,11 +93,34 @@ namespace KiloVisualStudioExtension.Tests.ApiClient
             part["text"].Value<string>().Should().Be("list files in current directory");
         }
 
-        [Fact]
+    [Fact]
+    public void Deserialize_MessagePartUpdated1_SyncEvent_Trace()
+    {
+      // Arrange 
+      var data = FixtureLoader.Load("Sse\\message-part-updated\\message.part.updated.1.json");
+      // Act
+      var result = SseEventDeserializer.Deserialize(data);
+
+      // Assert
+      result.Should().BeOfType<MessagePartUpdatedStreamEvent>();
+      var streamEvent = (MessagePartUpdatedStreamEvent)result;
+
+      streamEvent.EventType.Should().Be("message.part.updated");
+      streamEvent.SessionID.Should().Be("ses_fffe6e5c7ffeKaWESnqm0mzNHw");
+
+      var part = streamEvent.Properties["part"];
+      part["id"].Value<string>().Should().Be("prt_000191e66001EvgiiWeEGdi8ga");
+      part["messageID"].Value<string>().Should().Be("msg_0001919b300108vxNativqJTk0");
+      part["type"].Value<string>().Should().Be("text");
+      part["text"].Value<string>().Should().Be("list files in current directory");
+    }
+
+
+    [Fact]
         public void Deserialize_SessionUpdated_StreamEvent_Trace30a()
         {
-            // Arrange - EXACT data from trace 30a/37f
-            var data = @"{""directory"":""C:\\prog\\kilocode\\kilocode"",""project"":""1964d2a94e8019106135ae62a9554d1484853591"",""payload"":{""id"":""evt_000191c9a001Cw4Be5ssCZZdA1"",""type"":""session.updated"",""properties"":{""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""info"":{""id"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""slug"":""hidden-sailor"",""projectID"":""1964d2a94e8019106135ae62a9554d1484853591"",""directory"":""C:\\prog\\kilocode\\kilocode"",""path"":"""",""cost"":0,""tokens"":{""input"":0,""output"":0,""reasoning"":0,""cache"":{""read"":0,""write"":0}},""title"":""New session - 2026-08-14T11:47:20.248Z"",""agent"":""code"",""model"":{""id"":""qwen3.5-122b"",""providerID"":""openrama"",""variant"":""default""},""version"":""7.4.22"",""metadata"":{""kilocode.sandbox"":{""enabled"":false,""version"":0}},""time"":{""created"":1786708040248,""updated"":1786708040838}}}}}";
+      // Arrange
+      var data = FixtureLoader.Load("Sse\\");// @"{""directory"":""C:\\prog\\kilocode\\kilocode"",""project"":""1964d2a94e8019106135ae62a9554d1484853591"",""payload"":{""id"":""evt_000191c9a001Cw4Be5ssCZZdA1"",""type"":""session.updated"",""properties"":{""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""info"":{""id"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""slug"":""hidden-sailor"",""projectID"":""1964d2a94e8019106135ae62a9554d1484853591"",""directory"":""C:\\prog\\kilocode\\kilocode"",""path"":"""",""cost"":0,""tokens"":{""input"":0,""output"":0,""reasoning"":0,""cache"":{""read"":0,""write"":0}},""title"":""New session - 2026-08-14T11:47:20.248Z"",""agent"":""code"",""model"":{""id"":""qwen3.5-122b"",""providerID"":""openrama"",""variant"":""default""},""version"":""7.4.22"",""metadata"":{""kilocode.sandbox"":{""enabled"":false,""version"":0}},""time"":{""created"":1786708040248,""updated"":1786708040838}}}}}";
 
             // Act
             var result = SseEventDeserializer.Deserialize(data);
