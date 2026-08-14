@@ -21,10 +21,18 @@ namespace KiloVisualStudioExtension
         private readonly Dictionary<string, SessionRevision> _revisions = new Dictionary<string, SessionRevision>();
         private readonly HashSet<string> _modelUsageSessionIds = new HashSet<string>();
         private readonly Dictionary<string, MessageCost> _messageCosts = new Dictionary<string, MessageCost>();
+        private readonly Dictionary<string, string> _messageSessionIds = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _networkWaits = new Dictionary<string, string>();
         private int _sandboxRevision = 0;
         private string? _cachedIndexingStatusMessage = null;
+        private string? _currentProjectID = null;
 
         public string? CurrentSessionID { get; private set; }
+        public string? CurrentProjectID 
+        { 
+            get => _currentProjectID;
+            set => _currentProjectID = value;
+        }
 
         public ICollection<string> TrackedSessionIds => _trackedSessionIds;
         public IReadOnlyDictionary<string, SessionStatus> SessionStatusMap => _sessionStatusMap;
@@ -186,6 +194,17 @@ namespace KiloVisualStudioExtension
                     HandleSessionTurnClosed(properties);
                     break;
 
+                case "session.turn.open":
+                    HandleSessionTurnOpen(properties);
+                    break;
+
+                case "session.network.asked":
+                case "session.network.replied":
+                case "session.network.rejected":
+                case "session.network.restored":
+                    HandleNetworkEvent(type, properties);
+                    break;
+
                 case "permission.asked":
                     HandlePermissionAsked(properties);
                     break;
@@ -228,12 +247,14 @@ namespace KiloVisualStudioExtension
 
         private void HandleMessageUpdatedSync(MessageUpdatedSyncEvent evt)
         {
-            var data = (KiloVisualStudioExtension.ApiClient.EventMessageUpdated)evt.Data;
+            var data = (ApiClient.EventMessageUpdated)evt.Data;
             var info = data.Properties.Info;
             var infoJson = info.ToJson();
             var infoObj = JObject.Parse(infoJson);
             var messageID = infoObj["id"]?.Value<string>();
-            var sessionID = infoObj["sessionID"]?.Value<string>();
+            var sessionID = data.Properties.SessionID;
+
+            RecordMessageSessionId(messageID, sessionID);
 
             if (infoObj["cost"]?.Type == JTokenType.Float && infoObj["role"]?.Value<string>() == "assistant")
             {
@@ -352,14 +373,18 @@ namespace KiloVisualStudioExtension
 
         private void HandleSessionUpdatedSync(SessionUpdatedSyncEvent evt)
         {
-            var data = (KiloVisualStudioExtension.ApiClient.EventSessionUpdated)evt.Data;
+            var data = (ApiClient.EventSessionUpdated)evt.Data;
             var info = data.Properties.Info;
             var sessionID = data.Properties.SessionID;
             
-            if (!string.IsNullOrEmpty(evt.Id))
+            if (!string.IsNullOrEmpty(evt.Id) && evt.Seq > 0)
             {
-                var revision = new SessionRevision { Id = long.Parse(evt.Id), Seq = evt.Seq };
-                _revisions[sessionID] = revision;
+                if (IsStaleEvent(sessionID, evt.Id, evt.Seq))
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Dropping stale session.updated event for {sessionID}");
+                    return;
+                }
+                UpdateRevision(sessionID, evt.Id, evt.Seq);
             }
 
             if (CurrentSessionID == sessionID)
@@ -460,21 +485,28 @@ namespace KiloVisualStudioExtension
                 Next = status["next"]?.Type == JTokenType.Float || status["next"]?.Type == JTokenType.Integer ? (long?)status["next"].Value<long>() : null
             };
 
-            object extra;
-            if (statusType == "retry") 
-                extra = new { attempt = _sessionStatusMap[sid].Attempt, message = _sessionStatusMap[sid].Message, next = _sessionStatusMap[sid].Next };
-            else if (statusType == "offline")
-                extra = new { message = _sessionStatusMap[sid].Message };
-            else
-                extra = new { };
-
-            PostMessage(new
+            var sessionStatus = new WebView.Generated.ExtensionMessages.SessionStatusMessage
             {
-                type = "sessionStatus",
-                sessionID = sid,
-                status = statusType,
-                extra
-            });
+                SessionID = sid,
+                Status = MapSessionStatusEnum(statusType),
+                Attempt = status["attempt"]?.Type == JTokenType.Integer || status["attempt"]?.Type == JTokenType.Float ? (double?)status["attempt"].Value<long>() : null,
+                Message = status["message"]?.Value<string>(),
+                Next = status["next"]?.Type == JTokenType.Float || status["next"]?.Type == JTokenType.Integer ? (double?)status["next"].Value<long>() : null
+            };
+
+            PostMessage(sessionStatus);
+        }
+
+        private WebView.Generated.Connection.SessionStatus MapSessionStatusEnum(string? type)
+        {
+            return type switch
+            {
+                "idle" => WebView.Generated.Connection.SessionStatus.Idle,
+                "busy" => WebView.Generated.Connection.SessionStatus.Busy,
+                "retry" => WebView.Generated.Connection.SessionStatus.Retry,
+                "offline" => WebView.Generated.Connection.SessionStatus.Offline,
+                _ => WebView.Generated.Connection.SessionStatus.Idle
+            };
         }
 
         private void HandlePartDelta(JToken properties)
@@ -492,13 +524,12 @@ namespace KiloVisualStudioExtension
                 return;
             }
 
-            PostMessage(new
+            PostMessage(new WebView.Generated.PartUpdate
             {
-                type = "partUpdated",
-                sessionID = sid,
-                messageID,
-                part = new { id = partID, type = "text", messageID, text = delta },
-                delta = new { type = "text-delta", textDelta = delta }
+                SessionID = sid,
+                MessageID = messageID,
+                Part = new { id = partID, type = "text", messageID, text = delta },
+                Delta = new { type = "text-delta", textDelta = delta }
             });
         }
 
@@ -717,6 +748,37 @@ namespace KiloVisualStudioExtension
             });
         }
 
+        private void HandleSessionTurnOpen(JToken properties)
+        {
+            var sessionID = properties["sessionID"]?.Value<string>();
+            System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: session.turn.open for {sessionID}");
+        }
+
+        private void HandleNetworkEvent(string type, JToken properties)
+        {
+            var requestID = properties["requestID"]?.Value<string>() ?? properties["id"]?.Value<string>();
+            var sessionID = properties["sessionID"]?.Value<string>();
+            
+            System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: network event {type} for session {sessionID}, requestID {requestID}");
+            
+            if (type == "session.network.asked" && !string.IsNullOrEmpty(requestID))
+            {
+                _networkWaits[requestID] = sessionID ?? "";
+            }
+            else if (type == "session.network.restored" && !string.IsNullOrEmpty(requestID))
+            {
+                if (_networkWaits.TryGetValue(requestID, out var sid))
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-replying to network restore for {requestID}");
+                    _networkWaits.Remove(requestID);
+                }
+            }
+            else if (type == "session.network.replied" || type == "session.network.rejected")
+            {
+                _networkWaits.Remove(requestID ?? "");
+            }
+        }
+
         private void HandlePermissionAsked(JToken properties)
         {
             var permission = properties["permission"]?.Value<string>();
@@ -855,6 +917,162 @@ namespace KiloVisualStudioExtension
             {
                 _trackedSessionIds.Add(sessionID);
             }
+        }
+
+        public string? ResolveSessionId(SseEvent evt)
+        {
+            if (evt is SyncEvent syncEvent)
+            {
+                return ResolveSyncSessionId(syncEvent);
+            }
+
+            if (evt is StreamEvent streamEvent)
+            {
+                return ResolveTransientSessionId(streamEvent);
+            }
+
+            return null;
+        }
+
+        private string? ResolveSyncSessionId(SyncEvent evt)
+        {
+            if (evt.Name == "message.updated.1" && evt.Data is ApiClient.EventMessageUpdated msgUpdated)
+            {
+                var infoJson = msgUpdated.Properties.Info.ToJson();
+                var infoObj = JObject.Parse(infoJson);
+                var messageID = infoObj["id"]?.Value<string>();
+                var sessionID = msgUpdated.Properties.SessionID;
+                if (!string.IsNullOrEmpty(messageID) && !string.IsNullOrEmpty(sessionID))
+                {
+                    _messageSessionIds[messageID] = sessionID;
+                }
+                return sessionID;
+            }
+
+            if (evt.Name == "message.removed.1" && evt.Data is ApiClient.EventMessageRemoved msgRemoved)
+            {
+                return msgRemoved.Properties.SessionID;
+            }
+
+            if (evt.Name == "message.part.updated.1" && evt.Data is ApiClient.EventMessagePartUpdated partUpdated)
+            {
+                return partUpdated.Properties.SessionID;
+            }
+
+            if (evt.Name == "message.part.removed.1" && evt.Data is ApiClient.EventMessagePartRemoved partRemoved)
+            {
+                return partRemoved.Properties.SessionID;
+            }
+
+            if (evt.Name == "session.created.1" && evt.Data is ApiClient.EventSessionCreated sessionCreated)
+            {
+                return sessionCreated.Properties.SessionID;
+            }
+
+            if (evt.Name == "session.updated.1" && evt.Data is ApiClient.EventSessionUpdated sessionUpdated)
+            {
+                return sessionUpdated.Properties.SessionID;
+            }
+
+            if (evt.Name == "session.deleted.1" && evt.Data is ApiClient.EventSessionDeleted sessionDeleted)
+            {
+                return sessionDeleted.Properties.SessionID;
+            }
+
+            return null;
+        }
+
+        private string? ResolveTransientSessionId(StreamEvent evt)
+        {
+            var type = evt.EventType;
+            switch (type)
+            {
+                case "session.status":
+                case "session.turn.open":
+                case "session.turn.close":
+                case "session.idle":
+                case "session.error":
+                case "todo.updated":
+                case "message.part.delta":
+                case "message.part.updated":
+                case "permission.asked":
+                case "permission.replied":
+                case "question.asked":
+                case "question.replied":
+                case "question.rejected":
+                case "suggestion.shown":
+                case "suggestion.accepted":
+                case "suggestion.dismissed":
+                case "session.network.asked":
+                case "session.network.replied":
+                case "session.network.rejected":
+                case "session.network.restored":
+                    return evt.SessionID;
+                case "sandbox.status.changed":
+                    return evt.SessionID;
+                default:
+                    return null;
+            }
+        }
+
+        public void RecordMessageSessionId(string messageID, string sessionID)
+        {
+            _messageSessionIds[messageID] = sessionID;
+        }
+
+        public string? LookupMessageSessionId(string messageID)
+        {
+            return _messageSessionIds.TryGetValue(messageID, out var sessionId) ? sessionId : null;
+        }
+
+        public bool IsStaleEvent(string sessionID, string eventId, int seq)
+        {
+            if (!_revisions.TryGetValue(sessionID, out var revision))
+            {
+                return false;
+            }
+
+            var versioned = seq > 0 || revision.Seq > 0;
+            if (versioned)
+            {
+                return seq <= revision.Seq;
+            }
+
+            return long.Parse(eventId) <= revision.Id;
+        }
+
+        public void UpdateRevision(string sessionID, string eventId, int seq)
+        {
+            _revisions[sessionID] = new SessionRevision 
+            { 
+                Id = long.Parse(eventId), 
+                Seq = seq 
+            };
+        }
+
+        public bool IsEventFromForeignProject(string eventName, string? projectID)
+        {
+            if (string.IsNullOrEmpty(_currentProjectID) || string.IsNullOrEmpty(projectID))
+            {
+                return false;
+            }
+
+            if (eventName == "session.created.1" || eventName == "session.deleted.1")
+            {
+                return projectID != _currentProjectID;
+            }
+
+            if (eventName == "session.updated.1")
+            {
+                return projectID != _currentProjectID;
+            }
+
+            return false;
+        }
+
+        public void SetProjectID(string? projectID)
+        {
+            _currentProjectID = projectID;
         }
     }
 }
