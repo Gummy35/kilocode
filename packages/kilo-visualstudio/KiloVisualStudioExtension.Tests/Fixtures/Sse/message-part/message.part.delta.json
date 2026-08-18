@@ -1,0 +1,15 @@
+{
+    "directory": "C:\\prog\\kilocode\\kilocode",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "id": "evt_000192ed1001OegWoaxjQrVy5B",
+        "type": "message.part.delta",
+        "properties": {
+            "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+            "messageID": "msg_000191ff300161wPHEy0Dax1jv",
+            "partID": "prt_000192ecc001rNrB5uBTMfYJu5",
+            "field": "text",
+            "delta": "The"
+        }
+    }
+}

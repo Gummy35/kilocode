@@ -686,7 +686,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>File paths</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, int? limit);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, long? limit);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -697,7 +697,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>File paths</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, int? limit, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, long? limit, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Find symbols
@@ -875,7 +875,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS diff</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, int? context);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, long? context);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -886,7 +886,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS diff</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, int? context, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, long? context, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get raw VCS diff
@@ -2344,7 +2344,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, int> body);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2355,7 +2355,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, int> body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Append TUI prompt
@@ -8960,7 +8960,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>File paths</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, int? limit)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, long? limit)
         {
             return Find_filesAsync(directory, workspace, query, dirs, type, limit, System.Threading.CancellationToken.None);
         }
@@ -8974,7 +8974,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>File paths</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, int? limit, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> Find_filesAsync(string directory, string workspace, string query, Dirs? dirs, Type? type, long? limit, System.Threading.CancellationToken cancellationToken)
         {
             if (query == null)
                 throw new System.ArgumentNullException("query");
@@ -9979,7 +9979,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS diff</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, int? context)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, long? context)
         {
             return Vcs_diffAsync(directory, workspace, mode, context, System.Threading.CancellationToken.None);
         }
@@ -9993,7 +9993,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS diff</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, int? context, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VcsFileDiff>> Vcs_diffAsync(string directory, string workspace, Mode mode, long? context, System.Threading.CancellationToken cancellationToken)
         {
             if (mode == null)
                 throw new System.ArgumentNullException("mode");
@@ -18616,7 +18616,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, int> body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body)
         {
             return Sync_history_listAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -18630,7 +18630,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, int> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -36841,7 +36841,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Access { get; set; }
 
         [Newtonsoft.Json.JsonProperty("expires", Required = Newtonsoft.Json.Required.Always)]
-        public int Expires { get; set; }
+        public long Expires { get; set; }
 
         [Newtonsoft.Json.JsonProperty("accountId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string AccountId { get; set; }
@@ -37035,7 +37035,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string SessionID { get; set; }
 
         [Newtonsoft.Json.JsonProperty("pid", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Pid { get; set; }
+        public long Pid { get; set; }
 
         [Newtonsoft.Json.JsonProperty("command", Required = Newtonsoft.Json.Required.Always)]
         public string Command { get; set; }
@@ -37047,7 +37047,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Description { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ports", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<int> Ports { get; set; } = new System.Collections.ObjectModel.Collection<int>();
+        public System.Collections.Generic.ICollection<long> Ports { get; set; } = new System.Collections.ObjectModel.Collection<long>();
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -37061,7 +37061,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public bool Ready { get; set; }
 
         [Newtonsoft.Json.JsonProperty("exitCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int ExitCode { get; set; }
+        public long ExitCode { get; set; }
 
         [Newtonsoft.Json.JsonProperty("signal", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Signal { get; set; }
@@ -37097,7 +37097,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string SessionID { get; set; }
 
         [Newtonsoft.Json.JsonProperty("pid", Required = Newtonsoft.Json.Required.Always)]
-        public int Pid { get; set; }
+        public long Pid { get; set; }
 
         [Newtonsoft.Json.JsonProperty("command", Required = Newtonsoft.Json.Required.Always)]
         public string Command { get; set; }
@@ -37113,10 +37113,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public InteractiveTerminalInfoStatus Status { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cols", Required = Newtonsoft.Json.Required.Always)]
-        public int Cols { get; set; }
+        public long Cols { get; set; }
 
         [Newtonsoft.Json.JsonProperty("rows", Required = Newtonsoft.Json.Required.Always)]
-        public int Rows { get; set; }
+        public long Rows { get; set; }
 
         [Newtonsoft.Json.JsonProperty("exitCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public ExitCode ExitCode { get; set; }
@@ -37374,7 +37374,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Zero-based cell index
         /// </summary>
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         [Newtonsoft.Json.JsonProperty("edit", Required = Newtonsoft.Json.Required.Always)]
         public Edit Edit { get; set; }
@@ -37420,7 +37420,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Zero-based cell index
         /// </summary>
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         public string ToJson()
         {
@@ -37565,13 +37565,13 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("processedFiles", Required = Newtonsoft.Json.Required.Always)]
-        public int ProcessedFiles { get; set; }
+        public long ProcessedFiles { get; set; }
 
         [Newtonsoft.Json.JsonProperty("totalFiles", Required = Newtonsoft.Json.Required.Always)]
-        public int TotalFiles { get; set; }
+        public long TotalFiles { get; set; }
 
         [Newtonsoft.Json.JsonProperty("percent", Required = Newtonsoft.Json.Required.Always)]
-        public int Percent { get; set; }
+        public long Percent { get; set; }
 
         public string ToJson()
         {
@@ -37663,7 +37663,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public PtyStatus Status { get; set; }
 
         [Newtonsoft.Json.JsonProperty("pid", Required = Newtonsoft.Json.Required.Always)]
-        public int Pid { get; set; }
+        public long Pid { get; set; }
 
         [Newtonsoft.Json.JsonProperty("sessionID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SessionID SessionID { get; set; }
@@ -37949,7 +37949,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public JSONSchema Schema { get; set; } = new JSONSchema();
 
         [Newtonsoft.Json.JsonProperty("retryCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int RetryCount { get; set; }
+        public long RetryCount { get; set; }
 
         public string ToJson()
         {
@@ -38573,7 +38573,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Name { get; set; }
 
         [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.Always)]
-        public int Kind { get; set; }
+        public long Kind { get; set; }
 
         public string ToJson()
         {
@@ -39117,7 +39117,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public RetryPartType Type { get; set; }
 
         [Newtonsoft.Json.JsonProperty("attempt", Required = Newtonsoft.Json.Required.Always)]
-        public int Attempt { get; set; }
+        public long Attempt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.Always)]
         public APIError Error { get; set; } = new APIError();
@@ -39558,7 +39558,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("port", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Port { get; set; }
+        public long Port { get; set; }
 
         [Newtonsoft.Json.JsonProperty("hostname", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Hostname { get; set; }
@@ -39647,13 +39647,13 @@ namespace KiloVisualStudioExtension.ApiClient
         public double SearchMinScore { get; set; }
 
         [Newtonsoft.Json.JsonProperty("searchMaxResults", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int SearchMaxResults { get; set; }
+        public long SearchMaxResults { get; set; }
 
         [Newtonsoft.Json.JsonProperty("embeddingBatchSize", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int EmbeddingBatchSize { get; set; }
+        public long EmbeddingBatchSize { get; set; }
 
         [Newtonsoft.Json.JsonProperty("scannerMaxBatchRetries", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int ScannerMaxBatchRetries { get; set; }
+        public long ScannerMaxBatchRetries { get; set; }
 
         [Newtonsoft.Json.JsonProperty("fileExtensions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> FileExtensions { get; set; }
@@ -39810,10 +39810,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public Color Color { get; set; }
 
         [Newtonsoft.Json.JsonProperty("steps", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Steps { get; set; }
+        public long Steps { get; set; }
 
         [Newtonsoft.Json.JsonProperty("maxSteps", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int MaxSteps { get; set; }
+        public long MaxSteps { get; set; }
 
         [Newtonsoft.Json.JsonProperty("permission", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PermissionConfig Permission { get; set; }
@@ -39910,7 +39910,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public bool Enabled { get; set; }
 
         [Newtonsoft.Json.JsonProperty("timeout", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Timeout { get; set; }
+        public long Timeout { get; set; }
 
         public string ToJson()
         {
@@ -39940,7 +39940,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Scope { get; set; }
 
         [Newtonsoft.Json.JsonProperty("callbackPort", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int CallbackPort { get; set; }
+        public long CallbackPort { get; set; }
 
         [Newtonsoft.Json.JsonProperty("redirectUri", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string RedirectUri { get; set; }
@@ -39989,7 +39989,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Oauth Oauth { get; set; }
 
         [Newtonsoft.Json.JsonProperty("timeout", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Timeout { get; set; }
+        public long Timeout { get; set; }
 
         public string ToJson()
         {
@@ -40028,13 +40028,13 @@ namespace KiloVisualStudioExtension.ApiClient
         public bool Auto_resize { get; set; }
 
         [Newtonsoft.Json.JsonProperty("max_width", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Max_width { get; set; }
+        public long Max_width { get; set; }
 
         [Newtonsoft.Json.JsonProperty("max_height", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Max_height { get; set; }
+        public long Max_height { get; set; }
 
         [Newtonsoft.Json.JsonProperty("max_base64_bytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Max_base64_bytes { get; set; }
+        public long Max_base64_bytes { get; set; }
 
         public string ToJson()
         {
@@ -40388,7 +40388,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string ActiveOrgName { get; set; }
 
         [Newtonsoft.Json.JsonProperty("switchableOrgCount", Required = Newtonsoft.Json.Required.Always)]
-        public int SwitchableOrgCount { get; set; }
+        public long SwitchableOrgCount { get; set; }
 
         public string ToJson()
         {
@@ -40866,7 +40866,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Name { get; set; }
 
         [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.Always)]
-        public int Kind { get; set; }
+        public long Kind { get; set; }
 
         [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
         public Location25 Location { get; set; } = new Location25();
@@ -40965,10 +40965,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Path { get; set; }
 
         [Newtonsoft.Json.JsonProperty("added", Required = Newtonsoft.Json.Required.Always)]
-        public int Added { get; set; }
+        public long Added { get; set; }
 
         [Newtonsoft.Json.JsonProperty("removed", Required = Newtonsoft.Json.Required.Always)]
-        public int Removed { get; set; }
+        public long Removed { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -43260,7 +43260,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Output { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cursor", Required = Newtonsoft.Json.Required.Always)]
-        public int Cursor { get; set; }
+        public long Cursor { get; set; }
 
         public string ToJson()
         {
@@ -43302,10 +43302,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("cols", Required = Newtonsoft.Json.Required.Always)]
-        public int Cols { get; set; }
+        public long Cols { get; set; }
 
         [Newtonsoft.Json.JsonProperty("rows", Required = Newtonsoft.Json.Required.Always)]
-        public int Rows { get; set; }
+        public long Rows { get; set; }
 
         public string ToJson()
         {
@@ -43476,7 +43476,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Zero-based cell index
         /// </summary>
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -43572,7 +43572,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Zero-based cell index
         /// </summary>
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         [Newtonsoft.Json.JsonProperty("action", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -43619,7 +43619,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Zero-based cell index
         /// </summary>
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -43690,7 +43690,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Zero-based cell index
         /// </summary>
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         /// <summary>
         /// Opaque notebook content revision; pass it back unchanged and do not parse or increment it
@@ -43784,16 +43784,16 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("additions", Required = Newtonsoft.Json.Required.Always)]
-        public int Additions { get; set; }
+        public long Additions { get; set; }
 
         [Newtonsoft.Json.JsonProperty("deletions", Required = Newtonsoft.Json.Required.Always)]
-        public int Deletions { get; set; }
+        public long Deletions { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ahead", Required = Newtonsoft.Json.Required.Always)]
-        public int Ahead { get; set; }
+        public long Ahead { get; set; }
 
         [Newtonsoft.Json.JsonProperty("behind", Required = Newtonsoft.Json.Required.Always)]
-        public int Behind { get; set; }
+        public long Behind { get; set; }
 
         public string ToJson()
         {
@@ -43814,7 +43814,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("number", Required = Newtonsoft.Json.Required.Always)]
-        public int Number { get; set; }
+        public long Number { get; set; }
 
         [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -43829,7 +43829,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public AgentManagerPullRequestSummaryReview Review { get; set; }
 
         [Newtonsoft.Json.JsonProperty("unresolvedComments", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int UnresolvedComments { get; set; }
+        public long UnresolvedComments { get; set; }
 
         public string ToJson()
         {
@@ -44523,7 +44523,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string SessionID { get; set; }
 
         [Newtonsoft.Json.JsonProperty("pid", Required = Newtonsoft.Json.Required.Always)]
-        public int Pid { get; set; }
+        public long Pid { get; set; }
 
         [Newtonsoft.Json.JsonProperty("command", Required = Newtonsoft.Json.Required.Always)]
         public string Command { get; set; }
@@ -44539,10 +44539,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public InteractiveTerminalInfo1Status Status { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cols", Required = Newtonsoft.Json.Required.Always)]
-        public int Cols { get; set; }
+        public long Cols { get; set; }
 
         [Newtonsoft.Json.JsonProperty("rows", Required = Newtonsoft.Json.Required.Always)]
-        public int Rows { get; set; }
+        public long Rows { get; set; }
 
         [Newtonsoft.Json.JsonProperty("exitCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public ExitCode2 ExitCode { get; set; }
@@ -49326,7 +49326,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Color2 Color { get; set; }
 
         [Newtonsoft.Json.JsonProperty("steps", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Steps { get; set; }
+        public long Steps { get; set; }
 
         [Newtonsoft.Json.JsonProperty("permissions", Required = Newtonsoft.Json.Required.Always)]
         public PermissionV2Ruleset Permissions { get; set; } = new PermissionV2Ruleset();
@@ -49401,7 +49401,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("admittedSeq", Required = Newtonsoft.Json.Required.Always)]
-        public int AdmittedSeq { get; set; }
+        public long AdmittedSeq { get; set; }
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         public string Id { get; set; }
@@ -49420,7 +49420,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public double TimeCreated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("promotedSeq", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int PromotedSeq { get; set; }
+        public long PromotedSeq { get; set; }
 
         public string ToJson()
         {
@@ -51990,7 +51990,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Body34Variant Variant { get; set; }
 
         [Newtonsoft.Json.JsonProperty("duration", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Duration { get; set; }
+        public long Duration { get; set; }
 
         public string ToJson()
         {
@@ -52952,7 +52952,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Zero-based action index to accept
         /// </summary>
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         public string ToJson()
         {
@@ -54134,10 +54134,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public Lines Lines { get; set; } = new Lines();
 
         [Newtonsoft.Json.JsonProperty("line_number", Required = Newtonsoft.Json.Required.Always)]
-        public int Line_number { get; set; }
+        public long Line_number { get; set; }
 
         [Newtonsoft.Json.JsonProperty("absolute_offset", Required = Newtonsoft.Json.Required.Always)]
-        public int Absolute_offset { get; set; }
+        public long Absolute_offset { get; set; }
 
         [Newtonsoft.Json.JsonProperty("submatches", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<Submatches> Submatches { get; set; } = new System.Collections.ObjectModel.Collection<Submatches>();
@@ -54344,7 +54344,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Ticket { get; set; }
 
         [Newtonsoft.Json.JsonProperty("expires_in", Required = Newtonsoft.Json.Required.Always)]
-        public int Expires_in { get; set; }
+        public long Expires_in { get; set; }
 
         public string ToJson()
         {
@@ -54596,7 +54596,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Aggregate_id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("seq", Required = Newtonsoft.Json.Required.Always)]
-        public int Seq { get; set; }
+        public long Seq { get; set; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
         public string Type { get; set; }
@@ -55448,7 +55448,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Reason { get; set; }
 
         [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
-        public int Version { get; set; }
+        public long Version { get; set; }
 
         public string ToJson()
         {
@@ -55484,7 +55484,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Reason { get; set; }
 
         [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
-        public int Version { get; set; }
+        public long Version { get; set; }
 
         public string ToJson()
         {
@@ -59849,13 +59849,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("started", Required = Newtonsoft.Json.Required.Always)]
-        public int Started { get; set; }
+        public long Started { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ended", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Ended { get; set; }
+        public long Ended { get; set; }
 
         public string ToJson()
         {
@@ -59930,13 +59930,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("started", Required = Newtonsoft.Json.Required.Always)]
-        public int Started { get; set; }
+        public long Started { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ended", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Ended { get; set; }
+        public long Ended { get; set; }
 
         public string ToJson()
         {
@@ -60293,13 +60293,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -60606,7 +60606,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("retries", Required = Newtonsoft.Json.Required.Always)]
-        public int Retries { get; set; }
+        public long Retries { get; set; }
 
         public string ToJson()
         {
@@ -60702,7 +60702,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("statusCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int StatusCode { get; set; }
+        public long StatusCode { get; set; }
 
         [Newtonsoft.Json.JsonProperty("isRetryable", Required = Newtonsoft.Json.Required.Always)]
         public bool IsRetryable { get; set; }
@@ -60744,10 +60744,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("completed", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Completed { get; set; }
+        public long Completed { get; set; }
 
         public string ToJson()
         {
@@ -60861,10 +60861,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         public string ToJson()
         {
@@ -60927,10 +60927,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         public string ToJson()
         {
@@ -60960,10 +60960,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("line", Required = Newtonsoft.Json.Required.Always)]
-        public int Line { get; set; }
+        public long Line { get; set; }
 
         [Newtonsoft.Json.JsonProperty("character", Required = Newtonsoft.Json.Required.Always)]
-        public int Character { get; set; }
+        public long Character { get; set; }
 
         public string ToJson()
         {
@@ -60984,10 +60984,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("line", Required = Newtonsoft.Json.Required.Always)]
-        public int Line { get; set; }
+        public long Line { get; set; }
 
         [Newtonsoft.Json.JsonProperty("character", Required = Newtonsoft.Json.Required.Always)]
-        public int Character { get; set; }
+        public long Character { get; set; }
 
         public string ToJson()
         {
@@ -61053,7 +61053,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         public string ToJson()
         {
@@ -61083,13 +61083,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Always)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacted", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacted { get; set; }
+        public long Compacted { get; set; }
 
         public string ToJson()
         {
@@ -61119,10 +61119,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Always)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         public string ToJson()
         {
@@ -61161,7 +61161,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         public string ToJson()
         {
@@ -61243,10 +61243,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Always)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         [Newtonsoft.Json.JsonProperty("elapsed", Required = Newtonsoft.Json.Required.Always)]
         public double Elapsed { get; set; }
@@ -61333,10 +61333,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Value { get; set; }
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Always)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         public string ToJson()
         {
@@ -61366,7 +61366,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         public string ToJson()
         {
@@ -61475,7 +61475,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Properties3Variant Variant { get; set; }
 
         [Newtonsoft.Json.JsonProperty("duration", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Duration { get; set; }
+        public long Duration { get; set; }
 
         public string ToJson()
         {
@@ -62070,7 +62070,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public HeaderTimeout HeaderTimeout { get; set; }
 
         [Newtonsoft.Json.JsonProperty("chunkTimeout", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int ChunkTimeout { get; set; }
+        public long ChunkTimeout { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
@@ -62439,7 +62439,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Width of the Kilo Console project context sidebar in pixels
         /// </summary>
         [Newtonsoft.Json.JsonProperty("context_sidebar_width", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Context_sidebar_width { get; set; }
+        public long Context_sidebar_width { get; set; }
 
         [Newtonsoft.Json.JsonProperty("diff_style", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -62774,10 +62774,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("max_lines", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Max_lines { get; set; }
+        public long Max_lines { get; set; }
 
         [Newtonsoft.Json.JsonProperty("max_bytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Max_bytes { get; set; }
+        public long Max_bytes { get; set; }
 
         public string ToJson()
         {
@@ -62810,13 +62810,13 @@ namespace KiloVisualStudioExtension.ApiClient
         public bool Prune { get; set; }
 
         [Newtonsoft.Json.JsonProperty("tail_turns", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Tail_turns { get; set; }
+        public long Tail_turns { get; set; }
 
         [Newtonsoft.Json.JsonProperty("preserve_recent_tokens", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Preserve_recent_tokens { get; set; }
+        public long Preserve_recent_tokens { get; set; }
 
         [Newtonsoft.Json.JsonProperty("reserved", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Reserved { get; set; }
+        public long Reserved { get; set; }
 
         public string ToJson()
         {
@@ -62885,7 +62885,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Swe_pruner_model { get; set; }
 
         [Newtonsoft.Json.JsonProperty("mcp_timeout", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Mcp_timeout { get; set; }
+        public long Mcp_timeout { get; set; }
 
         [Newtonsoft.Json.JsonProperty("policies", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<ConfigV2ExperimentalPolicy> Policies { get; set; }
@@ -63176,7 +63176,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Icon { get; set; }
 
         [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Priority { get; set; }
+        public long Priority { get; set; }
 
         public string ToJson()
         {
@@ -63392,13 +63392,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -63862,13 +63862,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("initialized", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Initialized { get; set; }
+        public long Initialized { get; set; }
 
         public string ToJson()
         {
@@ -64168,13 +64168,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -64340,13 +64340,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -64551,13 +64551,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -64723,13 +64723,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -64895,13 +64895,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -65067,13 +65067,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -65239,13 +65239,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -65312,10 +65312,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         public string ToJson()
         {
@@ -65357,10 +65357,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Value { get; set; }
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Always)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         public string ToJson()
         {
@@ -65531,13 +65531,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -65703,13 +65703,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("compacting", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Compacting { get; set; }
+        public long Compacting { get; set; }
 
         [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double Archived { get; set; }
@@ -65846,7 +65846,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Properties7Variant Variant { get; set; }
 
         [Newtonsoft.Json.JsonProperty("duration", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Duration { get; set; }
+        public long Duration { get; set; }
 
         public string ToJson()
         {
@@ -66547,7 +66547,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Name { get; set; }
 
         [Newtonsoft.Json.JsonProperty("dimension", Required = Newtonsoft.Json.Required.Always)]
-        public int Dimension { get; set; }
+        public long Dimension { get; set; }
 
         [Newtonsoft.Json.JsonProperty("scoreThreshold", Required = Newtonsoft.Json.Required.Always)]
         public double ScoreThreshold { get; set; }
@@ -66736,16 +66736,16 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("order", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Order { get; set; }
+        public long Order { get; set; }
 
         [Newtonsoft.Json.JsonProperty("success", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Success { get; set; }
 
         [Newtonsoft.Json.JsonProperty("started", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Started { get; set; }
+        public long Started { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ended", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Ended { get; set; }
+        public long Ended { get; set; }
 
         public string ToJson()
         {
@@ -67282,13 +67282,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("started", Required = Newtonsoft.Json.Required.Always)]
-        public int Started { get; set; }
+        public long Started { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("ended", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Ended { get; set; }
+        public long Ended { get; set; }
 
         public string ToJson()
         {
@@ -67745,7 +67745,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Data { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cursor", Required = Newtonsoft.Json.Required.Always)]
-        public int Cursor { get; set; }
+        public long Cursor { get; set; }
 
         public string ToJson()
         {
@@ -67823,7 +67823,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Reason { get; set; }
 
         [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
-        public int Version { get; set; }
+        public long Version { get; set; }
 
         public string ToJson()
         {
@@ -68117,7 +68117,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string RequestID { get; set; }
 
         [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public int Index { get; set; }
+        public long Index { get; set; }
 
         [Newtonsoft.Json.JsonProperty("action", Required = Newtonsoft.Json.Required.Always)]
         public Action2 Action { get; set; } = new Action2();
@@ -68579,13 +68579,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("context", Required = Newtonsoft.Json.Required.Always)]
-        public int Context { get; set; }
+        public long Context { get; set; }
 
         [Newtonsoft.Json.JsonProperty("input", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Input { get; set; }
+        public long Input { get; set; }
 
         [Newtonsoft.Json.JsonProperty("output", Required = Newtonsoft.Json.Required.Always)]
-        public int Output { get; set; }
+        public long Output { get; set; }
 
         public string ToJson()
         {
@@ -70044,7 +70044,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("exitCode", Required = Newtonsoft.Json.Required.Always)]
-        public int ExitCode { get; set; }
+        public long ExitCode { get; set; }
 
         public string ToJson()
         {
@@ -74375,13 +74375,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("context", Required = Newtonsoft.Json.Required.Always)]
-        public int Context { get; set; }
+        public long Context { get; set; }
 
         [Newtonsoft.Json.JsonProperty("input", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Input { get; set; }
+        public long Input { get; set; }
 
         [Newtonsoft.Json.JsonProperty("output", Required = Newtonsoft.Json.Required.Always)]
-        public int Output { get; set; }
+        public long Output { get; set; }
 
         public string ToJson()
         {
@@ -74421,7 +74421,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Properties112Variant Variant { get; set; }
 
         [Newtonsoft.Json.JsonProperty("duration", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Duration { get; set; }
+        public long Duration { get; set; }
 
         public string ToJson()
         {
@@ -74608,10 +74608,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("rows", Required = Newtonsoft.Json.Required.Always)]
-        public int Rows { get; set; }
+        public long Rows { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cols", Required = Newtonsoft.Json.Required.Always)]
-        public int Cols { get; set; }
+        public long Cols { get; set; }
 
         public string ToJson()
         {
@@ -74990,7 +74990,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string AggregateID { get; set; }
 
         [Newtonsoft.Json.JsonProperty("seq", Required = Newtonsoft.Json.Required.Always)]
-        public int Seq { get; set; }
+        public long Seq { get; set; }
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
         public string Type { get; set; }
@@ -75750,10 +75750,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public Match Match { get; set; } = new Match();
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Always)]
-        public int Start { get; set; }
+        public long Start { get; set; }
 
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Always)]
-        public int End { get; set; }
+        public long End { get; set; }
 
         public string ToJson()
         {
@@ -76437,7 +76437,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("steps", Required = Newtonsoft.Json.Required.Always)]
-        public int Steps { get; set; }
+        public long Steps { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cost", Required = Newtonsoft.Json.Required.Always)]
         public double Cost { get; set; }
@@ -76470,7 +76470,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public string ModelID { get; set; }
 
         [Newtonsoft.Json.JsonProperty("steps", Required = Newtonsoft.Json.Required.Always)]
-        public int Steps { get; set; }
+        public long Steps { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cost", Required = Newtonsoft.Json.Required.Always)]
         public double Cost { get; set; }
@@ -77966,16 +77966,16 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("oldStart", Required = Newtonsoft.Json.Required.Always)]
-        public int OldStart { get; set; }
+        public long OldStart { get; set; }
 
         [Newtonsoft.Json.JsonProperty("oldLines", Required = Newtonsoft.Json.Required.Always)]
-        public int OldLines { get; set; }
+        public long OldLines { get; set; }
 
         [Newtonsoft.Json.JsonProperty("newStart", Required = Newtonsoft.Json.Required.Always)]
-        public int NewStart { get; set; }
+        public long NewStart { get; set; }
 
         [Newtonsoft.Json.JsonProperty("newLines", Required = Newtonsoft.Json.Required.Always)]
-        public int NewLines { get; set; }
+        public long NewLines { get; set; }
 
         [Newtonsoft.Json.JsonProperty("lines", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<string> Lines { get; set; } = new System.Collections.ObjectModel.Collection<string>();
@@ -79245,7 +79245,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public TierType Type { get; set; }
 
         [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.Always)]
-        public int Size { get; set; }
+        public long Size { get; set; }
 
         public string ToJson()
         {
@@ -79662,13 +79662,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
-        public int Created { get; set; }
+        public long Created { get; set; }
 
         [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.Always)]
-        public int Updated { get; set; }
+        public long Updated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("initialized", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Initialized { get; set; }
+        public long Initialized { get; set; }
 
         public string ToJson()
         {
@@ -81710,7 +81710,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Tier2Type Type { get; set; }
 
         [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.Always)]
-        public int Size { get; set; }
+        public long Size { get; set; }
 
         public string ToJson()
         {
@@ -82086,13 +82086,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("input", Required = Newtonsoft.Json.Required.Always)]
-        public int Input { get; set; }
+        public long Input { get; set; }
 
         [Newtonsoft.Json.JsonProperty("output", Required = Newtonsoft.Json.Required.Always)]
-        public int Output { get; set; }
+        public long Output { get; set; }
 
         [Newtonsoft.Json.JsonProperty("reasoning", Required = Newtonsoft.Json.Required.Always)]
-        public int Reasoning { get; set; }
+        public long Reasoning { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cache", Required = Newtonsoft.Json.Required.Always)]
         public Cache22 Cache { get; set; } = new Cache22();
@@ -82116,13 +82116,13 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("input", Required = Newtonsoft.Json.Required.Always)]
-        public int Input { get; set; }
+        public long Input { get; set; }
 
         [Newtonsoft.Json.JsonProperty("output", Required = Newtonsoft.Json.Required.Always)]
-        public int Output { get; set; }
+        public long Output { get; set; }
 
         [Newtonsoft.Json.JsonProperty("reasoning", Required = Newtonsoft.Json.Required.Always)]
-        public int Reasoning { get; set; }
+        public long Reasoning { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cache", Required = Newtonsoft.Json.Required.Always)]
         public Cache23 Cache { get; set; } = new Cache23();
@@ -86287,10 +86287,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("read", Required = Newtonsoft.Json.Required.Always)]
-        public int Read { get; set; }
+        public long Read { get; set; }
 
         [Newtonsoft.Json.JsonProperty("write", Required = Newtonsoft.Json.Required.Always)]
-        public int Write { get; set; }
+        public long Write { get; set; }
 
         public string ToJson()
         {
@@ -86311,10 +86311,10 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("read", Required = Newtonsoft.Json.Required.Always)]
-        public int Read { get; set; }
+        public long Read { get; set; }
 
         [Newtonsoft.Json.JsonProperty("write", Required = Newtonsoft.Json.Required.Always)]
-        public int Write { get; set; }
+        public long Write { get; set; }
 
         public string ToJson()
         {

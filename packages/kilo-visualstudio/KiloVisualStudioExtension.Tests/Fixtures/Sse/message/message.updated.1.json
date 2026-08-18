@@ -1,0 +1,43 @@
+{
+    "directory": "C:\\prog\\kilocode\\kilocode",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "type": "sync",
+        "syncEvent": {
+            "id": "evt_000191e69001rUd2VtqDzcG904",
+            "type": "message.updated.1",
+            "seq": 2,
+            "aggregateID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+            "data": {
+                "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+                "info": {
+                    "id": "msg_0001919b300108vxNativqJTk0",
+                    "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+                    "role": "user",
+                    "time": {
+                        "created": 1786708040838
+                    },
+                    "agent": "code",
+                    "model": {
+                        "providerID": "openrama",
+                        "modelID": "qwen3.5-122b"
+                    },
+                    "tools": {
+                    },
+                    "editorContext": {
+                        "visibleFiles": [
+                            "packages\\kilo-visualstudio\\KiloVisualStudioExtension.Tests\\SseEventRoutingTests.cs"
+                        ],
+                        "openTabs": [
+                            "packages/opencode/test/kilocode/legacy-sse-event.test.ts",
+                            "packages/kilo-visualstudio/KiloVisualStudioExtension.Tests/SseEventRoutingTests.cs"
+                        ],
+                        "activeFile": "packages\\kilo-visualstudio\\KiloVisualStudioExtension.Tests\\SseEventRoutingTests.cs",
+                        "shell": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+                    }
+                }
+            }
+        },
+        "id": "evt_000191e69001rUd2VtqDzcG904"
+    }
+}

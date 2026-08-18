@@ -29,9 +29,10 @@ namespace KiloVisualStudioExtension.Tests
                     directory = @"/other"
                 }
             });
-
+            var sseEvent = new SseEventReceivedEventArgs("session.status", eventJson);
+            
             // Act - process event
-            sseHelper.HandleEvent("session.status", eventJson);
+            sseHelper.HandleEvent(sseEvent);
 
             // Assert - message should still be posted since session is tracked
             // (The directory filtering happens at the provider level, not SSEHelper)
@@ -59,11 +60,14 @@ namespace KiloVisualStudioExtension.Tests
                 }
             });
 
-            // Act - process event
-            sseHelper.HandleEvent("session.status", eventJson);
+      // Act - process event
+      var sseEvent = new SseEventReceivedEventArgs("session.status", eventJson);
 
-            // Assert - message should be posted
-            postedMessages.Count.Should().BeGreaterThan(0, "events for tracked sessions should be posted");
+      // Act - process event
+      sseHelper.HandleEvent(sseEvent);
+
+      // Assert - message should be posted
+      postedMessages.Count.Should().BeGreaterThan(0, "events for tracked sessions should be posted");
         }
 
         [Fact]
@@ -88,11 +92,14 @@ namespace KiloVisualStudioExtension.Tests
                 }
             });
 
-            // Act - process event
-            sseHelper.HandleEvent("message.part.delta", eventJson);
+      // Act - process event
+      var sseEvent = new SseEventReceivedEventArgs("message.part.delta", eventJson);
 
-            // Assert - no message should be posted for untracked session
-            var partUpdatedMessages = postedMessages.Where(m => m.Contains("partUpdated"));
+      // Act - process event
+      sseHelper.HandleEvent(sseEvent);
+
+      // Assert - no message should be posted for untracked session
+      var partUpdatedMessages = postedMessages.Where(m => m.Contains("partUpdated"));
             partUpdatedMessages.Should().BeEmpty("events for untracked sessions should be ignored");
         }
 
@@ -119,11 +126,13 @@ namespace KiloVisualStudioExtension.Tests
                 }
             });
 
-            // Act
-            sseHelper.HandleEvent("message.part.delta", eventJson);
+      var sseEvent = new SseEventReceivedEventArgs("message.part.delta", eventJson);
 
-            // Assert
-            var partUpdated = postedMessages.FirstOrDefault(m => m.Contains("partUpdated"));
+      // Act - process event
+      sseHelper.HandleEvent(sseEvent);
+
+      // Assert
+      var partUpdated = postedMessages.FirstOrDefault(m => m.Contains("partUpdated"));
             partUpdated.Should().NotBeNull("part updates for tracked sessions should be posted");
         }
 
@@ -153,11 +162,13 @@ namespace KiloVisualStudioExtension.Tests
                 }
             });
 
-            // Act
-            sseHelper.HandleEvent("session.updated", eventJson);
+      var sseEvent = new SseEventReceivedEventArgs("session.updated", eventJson);
 
-            // Assert
-            var sessionUpdated = postedMessages.FirstOrDefault(m => m.Contains("sessionUpdated"));
+      // Act - process event
+      sseHelper.HandleEvent(sseEvent);
+
+      // Assert
+      var sessionUpdated = postedMessages.FirstOrDefault(m => m.Contains("sessionUpdated"));
             sessionUpdated.Should().NotBeNull("session updates for tracked sessions should be posted");
         }
 
@@ -182,11 +193,13 @@ namespace KiloVisualStudioExtension.Tests
                 }
             });
 
-            // Act
-            sseHelper.HandleEvent("session.deleted", eventJson);
+      var sseEvent = new SseEventReceivedEventArgs("session.deleted", eventJson);
 
-            // Assert
-            sseHelper.IsSessionTracked("delete-session").Should().BeFalse("deleted sessions should be untracked");
+      // Act - process event
+      sseHelper.HandleEvent(sseEvent);
+
+      // Assert
+      sseHelper.IsSessionTracked("delete-session").Should().BeFalse("deleted sessions should be untracked");
         }
 
         [Fact]
@@ -215,11 +228,13 @@ namespace KiloVisualStudioExtension.Tests
                 }
             });
 
-            // Act
-            sseHelper.HandleEvent("message.updated", eventJson);
+      var sseEvent = new SseEventReceivedEventArgs("message.updated", eventJson);
 
-            // Assert
-            var messageCreated = postedMessages.FirstOrDefault(m => m.Contains("messageCreated"));
+      // Act - process event
+      sseHelper.HandleEvent(sseEvent);
+
+      // Assert
+      var messageCreated = postedMessages.FirstOrDefault(m => m.Contains("messageCreated"));
             messageCreated.Should().NotBeNull("message updates for tracked sessions should be posted");
         }
     }

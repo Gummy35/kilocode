@@ -1,3 +1,23 @@
+using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Handlers.AgentRequest;
+using KiloVisualStudioExtension.Services.Handlers.Auth;
+using KiloVisualStudioExtension.Services.Handlers.CloudSession;
+using KiloVisualStudioExtension.Services.Handlers.Config;
+using KiloVisualStudioExtension.Services.Handlers.Interaction;
+using KiloVisualStudioExtension.Services.Handlers.Mcp;
+using KiloVisualStudioExtension.Services.Handlers.MiscRequest;
+using KiloVisualStudioExtension.Services.Handlers.Model;
+using KiloVisualStudioExtension.Services.Handlers.Notification;
+using KiloVisualStudioExtension.Services.Handlers.ProviderRequest;
+using KiloVisualStudioExtension.Services.Handlers.Session;
+using KiloVisualStudioExtension.Services.Handlers.SessionControl;
+using KiloVisualStudioExtension.Services.Handlers.Settings;
+using KiloVisualStudioExtension.Services.Handlers.StateManagement;
+using KiloVisualStudioExtension.Services.Handlers.Ui;
+using KiloVisualStudioExtension.WebView.Generated;
+using Microsoft.VisualStudio.Shell;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,26 +27,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 using VSLangProj110;
-using KiloVisualStudioExtension.Services.Handlers.Auth;
-using KiloVisualStudioExtension.Services.Handlers.CloudSession;
-using KiloVisualStudioExtension.Services.Handlers.Config;
-using KiloVisualStudioExtension.Services.Handlers.ProviderRequest;
-using KiloVisualStudioExtension.Services.Handlers.AgentRequest;
-using KiloVisualStudioExtension.Services.Handlers.StateManagement;
-using KiloVisualStudioExtension.Services.Handlers.Mcp;
-using KiloVisualStudioExtension.Services.Handlers.Notification;
-using KiloVisualStudioExtension.Services.Handlers.Model;
-using KiloVisualStudioExtension.Services.Handlers.Settings;
-using KiloVisualStudioExtension.Services.Handlers.MiscRequest;
-using KiloVisualStudioExtension.Services.Handlers.Interaction;
-using KiloVisualStudioExtension.Services.Handlers.SessionControl;
-using KiloVisualStudioExtension.Services.Handlers.Ui;
-using KiloVisualStudioExtension.Services.Handlers.Session;
-using KiloVisualStudioExtension.Services;
-using KiloVisualStudioExtension.ApiClient;
-using KiloVisualStudioExtension.WebView.Generated;
 using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
 
 namespace KiloVisualStudioExtension
@@ -1149,7 +1150,7 @@ namespace KiloVisualStudioExtension
 
         private void HandleSseEvent(object? sender, SseEventReceivedEventArgs e)
         {
-            _sseHelper.HandleEvent(e.EventType, e.Data);
+            _sseHelper.HandleEvent(e);
         }
 
         #region Additional Message Handlers

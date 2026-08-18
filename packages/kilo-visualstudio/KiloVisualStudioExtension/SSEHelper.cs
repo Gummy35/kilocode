@@ -72,21 +72,22 @@ namespace KiloVisualStudioExtension
             public double Cost { get; set; }
         }
 
-        public void HandleEvent(string eventType, string data)
+        public void HandleEvent(SseEventReceivedEventArgs e)
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"SSE Event received : {eventType} : {data}");
-                var sseEvent = SseEventDeserializer.Deserialize(data);
+                System.Diagnostics.Debug.WriteLine($"SSE Event received : {e.EventType}");
 
-                if (sseEvent is SyncEvent syncEvent)
-                {
-                    HandleSyncEvent(syncEvent);
-                }
-                else if (sseEvent is StreamEvent streamEvent)
-                {
-                    HandleStreamEvent(streamEvent);
-                }
+                var sseEvent = SseEventDeserializer.Deserialize(e);
+
+                //if (sseEvent is SyncEvent syncEvent)
+                //{
+                //    HandleSyncEvent(syncEvent);
+                //}
+                //else if (sseEvent is StreamEvent streamEvent)
+                //{
+                //    HandleStreamEvent(streamEvent);
+                //}
             }
             catch (Exception ex)
             {

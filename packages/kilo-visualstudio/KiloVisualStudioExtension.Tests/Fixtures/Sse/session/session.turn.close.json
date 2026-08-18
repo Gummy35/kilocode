@@ -1,0 +1,12 @@
+{
+    "directory": "C:\\prog\\kilocode\\kilocode",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "id": "evt_000195dd6001R47G5UutyW2v2m",
+        "type": "session.turn.close",
+        "properties": {
+            "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+            "reason": "completed"
+        }
+    }
+}

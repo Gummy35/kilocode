@@ -1,0 +1,19 @@
+{
+    "directory": "C:\\prog\\kilocode\\kilocode",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "type": "sync",
+        "syncEvent": {
+            "id": "evt_00019289e001i0aSBGMqG22F4s",
+            "type": "message.part.removed.1",
+            "seq": 15,
+            "aggregateID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+            "data": {
+                "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+                "messageID": "msg_000191ff300161wPHEy0Dax1jv",
+                "partID": "prt_0001920180015BJy0b8Bq3LS1G"
+            }
+        },
+        "id": "evt_00019289e001i0aSBGMqG22F4s"
+    }
+}

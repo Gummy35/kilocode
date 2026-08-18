@@ -1,0 +1,57 @@
+{
+    "directory": "C:\\prog\\kilocode\\kilocode",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "type": "sync",
+        "syncEvent": {
+            "id": "evt_000195e04001bbFywb2pDDP83r",
+            "type": "session.updated.1",
+            "seq": 77,
+            "aggregateID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+            "data": {
+                "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+                "info": {
+                    "id": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+                    "slug": "hidden-sailor",
+                    "projectID": "1964d2a94e8019106135ae62a9554d1484853591",
+                    "directory": "C:\\prog\\kilocode\\kilocode",
+                    "path": "",
+                    "summary": {
+                        "additions": 0,
+                        "deletions": 0,
+                        "files": 0
+                    },
+                    "cost": 0,
+                    "tokens": {
+                        "input": 47814,
+                        "output": 278,
+                        "reasoning": 26,
+                        "cache": {
+                            "read": 0,
+                            "write": 0
+                        }
+                    },
+                    "title": "New session - 2026-08-14T11:47:20.248Z",
+                    "agent": "code",
+                    "model": {
+                        "id": "qwen3.5-122b",
+                        "providerID": "openrama",
+                        "variant": "default"
+                    },
+                    "version": "7.4.22",
+                    "metadata": {
+                        "kilocode.sandbox": {
+                            "enabled": false,
+                            "version": 0
+                        }
+                    },
+                    "time": {
+                        "created": 1786708040248,
+                        "updated": 1786708057602
+                    }
+                }
+            }
+        },
+        "id": "evt_000195e04001bbFywb2pDDP83r"
+    }
+}

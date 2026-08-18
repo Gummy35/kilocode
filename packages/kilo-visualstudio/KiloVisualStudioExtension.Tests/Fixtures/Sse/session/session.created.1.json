@@ -1,0 +1,46 @@
+{
+    "directory": "C:\\prog\\kilocode\\kilocode",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "type": "sync",
+        "syncEvent": {
+            "id": "evt_000191a3a001oJQJ0UZ68KHzih",
+            "type": "session.created.1",
+            "seq": 1,
+            "aggregateID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+            "data": {
+                "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+                "info": {
+                    "id": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+                    "slug": "hidden-sailor",
+                    "projectID": "1964d2a94e8019106135ae62a9554d1484853591",
+                    "directory": "C:\\prog\\kilocode\\kilocode",
+                    "path": "path",
+                    "cost": 1,
+                    "tokens": {
+                        "input": 2,
+                        "output": 3,
+                        "reasoning": 4,
+                        "cache": {
+                            "read": 5,
+                            "write": 6
+                        }
+                    },
+                    "title": "New session - 2026-08-14T11:47:20.248Z",
+                    "version": "7.4.22",
+                    "metadata": {
+                        "kilocode.sandbox": {
+                            "enabled": false,
+                            "version": 0
+                        }
+                    },
+                    "time": {
+                        "created": 1786708040248,
+                        "updated": 1786708040248
+                    }
+                }
+            }
+        },
+        "id": "evt_000191a3a001oJQJ0UZ68KHzih"
+    }
+}

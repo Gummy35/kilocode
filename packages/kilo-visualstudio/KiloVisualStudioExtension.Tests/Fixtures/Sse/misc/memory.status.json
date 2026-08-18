@@ -1,0 +1,20 @@
+{
+    "directory": "C:\\prog\\kilocode\\kilocode",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "id": "evt_000192aa3001zJHnfH21yRCRVD",
+        "type": "memory.status",
+        "properties": {
+            "directory": "C:\\Users\\RFHP2615\\.local\\share\\kilo\\memory\\kilocode-4c621d043cd0",
+            "sessionID": "ses_fffe6e5c7ffeKaWESnqm0mzNHw",
+            "enabled": true,
+            "state": "injecting",
+            "project": {
+                "bytes": 8184,
+                "estimatedTokens": 2046,
+                "truncated": false,
+                "updatedAt": 1786708044369
+            }
+        }
+    }
+}

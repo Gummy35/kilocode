@@ -239,7 +239,7 @@ namespace KiloVisualStudioExtension.ApiClient.Json
             var infoToken = obj["properties"]?["info"];
             if (infoToken != null && infoToken.Type != JTokenType.Null)
             {
-                evt.Properties.Info = (ApiClient.Message)DeserializeSessionMessage(infoToken, serializer);
+                evt.Properties.Info = (ApiClient.Message)DeserializeMessage(infoToken, serializer);
             }
 
             return evt;
@@ -354,5 +354,22 @@ namespace KiloVisualStudioExtension.ApiClient.Json
 
             return evt;
         }
-    }
+
+        public static Event DeserializeSSEEvent(JToken obj, JsonSerializer serializer)
+        {
+          var type = obj["type"]?.Value<string>() ?? "";
+          return type switch
+          {
+            "message.updated" => DeserializeEventMessageUpdated(obj, serializer),
+            "message.removed" => DeserializeEventMessageRemoved(obj, serializer),
+            "message.part.updated" => DeserializeEventMessagePartUpdated(obj, serializer),
+            "message.part.removed" => DeserializeEventMessagePartRemoved(obj, serializer),
+            "session.created" => DeserializeEventSessionCreated(obj, serializer),  
+            "session.updated" => DeserializeEventSessionUpdated(obj, serializer),
+            "session.deleted" => DeserializeEventSessionDeleted(obj, serializer),
+
+            _ => null
+          };
+        }
+  }
 }

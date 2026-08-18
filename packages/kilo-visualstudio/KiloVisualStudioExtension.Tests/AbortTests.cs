@@ -1,10 +1,11 @@
+using FluentAssertions;
+using KiloVisualStudioExtension.ApiClient;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
@@ -34,7 +35,7 @@ namespace KiloVisualStudioExtension.Tests
                     directory = @"/repo"
                 }
             });
-            sseHelper.HandleEvent("session.status", eventJson);
+            sseHelper.HandleEvent(new SseEventReceivedEventArgs("session.status", eventJson));
 
             // Act - abort session_1
             var sessionID = "session_1";
@@ -68,7 +69,7 @@ namespace KiloVisualStudioExtension.Tests
                     directory = @"/repo"
                 }
             });
-            sseHelper.HandleEvent("session.status", busyEvent);
+            sseHelper.HandleEvent(new SseEventReceivedEventArgs("session.status", busyEvent));
 
             var idleEvent = JsonSerializer.Serialize(new
             {
@@ -80,7 +81,7 @@ namespace KiloVisualStudioExtension.Tests
                     directory = @"/repo"
                 }
             });
-            sseHelper.HandleEvent("session.status", idleEvent);
+            sseHelper.HandleEvent(new SseEventReceivedEventArgs("session.status", idleEvent));
 
             // Act - abort session_1
             var sessionID = "session_1";

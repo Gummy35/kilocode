@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Generates ApiClientInheritance.cs from OpenAPI spec by analyzing polymorphic schemas.
+    Generates ApiClientInheritance.generated.cs from OpenAPI spec by analyzing polymorphic schemas.
 
 .DESCRIPTION
     This script analyzes the OpenAPI spec JSON file and generates a C# file containing
@@ -21,7 +21,7 @@
     Path to the OpenAPI spec JSON file.
 
 .PARAMETER Output
-    Path to the output C# file (ApiClientInheritance.cs).
+    Path to the output C# file (ApiClientInheritance.generated.cs).
 
 .PARAMETER IncludeAll
     If specified, includes ALL polymorphic hierarchies from the spec (not recommended).
@@ -30,7 +30,7 @@
 .EXAMPLE
     .\script\generate-inheritance.ps1 `
       -OpenApiSpec "packages\kilo-visualstudio\porting\docs\openapi-spec.json" `
-      -Output "packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\ApiClientInheritance.cs"
+      -Output "packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\ApiClientInheritance.generated.cs"
 #>
 
 param(

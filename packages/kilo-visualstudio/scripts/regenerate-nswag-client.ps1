@@ -34,6 +34,8 @@ try {
     }
 }
 
+(Get-Content "$TempOpenApiFile") -replace '"type": "integer"', '"type": "integer", "format": "int64"' | Set-Content "$TempOpenApiFile"
+
 # Step 2: Run NSwag
 Write-Host ""
 Write-Host "Step 2: Running NSwag code generator" -ForegroundColor Yellow

@@ -2017,11 +2017,11 @@
                         "additionalProperties": false
                       },
                       "line_number": {
-                        "type": "integer",
+                        "type": "integer", "format": "int64",
                         "minimum": 0
                       },
                       "absolute_offset": {
-                        "type": "integer",
+                        "type": "integer", "format": "int64",
                         "minimum": 0
                       },
                       "submatches": {
@@ -2042,11 +2042,11 @@
                               "additionalProperties": false
                             },
                             "start": {
-                              "type": "integer",
+                              "type": "integer", "format": "int64",
                               "minimum": 0
                             },
                             "end": {
-                              "type": "integer",
+                              "type": "integer", "format": "int64",
                               "minimum": 0
                             }
                           },
@@ -2147,7 +2147,7 @@
             "name": "limit",
             "in": "query",
             "schema": {
-              "type": "integer",
+              "type": "integer", "format": "int64",
               "minimum": 1,
               "maximum": 200
             },
@@ -2664,7 +2664,7 @@
             "name": "context",
             "in": "query",
             "schema": {
-              "type": "integer",
+              "type": "integer", "format": "int64",
               "minimum": 0
             },
             "required": false
@@ -4526,11 +4526,11 @@
                     "type": "object",
                     "properties": {
                       "rows": {
-                        "type": "integer",
+                        "type": "integer", "format": "int64",
                         "exclusiveMinimum": 0
                       },
                       "cols": {
-                        "type": "integer",
+                        "type": "integer", "format": "int64",
                         "exclusiveMinimum": 0
                       }
                     },
@@ -4661,7 +4661,7 @@
                       "type": "string"
                     },
                     "expires_in": {
-                      "type": "integer",
+                      "type": "integer", "format": "int64",
                       "exclusiveMinimum": 0
                     }
                   },
@@ -6414,7 +6414,7 @@
             "name": "limit",
             "in": "query",
             "schema": {
-              "type": "integer",
+              "type": "integer", "format": "int64",
               "minimum": 0,
               "maximum": 9007199254740991
             },
@@ -8646,7 +8646,7 @@
                           "type": "string"
                         },
                         "seq": {
-                          "type": "integer",
+                          "type": "integer", "format": "int64",
                           "minimum": 0
                         },
                         "type": {
@@ -8807,7 +8807,7 @@
                         "type": "string"
                       },
                       "seq": {
-                        "type": "integer",
+                        "type": "integer", "format": "int64",
                         "minimum": 0
                       },
                       "type": {
@@ -8857,7 +8857,7 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": {
-                  "type": "integer",
+                  "type": "integer", "format": "int64",
                   "minimum": 0
                 }
               }
@@ -9395,7 +9395,7 @@
                     ]
                   },
                   "duration": {
-                    "type": "integer",
+                    "type": "integer", "format": "int64",
                     "exclusiveMinimum": 0
                   }
                 },
@@ -15191,7 +15191,7 @@
                       "type": "object",
                       "properties": {
                         "steps": {
-                          "type": "integer",
+                          "type": "integer", "format": "int64",
                           "minimum": 0
                         },
                         "cost": {
@@ -15201,26 +15201,26 @@
                           "type": "object",
                           "properties": {
                             "input": {
-                              "type": "integer",
+                              "type": "integer", "format": "int64",
                               "minimum": 0
                             },
                             "output": {
-                              "type": "integer",
+                              "type": "integer", "format": "int64",
                               "minimum": 0
                             },
                             "reasoning": {
-                              "type": "integer",
+                              "type": "integer", "format": "int64",
                               "minimum": 0
                             },
                             "cache": {
                               "type": "object",
                               "properties": {
                                 "read": {
-                                  "type": "integer",
+                                  "type": "integer", "format": "int64",
                                   "minimum": 0
                                 },
                                 "write": {
-                                  "type": "integer",
+                                  "type": "integer", "format": "int64",
                                   "minimum": 0
                                 }
                               },
@@ -15259,7 +15259,7 @@
                             "type": "string"
                           },
                           "steps": {
-                            "type": "integer",
+                            "type": "integer", "format": "int64",
                             "minimum": 0
                           },
                           "cost": {
@@ -15269,26 +15269,26 @@
                             "type": "object",
                             "properties": {
                               "input": {
-                                "type": "integer",
+                                "type": "integer", "format": "int64",
                                 "minimum": 0
                               },
                               "output": {
-                                "type": "integer",
+                                "type": "integer", "format": "int64",
                                 "minimum": 0
                               },
                               "reasoning": {
-                                "type": "integer",
+                                "type": "integer", "format": "int64",
                                 "minimum": 0
                               },
                               "cache": {
                                 "type": "object",
                                 "properties": {
                                   "read": {
-                                    "type": "integer",
+                                    "type": "integer", "format": "int64",
                                     "minimum": 0
                                   },
                                   "write": {
-                                    "type": "integer",
+                                    "type": "integer", "format": "int64",
                                     "minimum": 0
                                   }
                                 },
@@ -15548,7 +15548,7 @@
                       "minItems": 1
                     },
                     "context": {
-                      "type": "integer",
+                      "type": "integer", "format": "int64",
                       "minimum": 0,
                       "maximum": 9007199254740991
                     },
@@ -16141,7 +16141,7 @@
                       "type": "string"
                     },
                     "version": {
-                      "type": "integer"
+                      "type": "integer", "format": "int64"
                     }
                   },
                   "required": [
@@ -16235,7 +16235,7 @@
                       "type": "string"
                     },
                     "version": {
-                      "type": "integer"
+                      "type": "integer", "format": "int64"
                     }
                   },
                   "required": [
@@ -17331,7 +17331,7 @@
                 "type": "object",
                 "properties": {
                   "index": {
-                    "type": "integer",
+                    "type": "integer", "format": "int64",
                     "minimum": 0,
                     "description": "Zero-based action index to accept"
                   }
@@ -24130,7 +24130,7 @@
             "type": "string"
           },
           "expires": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "accountId": {
@@ -24288,7 +24288,7 @@
             "pattern": "^ses"
           },
           "pid": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "command": {
@@ -24303,7 +24303,7 @@
           "ports": {
             "type": "array",
             "items": {
-              "type": "integer",
+              "type": "integer", "format": "int64",
               "exclusiveMinimum": 0
             }
           },
@@ -24331,7 +24331,7 @@
             "type": "boolean"
           },
           "exitCode": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "signal": {
@@ -24344,15 +24344,15 @@
             "type": "object",
             "properties": {
               "started": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "ended": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -24388,7 +24388,7 @@
             "pattern": "^ses"
           },
           "pid": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "command": {
@@ -24408,11 +24408,11 @@
             ]
           },
           "cols": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "rows": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "exitCode": {
@@ -24463,15 +24463,15 @@
             "type": "object",
             "properties": {
               "started": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "ended": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -24699,7 +24699,7 @@
             "description": "Opaque notebook content revision; pass it back unchanged and do not parse or increment it"
           },
           "index": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0,
             "description": "Zero-based cell index"
           },
@@ -24840,7 +24840,7 @@
             "description": "Opaque notebook content revision; pass it back unchanged and do not parse or increment it"
           },
           "index": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0,
             "description": "Zero-based cell index"
           }
@@ -24998,15 +24998,15 @@
             "type": "string"
           },
           "processedFiles": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "totalFiles": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "percent": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0,
             "maximum": 100
           }
@@ -25094,7 +25094,7 @@
             ]
           },
           "pid": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "sessionID": {
@@ -25347,15 +25347,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -25445,7 +25445,7 @@
             "$ref": "#/components/schemas/JSONSchema"
           },
           "retryCount": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           }
         },
@@ -25712,7 +25712,7 @@
                 "type": "string"
               },
               "retries": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -25804,7 +25804,7 @@
                 "type": "string"
               },
               "statusCode": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "isRetryable": {
@@ -25860,11 +25860,11 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "completed": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26047,11 +26047,11 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26165,11 +26165,11 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26239,11 +26239,11 @@
             "type": "object",
             "properties": {
               "line": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "character": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26257,11 +26257,11 @@
             "type": "object",
             "properties": {
               "line": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "character": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26300,7 +26300,7 @@
             "type": "string"
           },
           "kind": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           }
         },
@@ -26443,7 +26443,7 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26485,15 +26485,15 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacted": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26542,11 +26542,11 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26654,7 +26654,7 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26747,11 +26747,11 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "elapsed": {
@@ -26926,11 +26926,11 @@
                 "type": "string"
               },
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -26973,7 +26973,7 @@
             ]
           },
           "attempt": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "error": {
@@ -26983,7 +26983,7 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -27205,7 +27205,7 @@
                 ]
               },
               "duration": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               }
             },
@@ -27284,7 +27284,7 @@
                 ]
               },
               "attempt": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "message": {
@@ -27322,7 +27322,7 @@
                 "additionalProperties": false
               },
               "next": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -28076,7 +28076,7 @@
         "type": "object",
         "properties": {
           "port": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "hostname": {
@@ -28132,7 +28132,7 @@
           "dimension": {
             "anyOf": [
               {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               },
               {
@@ -28279,15 +28279,15 @@
             "maximum": 1
           },
           "searchMaxResults": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "embeddingBatchSize": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "scannerMaxBatchRetries": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "fileExtensions": {
@@ -28469,11 +28469,11 @@
             "description": "Hex color code (e.g., #FF5733) or theme color (e.g., primary)"
           },
           "steps": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "maxSteps": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "permission": {
@@ -28588,7 +28588,7 @@
               "timeout": {
                 "anyOf": [
                   {
-                    "type": "integer",
+                    "type": "integer", "format": "int64",
                     "exclusiveMinimum": 0
                   },
                   {
@@ -28603,7 +28603,7 @@
               "headerTimeout": {
                 "anyOf": [
                   {
-                    "type": "integer",
+                    "type": "integer", "format": "int64",
                     "exclusiveMinimum": 0
                   },
                   {
@@ -28616,7 +28616,7 @@
                 "description": "Timeout in milliseconds to wait for response headers. Provider integrations may set defaults. Set to false to disable timeout."
               },
               "chunkTimeout": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               }
             },
@@ -28884,7 +28884,7 @@
             "type": "boolean"
           },
           "timeout": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           }
         },
@@ -28907,7 +28907,7 @@
             "type": "string"
           },
           "callbackPort": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 1,
             "maximum": 65535
           },
@@ -28955,7 +28955,7 @@
             "description": "OAuth authentication configuration for the MCP server. Set to false to disable OAuth auto-detection."
           },
           "timeout": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           }
         },
@@ -28980,15 +28980,15 @@
             "type": "boolean"
           },
           "max_width": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "max_height": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "max_base64_bytes": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           }
         },
@@ -29186,7 +29186,7 @@
             "type": "object",
             "properties": {
               "context_sidebar_width": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 250,
                 "maximum": 800,
                 "description": "Width of the Kilo Console project context sidebar in pixels"
@@ -29512,11 +29512,11 @@
             "type": "object",
             "properties": {
               "max_lines": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               },
               "max_bytes": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               }
             },
@@ -29566,15 +29566,15 @@
                 "type": "boolean"
               },
               "tail_turns": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "preserve_recent_tokens": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "reserved": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -29638,7 +29638,7 @@
                 "type": "string"
               },
               "mcp_timeout": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               },
               "policies": {
@@ -30086,7 +30086,7 @@
                 "type": "string"
               },
               "priority": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               }
             },
             "additionalProperties": false
@@ -30124,7 +30124,7 @@
             "type": "string"
           },
           "switchableOrgCount": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           }
         },
@@ -30525,15 +30525,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -30639,7 +30639,7 @@
             "type": "string"
           },
           "kind": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "location": {
@@ -30735,19 +30735,19 @@
                   "type": "object",
                   "properties": {
                     "oldStart": {
-                      "type": "integer",
+                      "type": "integer", "format": "int64",
                       "minimum": 0
                     },
                     "oldLines": {
-                      "type": "integer",
+                      "type": "integer", "format": "int64",
                       "minimum": 0
                     },
                     "newStart": {
-                      "type": "integer",
+                      "type": "integer", "format": "int64",
                       "minimum": 0
                     },
                     "newLines": {
-                      "type": "integer",
+                      "type": "integer", "format": "int64",
                       "minimum": 0
                     },
                     "lines": {
@@ -30801,11 +30801,11 @@
             "type": "string"
           },
           "added": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "removed": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "status": {
@@ -31375,15 +31375,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "initialized": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -31956,15 +31956,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -32163,15 +32163,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -32396,15 +32396,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -32603,15 +32603,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -32810,15 +32810,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -33017,15 +33017,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -33224,15 +33224,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -33317,11 +33317,11 @@
             "type": "object",
             "properties": {
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -33396,11 +33396,11 @@
                 "type": "string"
               },
               "start": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "end": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -33631,15 +33631,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -33838,15 +33838,15 @@
             "type": "object",
             "properties": {
               "created": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "compacting": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "archived": {
@@ -34014,7 +34014,7 @@
                 ]
               },
               "duration": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               }
             },
@@ -34892,7 +34892,7 @@
                   "type": "string"
                 },
                 "dimension": {
-                  "type": "integer",
+                  "type": "integer", "format": "int64",
                   "exclusiveMinimum": 0
                 },
                 "scoreThreshold": {
@@ -34959,7 +34959,7 @@
             "type": "string"
           },
           "cursor": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           }
         },
@@ -34986,11 +34986,11 @@
         "type": "object",
         "properties": {
           "cols": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "rows": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           }
         },
@@ -35215,7 +35215,7 @@
         "type": "object",
         "properties": {
           "index": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0,
             "description": "Zero-based cell index"
           },
@@ -35238,18 +35238,18 @@
             "type": "object",
             "properties": {
               "order": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "success": {
                 "type": "boolean"
               },
               "started": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "ended": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -35342,7 +35342,7 @@
             "description": "Opaque notebook content revision; pass it back unchanged and do not parse or increment it"
           },
           "index": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0,
             "description": "Zero-based cell index"
           },
@@ -35395,7 +35395,7 @@
             "description": "Opaque notebook content revision; pass it back unchanged and do not parse or increment it"
           },
           "index": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0,
             "description": "Zero-based cell index"
           },
@@ -35472,7 +35472,7 @@
             "maxLength": 4096
           },
           "index": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0,
             "description": "Zero-based cell index"
           },
@@ -35539,19 +35539,19 @@
         "type": "object",
         "properties": {
           "additions": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "deletions": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "ahead": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "behind": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           }
         },
@@ -35567,7 +35567,7 @@
         "type": "object",
         "properties": {
           "number": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "state": {
@@ -35597,7 +35597,7 @@
             ]
           },
           "unresolvedComments": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           }
         },
@@ -36003,7 +36003,7 @@
                 ]
               },
               "downloadedModels": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               }
             },
             "required": [
@@ -36072,7 +36072,7 @@
                 "minItems": 1
               },
               "context": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0,
                 "maximum": 9007199254740991
               },
@@ -36465,7 +36465,7 @@
             "pattern": "^ses"
           },
           "pid": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "command": {
@@ -36485,11 +36485,11 @@
             ]
           },
           "cols": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "rows": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "exitCode": {
@@ -36532,15 +36532,15 @@
             "type": "object",
             "properties": {
               "started": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "updated": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "ended": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -38372,7 +38372,7 @@
                 "type": "string"
               },
               "cursor": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -38461,7 +38461,7 @@
                 "type": "string"
               },
               "version": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               }
             },
             "required": [
@@ -38898,7 +38898,7 @@
                 "pattern": "^sug"
               },
               "index": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               },
               "action": {
@@ -40005,7 +40005,7 @@
                       ]
                     },
                     "size": {
-                      "type": "integer"
+                      "type": "integer", "format": "int64"
                     }
                   },
                   "required": [
@@ -40061,13 +40061,13 @@
             "type": "object",
             "properties": {
               "context": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               },
               "input": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               },
               "output": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               }
             },
             "required": [
@@ -42073,7 +42073,7 @@
                 "pattern": "^pty"
               },
               "exitCode": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "minimum": 0
               }
             },
@@ -43264,15 +43264,15 @@
                 "type": "object",
                 "properties": {
                   "created": {
-                    "type": "integer",
+                    "type": "integer", "format": "int64",
                     "minimum": 0
                   },
                   "updated": {
-                    "type": "integer",
+                    "type": "integer", "format": "int64",
                     "minimum": 0
                   },
                   "initialized": {
-                    "type": "integer",
+                    "type": "integer", "format": "int64",
                     "minimum": 0
                   }
                 },
@@ -46784,7 +46784,7 @@
             ]
           },
           "steps": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "exclusiveMinimum": 0
           },
           "permissions": {
@@ -46920,7 +46920,7 @@
         "type": "object",
         "properties": {
           "admittedSeq": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           },
           "id": {
@@ -46945,7 +46945,7 @@
             "type": "number"
           },
           "promotedSeq": {
-            "type": "integer",
+            "type": "integer", "format": "int64",
             "minimum": 0
           }
         },
@@ -50373,7 +50373,7 @@
                       ]
                     },
                     "size": {
-                      "type": "integer"
+                      "type": "integer", "format": "int64"
                     }
                   },
                   "required": [
@@ -50429,13 +50429,13 @@
             "type": "object",
             "properties": {
               "context": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               },
               "input": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               },
               "output": {
-                "type": "integer"
+                "type": "integer", "format": "int64"
               }
             },
             "required": [
@@ -50492,7 +50492,7 @@
                 ]
               },
               "duration": {
-                "type": "integer",
+                "type": "integer", "format": "int64",
                 "exclusiveMinimum": 0
               }
             },

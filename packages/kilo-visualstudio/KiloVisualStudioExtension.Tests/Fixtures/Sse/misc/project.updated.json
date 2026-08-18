@@ -1,0 +1,21 @@
+{
+    "directory": "global",
+    "project": "1964d2a94e8019106135ae62a9554d1484853591",
+    "payload": {
+        "type": "project.updated",
+        "properties": {
+            "id": "1964d2a94e8019106135ae62a9554d1484853591",
+            "worktree": "C:\\prog\\kilocode\\kilocode",
+            "vcs": "git",
+            "time": {
+                "created": 1785175367086,
+                "updated": 1786707997206
+            },
+            "sandboxes": [
+                "C:\\prog\\kilocode\\kilocode\\.kilo\\worktrees\\silly-molybdenum",
+                "C:\\prog\\kilocode\\kilocode\\.kilo\\worktrees\\catkin-pluto"
+            ]
+        },
+        "id": "evt_00018721f001tz8miLOD6Wdnwg"
+    }
+}
