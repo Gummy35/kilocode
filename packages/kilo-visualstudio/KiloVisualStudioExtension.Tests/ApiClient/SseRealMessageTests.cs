@@ -69,7 +69,7 @@ namespace KiloVisualStudioExtension.Tests.ApiClient
     public void Deserialize_MessageUpdated_StreamEvent_Trace396()
     {
       // Arrange - EXACT data from trace 396/40b
-      var data = @"{""directory"":""C:\\prog\\kilocode\\kilocode"",""project"":""1964d2a94e8019106135ae62a9554d1484853591"",""payload"":{""id"":""evt_000191e69001rUd2VtqDzcG904"",""type"":""message.updated"",""properties"":{""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""info"":{""id"":""msg_0001919b300108vxNativqJTk0"",""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""role"":""user"",""time"":{""created"":1786708040838},""agent"":""code"",""model"":{""providerID"":""openrama"",""modelID"":""qwen3.5-122b""},""tools"":{},""editorContext"":{""visibleFiles"":[""packages\\\\kilo-visualstudio\\\\KiloVisualStudioExtension.Tests\\\\SseEventRoutingTests.cs""],""openTabs"":[""packages/opencode/test/kilocode/legacy-sse-event.test.ts"",""packages/kilo-visualstudio/KiloVisualStudioExtension.Tests/SseEventRoutingTests.cs""],""activeFile"":""packages\\\\kilo-visualstudio\\\\KiloVisualStudioExtension.Tests\\\\SseEventRoutingTests.cs"",""shell"":""C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe""}}}}}";
+      var data = FixtureLoader.Load("Sse\\message\\message.updated.json");
       var ev = new SseEventReceivedEventArgs("message.updated", data);
 
       // Act
@@ -155,7 +155,7 @@ namespace KiloVisualStudioExtension.Tests.ApiClient
     public void Deserialize_SessionUpdated_StreamEvent_Trace30a()
     {
       // Arrange
-      var data = FixtureLoader.Load("Sse\\");// @"{""directory"":""C:\\prog\\kilocode\\kilocode"",""project"":""1964d2a94e8019106135ae62a9554d1484853591"",""payload"":{""id"":""evt_000191c9a001Cw4Be5ssCZZdA1"",""type"":""session.updated"",""properties"":{""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""info"":{""id"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""slug"":""hidden-sailor"",""projectID"":""1964d2a94e8019106135ae62a9554d1484853591"",""directory"":""C:\\prog\\kilocode\\kilocode"",""path"":"""",""cost"":0,""tokens"":{""input"":0,""output"":0,""reasoning"":0,""cache"":{""read"":0,""write"":0}},""title"":""New session - 2026-08-14T11:47:20.248Z"",""agent"":""code"",""model"":{""id"":""qwen3.5-122b"",""providerID"":""openrama"",""variant"":""default""},""version"":""7.4.22"",""metadata"":{""kilocode.sandbox"":{""enabled"":false,""version"":0}},""time"":{""created"":1786708040248,""updated"":1786708040838}}}}}";
+      var data = FixtureLoader.Load("Sse\\session\\session.updated.json");
 
       var ev = new SseEventReceivedEventArgs("session.updated", data);
 
@@ -225,7 +225,7 @@ namespace KiloVisualStudioExtension.Tests.ApiClient
     public void Deserialize_SessionUpdated1_SyncEvent_Trace37f()
     {
       // Arrange - EXACT data from trace 37f (sync event wrapper format)
-      var data = @"{""directory"":""C:\\prog\\kilocode\\kilocode"",""project"":""1964d2a94e8019106135ae62a9554d1484853591"",""payload"":{""type"":""sync"",""syncEvent"":{""id"":""evt_000191c9a001Cw4Be5ssCZZdA1"",""type"":""session.updated.1"",""seq"":1,""aggregateID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""data"":{""sessionID"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""info"":{""id"":""ses_fffe6e5c7ffeKaWESnqm0mzNHw"",""slug"":""hidden-sailor"",""projectID"":""1964d2a94e8019106135ae62a9554d1484853591"",""directory"":""C:\\prog\\kilocode\\kilocode"",""path"":"""",""cost"":0,""tokens"":{""input"":0,""output"":0,""reasoning"":0,""cache"":{""read"":0,""write"":0}},""title"":""New session - 2026-08-14T11:47:20.248Z"",""agent"":""code"",""model"":{""id"":""qwen3.5-122b"",""providerID"":""openrama"",""variant"":""default""},""version"":""7.4.22"",""metadata"":{""kilocode.sandbox"":{""enabled"":false,""version"":0}},""time"":{""created"":1786708040248,""updated"":1786708040838}}}},""id"":""evt_000191c9a001Cw4Be5ssCZZdA1""}}";
+      var data = FixtureLoader.Load("Sse\\session\\session.updated.1.json");
       var ev = new SseEventReceivedEventArgs("session.updated.1", data);
 
       // Act

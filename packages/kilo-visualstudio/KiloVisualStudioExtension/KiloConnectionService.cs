@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using VSLangProj80;
 using ViewedRequest = KiloVisualStudioExtension.ApiClient.Body29;
 using ViewerModel = KiloVisualStudioExtension.ApiClient.Viewer;
 
@@ -184,7 +185,9 @@ namespace KiloVisualStudioExtension
     private SseClient? _sseClient;
 
     /// <summary>
-
+    /// SSE Helper for managing messages and sessions.
+    /// </summary>
+    private SSEHelper? _sseHelper;
 
     /// <summary>
     /// Generated NSwag API client for REST API calls (alternative to Kiota).
@@ -590,75 +593,19 @@ namespace KiloVisualStudioExtension
       SetState(ConnectionState.Error, ex.Message);
     }
 
-    private string ResolveEventSessionId(SseEventReceivedEventArgs ev)
+    public void SetSSEHelper(SSEHelper helper)
     {
-        var evType = ev.Payload["type"]?.Value<string>() ?? "";
-      return "";
-    //  var properties = ev.Payload["properties"].Values<string>();
-    //  switch (evType) {
-    //  case "session.created":
-    //  case "session.updated":
-    //  case "session.deleted":
-    //    return properties["sessionID"] ?? string.Empty;
-    //  case "message.updated":
-    //      this.RecordMessageSessionId(event.properties.info.id, event.properties.sessionID);
-    //    return properties["sessionID"] ?? string.Empty;
-    //  case "message.removed":
-    //  case "message.part.updated":
-    //  case "message.part.removed":
-    //    return properties["sessionID"] ?? string.Empty;
-    //  default:
-    //    return this. connectionService.resolveEventSessionId(event)
-    //}
+      _sseHelper = helper;
     }
 
-    private bool FilterSSEEvent(SseEventReceivedEventArgs e)
+    /// <summary>
+    /// Event handler for SSE event received. Raises the OnSseEvent event with the event data.
+    /// </summary>
+    private void SseClient_OnEvent(object? sender, SseEventArgs e)
     {
-      var ev = e.UnwrapSyncEvent();
-      if (ev == null) return false;
-
-      var evType = ev["type"]?.Value<string>() ?? "";
-
-      // Remote status events are global and should always pass through
-      if (evType == "kilo-sessions.remote-status-changed") return true;
-      if (evType == "memory.status" || evType == "memory.updated" || evType == "memory.error")
-        return true;
-
-      var sessionId = this.ResolveEventSessionId(e);
-      return true;
-      //// message.part.* events are always session-scoped; drop if session unknown.
-      //if (!sessionId) return !isSessionScopedPartEvent(event.type)
-
-      //    if (event.type === "session.created" && this.matchesPendingFollowup(event.properties.info)) {
-      //return true
-      //    }
-
-      //    // session.status must always pass through — even for sessions not tracked by this
-      //    // KiloProvider instance. The Settings panel is a separate provider with no tracked
-      //    // sessions, but it needs session.status to populate sessionStatusMap and allStatusMap
-      //    // for the busy-session warning on Save.
-      //    if (event.type === "session.status") return true
-
-      //    // session.deleted must always pass through so the webview can run its cleanup
-      //    // (messages, parts, stash, todos, permissions, drafts, etc.) — including for
-      //    // sessions that were never explicitly tracked here (e.g. child sessions
-      //    // cascade-deleted with the parent, or external CLI deletions). We deliberately
-      //    // do NOT re-track the deleted id: handleLoadMessages intentionally drops late
-      //    // responses for sessions that have been pruned, and re-tracking would let an
-      //    // in-flight messagesLoaded response resurrect transcript state for a session
-      //    // the webview just cleaned up.
-      //    if (event.type === "session.deleted") return true
-
-      //    return this.trackedSessionIds.has(sessionId)
-        }
-
-        /// <summary>
-        /// Event handler for SSE event received. Raises the OnSseEvent event with the event data.
-        /// </summary>
-        private void SseClient_OnEvent(object? sender, SseEventArgs e)
-    {
+      if (_sseHelper == null) throw new NullReferenceException("Connection service SSEHelper must be set");
       var sseEvent = new SseEventReceivedEventArgs(e.EventType, e.Data);
-      if (FilterSSEEvent(sseEvent))
+      if (_sseHelper.FilterSSEEvent(sseEvent))
         OnSseEvent?.Invoke(this, sseEvent);
     }
 

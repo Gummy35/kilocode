@@ -84,13 +84,37 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
     }
 
 
+    public static Events Deserialize(JToken obj)
+    {
+      var serializer = KiloJsonSerializer.Create();
+      if (obj == null) return null;
+      //obj = UnwrapSyncEvent(obj);
+
+      var v = PolymorphicDeserializer.DeserializeSSEEvent(obj, serializer);
+
+      string type = obj["type"].Value<string>();
+      string id = obj["id"].Value<string>();
+      int seq = 0;
+      string aggregateId = "";
+      if (type == "sync" && obj["syncEvent"] != null)
+      {
+        var inner = obj["syncEvent"];
+        type = inner["type"].Value<string>() ?? "";
+        id = inner["id"].Value<string>() ?? "";
+        aggregateId = inner["aggregateID"].Value<string>() ?? "";
+        seq = inner["seq"].Value<int>();
+      }
+
+      return new Events { AggregateID = aggregateId, Id = id, Seq = seq, Type = type, Data = v };
+    }
+
+
 
     /// <summary>
     /// Deserializes an SSE event from raw JSON string.
     /// </summary>
     public static Events Deserialize(SseEventReceivedEventArgs ev)
     {
-      var serializer = KiloJsonSerializer.Create();
 
 
       //var obj = JObject.Parse(data);
@@ -103,27 +127,7 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
       //    obj = (JObject)payload;
 
       var obj = ev.UnwrapSyncEvent();
-      //obj = UnwrapSyncEvent(obj);
-
-      var v = PolymorphicDeserializer.DeserializeSSEEvent(obj, serializer);
-
-      string type = obj["type"].Value<string>();
-      string id = obj["id"].Value<string>();
-      int seq = 0;
-      string aggregateId = "";
-      var payload = ev.Payload;
-      if ((payload["type"].Value<string>() ?? "") == "sync" && payload["syncEvent"] != null)
-      {
-        var inner = payload["syncEvent"];
-        type = inner["type"].Value<string>() ?? "";
-        id = inner["id"].Value<string>() ?? "";
-        aggregateId = inner["aggregateID"].Value<string>() ?? "";
-        seq = inner["seq"].Value<int>();
-      }
-
-      var result = new Events { AggregateID = aggregateId, Id = id, Seq = seq, Type = type, Data = v };
-
-      return result;
+      return Deserialize(obj);
       //            throw new JsonSerializationException($"Unknown SSE event structure");
     }
 

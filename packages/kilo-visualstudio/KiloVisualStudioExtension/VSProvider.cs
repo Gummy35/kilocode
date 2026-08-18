@@ -92,6 +92,7 @@ namespace KiloVisualStudioExtension
             _webView = webView!;
             _connectionService = connectionService;
             _sseHelper = new SSEHelper(PostMessage);
+            _connectionService.SetSSEHelper(_sseHelper);
             _streamScheduler = new SessionStreamScheduler((sessionID, key, update) => {
                 var message = new { type = "partUpdated", sessionID, messageID = key.Split(':')[1], part = update.Part, delta = update.TextDelta != null ? new { type = "text-delta", textDelta = update.TextDelta } : (object?)null };
                 PostMessage(JsonSerializer.Serialize(message));

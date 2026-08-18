@@ -357,7 +357,7 @@ namespace KiloVisualStudioExtension.ApiClient.Json
 
         public static Event DeserializeSSEEvent(JToken obj, JsonSerializer serializer)
         {
-          var type = obj["type"]?.Value<string>() ?? "";
+          var type = obj?["type"]?.Value<string>() ?? "";
           return type switch
           {
             "message.updated" => DeserializeEventMessageUpdated(obj, serializer),
