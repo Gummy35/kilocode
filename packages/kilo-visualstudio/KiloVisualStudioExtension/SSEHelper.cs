@@ -7,6 +7,7 @@ using KiloVisualStudioExtension.WebView.Generated;
 using KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
 using KiloVisualStudioExtension.WebView.Generated.Parts;
 using KiloVisualStudioExtension.WebView.Generated.Sessions;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Telemetry;
 using Microsoft.VisualStudio.Text.Editor;
 using Newtonsoft.Json;
@@ -15,20 +16,27 @@ using System;
 using System.Collections.Generic;
 using System.IO.Packaging;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Web.UI.Design;
+using static KiloVisualStudioExtension.Services.MessagePageFetcher;
 using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
 using WebViewMessage = KiloVisualStudioExtension.WebView.Generated.Sessions.Message;
+using KiloVisualStudioExtension.Utils;
 
 namespace KiloVisualStudioExtension
 {
   public class SSEHelper
   {
     private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
-    private readonly Dictionary<string, SessionStatus> _sessionStatusMap = new Dictionary<string, SessionStatus>();
+    private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
     private readonly Dictionary<string, SessionRevision> _revisions = new Dictionary<string, SessionRevision>();
     private readonly HashSet<string> _modelUsageSessionIds = new HashSet<string>();
     private readonly Dictionary<string, MessageCost> _messageCosts = new Dictionary<string, MessageCost>();
     private readonly Dictionary<string, string> _messageSessionIds = new Dictionary<string, string>();
     private readonly Dictionary<string, string> _networkWaits = new Dictionary<string, string>();
+    private readonly ProjectDirectoryProvider _projectDirectoryProvider;
+
     private int _sandboxRevision = 0;
 
     private Followup _pendingFollowup;
@@ -43,15 +51,23 @@ namespace KiloVisualStudioExtension
     }
 
     public ICollection<string> TrackedSessionIds => _trackedSessionIds;
-    public IReadOnlyDictionary<string, SessionStatus> SessionStatusMap => _sessionStatusMap;
+    public IReadOnlyDictionary<string, string> SessionStatusMap => _sessionStatusMap;
 
     private readonly Action<string> _postMessage;
     private readonly JsonSerializer _serializer;
 
-    public SSEHelper(Action<string> postMessage)
+    public SSEHelper(Action<string> postMessage, DTE dte = null)
     {
       _postMessage = postMessage;
       _serializer = KiloJsonSerializer.Create();
+
+      if (dte != null)
+      {
+        var vsProvider = new VisualStudioDirectoryProvider(dte);
+        _projectDirectoryProvider = vsProvider.CreateProvider(
+            projectDirectoryOverride: null, // or specify a path like @"C:\MyProject"
+            sessionDirectories: _sessionDirectories);
+      }
     }
 
     public void PostMessage(object message)
@@ -65,13 +81,13 @@ namespace KiloVisualStudioExtension
       public int Seq { get; set; }
     }
 
-    public class SessionStatus
-    {
-      public string Type { get; set; } = "";
-      public int Attempt { get; set; }
-      public string? Message { get; set; }
-      public long? Next { get; set; }
-    }
+    //public class SessionStatus
+    //{
+    //  public string Type { get; set; } = "";
+    //  public int Attempt { get; set; }
+    //  public string? Message { get; set; }
+    //  public long? Next { get; set; }
+    //}
 
     public class MessageCost
     {
@@ -80,24 +96,469 @@ namespace KiloVisualStudioExtension
       public double Cost { get; set; }
     }
 
-    public void HandleEvent(SseEventReceivedEventArgs e)
+    public void HandleEvent(SseEventReceivedEventArgs raw)
     {
       try
       {
-        System.Diagnostics.Debug.WriteLine($"SSE Event received : {e.EventType}");
+        System.Diagnostics.Debug.WriteLine($"SSE Event received : {raw.EventType}");
         
-        var sseEvent = SseEventDeserializer.Deserialize(e);
-        if (sseEvent == null) return;
+        var e = SseEventDeserializer.Deserialize(raw);
+        if (e == null) return;
+
+        var sessionId = ResolveEventSessionId(raw);
+
+        var evt = e.Data;
+        var directory = raw.Directory;
+
+        // if (event.type === "kilo-sessions.remote-status-changed") {
+        if (evt is EventKiloSessionsRemoteStatusChanged ev)
+        {
+          // this.remoteService?.updateFromEvent({ enabled: event.properties.enabled, connected: event.properties.connected })
+          _remoteService?.UpdateFromEvent(new { Enabled = ev.Properties.Enabled, Connected = ev.Properties.Connected });
+          // return
+          return;
+        }
+        
+        // if (event.type === "memory.status" || event.type === "memory.updated" || event.type === "memory.error") {
+        if (evt is EventMemoryStatus || evt is EventMemoryUpdated || evt is EventMemoryError)
+        {
+          // const props = event.properties as { sessionID?: unknown; detail?: unknown; reason?: unknown }
+          var props = raw.Payload;
+          // const eventSessionID = typeof props.sessionID === "string" ? props.sessionID : undefined
+          // const active = this.currentSession?.id
+          var active = CurrentSessionID;
+          // const local =
+          
+          //   !directory || sameDirectory(directory, this.getProjectDirectory(active) ?? this.getWorkspaceDirectory(active))
+          var local = string.IsNullOrEmpty(directory) || 
+            PathUtils.SameDirectory(
+              directory, 
+              _projectDirectoryProvider.GetProjectDirectory(CurrentSessionID) 
+                ?? _projectDirectoryProvider.GetWorkspaceDirectory(CurrentSessionID)
+            );
+          // const trackedById = Boolean(eventSessionID && this.trackedSessionIds.has(eventSessionID))
+          var trackedById = !string.IsNullOrEmpty(sessionId) && _trackedSessionIds.Contains(sessionId);
+          // Directory-scoped events (enable/disable/rebuild/configure/purge) carry no
+          // sessionID, so also match any tracked session sharing the event directory —
+          // e.g. a non-active Agent Manager tab on the same worktree.
+          // const trackedByDir = directory
+          //   ? [...this.sessionDirectories.entries()]
+          //       .filter(([sid, dir]) => this.trackedSessionIds.has(sid) && sameDirectory(directory, dir))
+          //       .map(([sid]) => sid)
+          //   : []
+          var trackedByDir = !string.IsNullOrEmpty(directory)
+            ? _sessionDirectories.Where(kvp => _trackedSessionIds.Contains(kvp.Key) && PathUtils.SameDirectory(directory, kvp.Value)).Select(kvp => kvp.Key).ToList()
+            : new List<string>();
+          // const tracked = trackedById || trackedByDir.length > 0
+          var tracked = trackedById || trackedByDir.Count > 0;
+          // if (!local && !tracked) return
+          if (!local && !tracked) return;
+          // if (trackedById && eventSessionID && directory) this.trackDirectory(eventSessionID, directory)
+          if (trackedById && !string.IsNullOrEmpty(sessionId) && !string.IsNullOrEmpty(directory)) _projectDirectoryProvider.TrackDirectory(sessionId, directory);
+          // const targets = new Set<string | undefined>()
+          var targets = new HashSet<string>();
+          // if (trackedById && eventSessionID) targets.add(eventSessionID)
+          if (trackedById && !string.IsNullOrEmpty(sessionId)) targets.Add(sessionId);
+          // for (const sid of trackedByDir) targets.add(sid)
+          foreach (var sid in trackedByDir) targets.Add(sid);
+          // if (local && active) targets.add(active)
+          if (local && !string.IsNullOrEmpty(active)) targets.Add(active);
+          // if (targets.size === 0 && local) targets.add(undefined)
+          if (targets.Count == 0 && local) targets.Add(null);
+          // const detail =
+          //   props.detail && typeof props.detail === "object"
+          //     ? props.detail
+          //     : event.type === "memory.error" && typeof props.reason === "string"
+          //       ? { type: "error", message: props.reason, reason: props.reason }
+          //       : undefined
+
+          WebView.Generated.Memory.MemoryEventDetail detail = null;
+          var rawDetails = raw.Payload["properties"]?["detail"] ?? null;
+          if (rawDetails != null)
+          {
+            detail = ((MemoryEventConverter.IMemoryEvent)evt).ToMemoryEventDetail();
+          }
+          else
+          {
+            if (evt is EventMemoryError)
+            {
+              var reason = raw.Payload["properties"]?["reason"]?.Value<string>() ?? null;
+              if (reason != null)
+              {
+                detail = new WebView.Generated.Memory.MemoryEventDetail
+                {
+                  Type = SkippedErrorSavedRecalled.Error,
+                  Message = reason,
+                  Reason = reason
+                };
+              }
+            }
+          }
+          //JToken detail = props["detail"]?.Type == JTokenType.Object
+          //  ? props["detail"]
+          //  : e.EventType == "memory.error" && props["reason"]?.Type == JTokenType.String
+          //    ? new JObject { ["type"] = "error", ["message"] = props["reason"], ["reason"] = props["reason"] }
+          //    : null;
+          // for (const sessionID of targets) {
+          foreach (var target in targets)
+          {
+            // if (detail) {
+            if (detail != null)
+            {
+              // this.postMessage({
+              //   type: "memoryEvent",
+              //   sessionID,
+              //   detail,
+              // })
+              PostMessage(new WebView.Generated.Memory.MemoryEventMessage { SessionID = target, Detail = detail });
+            }
+            // void this.memory.fetch(sessionID)
+            _memory.Fetch(target);
+          }
+          // return
+          return;
+        }
+
+        // Drop session events from other projects before any tracking logic.
+        // This must come first: the trackedSessionIds guard below would otherwise
+        // let a foreign session through if it was accidentally tracked.
+        // if (!isLegacySyncEvent(event) && isEventFromForeignProject(event, this.projectID)) return
+        if (!IsLegacySyncEvent(e) && IsEventFromForeignProject(e, CurrentProjectID)) return;
+        // if (
+        //   this.projectID &&
+        //   (event.type === "session.created" || event.type === "session.updated") &&
+        //   event.properties.info.projectID !== undefined &&
+        //   event.properties.info.projectID !== null &&
+        //   event.properties.info.projectID !== this.projectID
+        // ) {
+        if (!string.IsNullOrEmpty(CurrentProjectID)
+          && (evt is EventSessionCreated || evt is EventSessionUpdated))
+        {
+          var projectId = raw.Payload["properties"]?["info"]?["projectID"]?.Value<string>() ?? null;
+          if (projectId != null && projectId != CurrentProjectID)
+            return;
+        }
+        
+
+        // if (event.type === "mcp.browser.open.failed") {
+        if (evt is EventMcpBrowserOpenFailed)
+        {
+          var typedEvent = (EventMcpBrowserOpenFailed)evt;
+          // McpOAuth.openMcpOAuthUrlOnce(event.properties.url)
+          McpOAuth.OpenMcpOAuthUrlOnce(typedEvent.Properties.Url);
+          // return
+          return;
+        }
+
+        // if (event.type === "message.updated") {
+        if (evt is EventMessageUpdated)
+        {
+          var typedEvent = (EventMessageUpdated)evt;
+          // this.confirmations.confirm(event.properties.info.id)
+          _confirmations.Confirm(typedEvent.Properties.Info.Id);
+        }
+
+        // session.status events pass the onEventFiltered pre-filter for all providers (see line 842),
+        // so this runs on every KiloProvider instance — including the Settings panel which has no
+        // tracked sessions. Update sessionStatusMap and forward to webview before the
+        // trackedSessionIds guard so the Settings panel's allStatusMap stays current for the
+        // busy-session warning on Save.
+        // if (event.type === "session.status") {
+        if (evt is EventSessionStatus)
+        {
+          var typedEvent = (EventSessionStatus)evt;
+          // const sid = event.properties.sessionID
+          var type = typedEvent.Properties.Status.Type;
+          // const prev = this.sessionStatusMap.get(sid)
+          var prev = _sessionStatusMap.TryGetValue(sessionId, out var prevVal) ? prevVal : null;
+          // if ((prev === undefined || prev === "idle") && event.properties.status.type !== "idle") {
+          if ((prev == null || prev == "idle") && type != "idle")
+          {
+            // this.costs.rearm(sid)
+            _costs.Rearm(sessionId);
+          }
+          // this.sessionStatusMap.set(sid, event.properties.status.type)
+          _sessionStatusMap[sessionId] = type;
+          // this.aborts.observe(sid, event.properties.status.type, directory)
+          _aborts.Observe(sessionId, type, directory);
+          // const msg = mapSSEEventToWebviewMessage(event, sid)
+          var msg = MapSseEventToWebviewMessage(e, sessionId);
+          // if (msg) {
+          if (msg != null)
+          {
+            // this.streams.flush(sid)
+            _streams.Flush(sessionId);
+            // this.postMessage(msg)
+            PostMessage(msg);
+          }
+          // return
+          return;
+        }
+
+        // Extract sessionID from the event
+        // if (event.type === "session.created" && this.adoptPendingFollowup(event.properties.info)) {
+        if (evt is EventSessionCreated && AdoptPendingFollowup(raw.Payload["properties"]["info"]))
+        {
+          // return
+          return;
+        }
+
+        // const sessionID = this.resolveEventSessionId(event)
+        
+        // Events without sessionID (server.connected, server.heartbeat, indexing.status) → always forward
+        // Events with sessionID → only forward if this webview tracks that session
+        // message.part.* events are always session-scoped; drop if session unknown.
+        // if (!sessionID && isSessionScopedPartEvent(event.type)) return
+        if (string.IsNullOrEmpty(sessionId) && sessionScopedPartEvents.Contains(e.EventType)) return;
+        // if (this.postModelUsageChanged(event, sessionID)) return
+        if (PostModelUsageChanged(e, sessionId)) return;
+        // if (
+        //   event.type !== "indexing.status" &&
+        //   event.type !== "session.deleted" &&
+        //   sessionID &&
+        //   !this.trackedSessionIds.has(sessionID)
+        // )
+        if (!(evt is EventIndexingStatus) && !(evt is EventSessionDeleted) && !string.IsNullOrEmpty(sessionId) && !IsSessionTracked(sessionId))
+          //   return
+          return;
+
+        // if (event.type === "session.updated" && typeof event.properties.info.cost === "number") {
+        if (evt is EventSessionUpdated && raw.Payload["info"]?["cost"]?.Type == JTokenType.Float)
+        {
+          // const cost = this.costs.setSessionCost(event.properties.sessionID, event.properties.info.cost)
+          var cost = _costs.SetSessionCost(sessionId, e.Payload["info"]?["cost"]?.Value<double>());
+          // this.requestCostAlert(event.properties.sessionID, cost)
+          RequestCostAlert(sessionId, cost);
+        }
+
+        // if (event.type === "session.updated") {
+        if (evt is EventSessionUpdated)
+        {
+          // Full bus snapshots duplicate sync patches with the same event ID but no sequence metadata.
+          // if (!isLegacySyncEvent(event)) return
+          if (!IsLegacySyncEvent(e)) return;
+          // const sid = event.properties.sessionID
+          // const revision = this.revisions.get(sid)
+          var revision = _revisions.TryGetValue(sessionId, out var revVal) ? revVal : null;
+          // const versioned = event.seq > 0 || (revision?.seq ?? 0) > 0
+          var versioned = e.Seq > 0 || (revision?.Seq ?? 0) > 0;
+          // if (revision && (versioned ? event.seq <= revision.seq : event.id <= revision.id)) return
+          if (revision != null && (versioned ? e.Seq <= revision.Seq : e.Payload["id"]?.Value<string>() <= revision.Id)) return;
+          // this.revisions.set(sid, { id: event.id, seq: event.seq })
+          _revisions[sessionId] = new { Id = e.Payload["id"]?.Value<string>(), Seq = e.Seq};
+        }
+
+        // Refresh provider and agent lists when the server signals a state disposal
+        // if (event.type === "global.disposed") {
+        if (evt is EventGlobalDisposed)
+        {
+          // void this.reloadAfterAuthChange()
+          ReloadAfterAuthChange();
+          // return
+          return;
+        }
+
+        // if (event.type === "server.instance.disposed") {
+        if (evt is EventServerInstanceDisposed)
+        {
+          // const props = event.properties as Record<string, unknown> | null
+          var props = e.Payload;
+          // const dir = typeof props?.directory === "string" ? props.directory : undefined
+          var dir = props?["directory"]?.Type == JTokenType.String ? props["directory"]?.Value<string>() : null;
+          // if (dir) for (const sid of this.aborts.dispose(dir)) this.sessionStatusMap.set(sid, "idle")
+          if (!string.IsNullOrEmpty(dir))
+            foreach (var sid in _aborts.Dispose(dir))
+              _sessionStatusMap[sid] = "idle";
+          // if (dir && !sameDirectory(dir, this.getWorkspaceDirectory())) return
+          if (!string.IsNullOrEmpty(dir) && !PathUtils.SameDirectory(dir, GetWorkspaceDirectory())) return;
+          // void this.reloadAfterAuthChange()
+          ReloadAfterAuthChange();
+          // return
+          return;
+        }
+
+        // Config was updated without a full dispose (e.g. permission-only save).
+        // Fetch and push the updated config + refresh agents and providers so the
+        // Settings panel and mode/model pickers reflect the change.
+        // if (event.type === "global.config.updated") {
+        if (evt is EventGlobalConfigUpdated)
+        {
+          // this.requirements.clear()
+          _requirements.Clear();
+          // void Promise.all([this.fetchAndSendConfigUpdated(), this.fetchAndSendAgents(), this.fetchAndSendProviders()])
+          _ = Task.WhenAll(FetchAndSendConfigUpdated(), FetchAndSendAgents(), FetchAndSendProviders());
+          // return
+          return;
+        }
+
+        // Forward relevant events to webview
+        // Side effects that must happen before the webview message is sent
+        // if (event.type === "message.updated") {
+        if (evt is EventMessageUpdated)
+        {
+          // const info = event.properties.info
+          var info = e.Payload["info"];
+          // const value = info.role === "assistant" ? info.cost : undefined
+          var value = info?["role"]?.Value<string>() == "assistant" ? info?["cost"]?.Value<double>() : (double?)null;
+          // const cost = this.updateMessageCost(event.properties.sessionID, info.id, info.role, value)
+          var cost = UpdateMessageCost(sessionId, info?["id"]?.Value<string>(), info?["role"]?.Value<string>(), value);
+          // if (cost !== undefined) this.requestCostAlert(event.properties.sessionID, cost)
+          if (cost != null) RequestCostAlert(sessionId, cost);
+        }
+        // if (event.type === "message.removed") {
+        if (evt is EventMessageRemoved)
+        {
+          // this.removeMessageCost(event.properties.messageID)
+          RemoveMessageCost(e.Payload["messageID"]?.Value<string>());
+        }
+        // if (event.type === "session.created" && !this.currentSession) {
+        if (evt is EventSessionCreated && _currentSession == null)
+        {
+          // this.setCurrentSession(event.properties.info)
+          SetCurrentSession(e.Payload["info"]);
+          // this.contextSessionID = event.properties.info.id
+          _contextSessionID = e.Payload["info"]?["id"]?.Value<string>();
+          // this.trackedSessionIds.add(event.properties.info.id)
+          _trackedSessionIds.Add(e.Payload["info"]?["id"]?.Value<string>());
+        }
+        // if (event.type === "session.updated" && this.currentSession?.id === event.properties.sessionID) {
+        if (evt is EventSessionUpdated && _currentSession?.Id == sessionId)
+        {
+          // this.setCurrentSession(event.properties.info)
+          SetCurrentSession(e.Payload["info"]);
+          // this.contextSessionID = event.properties.sessionID
+          _contextSessionID = sessionId;
+        }
+        // if (event.type === "session.deleted") {
+        if (evt is EventSessionDeleted)
+        {
+          // const sid = event.properties.sessionID
+          // this.trackedSessionIds.delete(sid)
+          _trackedSessionIds.Remove(sessionId);
+          // this.modelUsageSessionIds.delete(sid)
+          _modelUsageSessionIds.Remove(sessionId);
+          // this.sessionDirectories.delete(sid)
+          _sessionDirectories.Remove(sessionId);
+          // this.connectionService.pruneSession(sid)
+          _connectionService.PruneSession(sessionId);
+          // this.costs.onSessionDeleted(sid)
+          _costs.OnSessionDeleted(sessionId);
+        }
+
+        // Auto-adopt child sessions as soon as the task tool part reveals their ID.
+        // This means the child's permission/question events are tracked immediately —
+        // before the webview renderer has a chance to call syncSession — eliminating
+        // the race where the child blocks on a prompt that the UI never sees.
+        // if (event.type === "message.part.updated") {
+        if (evt is EventMessagePartUpdated)
+        {
+          // const part = event.properties.part as {
+          //   type?: string
+          //   tool?: string
+          //   metadata?: { sessionId?: string }
+          //   state?: { metadata?: { sessionId?: string } }
+          //   sessionID?: string
+          // }
+          var part = e.Payload["part"];
+          // const childId = childID(part)
+          var childId = ChildId(part);
+          // if (childId && !this.trackedSessionIds.has(childId)) {
+          if (!string.IsNullOrEmpty(childId) && !_trackedSessionIds.Contains(childId))
+          {
+            // console.log("[Kilo New] KiloProvider: 🔗 Auto-adopting child session from task tool", { childId })
+            Console.WriteLine($"[Kilo New] KiloProvider: 🔗 Auto-adopting child session from task tool {{ childId: {childId} }}");
+            // void this.handleSyncSession(childId, part.sessionID ?? sessionID)
+            _ = HandleSyncSession(childId, part?["sessionID"]?.Value<string>() ?? sessionId);
+          }
+        }
+
+        // Drop the per-session caches for deleted sessions so a late
+        // handleLoadMessages response (or any other guarded read) can't resurrect
+        // transcript state for a session the webview just cleaned up. The
+        // prefilter lets session.deleted through without re-tracking, and the
+        // handleEvent guard does the same — this is the matching prune.
+        // if (event.type === "session.deleted" && sessionID) {
+        if (evt is EventSessionDeleted && !string.IsNullOrEmpty(sessionId))
+        {
+          // this.pruneDeletedSession(sessionID)
+          PruneDeletedSession(sessionId);
+        }
+
+        // if (!isLegacySyncEvent(event)) {
+        if (!IsLegacySyncEvent(e))
+        {
+          // const props = event.properties
+          var props = e.Payload;
+          // handleNetworkEvent(
+          //   event.type,
+          //   {
+          //     id: "id" in props && typeof props.id === "string" ? props.id : undefined,
+          //     sessionID: "sessionID" in props && typeof props.sessionID === "string" ? props.sessionID : undefined,
+          //     requestID: "requestID" in props && typeof props.requestID === "string" ? props.requestID : undefined,
+          //   },
+          //   this.client,
+          //   (s) => this.getWorkspaceDirectory(s),
+          // )
+          HandleNetworkEvent(
+            e.EventType,
+            new
+            {
+              Id = props["id"]?.Type == JTokenType.String ? props["id"]?.Value<string>() : null,
+              SessionID = sessionId,
+              RequestID = props["requestID"]?.Type == JTokenType.String ? props["requestID"]?.Value<string>() : null
+            },
+            Client,
+            (s) => GetWorkspaceDirectory(s)
+          );
+        }
+
+        // if (event.type === "indexing.status" && directory) {
+        if (evt is EventIndexingStatus && !string.IsNullOrEmpty(directory))
+        {
+          // if (!sameDirectory(directory, this.getWorkspaceDirectory(this.currentSession?.id))) return
+          if (!PathUtils.SameDirectory(directory, GetWorkspaceDirectory(_currentSession?.Id))) return;
+        }
+
+        // const msg = isLegacySyncEvent(event)
+        //   ? this.mapSyncEventToWebviewMessage(event)
+        //   : mapSSEEventToWebviewMessage(event, sessionID)
+        var msg = IsLegacySyncEvent(e)
+          ? MapSyncEventToWebviewMessage(e)
+          : MapSseEventToWebviewMessage(e, sessionId);
+        // if (!msg) return
+        if (msg == null) return;
+        // if (msg.type === "partUpdated") {
+        if (msg.type == "partUpdated")
+        {
+          // this.streams.push({ ...msg, part: this.slimPart(msg.part) })
+          _streams.Push(new { msg.type, part = SlimPart(msg.part) });
+          // return
+          return;
+        }
+        // const next = msg.type === "messageCreated" ? { ...msg, message: this.slimInfo(msg.message) } : msg
+        var next = msg.type == "messageCreated" ? new { msg.type, message = SlimInfo(msg.message) } : msg;
+        // if (next.type === "sandboxStatus") {
+        if (next.type == "sandboxStatus")
+        {
+          // if (!sameDirectory(next.directory, this.getWorkspaceDirectory(next.sessionID))) return
+          if (!PathUtils.SameDirectory(next.directory, GetWorkspaceDirectory(next.sessionID))) return;
+          // this.postMessage({ ...next, revision: ++this.sandboxRevision })
+          PostMessage(new { next.type, next.sessionID, next.directory, revision = ++_sandboxRevision });
+          // return
+          return;
+        }
+        // if (next.type === "indexingStatusLoaded") {
+        if (next.type == "indexingStatusLoaded")
+        {
+          // this.cachedIndexingStatusMessage = next
+          _cachedIndexingStatusMessage = next;
+        }
+        // this.streams.flush(sessionID)
+        _streams.Flush(sessionId);
+        // this.postMessage(next)
+        PostMessage(next);
 
 
-        //if (sseEvent is SyncEvent syncEvent)
-        //{
-        //    HandleSyncEvent(syncEvent);
-        //}
-        //else if (sseEvent is StreamEvent streamEvent)
-        //{
-        //    HandleStreamEvent(streamEvent);
-        //}
       }
       catch (Exception ex)
       {

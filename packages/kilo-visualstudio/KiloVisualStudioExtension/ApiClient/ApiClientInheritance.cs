@@ -8,9 +8,14 @@ namespace KiloVisualStudioExtension.ApiClient
   /// </summary>
 
 
+  public partial class Message
+  {
+    public string Id { get; set; }
+  }
+
+ 
   public partial class AssistantMessage : Message { }
   public partial class UserMessage : Message { }
-
 
 
   // SSE Event
@@ -21,9 +26,19 @@ namespace KiloVisualStudioExtension.ApiClient
   public partial class EventSessionCreated: Event { }
   public partial class EventSessionUpdated : Event { }
   public partial class EventSessionDeleted : Event { }
+  public partial class EventKiloSessionsRemoteStatusChanged : Event { }
+  public partial class EventMemoryStatus : Event, MemoryEventConverter.IMemoryEvent { }
+  public partial class EventMemoryUpdated : Event, MemoryEventConverter.IMemoryEvent { }
+  public partial class EventMemoryError : Event, MemoryEventConverter.IMemoryEvent { }
+
+  public partial class EventMcpBrowserOpenFailed : Event { }
 
   public partial class TextPartInput : Parts { }
   public partial class FilePartInput : Parts { }
   public partial class AgentPartInput : Parts { }
   public partial class SubtaskPartInput : Parts { }
+
+
+
+
 }

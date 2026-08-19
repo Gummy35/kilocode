@@ -105,6 +105,8 @@ namespace KiloVisualStudioExtension
 
     public string Project { get; }
 
+    public string SessionID { get; }
+
     /// <summary>
     /// Creates a new instance of SseEventReceivedEventArgs.
     /// </summary>
