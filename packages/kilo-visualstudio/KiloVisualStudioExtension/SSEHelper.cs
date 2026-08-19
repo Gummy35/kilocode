@@ -2,6 +2,7 @@ using EnvDTE;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.ApiClient.Sse;
+using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Utils;
 using KiloVisualStudioExtension.WebView.Generated;
 using KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
@@ -43,6 +44,8 @@ namespace KiloVisualStudioExtension
     private string? _cachedIndexingStatusMessage = null;
     private string? _currentProjectID = null;
 
+    private RemoteStatusService? _remoteService;
+
     public string? CurrentSessionID { get; private set; }
     public string? CurrentProjectID
     {
@@ -68,6 +71,14 @@ namespace KiloVisualStudioExtension
             projectDirectoryOverride: null, // or specify a path like @"C:\MyProject"
             sessionDirectories: _sessionDirectories);
       }
+    }
+
+    /// <summary>
+    /// Sets the RemoteStatusService for handling remote control state.
+    /// </summary>
+    public void SetRemoteStatusService(RemoteStatusService service)
+    {
+      _remoteService = service;
     }
 
     public void PostMessage(object message)
@@ -113,9 +124,7 @@ namespace KiloVisualStudioExtension
         // if (event.type === "kilo-sessions.remote-status-changed") {
         if (evt is EventKiloSessionsRemoteStatusChanged ev)
         {
-          // this.remoteService?.updateFromEvent({ enabled: event.properties.enabled, connected: event.properties.connected })
-          _remoteService?.UpdateFromEvent(new { Enabled = ev.Properties.Enabled, Connected = ev.Properties.Connected });
-          // return
+          _remoteService?.UpdateFromEvent(new RemoteState { Enabled = ev.Properties.Enabled, Connected = ev.Properties.Connected });
           return;
         }
         
