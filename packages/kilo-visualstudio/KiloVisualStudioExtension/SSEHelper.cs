@@ -4,10 +4,10 @@ using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.ApiClient.Sse;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Utils;
-using KiloVisualStudioExtension.WebView.Generated;
-using KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
-using KiloVisualStudioExtension.WebView.Generated.Parts;
-using KiloVisualStudioExtension.WebView.Generated.Sessions;
+using KiloExtensionDTOs;
+using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.Parts;
+using KiloExtensionDTOs.Sessions;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Telemetry;
 using Microsoft.VisualStudio.Text.Editor;
@@ -19,10 +19,13 @@ using System.IO.Packaging;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.UI.Design;
+using Common;
 using static KiloVisualStudioExtension.Services.MessagePageFetcher;
 using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
-using WebViewMessage = KiloVisualStudioExtension.WebView.Generated.Sessions.Message;
+using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
 using KiloVisualStudioExtension.Utils;
+using KiloExtensionDTOs.Memory;
+using KiloExtensionDTOs.Connection;
 
 namespace KiloVisualStudioExtension
 {
@@ -181,7 +184,7 @@ namespace KiloVisualStudioExtension
           //       ? { type: "error", message: props.reason, reason: props.reason }
           //       : undefined
 
-          WebView.Generated.Memory.MemoryEventDetail detail = null;
+          KiloExtensionDTOs.Memory.MemoryEventDetail detail = null;
           var rawDetails = raw.Payload["properties"]?["detail"] ?? null;
           if (rawDetails != null)
           {
@@ -194,9 +197,9 @@ namespace KiloVisualStudioExtension
               var reason = raw.Payload["properties"]?["reason"]?.Value<string>() ?? null;
               if (reason != null)
               {
-                detail = new WebView.Generated.Memory.MemoryEventDetail
+                detail = new KiloExtensionDTOs.Memory.MemoryEventDetail
                 {
-                  Type = SkippedErrorSavedRecalled.Error,
+                  Type = SkippedErrorSavedRecalledEnum.Error,
                   Message = reason,
                   Reason = reason
                 };
@@ -219,7 +222,7 @@ namespace KiloVisualStudioExtension
               //   sessionID,
               //   detail,
               // })
-              PostMessage(new WebView.Generated.Memory.MemoryEventMessage { SessionID = target, Detail = detail });
+              PostMessage(new KiloExtensionDTOs.Memory.MemoryEventMessage { SessionID = target, Detail = detail });
             }
             // void this.memory.fetch(sessionID)
             
@@ -799,11 +802,16 @@ namespace KiloVisualStudioExtension
         }
       }
 
-      PostMessage(new PartUpdate
+      PostMessage(new PartUpdatedMessage
       {
         SessionID = sessionID,
         MessageID = messageID,
-        Part = new { id = partObj["id"], type = partObj["type"], messageID = partObj["messageID"], text = partObj["text"] }
+        Part = new KiloExtensionDTOs.Parts.TextPart { 
+          Id = partObj["id"], 
+          Type = partObj["type"], 
+          MessageID = partObj["messageID"], 
+          Text = partObj["text"] 
+        }
       });
     }
 
@@ -840,7 +848,7 @@ namespace KiloVisualStudioExtension
 
       PostMessage(new SessionCreatedMessage
       {
-        Session = new SessionInfo
+        Session = new KiloExtensionDTOs.Sessions.SessionInfo
         {
           Id = sessionID,
           ParentID = info.ParentID,
@@ -938,11 +946,10 @@ namespace KiloVisualStudioExtension
 
       if (detail != null)
       {
-        PostMessage(new
+        PostMessage(new MemoryEventMessage
         {
-          type = "memoryEvent",
-          sessionID = eventSessionID,
-          detail = detail
+          SessionID = eventSessionID,
+          Detail = detail
         });
       }
     }
@@ -967,7 +974,7 @@ namespace KiloVisualStudioExtension
         Next = status["next"]?.Type == JTokenType.Float || status["next"]?.Type == JTokenType.Integer ? (long?)status["next"].Value<long>() : null
       };
 
-      var sessionStatus = new WebView.Generated.ExtensionMessages.SessionStatusMessage
+      var sessionStatus = new KiloExtensionDTOs.ExtensionMessages.SessionStatusMessage
       {
         SessionID = sid,
         Status = MapSessionStatusEnum(statusType),
@@ -979,15 +986,15 @@ namespace KiloVisualStudioExtension
       PostMessage(sessionStatus);
     }
 
-    private WebView.Generated.Connection.SessionStatus MapSessionStatusEnum(string? type)
+    private KiloExtensionDTOs.Connection.SessionStatus MapSessionStatusEnum(string? type)
     {
       return type switch
       {
-        "idle" => WebView.Generated.Connection.SessionStatus.Idle,
-        "busy" => WebView.Generated.Connection.SessionStatus.Busy,
-        "retry" => WebView.Generated.Connection.SessionStatus.Retry,
-        "offline" => WebView.Generated.Connection.SessionStatus.Offline,
-        _ => WebView.Generated.Connection.SessionStatus.Idle
+        "idle" => KiloExtensionDTOs.Connection.SessionStatus.Idle,
+        "busy" => KiloExtensionDTOs.Connection.SessionStatus.Busy,
+        "retry" => KiloExtensionDTOs.Connection.SessionStatus.Retry,
+        "offline" => KiloExtensionDTOs.Connection.SessionStatus.Offline,
+        _ => KiloExtensionDTOs.Connection.SessionStatus.Idle
       };
     }
 
@@ -1006,7 +1013,7 @@ namespace KiloVisualStudioExtension
         return;
       }
 
-      PostMessage(new WebView.Generated.PartUpdate
+      PostMessage(new KiloExtensionDTOs.PartUpdate
       {
         SessionID = sid,
         MessageID = messageID,
@@ -1173,7 +1180,7 @@ namespace KiloVisualStudioExtension
 
       foreach (var sid in _sessionStatusMap.Keys.ToList())
       {
-        _sessionStatusMap[sid] = new SessionStatus { Type = "idle" };
+        _sessionStatusMap[sid] = new ApiClient.SessionStatus { Type = "idle" };
       }
 
       PostMessage(new { type = "server.instance.disposed", directory = dir });
@@ -1556,7 +1563,7 @@ namespace KiloVisualStudioExtension
       }
     }
 
-    private bool MatchesPendingFollowup(Session session)
+    private bool MatchesPendingFollowup(ApiClient.Session session)
     {
       return Followup.MatchesFollowup(_pendingFollowup, session.Directory, DateTimeOffset.Now.ToUnixTimeMilliseconds(), session.ParentID);
     }

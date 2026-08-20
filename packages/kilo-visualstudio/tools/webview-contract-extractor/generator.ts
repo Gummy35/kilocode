@@ -492,6 +492,12 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
       return { type: pascalCase(prop.type), isNullable: prop.optional || prop.nullable, originalType: prop.type }
     }
     if (typeDef.kind === 'union') {
+      // Skip union types with no members (indicates members couldn't be resolved from external imports)
+      const memberCount = Array.isArray(typeDef.unionMembers) ? typeDef.unionMembers.length : (typeDef.unionMembers ? Object.keys(typeDef.unionMembers).length : 0)
+      if (memberCount === 0) {
+        return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: prop.type }
+      }
+      
       // Check if all union members are string literals (enum-able)
       if (typeDef.unionMembers && typeDef.unionMembers.every(m => m.startsWith('"') || m.startsWith("'"))) {
         // This is a string literal union - use the type name as the enum name
@@ -591,8 +597,10 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
     if (csharpEquivalent) {
       return { type: csharpEquivalent, isNullable: prop.optional || prop.nullable, originalType: refName }
     }
+    console.log(`DEBUG has: ${refName} - has=${typeDefinitions.has(refName)}, keys=${Array.from(typeDefinitions.keys()).filter(k => k.includes('Memory')).join(', ')}`)
     if (typeDefinitions.has(refName)) {
       const typeDef = typeDefinitions.get(refName)!
+      console.log(`DEBUG: ${refName} found, kind=${typeDef.kind}, unionMembers=${JSON.stringify(typeDef.unionMembers)}`)
       // Check if the type is from node_modules with no properties
       const isNodeModules = typeDef.sourceFile.includes('node_modules')
       const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
@@ -604,7 +612,15 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
         return { type: pascalCase(refName), isNullable: prop.optional || prop.nullable, originalType: refName }
       }
       if (typeDef.kind === 'union') {
-        if (typeDef.unionMembers && typeDef.unionMembers.length > 0) {
+        // Skip union types with no members (indicates members couldn't be resolved from external imports)
+        const memberCount = Array.isArray(typeDef.unionMembers) ? typeDef.unionMembers.length : (typeDef.unionMembers ? Object.keys(typeDef.unionMembers).length : 0)
+        console.log(`DEBUG union: ${refName} - memberCount=${memberCount}, isArray=${Array.isArray(typeDef.unionMembers)}, unionMembers=${JSON.stringify(typeDef.unionMembers)}`)
+        if (memberCount === 0) {
+          console.log(`DEBUG: Returning object for ${refName}`)
+          return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
+        }
+        
+        if (typeDef.unionMembers && memberCount > 0) {
           const allLiterals = typeDef.unionMembers.every(m => 
             ['other', 'zero', 'one', 'two', 'few', 'many'].includes(m)
           )
@@ -1495,6 +1511,12 @@ console.log()
 console.log("Generating enums from union type aliases...")
 for (const [typeName, typeDef] of typeDefinitions) {
   if (typeDef.kind === 'union' && typeDef.unionMembers) {
+    // Skip union types with no members (indicates members couldn't be resolved from external imports)
+    if (typeDef.unionMembers.length === 0) {
+      console.log(`  Skipping ${typeName}: no union members (external types not resolved)`)
+      continue
+    }
+    
     // Check if all members are string literals (enum-able)
     const allLiterals = typeDef.unionMembers.every(m => 
       m.startsWith('"') || m.startsWith("'")
@@ -1916,6 +1938,11 @@ for (const typeName of generatedOrder) {
   
   // For type aliases and unions that are needed, generate appropriate types
   if (typeDef.kind === 'typeAlias' || typeDef.kind === 'union') {
+    // Skip union types with no members (indicates members couldn't be resolved from external imports)
+    if (typeDef.kind === 'union' && typeDef.unionMembers && typeDef.unionMembers.length === 0) {
+      continue
+    }
+    
     // Check if this is a string literal union (should be an enum)
     const isStringLiteralUnion = typeDef.kind === 'union' && 
       typeDef.unionMembers && 

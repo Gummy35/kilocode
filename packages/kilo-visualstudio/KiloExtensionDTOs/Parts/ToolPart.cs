@@ -27,7 +27,7 @@ public class ToolPart : BasePart
     public string Tool { get; set; }
     [JsonProperty("state")]
     // Original TypeScript type: ToolState
-    public ToolState State { get; set; }
+    public object State { get; set; }
     [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Metadata { get; set; }

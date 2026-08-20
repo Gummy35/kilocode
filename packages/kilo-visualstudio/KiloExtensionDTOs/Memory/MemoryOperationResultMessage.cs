@@ -36,7 +36,7 @@ public class MemoryOperationResultMessage
     public object? Status { get; set; }
     [JsonProperty("result", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: MemoryOperationResponse
-    public MemoryOperationResponse? Result { get; set; }
+    public object? Result { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Error { get; set; }

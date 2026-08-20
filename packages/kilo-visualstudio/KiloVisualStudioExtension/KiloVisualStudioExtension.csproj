@@ -47,6 +47,9 @@
       <VSIXSubPath>webview</VSIXSubPath>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KiloExtensionDTOs\KiloExtensionDTOs.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <VSCTCompile Include="KiloPackage.vsct">

@@ -5,7 +5,6 @@
 // import { retry } from "../services/cli-backend/retry"
 // import { getErrorMessage } from "../kilo-provider-utils"
 using KiloVisualStudioExtension.ApiClient;
-using KiloVisualStudioExtension.WebView.Generated.Memory;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -27,6 +26,14 @@ using MemoryRememberResponse = KiloVisualStudioExtension.ApiClient.Response48;
 using MemoryCorrectResponse = KiloVisualStudioExtension.ApiClient.Response49;
 using MemoryForgetResponse = KiloVisualStudioExtension.ApiClient.Response50;
 using MemoryPurgeResponse = KiloVisualStudioExtension.ApiClient.Response51;
+
+using MemoryRememberBody = KiloVisualStudioExtension.ApiClient.Body68;
+using MemoryCorrectBody = KiloVisualStudioExtension.ApiClient.Body69;
+using MemoryForgetBody = KiloVisualStudioExtension.ApiClient.Body70;
+using MemoryPurgeBody = KiloVisualStudioExtension.ApiClient.Body71;
+
+
+using KiloExtensionDTOs.Memory;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Memory
 {
@@ -757,7 +764,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
         {
           Operation = message.Operation.ToEnum(MemoryResultOperation.Auto),
           SessionID = message.SessionID,
-          Ok = "false",
+          Ok = false,
           Error = "Not connected to CLI backend",
         });
         return false;
@@ -772,7 +779,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
           {
             Operation = message.Operation.ToEnum(MemoryResultOperation.Auto),
             SessionID = message.SessionID,
-            Ok = "false",
+            Ok = false,
             Error = NO_PROJECT,
           });
           return false;
@@ -794,7 +801,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
         {
           Operation = message.Operation.ToEnum(MemoryResultOperation.Status),
           SessionID = message.SessionID,
-          Ok = "true",
+          Ok = true,
           Status = status,
           Result = data,
         };
@@ -822,7 +829,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
         System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed memory operation: {err.Message}");
         _input.Post(new MemoryOperationResultMessage
         {
-          Operation = message.Operation,
+          Operation = message.Operation.ToEnum(MemoryResultOperation.Auto),
           SessionID = message.SessionID,
           Ok = false,
           Error = "Memory operation failed",
@@ -880,7 +887,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     {
       var text = message.Text?.Trim();
       if (string.IsNullOrEmpty(text)) throw new Exception("Memory text is required");
-      return (await Retry(() => client.Memory_rememberAsync(directory, text, message.Key, message.File, message.Section, message.SessionID)).ConfigureAwait(false)).Data;
+      // TODO : missing workspace
+      return (await Retry(() => client.Memory_rememberAsync(
+         directory, 
+         "", 
+         new MemoryRememberBody
+         {
+           Text = text,
+           File = message.File.ToEnum(Body68File.Project_md),
+           Section = message.Section,
+           SessionID = message.SessionID,
+           Key = message.Key
+         }
+         )).ConfigureAwait(false));
     }
 
     //   private async correct(api: MemoryApi, directory: string, message: KiloProviderMemoryMessage) {
@@ -902,7 +921,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     {
       var text = message.Text?.Trim();
       if (string.IsNullOrEmpty(text)) throw new Exception("Correction text is required");
-      return (await Retry(() => client.Memory_correctAsync(directory, text, message.Key, message.SessionID)).ConfigureAwait(false)).Data;
+      return (await Retry(() => client.Memory_correctAsync(
+        directory, 
+        "",
+        new MemoryCorrectBody
+        {
+          Text = text,
+          Key = message.Key,
+          SessionID = message.SessionID
+        })).ConfigureAwait(false));
     }
 
     //   private async forget(api: MemoryApi, directory: string, message: KiloProviderMemoryMessage) {
@@ -914,7 +941,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     {
       var query = message.Query?.Trim();
       if (string.IsNullOrEmpty(query)) throw new Exception("Forget query is required");
-      return (await Retry(() => client.Memory_forgetAsync(directory, query, message.SessionID)).ConfigureAwait(false)).Data;
+      return (await Retry(() => client.Memory_forgetAsync(
+        directory, 
+        "",
+        
+        new MemoryForgetBody
+        {
+          Query = query,
+          SessionID = message.SessionID
+        }
+        )).ConfigureAwait(false));
     }
 
     //   private async inspect(api: MemoryApi, directory: string) {
@@ -926,10 +962,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     private async Task<IMemoryResponseBase> Inspect(KiloApiClient client, string directory)
     {
       var statusResult = await Retry(() => client.Memory_statusAsync(directory, ""));
-      if (!statusResult.Data.State.Enabled) throw new Exception("Memory is disabled. Run /memory on first.");
+      if (!statusResult.State.Enabled) throw new Exception("Memory is disabled. Run /memory on first.");
       // TODO: Reveal file in Visual Studio
-      System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{statusResult.Data.Root}\"");
-      return statusResult.Data;
+      System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{statusResult.Root}\"");
+      return statusResult;
     }
 
     //   private async purge(api: MemoryApi, directory: string, message: KiloProviderMemoryMessage) {
@@ -939,7 +975,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     private async Task<IMemoryResponseBase> Purge(KiloApiClient client, string directory, KiloProviderMemoryMessage message)
     {
       if (message.Confirm != true) throw new Exception("Memory purge requires confirmation");
-      return (await Retry(() => client.Memory_purgeAsync(directory, true)).ConfigureAwait(false)).Data;
+      return (await Retry(() => client.Memory_purgeAsync(directory, "", new MemoryPurgeBody { Confirm = true })).ConfigureAwait(false));
     }
 
     //   private async auto(api: MemoryApi, directory: string, message: KiloProviderMemoryMessage) {
@@ -951,10 +987,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     //   }
     private async Task<IMemoryResponseBase> Auto(KiloApiClient client, string directory, KiloProviderMemoryMessage message)
     {
-      if (message.Mode == "status") return (await Retry(() => client.Memory_statusAsync(directory, "")).ConfigureAwait(false)).Data;
+      if (message.Mode == "status") return (await Retry(() => client.Memory_statusAsync(directory, "")).ConfigureAwait(false));
       if (message.Mode == "on" || message.Mode == "off")
       {
-        return (await Retry(() => client.Memory_configureAsync(directory, "", new Body67 { AutoConsolidate = message.Mode == "on" })).ConfigureAwait(false)).Data;
+        return (await Retry(() => client.Memory_configureAsync(directory, "", new Body67 { AutoConsolidate = message.Mode == "on" })).ConfigureAwait(false));
       }
       throw new Exception("Auto-save mode is required");
     }

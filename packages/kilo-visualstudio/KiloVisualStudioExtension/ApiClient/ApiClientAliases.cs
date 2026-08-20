@@ -48,6 +48,23 @@ namespace KiloVisualStudioExtension.ApiClient
   ///   using MemoryForgetResponse = KiloVisualStudioExtension.ApiClient.Response50;
   ///   using MemoryPurgeResponse = KiloVisualStudioExtension.ApiClient.Response51;
   /// 
+  /// // Memory operations
+  /// using MemoryRememberBody = KiloVisualStudioExtension.ApiClient.Body68;
+  /// using MemoryCorrectBody = KiloVisualStudioExtension.ApiClient.Body69;
+  /// using MemoryForgetBody = KiloVisualStudioExtension.ApiClient.Body70;
+  /// using MemoryPurgeBody = KiloVisualStudioExtension.ApiClient.Body71;
+  /// 
+  /// // Session operations
+  /// using SessionCreateBody = KiloVisualStudioExtension.ApiClient.Body72;
+  /// using SessionPromptBody = KiloVisualStudioExtension.ApiClient.Body73;
+  /// 
+  /// // Integration operations
+  /// using IntegrationConnectKeyBody = KiloVisualStudioExtension.ApiClient.Body74;
+  /// using IntegrationConnectOAuthBody = KiloVisualStudioExtension.ApiClient.Body75;
+  /// using IntegrationAttemptCompleteBody = KiloVisualStudioExtension.ApiClient.Body76;
+  /// using CredentialUpdateBody = KiloVisualStudioExtension.ApiClient.Body77;
+  /// 
+  /// 
   /// Then use the meaningful names in your code:
   /// 
   ///   // Creating a session
