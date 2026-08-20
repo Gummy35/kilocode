@@ -222,6 +222,7 @@ namespace KiloVisualStudioExtension
               PostMessage(new WebView.Generated.Memory.MemoryEventMessage { SessionID = target, Detail = detail });
             }
             // void this.memory.fetch(sessionID)
+            
             _memory.Fetch(target);
           }
           // return

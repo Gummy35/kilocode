@@ -39,6 +39,33 @@ namespace KiloVisualStudioExtension.ApiClient
   public partial class SubtaskPartInput : Parts { }
 
 
+  // Interface for all memory API responses
+  public interface IMemoryResponseBase
+  {
+    string? Root { get; }
+  }
 
+  // Response classes inheriting from IMemoryResponseBase
+  public partial class Response42 : IMemoryResponseBase { }
+  public partial class Response43 : IMemoryResponseBase { }
+  public partial class Response44 : IMemoryResponseBase { }
+  public partial class Response45 : IMemoryResponseBase { }
+  public partial class Response46 : IMemoryResponseBase { }
+  public partial class Response47 : IMemoryResponseBase { }
+  public partial class Response48 : IMemoryResponseBase {
+    [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Root { get; set; }
+  }
+  public partial class Response49 : IMemoryResponseBase
+  {
+    [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Root { get; set; }
+  }
+  public partial class Response50 : IMemoryResponseBase
+  {
+    [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Root { get; set; }
+  }
+  public partial class Response51 : IMemoryResponseBase { }
 
 }

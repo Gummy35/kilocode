@@ -35,6 +35,18 @@ namespace KiloVisualStudioExtension.ApiClient
   ///   using RevertRequest = KiloVisualStudioExtension.ApiClient.Body27;
   ///   using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
   ///   using SessionUpdateRequest = KiloVisualStudioExtension.ApiClient.Body19;
+  ///   
+  /// // Memory response type aliases
+  ///   using MemoryStatusResponse = KiloVisualStudioExtension.ApiClient.Response42;
+  ///   using MemoryShowResponse = KiloVisualStudioExtension.ApiClient.Response43;
+  ///   using MemoryEnableResponse = KiloVisualStudioExtension.ApiClient.Response44;
+  ///   using MemoryDisableResponse = KiloVisualStudioExtension.ApiClient.Response45;
+  ///   using MemoryConfigureResponse = KiloVisualStudioExtension.ApiClient.Response46;
+  ///   using MemoryRebuildResponse = KiloVisualStudioExtension.ApiClient.Response47;
+  ///   using MemoryRememberResponse = KiloVisualStudioExtension.ApiClient.Response48;
+  ///   using MemoryCorrectResponse = KiloVisualStudioExtension.ApiClient.Response49;
+  ///   using MemoryForgetResponse = KiloVisualStudioExtension.ApiClient.Response50;
+  ///   using MemoryPurgeResponse = KiloVisualStudioExtension.ApiClient.Response51;
   /// 
   /// Then use the meaningful names in your code:
   /// 

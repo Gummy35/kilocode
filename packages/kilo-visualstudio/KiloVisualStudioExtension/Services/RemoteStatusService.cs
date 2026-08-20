@@ -396,9 +396,9 @@ namespace KiloVisualStudioExtension.Services
     /// </summary>
     private class Unsubscriber : IDisposable
     {
-      private readonly Action _dispose;
+      private readonly System.Action _dispose;
 
-      public Unsubscriber(Action dispose)
+      public Unsubscriber(System.Action dispose)
       {
         _dispose = dispose;
       }

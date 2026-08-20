@@ -29,6 +29,11 @@ namespace KiloVisualStudioExtension
         /// </summary>
         public KiloWebViewControl? WebView => _webView;
 
+        public static KiloToolWindow Instance
+        {
+          get;set;
+        }
+
         /// <summary>
         /// Initializes a new instance of the KiloToolWindow.
         /// Sets up the WebView2 control and begins asynchronous initialization.
@@ -41,6 +46,7 @@ namespace KiloVisualStudioExtension
 
             // Fire-and-forget initialization - safe because WebView is created synchronously
             _ = InitializeWebViewAsync();
+            Instance = this;
         }
 
         /// <summary>
