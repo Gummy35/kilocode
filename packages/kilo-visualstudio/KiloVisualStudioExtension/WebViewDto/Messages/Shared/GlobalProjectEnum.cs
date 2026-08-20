@@ -12,14 +12,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: UnifiedSplit
-/// Generated from union type
+/// Enum: GlobalProjectEnum
+/// Generated from inline string literal union
+/// Members: global, project
+/// Used by: InstallMarketplaceItemOptions
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum UnifiedSplit
+public enum GlobalProjectEnum
 {
-    [JsonProperty("unified")]
-    Unified,
-    [JsonProperty("split")]
-    Split
+    [JsonProperty("global")]
+    Global,
+    [JsonProperty("project")]
+    Project
 }

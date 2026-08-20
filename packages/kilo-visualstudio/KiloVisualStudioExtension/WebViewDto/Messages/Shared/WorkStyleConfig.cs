@@ -21,7 +21,7 @@ public class WorkStyleConfig
     // Original TypeScript type: undefined | __type
     public object? Permission { get; set; }
     [JsonProperty("terminal_command_display", NullValueHandling = NullValueHandling.Ignore)]
-    public ExpandedCollapsed? Terminal_command_display { get; set; }
+    public ExpandedCollapsedEnum? Terminal_command_display { get; set; }
     [JsonProperty("auto_collapse_reasoning", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public bool? Auto_collapse_reasoning { get; set; }

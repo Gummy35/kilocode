@@ -12,18 +12,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: AddUpdateDeleteMove
-/// Generated from union type
+/// Enum: LocalRemoteEnum
+/// Generated from inline string literal union
+/// Members: local, remote
+/// Used by: McpConfig
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum AddUpdateDeleteMove
+public enum LocalRemoteEnum
 {
-    [JsonProperty("add")]
-    Add,
-    [JsonProperty("update")]
-    Update,
-    [JsonProperty("delete")]
-    Delete,
-    [JsonProperty("move")]
-    Move
+    [JsonProperty("local")]
+    Local,
+    [JsonProperty("remote")]
+    Remote
 }

@@ -47,7 +47,7 @@ public class AgentManagerStateMessage
     // Original TypeScript type: undefined | false | true
     public bool? SidebarCollapsed { get; set; }
     [JsonProperty("reviewDiffStyle", NullValueHandling = NullValueHandling.Ignore)]
-    public UnifiedSplit? ReviewDiffStyle { get; set; }
+    public UnifiedSplitEnum? ReviewDiffStyle { get; set; }
     [JsonProperty("reviewMarkdownRender", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public bool? ReviewMarkdownRender { get; set; }

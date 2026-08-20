@@ -24,7 +24,7 @@ public class PermissionPatchFile
     // Original TypeScript type: undefined | string
     public string? RelativePath { get; set; }
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-    public AddUpdateDeleteMove? Type { get; set; }
+    public AddUpdateDeleteMoveEnum? Type { get; set; }
     [JsonProperty("patch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Patch { get; set; }

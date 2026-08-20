@@ -12,16 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: PrimarySubagentAll
-/// Generated from union type
+/// Enum: GhmissingGhauthFetchfailedEnum
+/// Generated from inline string literal union
+/// Members: fetch_failed, gh_auth, gh_missing
+/// Used by: AgentManagerPRStatusMessage
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum PrimarySubagentAll
+public enum GhmissingGhauthFetchfailedEnum
 {
-    [JsonProperty("primary")]
-    Primary,
-    [JsonProperty("subagent")]
-    Subagent,
-    [JsonProperty("all")]
-    All
+    [JsonProperty("fetch_failed")]
+    Fetch_failed,
+    [JsonProperty("gh_auth")]
+    Gh_auth,
+    [JsonProperty("gh_missing")]
+    Gh_missing
 }

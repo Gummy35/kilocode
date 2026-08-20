@@ -30,7 +30,7 @@ public class IndexingConfig
     // Original TypeScript type: undefined | null | number
     public double? Dimension { get; set; }
     [JsonProperty("vectorStore", NullValueHandling = NullValueHandling.Ignore)]
-    public LancedbQdrant? VectorStore { get; set; }
+    public LancedbQdrantEnum? VectorStore { get; set; }
     [JsonProperty("kilo", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Kilo { get; set; }

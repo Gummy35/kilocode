@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 public class McpConfig
 {
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-    public LocalRemote? Type { get; set; }
+    public LocalRemoteEnum? Type { get; set; }
     [JsonProperty("command", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string | Array
     public object? Command { get; set; }

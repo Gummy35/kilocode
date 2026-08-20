@@ -23,7 +23,7 @@ public class SlashCommandInfo
     // Original TypeScript type: undefined | string
     public string? Description { get; set; }
     [JsonProperty("source", NullValueHandling = NullValueHandling.Ignore)]
-    public McpSkillCommand? Source { get; set; }
+    public McpSkillCommandEnum? Source { get; set; }
     [JsonProperty("hints")]
     public List<string> Hints { get; set; }
 }

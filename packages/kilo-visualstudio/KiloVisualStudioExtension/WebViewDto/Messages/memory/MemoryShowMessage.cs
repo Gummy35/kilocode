@@ -27,5 +27,5 @@ public class MemoryShowMessage
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
-    public StatusShow? Mode { get; set; }
+    public StatusShowEnum? Mode { get; set; }
 }

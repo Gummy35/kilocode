@@ -12,14 +12,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: LancedbQdrant
-/// Generated from union type
+/// Enum: AllowDenyEnum
+/// Generated from inline string literal union
+/// Members: allow, deny
+/// Used by: SandboxConfig
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum LancedbQdrant
+public enum AllowDenyEnum
 {
-    [JsonProperty("lancedb")]
-    Lancedb,
-    [JsonProperty("qdrant")]
-    Qdrant
+    [JsonProperty("allow")]
+    Allow,
+    [JsonProperty("deny")]
+    Deny
 }

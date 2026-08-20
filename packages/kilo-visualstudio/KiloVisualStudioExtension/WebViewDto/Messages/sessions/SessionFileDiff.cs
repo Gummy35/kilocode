@@ -28,5 +28,5 @@ public class SessionFileDiff
     [JsonProperty("deletions")]
     public double Deletions { get; set; }
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
-    public AddedDeletedModified? Status { get; set; }
+    public AddedDeletedModifiedEnum? Status { get; set; }
 }

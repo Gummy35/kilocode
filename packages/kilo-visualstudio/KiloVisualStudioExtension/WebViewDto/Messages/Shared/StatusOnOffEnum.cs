@@ -12,14 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: StatusShow
-/// Generated from union type
+/// Enum: StatusOnOffEnum
+/// Generated from inline string literal union
+/// Members: off, on, status
+/// Used by: MemoryOperationMessage
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum StatusShow
+public enum StatusOnOffEnum
 {
+    [JsonProperty("off")]
+    Off,
+    [JsonProperty("on")]
+    On,
     [JsonProperty("status")]
-    Status,
-    [JsonProperty("show")]
-    Show
+    Status
 }

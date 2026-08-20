@@ -29,7 +29,7 @@ public class MessagesLoadedMessage
     [JsonProperty("messages")]
     public List<Message> Messages { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
-    public ReplacePrependReconcile? Mode { get; set; }
+    public ReplacePrependReconcileEnum? Mode { get; set; }
     [JsonProperty("cursor", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Cursor { get; set; }

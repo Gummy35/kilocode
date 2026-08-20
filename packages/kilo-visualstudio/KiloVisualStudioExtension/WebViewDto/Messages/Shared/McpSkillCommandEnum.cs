@@ -12,14 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: LocalRemote
-/// Generated from union type
+/// Enum: McpSkillCommandEnum
+/// Generated from inline string literal union
+/// Members: command, mcp, skill
+/// Used by: SlashCommandInfo
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum LocalRemote
+public enum McpSkillCommandEnum
 {
-    [JsonProperty("local")]
-    Local,
-    [JsonProperty("remote")]
-    Remote
+    [JsonProperty("command")]
+    Command,
+    [JsonProperty("mcp")]
+    Mcp,
+    [JsonProperty("skill")]
+    Skill
 }

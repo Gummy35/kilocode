@@ -12,18 +12,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: SkippedErrorSavedRecalled
-/// Generated from union type
+/// Enum: LancedbQdrantEnum
+/// Generated from inline string literal union
+/// Members: lancedb, qdrant
+/// Used by: IndexingConfig
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum SkippedErrorSavedRecalled
+public enum LancedbQdrantEnum
 {
-    [JsonProperty("skipped")]
-    Skipped,
-    [JsonProperty("error")]
-    Error,
-    [JsonProperty("saved")]
-    Saved,
-    [JsonProperty("recalled")]
-    Recalled
+    [JsonProperty("lancedb")]
+    Lancedb,
+    [JsonProperty("qdrant")]
+    Qdrant
 }

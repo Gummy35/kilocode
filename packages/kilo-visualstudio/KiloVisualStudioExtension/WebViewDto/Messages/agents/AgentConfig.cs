@@ -30,7 +30,7 @@ public class AgentConfig
     // Original TypeScript type: undefined | null | string
     public string? Description { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
-    public PrimarySubagentAll? Mode { get; set; }
+    public PrimarySubagentAllEnum? Mode { get; set; }
     [JsonProperty("hidden", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public bool? Hidden { get; set; }

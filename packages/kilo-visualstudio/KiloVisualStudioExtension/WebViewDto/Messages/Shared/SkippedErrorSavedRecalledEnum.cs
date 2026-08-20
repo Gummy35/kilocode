@@ -12,14 +12,20 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: AllowDeny
-/// Generated from union type
+/// Enum: SkippedErrorSavedRecalledEnum
+/// Generated from inline string literal union
+/// Members: error, recalled, saved, skipped
+/// Used by: MemoryEventDetail
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum AllowDeny
+public enum SkippedErrorSavedRecalledEnum
 {
-    [JsonProperty("allow")]
-    Allow,
-    [JsonProperty("deny")]
-    Deny
+    [JsonProperty("error")]
+    Error,
+    [JsonProperty("recalled")]
+    Recalled,
+    [JsonProperty("saved")]
+    Saved,
+    [JsonProperty("skipped")]
+    Skipped
 }

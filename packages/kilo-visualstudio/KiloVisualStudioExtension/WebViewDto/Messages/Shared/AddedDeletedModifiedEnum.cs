@@ -12,16 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: ReplacePrependReconcile
-/// Generated from union type
+/// Enum: AddedDeletedModifiedEnum
+/// Generated from inline string literal union
+/// Members: added, deleted, modified
+/// Used by: WorktreeFileDiff, SessionFileDiff
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum ReplacePrependReconcile
+public enum AddedDeletedModifiedEnum
 {
-    [JsonProperty("replace")]
-    Replace,
-    [JsonProperty("prepend")]
-    Prepend,
-    [JsonProperty("reconcile")]
-    Reconcile
+    [JsonProperty("added")]
+    Added,
+    [JsonProperty("deleted")]
+    Deleted,
+    [JsonProperty("modified")]
+    Modified
 }

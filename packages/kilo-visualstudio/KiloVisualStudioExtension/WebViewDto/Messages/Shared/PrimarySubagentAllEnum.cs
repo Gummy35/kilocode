@@ -12,16 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: DisabledManualAuto
-/// Generated from union type
+/// Enum: PrimarySubagentAllEnum
+/// Generated from inline string literal union
+/// Members: all, primary, subagent
+/// Used by: AgentConfig
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum DisabledManualAuto
+public enum PrimarySubagentAllEnum
 {
-    [JsonProperty("disabled")]
-    Disabled,
-    [JsonProperty("manual")]
-    Manual,
-    [JsonProperty("auto")]
-    Auto
+    [JsonProperty("all")]
+    All,
+    [JsonProperty("primary")]
+    Primary,
+    [JsonProperty("subagent")]
+    Subagent
 }

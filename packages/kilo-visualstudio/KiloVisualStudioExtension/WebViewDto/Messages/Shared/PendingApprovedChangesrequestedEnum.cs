@@ -12,16 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: PendingApprovedChangesrequested
-/// Generated from union type
+/// Enum: PendingApprovedChangesrequestedEnum
+/// Generated from inline string literal union
+/// Members: approved, changes_requested, pending
+/// Used by: PRStatus
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum PendingApprovedChangesrequested
+public enum PendingApprovedChangesrequestedEnum
 {
-    [JsonProperty("pending")]
-    Pending,
     [JsonProperty("approved")]
     Approved,
     [JsonProperty("changes_requested")]
-    Changes_requested
+    Changes_requested,
+    [JsonProperty("pending")]
+    Pending
 }

@@ -31,7 +31,7 @@ public class WorktreeFileDiff
     [JsonProperty("deletions")]
     public double Deletions { get; set; }
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
-    public AddedDeletedModified? Status { get; set; }
+    public AddedDeletedModifiedEnum? Status { get; set; }
     [JsonProperty("tracked", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public bool? Tracked { get; set; }

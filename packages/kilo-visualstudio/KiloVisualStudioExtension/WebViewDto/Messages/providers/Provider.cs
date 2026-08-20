@@ -25,7 +25,7 @@ public class Provider
     // Original TypeScript type: __type
     public object Models { get; set; }
     [JsonProperty("source", NullValueHandling = NullValueHandling.Ignore)]
-    public EnvConfigCustomApi? Source { get; set; }
+    public EnvConfigCustomApiEnum? Source { get; set; }
     [JsonProperty("env", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array
     public object? Env { get; set; }

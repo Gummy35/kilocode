@@ -12,16 +12,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: GhmissingGhauthFetchfailed
-/// Generated from union type
+/// Enum: ExpandedCollapsedEnum
+/// Generated from inline string literal union
+/// Members: collapsed, expanded
+/// Used by: WorkStyleConfig
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum GhmissingGhauthFetchfailed
+public enum ExpandedCollapsedEnum
 {
-    [JsonProperty("gh_missing")]
-    Gh_missing,
-    [JsonProperty("gh_auth")]
-    Gh_auth,
-    [JsonProperty("fetch_failed")]
-    Fetch_failed
+    [JsonProperty("collapsed")]
+    Collapsed,
+    [JsonProperty("expanded")]
+    Expanded
 }

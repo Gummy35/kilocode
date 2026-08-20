@@ -12,18 +12,20 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: EnvConfigCustomApi
-/// Generated from union type
+/// Enum: AddUpdateDeleteMoveEnum
+/// Generated from inline string literal union
+/// Members: add, delete, move, update
+/// Used by: PermissionPatchFile
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum EnvConfigCustomApi
+public enum AddUpdateDeleteMoveEnum
 {
-    [JsonProperty("env")]
-    Env,
-    [JsonProperty("config")]
-    Config,
-    [JsonProperty("custom")]
-    Custom,
-    [JsonProperty("api")]
-    Api
+    [JsonProperty("add")]
+    Add,
+    [JsonProperty("delete")]
+    Delete,
+    [JsonProperty("move")]
+    Move,
+    [JsonProperty("update")]
+    Update
 }

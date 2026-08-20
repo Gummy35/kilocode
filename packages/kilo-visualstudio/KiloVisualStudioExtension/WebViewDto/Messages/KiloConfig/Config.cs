@@ -78,7 +78,7 @@ public class Config
     // Original TypeScript type: undefined | false | true
     public bool? Hide_prompt_training_models { get; set; }
     [JsonProperty("share", NullValueHandling = NullValueHandling.Ignore)]
-    public DisabledManualAuto? Share { get; set; }
+    public DisabledManualAutoEnum? Share { get; set; }
     [JsonProperty("username", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Username { get; set; }

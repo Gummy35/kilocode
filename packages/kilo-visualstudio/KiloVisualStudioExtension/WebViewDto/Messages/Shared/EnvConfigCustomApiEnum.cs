@@ -12,16 +12,20 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: StatusOnOff
-/// Generated from union type
+/// Enum: EnvConfigCustomApiEnum
+/// Generated from inline string literal union
+/// Members: api, config, custom, env
+/// Used by: Provider
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum StatusOnOff
+public enum EnvConfigCustomApiEnum
 {
-    [JsonProperty("status")]
-    Status,
-    [JsonProperty("on")]
-    On,
-    [JsonProperty("off")]
-    Off
+    [JsonProperty("api")]
+    Api,
+    [JsonProperty("config")]
+    Config,
+    [JsonProperty("custom")]
+    Custom,
+    [JsonProperty("env")]
+    Env
 }

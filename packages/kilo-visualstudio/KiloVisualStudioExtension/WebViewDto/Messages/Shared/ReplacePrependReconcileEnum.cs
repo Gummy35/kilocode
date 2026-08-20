@@ -12,16 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: McpSkillCommand
-/// Generated from union type
+/// Enum: ReplacePrependReconcileEnum
+/// Generated from inline string literal union
+/// Members: prepend, reconcile, replace
+/// Used by: MessagesLoadedMessage
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum McpSkillCommand
+public enum ReplacePrependReconcileEnum
 {
-    [JsonProperty("mcp")]
-    Mcp,
-    [JsonProperty("skill")]
-    Skill,
-    [JsonProperty("command")]
-    Command
+    [JsonProperty("prepend")]
+    Prepend,
+    [JsonProperty("reconcile")]
+    Reconcile,
+    [JsonProperty("replace")]
+    Replace
 }

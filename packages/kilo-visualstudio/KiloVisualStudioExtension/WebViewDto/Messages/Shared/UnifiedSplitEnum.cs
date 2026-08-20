@@ -12,16 +12,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: AddedDeletedModified
-/// Generated from union type
+/// Enum: UnifiedSplitEnum
+/// Generated from inline string literal union
+/// Members: split, unified
+/// Used by: AgentManagerStateMessage
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum AddedDeletedModified
+public enum UnifiedSplitEnum
 {
-    [JsonProperty("added")]
-    Added,
-    [JsonProperty("deleted")]
-    Deleted,
-    [JsonProperty("modified")]
-    Modified
+    [JsonProperty("split")]
+    Split,
+    [JsonProperty("unified")]
+    Unified
 }

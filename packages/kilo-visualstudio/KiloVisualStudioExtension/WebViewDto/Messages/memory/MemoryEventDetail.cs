@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 public class MemoryEventDetail
 {
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-    public SkippedErrorSavedRecalled? Type { get; set; }
+    public SkippedErrorSavedRecalledEnum? Type { get; set; }
     [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Message { get; set; }

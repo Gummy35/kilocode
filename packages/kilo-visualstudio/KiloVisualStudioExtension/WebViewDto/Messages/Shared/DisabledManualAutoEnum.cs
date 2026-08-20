@@ -12,14 +12,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: GlobalProject
-/// Generated from union type
+/// Enum: DisabledManualAutoEnum
+/// Generated from inline string literal union
+/// Members: auto, disabled, manual
+/// Used by: Config
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum GlobalProject
+public enum DisabledManualAutoEnum
 {
-    [JsonProperty("global")]
-    Global,
-    [JsonProperty("project")]
-    Project
+    [JsonProperty("auto")]
+    Auto,
+    [JsonProperty("disabled")]
+    Disabled,
+    [JsonProperty("manual")]
+    Manual
 }

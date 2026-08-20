@@ -21,7 +21,7 @@ public class SandboxConfig
     // Original TypeScript type: undefined | false | true
     public bool? Enabled { get; set; }
     [JsonProperty("network", NullValueHandling = NullValueHandling.Ignore)]
-    public AllowDeny? Network { get; set; }
+    public AllowDenyEnum? Network { get; set; }
     [JsonProperty("writable_paths", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array
     public object? Writable_paths { get; set; }

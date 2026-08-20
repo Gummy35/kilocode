@@ -124,27 +124,13 @@ function pascalCase(name: string): string {
  * Global state for code generation
  */
 let contract: WebViewContract  // Parsed contract data
-let typeDefinitions: Map<string, Map<string, TypeDefinition>  // Map of type name to definition
+let typeDefinitions: Map<string, TypeDefinition>  // Map of type name to definition
 let generatedTypes: Set<string>  // Set of already generated type names
 let neededTypes: Set<string>  // Set of types needed by messages
 let collectingTypes: Set<string>  // Track types being collected (prevent infinite recursion)
 let existingApiTypes: Set<string>  // Set of type names that exist in ApiClient
-let inlineEnums: Map<string, { members: string[]; usageCount: number; usedBy: string[] }>  // Map of enum signature to definition
-let generatedInlineEnums: Set<string>  // Set of already generated inline enum signatures
-
-/**
- * Convert a string to PascalCase
- * - Handles kebab-case: "agent-manager" → "AgentManager"
- * - Sanitizes invalid C# characters
- * - Ensures valid identifier (returns "Value" if result would be empty)
- */
-function pascalCase(name: string): string {
-  if (!name) return name
-  const converted = name.replace(/-([a-z])/g, (match) => match.charAt(1).toUpperCase())
-  const sanitized = converted.replace(/[^a-zA-Z0-9_]/g, '')
-  if (!sanitized) return "Value"
-  return sanitized.charAt(0).toUpperCase() + sanitized.slice(1)
-}
+let inlineEnumRegistry: Map<string, { enumName: string; usageCount: number; usedBy: string[] }>  // Map of enum signature to definition
+let generatedInlineEnumSignatures: Set<string>  // Set of already generated inline enum signatures
 
 /**
  * Check if a type name is a primitive TypeScript type
@@ -295,7 +281,7 @@ function findCommonBaseClass(typeNames: string[]): string | null {
 
 /**
  * Generate an enum name from literal values
- * Example: ["a", "b", "c"] → "ABC"
+ * Example: ["a", "b", "c"] → "ABCEnum"
  */
 function generateEnumName(literalValues: string[]): string {
   const baseName = literalValues.map(v => {
@@ -303,7 +289,18 @@ function generateEnumName(literalValues: string[]): string {
     return pascalCase(value)
   }).join('')
   const sanitized = baseName.replace(/[^a-zA-Z0-9]/g, '')
-  return sanitized || 'EnumValue'
+  return (sanitized || 'EnumValue') + 'Enum'
+}
+
+/**
+ * Generate a signature from enum members for deduplication
+ * Example: ["error", "ready", "disabled"] → "disabled,error,ready"
+ */
+function generateInlineEnumSignature(members: string[]): string {
+  return members
+    .map(m => isStringLiteral(m) ? getStringLiteralValue(m) : m)
+    .sort()
+    .join(',')
 }
 
 /**
@@ -318,11 +315,63 @@ function enumExistsWithSameMembers(enumName: string, members: string[]): boolean
 }
 
 /**
+ * Register an inline enum discovered in a property
+ * Returns the enum name to use for this property
+ */
+function registerInlineEnum(members: string[], usedBy: string): string {
+  const signature = generateInlineEnumSignature(members)
+  
+  if (inlineEnumRegistry.has(signature)) {
+    const existing = inlineEnumRegistry.get(signature)!
+    existing.usageCount++
+    if (!existing.usedBy.includes(usedBy)) {
+      existing.usedBy.push(usedBy)
+    }
+    return existing.enumName
+  }
+  
+  const enumName = generateEnumName(members)
+  inlineEnumRegistry.set(signature, {
+    enumName,
+    usageCount: 1,
+    usedBy: [usedBy]
+  })
+  
+  return enumName
+}
+
+/**
+ * Get or create inline enum from members
+ */
+function getOrCreateInlineEnum(members: string[], usedBy: string): { enumName: string; isNew: boolean } {
+  const signature = generateInlineEnumSignature(members)
+  
+  if (generatedInlineEnumSignatures.has(signature)) {
+    const existing = inlineEnumRegistry.get(signature)!
+    existing.usageCount++
+    if (!existing.usedBy.includes(usedBy)) {
+      existing.usedBy.push(usedBy)
+    }
+    return { enumName: existing.enumName, isNew: false }
+  }
+  
+  const enumName = generateEnumName(members)
+  inlineEnumRegistry.set(signature, {
+    enumName,
+    usageCount: 1,
+    usedBy: [usedBy]
+  })
+  generatedInlineEnumSignatures.add(signature)
+  
+  return { enumName, isNew: true }
+}
+
+/**
  * Try to generate an enum from a union type with string literal members
  * Creates the enum file immediately and returns the enum type name
  * Returns null if the union cannot be converted to an enum
  */
-function tryGenerateUnionEnum(elementType: string, prop: PropertyDefinition): { type: string, isNullable: boolean } | null {
+function tryGenerateUnionEnum(elementType: string, prop: PropertyDefinition, typeName: string): { type: string, isNullable: boolean } | null {
   const unionParts = parseUnionMembers(elementType)
   const nonNullParts = unionParts.filter(p => p !== 'undefined' && p !== 'null')
   
@@ -332,9 +381,9 @@ function tryGenerateUnionEnum(elementType: string, prop: PropertyDefinition): { 
   if (!allLiterals) return null
   
   const literalValues = nonNullParts.map(p => getStringLiteralValue(p))
-  const enumName = generateEnumName(literalValues)
+  const { enumName, isNew } = getOrCreateInlineEnum(literalValues, typeName)
   
-  if (enumExistsWithSameMembers(enumName, literalValues)) {
+  if (!isNew) {
     return { type: enumName, isNullable: unionParts.some(p => p === 'undefined' || p === 'null') }
   }
   
@@ -356,7 +405,8 @@ using Newtonsoft.Json.Converters;
 
 /// <summary>
 /// Enum: ${enumName}
-/// Generated from union type
+/// Generated from inline string literal union
+/// Members: ${literalValues.join(', ')}
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ${enumName}
@@ -367,7 +417,7 @@ ${enumDef.members.map((m, i) => `    [JsonProperty("${m}")]\n    ${pascalCase(m)
   const enumTargetDir = getDirectoryForFolder('Shared')
   const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
   fs.writeFileSync(enumFilePath, enumCode)
-  console.log(`  Generated enum: ${enumName}`)
+  console.log(`  Generated inline enum: ${enumName} (${literalValues.join(', ')})`)
   
   return { type: enumName, isNullable: unionParts.some(p => p === 'undefined' || p === 'null') }
 }
@@ -482,7 +532,7 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
       if (nonNullParts.length > 1) {
         const allLiterals = nonNullParts.every(p => isStringLiteral(p))
         if (allLiterals) {
-          const enumResult = tryGenerateUnionEnum(prop.elementType, prop)
+          const enumResult = tryGenerateUnionEnum(prop.elementType, prop, prop.typeRef?.name || 'unknown')
           if (enumResult) return enumResult
         }
         
@@ -1244,6 +1294,8 @@ neededTypes = new Set()
 generatedTypes = new Set()
 collectingTypes = new Set()
 generatedEnums = new Map()
+inlineEnumRegistry = new Map()
+generatedInlineEnumSignatures = new Set()
 
 console.log(`Contract version: ${contract.schemaVersion}`)
 console.log(`Total types in contract: ${contract.types.length}`)
@@ -1311,6 +1363,34 @@ console.log()
 console.log()
 console.log("Generating type definitions...")
 
+// Pre-processing pass: detect all inline string literal unions
+console.log("Scanning for inline string literal unions...")
+for (const [typeName, typeDef] of typeDefinitions) {
+  if (typeDef.kind !== 'interface' || !typeDef.properties) continue
+  
+  for (const prop of typeDef.properties) {
+    if (prop.elementType && prop.type.toLowerCase() === 'union') {
+      const unionParts = parseUnionMembers(prop.elementType)
+      const nonNullParts = unionParts.filter(p => p !== 'undefined' && p !== 'null')
+      
+      if (nonNullParts.length > 1 && nonNullParts.every(p => isStringLiteral(p))) {
+        const literalValues = nonNullParts.map(p => getStringLiteralValue(p))
+        registerInlineEnum(literalValues, typeName)
+      }
+    }
+  }
+}
+
+if (inlineEnumRegistry.size > 0) {
+  console.log(`Found ${inlineEnumRegistry.size} inline enum signatures`)
+  for (const [sig, info] of inlineEnumRegistry) {
+    const members = sig.split(',')
+    const enumName = info.enumName
+    console.log(`  ${enumName}: ${members.join(', ')} (used by ${info.usageCount} type(s))`)
+  }
+}
+console.log()
+
 // First, generate enums for all union type aliases from message source files
 // This ensures that types like DeviceAuthStatus are generated even if not directly referenced
 console.log("Generating enums from union type aliases...")
@@ -1331,6 +1411,12 @@ for (const [typeName, typeDef] of typeDefinitions) {
         }
         return v
       })
+      
+      // Skip if this enum was already registered as an inline enum (will be generated later with proper attributes)
+      const signature = generateInlineEnumSignature(literalValues)
+      if (inlineEnumRegistry.has(signature)) {
+        continue
+      }
       
       // Check if enum already exists
       if (!generatedEnums.has(enumName)) {
@@ -1369,9 +1455,58 @@ ${enumDef.members.map((m, i) => `    ${pascalCase(m)}${i < enumDef.members.lengt
   }
 }
 
-// Write enum files first - place them based on source file
-// Skip enums that were already generated from union type aliases
+// Generate inline enums discovered in properties
+console.log("Generating inline enums from properties...")
+for (const [signature, info] of inlineEnumRegistry) {
+  if (generatedInlineEnumSignatures.has(signature)) continue
+  
+  const members = signature.split(',')
+  const enumName = info.enumName
+  
+  const enumDef: EnumDefinition = { name: enumName, members }
+  generatedEnums.set(enumName, enumDef)
+  generatedInlineEnumSignatures.add(signature)
+  
+  const enumCode = `// <auto-generated>
+//     This code was generated by WebViewContractGenerator.
+//     Do not modify this file directly as changes will be lost on regeneration.
+//     Source: WebViewContract.json schema version ${contract.schemaVersion}
+// </auto-generated>
+
+#nullable enable
+
+namespace ${ns};
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+/// <summary>
+/// Enum: ${enumName}
+/// Generated from inline string literal union
+/// Members: ${members.join(', ')}
+/// Used by: ${info.usedBy.join(', ')}
+/// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ${enumName}
+{
+${enumDef.members.map((m, i) => `    [JsonProperty("${m}")]\n    ${pascalCase(m)}${i < enumDef.members.length - 1 ? ',' : ''}`).join('\n')}
+}
+`
+  const enumTargetDir = getDirectoryForFolder('Shared')
+  const enumFilePath = path.join(enumTargetDir, `${enumName}.cs`)
+  fs.writeFileSync(enumFilePath, enumCode)
+  console.log(`  Generated inline enum: ${enumName} (${members.join(', ')})`)
+}
+
+// Write enum files - place them based on source file
+// Skip inline enums that were already generated with proper attributes
 for (const [enumName, enumDef] of generatedEnums) {
+  // Skip inline enums - they were already generated with StringEnumConverter
+  const signature = generateInlineEnumSignature(enumDef.members)
+  if (generatedInlineEnumSignatures.has(signature)) {
+    continue
+  }
+  
   // Find the source file for this enum by checking typeDefinitions first
   let enumFolder = 'Types' // default
   const typeDef = typeDefinitions.get(enumName)
@@ -1599,17 +1734,36 @@ for (const typeName of generatedOrder) {
       typeDef.unionMembers.every(m => m.startsWith('"') || m.startsWith("'"))
     
     if (isStringLiteralUnion) {
-      // Generate as enum
-      const enumName = typeName
-      const enumFolder = typeFolder
-      const enumNamespace = enumFolder === 'Shared' ? ns : (ns + "." + enumFolder)
-      
-      const literalValues = typeDef.unionMembers.map(v => {
+      // Generate the signature to check if this is an inline enum
+      const literalValuesForSignature = typeDef.unionMembers.map(v => {
         if (v.startsWith('"') || v.startsWith("'")) {
           return v.slice(1, -1)
         }
         return v
       })
+      const signature = generateInlineEnumSignature(literalValuesForSignature)
+      
+      // Skip if this enum was already generated as an inline enum
+      if (generatedInlineEnumSignatures.has(signature)) {
+        continue
+      }
+      
+      // Also skip if the enum name matches an already generated inline enum
+      const generatedEnumName = generateEnumName(literalValuesForSignature)
+      console.log(`  Checking ${typeName}: generatedEnumName=${generatedEnumName}, registry size=${inlineEnumRegistry.size}`)
+      const existingInlineEnum = Array.from(inlineEnumRegistry.values()).find(e => e.enumName === generatedEnumName)
+      console.log(`  existingInlineEnum=${existingInlineEnum ? existingInlineEnum.enumName : 'none'}`)
+      if (existingInlineEnum) {
+        console.log(`  Skipping ${typeName} -> ${generatedEnumName} - matches inline enum`)
+        continue
+      }
+      
+      // Generate as enum
+      const enumName = typeName
+      const enumFolder = typeFolder
+      const enumNamespace = enumFolder === 'Shared' ? ns : (ns + "." + enumFolder)
+      
+      const literalValues = literalValuesForSignature
       
       const enumCode = `// <auto-generated>
 //     This code was generated by WebViewContractGenerator.

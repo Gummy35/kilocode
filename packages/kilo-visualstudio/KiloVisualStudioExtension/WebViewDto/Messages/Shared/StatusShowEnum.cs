@@ -12,14 +12,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: ExpandedCollapsed
-/// Generated from union type
+/// Enum: StatusShowEnum
+/// Generated from inline string literal union
+/// Members: show, status
+/// Used by: MemoryShowMessage
 /// </summary>
 [JsonConverter(typeof(StringEnumConverter))]
-public enum ExpandedCollapsed
+public enum StatusShowEnum
 {
-    [JsonProperty("expanded")]
-    Expanded,
-    [JsonProperty("collapsed")]
-    Collapsed
+    [JsonProperty("show")]
+    Show,
+    [JsonProperty("status")]
+    Status
 }
