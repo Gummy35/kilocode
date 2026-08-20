@@ -26,6 +26,5 @@ public class StreamSessionVisibleMessage
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("visible")]
-    // Original TypeScript type: literal
-    public string Visible { get; set; }
+    public bool Visible { get; set; }
 }

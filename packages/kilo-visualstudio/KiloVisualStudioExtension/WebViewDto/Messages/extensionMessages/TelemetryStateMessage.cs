@@ -24,6 +24,5 @@ public class TelemetryStateMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "telemetryState";
     [JsonProperty("enabled")]
-    // Original TypeScript type: literal
-    public string Enabled { get; set; }
+    public bool Enabled { get; set; }
 }

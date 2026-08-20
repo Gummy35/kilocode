@@ -24,6 +24,5 @@ public class TimelineSettingLoadedMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "timelineSettingLoaded";
     [JsonProperty("visible")]
-    // Original TypeScript type: literal
-    public string Visible { get; set; }
+    public bool Visible { get; set; }
 }

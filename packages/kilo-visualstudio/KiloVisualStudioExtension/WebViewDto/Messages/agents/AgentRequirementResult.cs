@@ -22,11 +22,10 @@ public class AgentRequirementResult
     [JsonProperty("directory")]
     public string Directory { get; set; }
     [JsonProperty("enabled")]
-    // Original TypeScript type: literal
-    public string Enabled { get; set; }
-    [JsonProperty("state")]
-    // Original TypeScript type: literal
-    public string State { get; set; }
+    public bool Enabled { get; set; }
+    [JsonProperty("state", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: error | ready | disabled | blocked
+    public object? State { get; set; }
     [JsonProperty("skills")]
     public List<AgentRequirementSkill> Skills { get; set; }
     [JsonProperty("mcps")]

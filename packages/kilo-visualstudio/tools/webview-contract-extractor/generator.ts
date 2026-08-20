@@ -124,11 +124,13 @@ function pascalCase(name: string): string {
  * Global state for code generation
  */
 let contract: WebViewContract  // Parsed contract data
-let typeDefinitions: Map<string, TypeDefinition>  // Map of type name to definition
+let typeDefinitions: Map<string, Map<string, TypeDefinition>  // Map of type name to definition
 let generatedTypes: Set<string>  // Set of already generated type names
 let neededTypes: Set<string>  // Set of types needed by messages
 let collectingTypes: Set<string>  // Track types being collected (prevent infinite recursion)
 let existingApiTypes: Set<string>  // Set of type names that exist in ApiClient
+let inlineEnums: Map<string, { members: string[]; usageCount: number; usedBy: string[] }>  // Map of enum signature to definition
+let generatedInlineEnums: Set<string>  // Set of already generated inline enum signatures
 
 /**
  * Convert a string to PascalCase

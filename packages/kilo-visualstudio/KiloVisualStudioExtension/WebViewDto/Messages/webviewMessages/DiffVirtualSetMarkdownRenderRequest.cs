@@ -24,6 +24,5 @@ public class DiffVirtualSetMarkdownRenderRequest
     // Original TypeScript type: literal
     public string Type { get; set; } = "diffVirtual.setMarkdownRender";
     [JsonProperty("render")]
-    // Original TypeScript type: literal
-    public string Render { get; set; }
+    public bool Render { get; set; }
 }

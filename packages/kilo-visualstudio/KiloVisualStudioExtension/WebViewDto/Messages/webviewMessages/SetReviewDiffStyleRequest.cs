@@ -23,7 +23,7 @@ public class SetReviewDiffStyleRequest
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "agentManager.setReviewDiffStyle";
-    [JsonProperty("style")]
-    // Original TypeScript type: literal
-    public string Style { get; set; }
+    [JsonProperty("style", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: unified | split
+    public object? Style { get; set; }
 }

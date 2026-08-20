@@ -24,6 +24,5 @@ public class GitStatusMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "gitStatus";
     [JsonProperty("repo")]
-    // Original TypeScript type: literal
-    public string Repo { get; set; }
+    public bool Repo { get; set; }
 }

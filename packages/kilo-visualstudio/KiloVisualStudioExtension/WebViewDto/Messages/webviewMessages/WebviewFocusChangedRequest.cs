@@ -24,6 +24,5 @@ public class WebviewFocusChangedRequest
     // Original TypeScript type: literal
     public string Type { get; set; } = "webviewFocusChanged";
     [JsonProperty("focused")]
-    // Original TypeScript type: literal
-    public string Focused { get; set; }
+    public bool Focused { get; set; }
 }

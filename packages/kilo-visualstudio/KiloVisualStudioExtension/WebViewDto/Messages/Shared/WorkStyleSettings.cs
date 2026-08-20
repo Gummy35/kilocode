@@ -18,6 +18,5 @@ using Newtonsoft.Json;
 public class WorkStyleSettings
 {
     [JsonProperty("showTaskTimeline")]
-    // Original TypeScript type: literal
-    public string ShowTaskTimeline { get; set; }
+    public bool ShowTaskTimeline { get; set; }
 }

@@ -24,6 +24,5 @@ public class SetSessionsCollapsedRequest
     // Original TypeScript type: literal
     public string Type { get; set; } = "agentManager.setSessionsCollapsed";
     [JsonProperty("collapsed")]
-    // Original TypeScript type: literal
-    public string Collapsed { get; set; }
+    public bool Collapsed { get; set; }
 }

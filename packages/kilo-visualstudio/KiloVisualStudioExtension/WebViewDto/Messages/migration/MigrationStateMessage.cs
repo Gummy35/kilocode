@@ -24,8 +24,7 @@ public class MigrationStateMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "migrationState";
     [JsonProperty("needed")]
-    // Original TypeScript type: literal
-    public string Needed { get; set; }
+    public bool Needed { get; set; }
     [JsonProperty("source")]
     // Original TypeScript type: literal
     public string Source { get; set; }

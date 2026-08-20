@@ -27,7 +27,7 @@ public class SessionCostAlertResponseRequest
     public string SessionID { get; set; }
     [JsonProperty("limit")]
     public double Limit { get; set; }
-    [JsonProperty("response")]
-    // Original TypeScript type: literal
-    public string Response { get; set; }
+    [JsonProperty("response", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: continue | stop
+    public object? Response { get; set; }
 }

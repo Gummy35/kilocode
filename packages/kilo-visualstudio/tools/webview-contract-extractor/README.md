@@ -75,8 +75,9 @@ Messages/
   - If referencing an SDK type that exists in ApiClient: `public class X : ApiClient.Y { }`
   - Otherwise: placeholder class `public class X { }`
 - **Union Types**:
-  - String literal unions (e.g., `"a" | "b" | "c"`): Generated as enums with `[JsonConverter(typeof(StringEnumConverter))]`
-  - Mixed type unions: Generated as `object` or common base class if available
+  - **Multi-member literal unions** (e.g., `"a" | "b" | "c"`): Generated as enums with `[JsonConverter(typeof(StringEnumConverter))]`
+  - **Boolean type** (`true | false`): Generated as `bool` (not a literal/enum)
+  - **Mixed type unions**: Generated as `object` or common base class if available
 - **Enums**: Generated with `[JsonConverter(typeof(StringEnumConverter))]` and `[JsonProperty]` on members
 
 ## ApiClient Integration

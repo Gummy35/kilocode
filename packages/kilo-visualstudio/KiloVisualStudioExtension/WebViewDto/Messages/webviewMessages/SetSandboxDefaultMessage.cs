@@ -24,8 +24,7 @@ public class SetSandboxDefaultMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "setSandboxDefault";
     [JsonProperty("enabled")]
-    // Original TypeScript type: literal
-    public string Enabled { get; set; }
+    public bool Enabled { get; set; }
     [JsonProperty("requestID")]
     public string RequestID { get; set; }
     [JsonProperty("agentManagerContext", NullValueHandling = NullValueHandling.Ignore)]

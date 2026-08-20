@@ -14,10 +14,7 @@ using Newtonsoft.Json.Linq;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.WebView.Generated.WebviewMessages;
 using KiloVisualStudioExtension.WebView.Generated.Shared;
-using KiloVisualStudioExtension.WebView.Generated.Agents;
 using KiloVisualStudioExtension.WebView.Generated.Parts;
-using KiloVisualStudioExtension.WebView.Generated.Sessions;
-using KiloVisualStudioExtension.WebView.Generated.Questions;
 using KiloVisualStudioExtension.WebView.Generated.Migration;
 using KiloVisualStudioExtension.WebView.Generated.Memory;
 using KiloVisualStudioExtension.WebView.Generated.ExtensionMessages;
@@ -248,7 +245,6 @@ public static class WebViewMessageFactory
             "mcp" => typeof(T) == typeof(McpMarketplaceItem) ? (T)(object)token.ToObject<McpMarketplaceItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "agent" => typeof(T) == typeof(AgentMarketplaceItem) ? (T)(object)token.ToObject<AgentMarketplaceItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "skill" => typeof(T) == typeof(SkillMarketplaceItem) ? (T)(object)token.ToObject<SkillMarketplaceItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "error" => typeof(T) == typeof(AgentRequirementSkill) ? (T)(object)token.ToObject<AgentRequirementSkill>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "text" => typeof(T) == typeof(TextPart) ? (T)(object)token.ToObject<TextPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "file" => typeof(T) == typeof(FilePartSource) ? (T)(object)token.ToObject<FilePartSource>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "tool" => typeof(T) == typeof(ToolPart) ? (T)(object)token.ToObject<ToolPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
@@ -257,9 +253,6 @@ public static class WebViewMessageFactory
             "step-finish" => typeof(T) == typeof(StepFinishPart) ? (T)(object)token.ToObject<StepFinishPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "compaction" => typeof(T) == typeof(CompactionPart) ? (T)(object)token.ToObject<CompactionPart>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "text-delta" => typeof(T) == typeof(PartDelta) ? (T)(object)token.ToObject<PartDelta>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "user" => typeof(T) == typeof(Message) ? (T)(object)token.ToObject<Message>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "pending" => typeof(T) == typeof(TodoItem) ? (T)(object)token.ToObject<TodoItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "success" => typeof(T) == typeof(MigrationResultItem) ? (T)(object)token.ToObject<MigrationResultItem>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "migrationState" => typeof(T) == typeof(MigrationStateMessage) ? (T)(object)token.ToObject<MigrationStateMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "migrationData" => typeof(T) == typeof(MigrationDataMessage) ? (T)(object)token.ToObject<MigrationDataMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "migrationProgress" => typeof(T) == typeof(MigrationProgressMessage) ? (T)(object)token.ToObject<MigrationProgressMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
@@ -282,6 +275,7 @@ public static class WebViewMessageFactory
             "workspaceDirectoryChanged" => typeof(T) == typeof(WorkspaceDirectoryChangedMessage) ? (T)(object)token.ToObject<WorkspaceDirectoryChangedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "languageChanged" => typeof(T) == typeof(LanguageChangedMessage) ? (T)(object)token.ToObject<LanguageChangedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "connectionState" => typeof(T) == typeof(ConnectionStateMessage) ? (T)(object)token.ToObject<ConnectionStateMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
+            "error" => typeof(T) == typeof(ErrorMessage) ? (T)(object)token.ToObject<ErrorMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "sendMessageFailed" => typeof(T) == typeof(SendMessageFailedMessage) ? (T)(object)token.ToObject<SendMessageFailedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "sessionCommandCompleted" => typeof(T) == typeof(SessionCommandCompletedMessage) ? (T)(object)token.ToObject<SessionCommandCompletedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "sessionStatus" => typeof(T) == typeof(SessionStatusMessage) ? (T)(object)token.ToObject<SessionStatusMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
@@ -426,7 +420,6 @@ public static class WebViewMessageFactory
             "providerDisconnected" => typeof(T) == typeof(ProviderDisconnectedMessage) ? (T)(object)token.ToObject<ProviderDisconnectedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "providerActionError" => typeof(T) == typeof(ProviderActionErrorMessage) ? (T)(object)token.ToObject<ProviderActionErrorMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "customProviderModelsFetched" => typeof(T) == typeof(CustomProviderModelsFetchedMessage) ? (T)(object)token.ToObject<CustomProviderModelsFetchedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
-            "disabled" => typeof(T) == typeof(McpStatusEntry) ? (T)(object)token.ToObject<McpStatusEntry>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "mcpStatusLoaded" => typeof(T) == typeof(McpStatusLoadedMessage) ? (T)(object)token.ToObject<McpStatusLoadedMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "continueInWorktreeProgress" => typeof(T) == typeof(ContinueInWorktreeProgressMessage) ? (T)(object)token.ToObject<ContinueInWorktreeProgressMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),
             "remoteStatus" => typeof(T) == typeof(RemoteStatusMessage) ? (T)(object)token.ToObject<RemoteStatusMessage>(Serializer)! : throw new JsonSerializationException("Type mismatch"),

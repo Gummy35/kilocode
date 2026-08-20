@@ -24,9 +24,7 @@ public class RemoteStatusMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "remoteStatus";
     [JsonProperty("enabled")]
-    // Original TypeScript type: literal
-    public string Enabled { get; set; }
+    public bool Enabled { get; set; }
     [JsonProperty("connected")]
-    // Original TypeScript type: literal
-    public string Connected { get; set; }
+    public bool Connected { get; set; }
 }

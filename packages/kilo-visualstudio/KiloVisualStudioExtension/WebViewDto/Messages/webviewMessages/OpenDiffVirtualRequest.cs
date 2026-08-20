@@ -27,7 +27,7 @@ public class OpenDiffVirtualRequest
     [JsonProperty("diff")]
     // Original TypeScript type: PermissionFileDiff
     public PermissionFileDiff Diff { get; set; }
-    [JsonProperty("initialDiffStyle")]
-    // Original TypeScript type: literal
-    public string InitialDiffStyle { get; set; }
+    [JsonProperty("initialDiffStyle", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: unified | split
+    public object? InitialDiffStyle { get; set; }
 }

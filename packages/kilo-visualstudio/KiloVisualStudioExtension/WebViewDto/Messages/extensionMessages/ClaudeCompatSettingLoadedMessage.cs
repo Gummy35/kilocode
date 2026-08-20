@@ -24,6 +24,5 @@ public class ClaudeCompatSettingLoadedMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "claudeCompatSettingLoaded";
     [JsonProperty("enabled")]
-    // Original TypeScript type: literal
-    public string Enabled { get; set; }
+    public bool Enabled { get; set; }
 }

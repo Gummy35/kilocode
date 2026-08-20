@@ -25,9 +25,9 @@ public class AgentManagerSessionMetaMessage
     public string Type { get; set; } = "agentManager.sessionMeta";
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
-    [JsonProperty("mode")]
-    // Original TypeScript type: literal
-    public string Mode { get; set; }
+    [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: local | worktree
+    public object? Mode { get; set; }
     [JsonProperty("branch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Branch { get; set; }

@@ -36,8 +36,7 @@ public class PRComment
     // Original TypeScript type: undefined | string
     public string? Url { get; set; }
     [JsonProperty("resolved")]
-    // Original TypeScript type: literal
-    public string Resolved { get; set; }
+    public bool Resolved { get; set; }
     [JsonProperty("createdAt", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number
     public double? CreatedAt { get; set; }

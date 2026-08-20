@@ -24,6 +24,5 @@ public class DiffViewerLoadingMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "diffViewer.loading";
     [JsonProperty("loading")]
-    // Original TypeScript type: literal
-    public string Loading { get; set; }
+    public bool Loading { get; set; }
 }

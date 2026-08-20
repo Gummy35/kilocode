@@ -20,14 +20,11 @@ public class BranchInfo
     [JsonProperty("name")]
     public string Name { get; set; }
     [JsonProperty("isLocal")]
-    // Original TypeScript type: literal
-    public string IsLocal { get; set; }
+    public bool IsLocal { get; set; }
     [JsonProperty("isRemote")]
-    // Original TypeScript type: literal
-    public string IsRemote { get; set; }
+    public bool IsRemote { get; set; }
     [JsonProperty("isDefault")]
-    // Original TypeScript type: literal
-    public string IsDefault { get; set; }
+    public bool IsDefault { get; set; }
     [JsonProperty("lastCommitDate", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? LastCommitDate { get; set; }

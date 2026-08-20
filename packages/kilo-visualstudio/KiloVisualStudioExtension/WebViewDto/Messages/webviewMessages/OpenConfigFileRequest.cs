@@ -23,9 +23,9 @@ public class OpenConfigFileRequest
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "openConfigFile";
-    [JsonProperty("scope")]
-    // Original TypeScript type: literal
-    public string Scope { get; set; }
+    [JsonProperty("scope", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: global | local
+    public object? Scope { get; set; }
     [JsonProperty("labels")]
     // Original TypeScript type: __type
     public object Labels { get; set; }

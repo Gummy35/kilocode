@@ -24,6 +24,5 @@ public class PersistModelSelectorExpandedRequest
     // Original TypeScript type: literal
     public string Type { get; set; } = "persistModelSelectorExpanded";
     [JsonProperty("value")]
-    // Original TypeScript type: literal
-    public string Value { get; set; }
+    public bool Value { get; set; }
 }

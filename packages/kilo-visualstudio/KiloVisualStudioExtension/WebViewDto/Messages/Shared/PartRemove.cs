@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 public class PartRemove
 {
     [JsonProperty("type")]
-    // Original TypeScript type: unknown
+    // Original TypeScript type: stringLiteral
     public string Type { get; set; } = "partRemoved";
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }

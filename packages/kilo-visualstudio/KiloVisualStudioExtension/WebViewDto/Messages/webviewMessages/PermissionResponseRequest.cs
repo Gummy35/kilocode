@@ -27,9 +27,9 @@ public class PermissionResponseRequest
     public string PermissionId { get; set; }
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
-    [JsonProperty("response")]
-    // Original TypeScript type: literal
-    public string Response { get; set; }
+    [JsonProperty("response", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: once | always | reject
+    public object? Response { get; set; }
     [JsonProperty("approvedAlways")]
     public List<string> ApprovedAlways { get; set; }
     [JsonProperty("deniedAlways")]

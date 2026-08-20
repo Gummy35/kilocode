@@ -24,6 +24,5 @@ public class ModelSelectorExpandedLoadedMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "modelSelectorExpandedLoaded";
     [JsonProperty("value")]
-    // Original TypeScript type: literal
-    public string Value { get; set; }
+    public bool Value { get; set; }
 }

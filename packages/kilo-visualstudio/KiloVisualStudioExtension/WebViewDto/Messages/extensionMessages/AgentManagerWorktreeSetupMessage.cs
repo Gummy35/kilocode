@@ -24,9 +24,9 @@ public class AgentManagerWorktreeSetupMessage
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "agentManager.worktreeSetup";
-    [JsonProperty("status")]
-    // Original TypeScript type: literal
-    public string Status { get; set; }
+    [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: error | creating | ready | starting
+    public object? Status { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("sessionId", NullValueHandling = NullValueHandling.Ignore)]

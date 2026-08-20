@@ -24,6 +24,5 @@ public class AutoApproveStateMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "autoApproveState";
     [JsonProperty("active")]
-    // Original TypeScript type: literal
-    public string Active { get; set; }
+    public bool Active { get; set; }
 }

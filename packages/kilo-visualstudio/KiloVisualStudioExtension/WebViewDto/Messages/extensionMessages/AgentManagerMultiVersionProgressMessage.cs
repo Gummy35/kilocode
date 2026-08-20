@@ -23,9 +23,9 @@ public class AgentManagerMultiVersionProgressMessage
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "agentManager.multiVersionProgress";
-    [JsonProperty("status")]
-    // Original TypeScript type: literal
-    public string Status { get; set; }
+    [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: creating | done
+    public object? Status { get; set; }
     [JsonProperty("total")]
     public double Total { get; set; }
     [JsonProperty("completed")]

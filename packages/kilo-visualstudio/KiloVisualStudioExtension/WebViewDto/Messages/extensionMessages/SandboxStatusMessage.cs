@@ -26,11 +26,9 @@ public class SandboxStatusMessage
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("enabled")]
-    // Original TypeScript type: literal
-    public string Enabled { get; set; }
+    public bool Enabled { get; set; }
     [JsonProperty("available")]
-    // Original TypeScript type: literal
-    public string Available { get; set; }
+    public bool Available { get; set; }
     [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Reason { get; set; }

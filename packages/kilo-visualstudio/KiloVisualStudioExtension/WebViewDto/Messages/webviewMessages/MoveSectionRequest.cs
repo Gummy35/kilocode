@@ -25,7 +25,7 @@ public class MoveSectionRequest
     public string Type { get; set; } = "agentManager.moveSection";
     [JsonProperty("sectionId")]
     public string SectionId { get; set; }
-    [JsonProperty("dir")]
-    // Original TypeScript type: literal
-    public double Dir { get; set; }
+    [JsonProperty("dir", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: 1 | -1
+    public object? Dir { get; set; }
 }

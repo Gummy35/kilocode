@@ -24,6 +24,5 @@ public class SetSidebarCollapsedRequest
     // Original TypeScript type: literal
     public string Type { get; set; } = "agentManager.setSidebarCollapsed";
     [JsonProperty("collapsed")]
-    // Original TypeScript type: literal
-    public string Collapsed { get; set; }
+    public bool Collapsed { get; set; }
 }

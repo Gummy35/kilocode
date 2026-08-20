@@ -24,8 +24,7 @@ public class MarketplaceRemoveResultMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "marketplaceRemoveResult";
     [JsonProperty("success")]
-    // Original TypeScript type: literal
-    public string Success { get; set; }
+    public bool Success { get; set; }
     [JsonProperty("slug")]
     public string Slug { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]

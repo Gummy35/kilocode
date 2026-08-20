@@ -26,6 +26,5 @@ public class AgentManagerWorktreeDiffLoadingMessage
     [JsonProperty("sessionId")]
     public string SessionId { get; set; }
     [JsonProperty("loading")]
-    // Original TypeScript type: literal
-    public string Loading { get; set; }
+    public bool Loading { get; set; }
 }

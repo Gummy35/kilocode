@@ -25,8 +25,7 @@ public class AgentManagerImportResultMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "agentManager.importResult";
     [JsonProperty("success")]
-    // Original TypeScript type: literal
-    public string Success { get; set; }
+    public bool Success { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("errorCode", NullValueHandling = NullValueHandling.Ignore)]

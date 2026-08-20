@@ -27,9 +27,9 @@ public class ProviderActionErrorMessage
     public string RequestId { get; set; }
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }
-    [JsonProperty("action")]
-    // Original TypeScript type: literal
-    public string Action { get; set; }
+    [JsonProperty("action", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: authorize | connect | disconnect
+    public object? Action { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }
 }

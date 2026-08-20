@@ -21,9 +21,9 @@ public class ReviewCommentData
     public string Id { get; set; }
     [JsonProperty("file")]
     public string File { get; set; }
-    [JsonProperty("side")]
-    // Original TypeScript type: literal
-    public string Side { get; set; }
+    [JsonProperty("side", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: additions | deletions
+    public object? Side { get; set; }
     [JsonProperty("line")]
     public double Line { get; set; }
     [JsonProperty("comment")]

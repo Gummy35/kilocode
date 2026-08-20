@@ -24,8 +24,7 @@ public class CompactionPart
     // Original TypeScript type: literal
     public string Type { get; set; } = "compaction";
     [JsonProperty("auto")]
-    // Original TypeScript type: literal
-    public string Auto { get; set; }
+    public bool Auto { get; set; }
     [JsonProperty("overflow", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public bool? Overflow { get; set; }

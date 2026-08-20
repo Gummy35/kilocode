@@ -27,6 +27,5 @@ public class SectionState
     [JsonProperty("order")]
     public double Order { get; set; }
     [JsonProperty("collapsed")]
-    // Original TypeScript type: literal
-    public string Collapsed { get; set; }
+    public bool Collapsed { get; set; }
 }

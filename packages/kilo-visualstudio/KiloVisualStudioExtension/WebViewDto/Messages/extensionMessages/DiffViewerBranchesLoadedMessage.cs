@@ -35,8 +35,7 @@ public class DiffViewerBranchesLoadedMessage
     // Original TypeScript type: undefined | string
     public string? CurrentBase { get; set; }
     [JsonProperty("isAuto")]
-    // Original TypeScript type: literal
-    public string IsAuto { get; set; }
+    public bool IsAuto { get; set; }
     [JsonProperty("currentBranch", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? CurrentBranch { get; set; }

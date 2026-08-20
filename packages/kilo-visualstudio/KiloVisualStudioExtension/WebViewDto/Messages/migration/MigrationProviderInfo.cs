@@ -25,11 +25,9 @@ public class MigrationProviderInfo
     // Original TypeScript type: undefined | string
     public string? Model { get; set; }
     [JsonProperty("hasApiKey")]
-    // Original TypeScript type: literal
-    public string HasApiKey { get; set; }
+    public bool HasApiKey { get; set; }
     [JsonProperty("supported")]
-    // Original TypeScript type: literal
-    public string Supported { get; set; }
+    public bool Supported { get; set; }
     [JsonProperty("newProviderName", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? NewProviderName { get; set; }

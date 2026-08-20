@@ -18,21 +18,15 @@ using Newtonsoft.Json;
 public class MigrationAutoApprovalSelections
 {
     [JsonProperty("commandRules")]
-    // Original TypeScript type: literal
-    public string CommandRules { get; set; }
+    public bool CommandRules { get; set; }
     [JsonProperty("readPermission")]
-    // Original TypeScript type: literal
-    public string ReadPermission { get; set; }
+    public bool ReadPermission { get; set; }
     [JsonProperty("writePermission")]
-    // Original TypeScript type: literal
-    public string WritePermission { get; set; }
+    public bool WritePermission { get; set; }
     [JsonProperty("executePermission")]
-    // Original TypeScript type: literal
-    public string ExecutePermission { get; set; }
+    public bool ExecutePermission { get; set; }
     [JsonProperty("mcpPermission")]
-    // Original TypeScript type: literal
-    public string McpPermission { get; set; }
+    public bool McpPermission { get; set; }
     [JsonProperty("taskPermission")]
-    // Original TypeScript type: literal
-    public string TaskPermission { get; set; }
+    public bool TaskPermission { get; set; }
 }

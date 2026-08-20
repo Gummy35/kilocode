@@ -17,9 +17,9 @@ using Newtonsoft.Json;
 /// </summary>
 public class AgentContent
 {
-    [JsonProperty("mode")]
-    // Original TypeScript type: literal
-    public string Mode { get; set; }
+    [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: primary | subagent | all
+    public object? Mode { get; set; }
     [JsonProperty("description")]
     public string Description { get; set; }
     [JsonProperty("prompt")]

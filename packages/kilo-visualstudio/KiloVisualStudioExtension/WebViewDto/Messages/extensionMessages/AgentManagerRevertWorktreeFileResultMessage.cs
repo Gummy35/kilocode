@@ -27,9 +27,9 @@ public class AgentManagerRevertWorktreeFileResultMessage
     public string SessionId { get; set; }
     [JsonProperty("file")]
     public string File { get; set; }
-    [JsonProperty("status")]
-    // Original TypeScript type: literal
-    public string Status { get; set; }
+    [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: success | error
+    public object? Status { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }
 }

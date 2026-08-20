@@ -27,6 +27,5 @@ public class DiffViewerSendCommentsRequest
     [JsonProperty("comments")]
     public List<ReviewCommentData> Comments { get; set; }
     [JsonProperty("autoSend")]
-    // Original TypeScript type: literal
-    public string AutoSend { get; set; }
+    public bool AutoSend { get; set; }
 }

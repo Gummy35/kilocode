@@ -30,8 +30,7 @@ public class MemoryOperationResultMessage
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }
     [JsonProperty("ok")]
-    // Original TypeScript type: literal
-    public string Ok { get; set; }
+    public bool Ok { get; set; }
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Status { get; set; }

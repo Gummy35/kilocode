@@ -24,6 +24,5 @@ public class DiffViewerMarkdownRenderMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "diffViewer.markdownRender";
     [JsonProperty("render")]
-    // Original TypeScript type: literal
-    public string Render { get; set; }
+    public bool Render { get; set; }
 }

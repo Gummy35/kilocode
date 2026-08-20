@@ -24,6 +24,5 @@ public class SetRemoteEnabledMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "setRemoteEnabled";
     [JsonProperty("enabled")]
-    // Original TypeScript type: literal
-    public string Enabled { get; set; }
+    public bool Enabled { get; set; }
 }

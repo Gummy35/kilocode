@@ -26,6 +26,5 @@ public class WorkStyleApplyFailedMessage
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("rollbackFailed")]
-    // Original TypeScript type: literal
-    public string RollbackFailed { get; set; }
+    public bool RollbackFailed { get; set; }
 }

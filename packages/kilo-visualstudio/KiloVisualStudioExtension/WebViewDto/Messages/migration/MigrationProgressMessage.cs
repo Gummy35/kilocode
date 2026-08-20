@@ -30,9 +30,9 @@ public class MigrationProgressMessage
     public string OperationId { get; set; }
     [JsonProperty("item")]
     public string Item { get; set; }
-    [JsonProperty("status")]
-    // Original TypeScript type: literal
-    public string Status { get; set; }
+    [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: success | error | warning | migrating
+    public object? Status { get; set; }
     [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Message { get; set; }
