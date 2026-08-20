@@ -1,4 +1,4 @@
-using KiloVisualStudioExtension.WebView.Generated.Memory;
+using KiloExtensionDTOs.Memory;
 using Newtonsoft.Json;
 
 namespace KiloVisualStudioExtension.ApiClient
