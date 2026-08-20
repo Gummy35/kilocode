@@ -136,15 +136,35 @@ function extractLiteralValue(type: ts.Type): string | number | boolean | undefin
  * Returns a string identifier for the type category
  */
 function getTypeKind(type: ts.Type): string {
-  if (type.flags & ts.TypeFlags.Interface) return "interface"
-  if (type.flags & ts.TypeFlags.TypeLiteral) return "typeLiteral"
-  if (type.flags & ts.TypeFlags.Union) return "union"
+  // Check literal types FIRST (before base types)
+  if (type.flags & ts.TypeFlags.StringLiteral) return "stringLiteral"
+  if (type.flags & ts.TypeFlags.NumberLiteral) return "numberLiteral"
+  if (type.flags & ts.TypeFlags.BooleanLiteral) return "booleanLiteral"
+  if (type.flags & ts.TypeFlags.BigIntLiteral) return "bigIntLiteral"
+  if (type.flags & ts.TypeFlags.EnumLiteral) return "enumLiteral"
+  
+  // Check base/primitive types
   if (type.flags & ts.TypeFlags.String) return "string"
   if (type.flags & ts.TypeFlags.Number) return "number"
   if (type.flags & ts.TypeFlags.Boolean) return "boolean"
+  if (type.flags & ts.TypeFlags.BigInt) return "bigint"
+  if (type.flags & ts.TypeFlags.Enum) return "enum"
+  if (type.flags & ts.TypeFlags.Void) return "void"
+  if (type.flags & ts.TypeFlags.Undefined) return "undefined"
+  if (type.flags & ts.TypeFlags.Null) return "null"
+  if (type.flags & ts.TypeFlags.Never) return "never"
   if (type.flags & ts.TypeFlags.Any) return "any"
   if (type.flags & ts.TypeFlags.Unknown) return "unknown"
+  if (type.flags & ts.TypeFlags.ESSymbol) return "symbol"
+  
+  // Check compound types
+  if (type.flags & ts.TypeFlags.Union) return "union"
+  if (type.flags & ts.TypeFlags.Intersection) return "intersection"
   if (type.flags & ts.TypeFlags.Object) return "object"
+  if (type.flags & ts.TypeFlags.TypeParameter) return "typeParameter"
+  if (type.flags & ts.TypeFlags.Conditional) return "conditional"
+  if (type.flags & ts.TypeFlags.TemplateLiteral) return "templateLiteral"
+  
   return "unknown"
 }
 
@@ -213,10 +233,23 @@ function extractPropertyDefinition(
         t.flags & (ts.TypeFlags.StringLiteral | ts.TypeFlags.NumberLiteral | ts.TypeFlags.BooleanLiteral)
       )
       
-      if (literalTypes.length > 0 && literalTypes.length === unionType.types.length) {
-        isLiteral = true
-        propertyType = "literal"
-        literalValue = extractLiteralValue(literalTypes[0]) ?? ""
+      // Check if this is a boolean union (true | false)
+      // If all members are BooleanLiteral and there are exactly 2 members, it's the boolean type
+      const allBooleanLiterals = unionType.types.every(t => t.flags & ts.TypeFlags.BooleanLiteral)
+      if (allBooleanLiterals && unionType.types.length === 2) {
+        // This is boolean (true | false), not a literal
+        propertyType = "boolean"
+        typeRef = { name: "boolean", kind: "boolean" }
+      } else if (literalTypes.length > 0 && literalTypes.length === unionType.types.length) {
+        // All members are literals, but this is still a union (not a single literal)
+        // Multi-member literal unions like "a" | "b" | "c" should be treated as unions
+        propertyType = "union"
+        const unionMemberNames = unionType.types.map((t) => {
+          const literalValue = extractLiteralValue(t)
+          return literalValue !== undefined ? String(literalValue) : getTypeName(t, typeChecker)
+        })
+        typeRef = { name: unionMemberNames[0], kind: "union" }
+        elementType = unionMemberNames.join(" | ")
       } else {
         propertyType = "union"
         // Collect union member type names for better documentation
@@ -244,9 +277,21 @@ function extractPropertyDefinition(
       propertyType = "literal"
       literalValue = (type as ts.NumberLiteralType).value
     } else if (type.flags & ts.TypeFlags.BooleanLiteral) {
+      // Specific boolean literal (true or false) - check BEFORE base Boolean
+      // Debug: log when we hit this case
+      if (name === 'ok') {
+        console.log(`DEBUG: ok property has BooleanLiteral flag, value: ${(type as ts.BooleanLiteralType).value}`)
+      }
       isLiteral = true
       propertyType = "literal"
       literalValue = (type as ts.BooleanLiteralType).value
+    } else if (type.flags & ts.TypeFlags.Boolean) {
+      // Base boolean type (not a literal)
+      if (name === 'ok') {
+        console.log(`DEBUG: ok property has Boolean flag (not Literal)`)
+      }
+      propertyType = "boolean"
+      typeRef = { name: "boolean", kind: "boolean" }
     } else if (type.flags & ts.TypeFlags.Array || type.symbol?.name === "Array") {
       propertyType = "array"
       const typeArgs = (type as ts.TypeReference).typeArguments

@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "59130595abcfe74ff915dbb481f1861b6916ea88",
-    "generatedAt": "2026-08-13T16:20:15.025Z"
+    "commit": "ae80930e5479fcf6022ff0f7f8ca23c85accf903",
+    "generatedAt": "2026-08-20T12:02:05.384Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -411,13 +411,16 @@
           },
           {
             "name": "response",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "once",
-            "isLiteral": true
+            "elementType": "once | always | reject",
+            "typeRef": {
+              "name": "once",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "approvedAlways",
@@ -1257,13 +1260,16 @@
           },
           {
             "name": "focused",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -1471,13 +1477,16 @@
           },
           {
             "name": "scope",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "global",
-            "isLiteral": true
+            "elementType": "global | local",
+            "typeRef": {
+              "name": "global",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "labels",
@@ -2317,13 +2326,16 @@
           },
           {
             "name": "response",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "continue",
-            "isLiteral": true
+            "elementType": "continue | stop",
+            "typeRef": {
+              "name": "continue",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -3260,13 +3272,16 @@
           },
           {
             "name": "visible",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -5220,13 +5235,16 @@
           },
           {
             "name": "collapsed",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -5251,13 +5269,16 @@
           },
           {
             "name": "collapsed",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -5282,13 +5303,16 @@
           },
           {
             "name": "style",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "unified",
-            "isLiteral": true
+            "elementType": "unified | split",
+            "typeRef": {
+              "name": "unified",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -5313,13 +5337,16 @@
           },
           {
             "name": "render",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -5982,13 +6009,16 @@
           },
           {
             "name": "initialDiffStyle",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "unified",
-            "isLiteral": true
+            "elementType": "unified | split",
+            "typeRef": {
+              "name": "unified",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -6026,13 +6056,16 @@
           },
           {
             "name": "autoSend",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -6057,13 +6090,16 @@
           },
           {
             "name": "style",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "unified",
-            "isLiteral": true
+            "elementType": "unified | split",
+            "typeRef": {
+              "name": "unified",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -6088,13 +6124,16 @@
           },
           {
             "name": "render",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -6263,13 +6302,16 @@
           },
           {
             "name": "render",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -6749,13 +6791,16 @@
           },
           {
             "name": "enabled",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "requestID",
@@ -6913,13 +6958,16 @@
           },
           {
             "name": "enabled",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -7445,13 +7493,16 @@
           },
           {
             "name": "value",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -7497,13 +7548,16 @@
           },
           {
             "name": "action",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "add",
-            "isLiteral": true
+            "elementType": "add | remove",
+            "typeRef": {
+              "name": "add",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "providerID",
@@ -8006,13 +8060,16 @@
           },
           {
             "name": "dir",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": 1,
-            "isLiteral": true
+            "elementType": "1 | -1",
+            "typeRef": {
+              "name": "1",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "webview-messages.ts"
@@ -8355,160 +8412,6 @@
           }
         ],
         "sourceFile": "..\\marketplace.ts"
-      },
-      {
-        "name": "AgentRequirementSkill",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "error"
-        },
-        "properties": [
-          {
-            "name": "name",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "error",
-            "isLiteral": true
-          },
-          {
-            "name": "message",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "agents.ts"
-      },
-      {
-        "name": "AgentRequirementMCP",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "error"
-        },
-        "properties": [
-          {
-            "name": "name",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "error",
-            "isLiteral": true
-          },
-          {
-            "name": "message",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "agents.ts"
-      },
-      {
-        "name": "AgentRequirementVSCodeExtension",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "error"
-        },
-        "properties": [
-          {
-            "name": "name",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "id",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "error",
-            "isLiteral": true
-          },
-          {
-            "name": "message",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "agents.ts"
       },
       {
         "name": "TextPart",
@@ -9002,13 +8905,16 @@
           },
           {
             "name": "auto",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "overflow",
@@ -9074,365 +8980,6 @@
         "sourceFile": "parts.ts"
       },
       {
-        "name": "Message",
-        "type": "interface",
-        "discriminator": {
-          "field": "role",
-          "value": "user"
-        },
-        "properties": [
-          {
-            "name": "id",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "sessionID",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "role",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "user",
-            "isLiteral": true
-          },
-          {
-            "name": "content",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "parts",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | Array",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "createdAt",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "time",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | __type",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "agent",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "model",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | __type",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "providerID",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "modelID",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "mode",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "parentID",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "path",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | __type",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "error",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | __type",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "summary",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | false | true | __type",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "cost",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | number",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "tokens",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | TokenUsage",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "finish",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "sessions.ts"
-      },
-      {
-        "name": "TodoItem",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "pending"
-        },
-        "properties": [
-          {
-            "name": "id",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "content",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "pending",
-            "isLiteral": true
-          }
-        ],
-        "sourceFile": "questions.ts"
-      },
-      {
-        "name": "MigrationResultItem",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "success"
-        },
-        "properties": [
-          {
-            "name": "item",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "category",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "provider",
-            "isLiteral": true
-          },
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "success",
-            "isLiteral": true
-          },
-          {
-            "name": "message",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "migration.ts"
-      },
-      {
         "name": "MigrationStateMessage",
         "type": "interface",
         "discriminator": {
@@ -9452,13 +8999,16 @@
           },
           {
             "name": "needed",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "source",
@@ -9592,13 +9142,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "success",
-            "isLiteral": true
+            "elementType": "success | error | warning | migrating",
+            "typeRef": {
+              "name": "success",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "message",
@@ -10111,13 +9664,16 @@
           },
           {
             "name": "ok",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "status",
@@ -10533,13 +10089,16 @@
           },
           {
             "name": "repo",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -11366,7 +10925,7 @@
             "elementType": null,
             "typeRef": {
               "name": "SessionUpdate",
-              "kind": "unknown"
+              "kind": "intersection"
             },
             "literalValue": null,
             "isLiteral": false
@@ -12504,13 +12063,16 @@
           },
           {
             "name": "view",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "settings",
-            "isLiteral": true
+            "elementType": "settings | newTask | marketplace | history | profile | subAgentViewer",
+            "typeRef": {
+              "name": "settings",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "tab",
@@ -13232,40 +12794,6 @@
             },
             "literalValue": null,
             "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "FileSearchItem",
-        "type": "interface",
-        "discriminator": {
-          "field": "type",
-          "value": "file"
-        },
-        "properties": [
-          {
-            "name": "path",
-            "type": "string",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": {
-              "name": "string",
-              "kind": "string"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          },
-          {
-            "name": "type",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "file",
-            "isLiteral": true
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -14016,13 +13544,16 @@
           },
           {
             "name": "enabled",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -14334,13 +13865,16 @@
           },
           {
             "name": "visible",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -14365,13 +13899,16 @@
           },
           {
             "name": "visible",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -14477,13 +14014,16 @@
           },
           {
             "name": "rollbackFailed",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -14568,13 +14108,16 @@
           },
           {
             "name": "mode",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "local",
-            "isLiteral": true
+            "elementType": "local | worktree",
+            "typeRef": {
+              "name": "local",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "branch",
@@ -14685,13 +14228,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "error",
-            "isLiteral": true
+            "elementType": "error | creating | ready | starting",
+            "typeRef": {
+              "name": "error",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "message",
@@ -15394,13 +14940,16 @@
           },
           {
             "name": "active",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -15438,23 +14987,29 @@
           },
           {
             "name": "enabled",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "available",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "reason",
@@ -15544,33 +15099,42 @@
           },
           {
             "name": "desired",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "enabled",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "available",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "reason",
@@ -15720,13 +15284,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "creating",
-            "isLiteral": true
+            "elementType": "creating | done",
+            "typeRef": {
+              "name": "creating",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "total",
@@ -15858,13 +15425,16 @@
           },
           {
             "name": "value",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -16038,13 +15608,16 @@
           },
           {
             "name": "success",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "message",
@@ -16215,13 +15788,16 @@
           },
           {
             "name": "loading",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -16345,13 +15921,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "success",
-            "isLiteral": true
+            "elementType": "success | error",
+            "typeRef": {
+              "name": "success",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "message",
@@ -16924,13 +16503,16 @@
           },
           {
             "name": "loading",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -16968,13 +16550,16 @@
           },
           {
             "name": "status",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "success",
-            "isLiteral": true
+            "elementType": "success | error",
+            "typeRef": {
+              "name": "success",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "message",
@@ -17059,13 +16644,16 @@
           },
           {
             "name": "render",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -17257,13 +16845,16 @@
           },
           {
             "name": "isAuto",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "currentBranch",
@@ -17343,13 +16934,16 @@
           },
           {
             "name": "enabled",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -17460,13 +17054,16 @@
           },
           {
             "name": "success",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "slug",
@@ -17551,13 +17148,16 @@
           },
           {
             "name": "success",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "slug",
@@ -17788,13 +17388,16 @@
           },
           {
             "name": "action",
-            "type": "literal",
+            "type": "union",
             "optional": false,
             "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "authorize",
-            "isLiteral": true
+            "elementType": "authorize | connect | disconnect",
+            "typeRef": {
+              "name": "authorize",
+              "kind": "union"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "message",
@@ -17875,40 +17478,6 @@
             "optional": true,
             "nullable": false,
             "elementType": "undefined | false | true",
-            "typeRef": {
-              "name": "undefined",
-              "kind": "union"
-            },
-            "literalValue": null,
-            "isLiteral": false
-          }
-        ],
-        "sourceFile": "extension-messages.ts"
-      },
-      {
-        "name": "McpStatusEntry",
-        "type": "interface",
-        "discriminator": {
-          "field": "status",
-          "value": "disabled"
-        },
-        "properties": [
-          {
-            "name": "status",
-            "type": "literal",
-            "optional": false,
-            "nullable": false,
-            "elementType": null,
-            "typeRef": null,
-            "literalValue": "disabled",
-            "isLiteral": true
-          },
-          {
-            "name": "error",
-            "type": "union",
-            "optional": true,
-            "nullable": false,
-            "elementType": "undefined | string",
             "typeRef": {
               "name": "undefined",
               "kind": "union"
@@ -18033,23 +17602,29 @@
           },
           {
             "name": "enabled",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           },
           {
             "name": "connected",
-            "type": "literal",
+            "type": "boolean",
             "optional": false,
             "nullable": false,
             "elementType": null,
-            "typeRef": null,
-            "literalValue": "",
-            "isLiteral": true
+            "typeRef": {
+              "name": "boolean",
+              "kind": "boolean"
+            },
+            "literalValue": null,
+            "isLiteral": false
           }
         ],
         "sourceFile": "extension-messages.ts"
@@ -18432,13 +18007,16 @@
       "properties": [
         {
           "name": "mode",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "primary",
-          "isLiteral": true
+          "elementType": "primary | subagent | all",
+          "typeRef": {
+            "name": "primary",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "description",
@@ -18807,13 +18385,16 @@
         },
         {
           "name": "side",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "additions",
-          "isLiteral": true
+          "elementType": "additions | deletions",
+          "typeRef": {
+            "name": "additions",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "line",
@@ -19174,13 +18755,16 @@
         },
         {
           "name": "collapsed",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "sourceFile": "agent-manager.ts"
@@ -19341,13 +18925,16 @@
         },
         {
           "name": "resolved",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "createdAt",
@@ -19665,33 +19252,42 @@
         },
         {
           "name": "isLocal",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "isRemote",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "isDefault",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "lastCommitDate",
@@ -20664,7 +20260,7 @@
           "elementType": null,
           "typeRef": {
             "name": "Record<string, unknown> & { rules?: string[] | undefined; diff?: string | undefined; filepath?: string | undefined; filediff?: PermissionFileDiff | undefined; files?: PermissionPatchFile[] | undefined; description?: string | undefined; heredoc?: boolean | undefined; }",
-            "kind": "unknown"
+            "kind": "intersection"
           },
           "literalValue": null,
           "isLiteral": false
@@ -20874,13 +20470,16 @@
         },
         {
           "name": "mode",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "primary",
-          "isLiteral": true
+          "elementType": "primary | subagent | all",
+          "typeRef": {
+            "name": "primary",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "native",
@@ -20969,13 +20568,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "elementType": "error | ready | missing",
+          "typeRef": {
+            "name": "error",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -20991,10 +20593,6 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "error"
-      },
       "sourceFile": "agents.ts"
     },
     {
@@ -21016,13 +20614,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "elementType": "error | ready | missing",
+          "typeRef": {
+            "name": "error",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -21038,10 +20639,6 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "error"
-      },
       "sourceFile": "agents.ts"
     },
     {
@@ -21076,13 +20673,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "elementType": "error | ready | missing",
+          "typeRef": {
+            "name": "error",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -21098,10 +20698,6 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "error"
-      },
       "sourceFile": "agents.ts"
     },
     {
@@ -21136,23 +20732,29 @@
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "state",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "elementType": "error | ready | disabled | blocked",
+          "typeRef": {
+            "name": "error",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "skills",
@@ -22695,33 +22297,42 @@
       "properties": [
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "useSystemChrome",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "headless",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "sourceFile": "config.ts"
@@ -23155,23 +22766,29 @@
       "properties": [
         {
           "name": "indexing",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "sandboxControls",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "sourceFile": "config.ts"
@@ -23467,7 +23084,7 @@
       "properties": [
         {
           "name": "type",
-          "type": "unknown",
+          "type": "stringLiteral",
           "optional": false,
           "nullable": false,
           "isLiteral": true,
@@ -23498,7 +23115,7 @@
       "properties": [
         {
           "name": "type",
-          "type": "unknown",
+          "type": "stringLiteral",
           "optional": false,
           "nullable": false,
           "isLiteral": true,
@@ -23528,7 +23145,7 @@
         },
         {
           "name": "part",
-          "type": "unknown",
+          "type": "typeParameter",
           "optional": false,
           "nullable": false,
           "isLiteral": false,
@@ -23559,7 +23176,7 @@
       "properties": [
         {
           "name": "type",
-          "type": "unknown",
+          "type": "stringLiteral",
           "optional": false,
           "nullable": false,
           "isLiteral": true,
@@ -23590,7 +23207,7 @@
       "properties": [
         {
           "name": "type",
-          "type": "unknown",
+          "type": "stringLiteral",
           "optional": false,
           "nullable": false,
           "isLiteral": true,
@@ -24212,13 +23829,16 @@
         },
         {
           "name": "auto",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "overflow",
@@ -24490,13 +24110,16 @@
         },
         {
           "name": "role",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "user",
-          "isLiteral": true
+          "elementType": "user | assistant",
+          "typeRef": {
+            "name": "user",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "content",
@@ -24707,10 +24330,6 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "role",
-        "value": "user"
-      },
       "sourceFile": "sessions.ts"
     },
     {
@@ -25158,19 +24777,18 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "pending",
-          "isLiteral": true
+          "elementType": "pending | cancelled | completed | in_progress",
+          "typeRef": {
+            "name": "pending",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "pending"
-      },
       "sourceFile": "questions.ts"
     },
     {
@@ -25650,13 +25268,16 @@
       "properties": [
         {
           "name": "showTaskTimeline",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "sourceFile": "..\\..\\..\\..\\src\\shared\\work-style-presets.ts"
@@ -26061,23 +25682,29 @@
         },
         {
           "name": "hasApiKey",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "supported",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "newProviderName",
@@ -26448,23 +26075,29 @@
         },
         {
           "name": "category",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "provider",
-          "isLiteral": true
+          "elementType": "provider | mcpServer | customMode | session | defaultModel | settings",
+          "typeRef": {
+            "name": "provider",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "success",
-          "isLiteral": true
+          "elementType": "success | error | warning",
+          "typeRef": {
+            "name": "success",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -26480,10 +26113,6 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "success"
-      },
       "sourceFile": "migration.ts"
     },
     {
@@ -26502,13 +26131,16 @@
         },
         {
           "name": "needed",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "source",
@@ -26642,13 +26274,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "success",
-          "isLiteral": true
+          "elementType": "success | error | warning | migrating",
+          "typeRef": {
+            "name": "success",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -26895,63 +26530,81 @@
       "properties": [
         {
           "name": "commandRules",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "readPermission",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "writePermission",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "executePermission",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "mcpPermission",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "taskPermission",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "sourceFile": "migration.ts"
@@ -27433,13 +27086,16 @@
         },
         {
           "name": "ok",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "status",
@@ -27903,13 +27559,16 @@
         },
         {
           "name": "repo",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -28736,7 +28395,7 @@
           "elementType": null,
           "typeRef": {
             "name": "SessionUpdate",
-            "kind": "unknown"
+            "kind": "intersection"
           },
           "literalValue": null,
           "isLiteral": false
@@ -29874,13 +29533,16 @@
         },
         {
           "name": "view",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "settings",
-          "isLiteral": true
+          "elementType": "settings | newTask | marketplace | history | profile | subAgentViewer",
+          "typeRef": {
+            "name": "settings",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "tab",
@@ -30629,19 +30291,18 @@
         },
         {
           "name": "type",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "file",
-          "isLiteral": true
+          "elementType": "file | folder | opened-file",
+          "typeRef": {
+            "name": "file",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "type",
-        "value": "file"
-      },
       "sourceFile": "extension-messages.ts"
     },
     {
@@ -31432,13 +31093,16 @@
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -31770,13 +31434,16 @@
         },
         {
           "name": "visible",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -31801,13 +31468,16 @@
         },
         {
           "name": "visible",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -31913,13 +31583,16 @@
         },
         {
           "name": "rollbackFailed",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -32004,13 +31677,16 @@
         },
         {
           "name": "mode",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "local",
-          "isLiteral": true
+          "elementType": "local | worktree",
+          "typeRef": {
+            "name": "local",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "branch",
@@ -32121,13 +31797,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "error",
-          "isLiteral": true
+          "elementType": "error | creating | ready | starting",
+          "typeRef": {
+            "name": "error",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -32830,13 +32509,16 @@
         },
         {
           "name": "active",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -32874,23 +32556,29 @@
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "available",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "reason",
@@ -32980,33 +32668,42 @@
         },
         {
           "name": "desired",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "available",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "reason",
@@ -33156,13 +32853,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "creating",
-          "isLiteral": true
+          "elementType": "creating | done",
+          "typeRef": {
+            "name": "creating",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "total",
@@ -33294,13 +32994,16 @@
         },
         {
           "name": "value",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -33474,13 +33177,16 @@
         },
         {
           "name": "success",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -33651,13 +33357,16 @@
         },
         {
           "name": "loading",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -33781,13 +33490,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "success",
-          "isLiteral": true
+          "elementType": "success | error",
+          "typeRef": {
+            "name": "success",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -34360,13 +34072,16 @@
         },
         {
           "name": "loading",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -34404,13 +34119,16 @@
         },
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "success",
-          "isLiteral": true
+          "elementType": "success | error",
+          "typeRef": {
+            "name": "success",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -34495,13 +34213,16 @@
         },
         {
           "name": "render",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -34693,13 +34414,16 @@
         },
         {
           "name": "isAuto",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "currentBranch",
@@ -34779,13 +34503,16 @@
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -34896,13 +34623,16 @@
         },
         {
           "name": "success",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "slug",
@@ -34987,13 +34717,16 @@
         },
         {
           "name": "success",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "slug",
@@ -35224,13 +34957,16 @@
         },
         {
           "name": "action",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "authorize",
-          "isLiteral": true
+          "elementType": "authorize | connect | disconnect",
+          "typeRef": {
+            "name": "authorize",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "message",
@@ -35331,13 +35067,16 @@
       "properties": [
         {
           "name": "status",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "disabled",
-          "isLiteral": true
+          "elementType": "disabled | connected | failed | needs_auth | needs_client_registration",
+          "typeRef": {
+            "name": "disabled",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "error",
@@ -35353,10 +35092,6 @@
           "isLiteral": false
         }
       ],
-      "discriminator": {
-        "field": "status",
-        "value": "disabled"
-      },
       "sourceFile": "extension-messages.ts"
     },
     {
@@ -35469,23 +35204,29 @@
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "connected",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -35547,7 +35288,7 @@
       "properties": [
         {
           "name": "type",
-          "type": "unknown",
+          "type": "stringLiteral",
           "optional": false,
           "nullable": false,
           "isLiteral": true,
@@ -35577,7 +35318,7 @@
         },
         {
           "name": "part",
-          "type": "unknown",
+          "type": "typeParameter",
           "optional": false,
           "nullable": false,
           "isLiteral": false,
@@ -35608,7 +35349,7 @@
       "properties": [
         {
           "name": "type",
-          "type": "unknown",
+          "type": "stringLiteral",
           "optional": false,
           "nullable": false,
           "isLiteral": true,
@@ -35639,7 +35380,7 @@
       "properties": [
         {
           "name": "type",
-          "type": "unknown",
+          "type": "stringLiteral",
           "optional": false,
           "nullable": false,
           "isLiteral": true,
@@ -36253,13 +35994,16 @@
         },
         {
           "name": "response",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "once",
-          "isLiteral": true
+          "elementType": "once | always | reject",
+          "typeRef": {
+            "name": "once",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "approvedAlways",
@@ -37099,13 +36843,16 @@
         },
         {
           "name": "focused",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -37313,13 +37060,16 @@
         },
         {
           "name": "scope",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "global",
-          "isLiteral": true
+          "elementType": "global | local",
+          "typeRef": {
+            "name": "global",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "labels",
@@ -38159,13 +37909,16 @@
         },
         {
           "name": "response",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "continue",
-          "isLiteral": true
+          "elementType": "continue | stop",
+          "typeRef": {
+            "name": "continue",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -39102,13 +38855,16 @@
         },
         {
           "name": "visible",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41062,13 +40818,16 @@
         },
         {
           "name": "collapsed",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41093,13 +40852,16 @@
         },
         {
           "name": "collapsed",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41124,13 +40886,16 @@
         },
         {
           "name": "style",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "unified",
-          "isLiteral": true
+          "elementType": "unified | split",
+          "typeRef": {
+            "name": "unified",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41155,13 +40920,16 @@
         },
         {
           "name": "render",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41824,13 +41592,16 @@
         },
         {
           "name": "initialDiffStyle",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "unified",
-          "isLiteral": true
+          "elementType": "unified | split",
+          "typeRef": {
+            "name": "unified",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41868,13 +41639,16 @@
         },
         {
           "name": "autoSend",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41899,13 +41673,16 @@
         },
         {
           "name": "style",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "unified",
-          "isLiteral": true
+          "elementType": "unified | split",
+          "typeRef": {
+            "name": "unified",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -41930,13 +41707,16 @@
         },
         {
           "name": "render",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -42105,13 +41885,16 @@
         },
         {
           "name": "render",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -42591,13 +42374,16 @@
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "requestID",
@@ -42755,13 +42541,16 @@
         },
         {
           "name": "enabled",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -43287,13 +43076,16 @@
         },
         {
           "name": "value",
-          "type": "literal",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
-          "typeRef": null,
-          "literalValue": "",
-          "isLiteral": true
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -43339,13 +43131,16 @@
         },
         {
           "name": "action",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "add",
-          "isLiteral": true
+          "elementType": "add | remove",
+          "typeRef": {
+            "name": "add",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         },
         {
           "name": "providerID",
@@ -43848,13 +43643,16 @@
         },
         {
           "name": "dir",
-          "type": "literal",
+          "type": "union",
           "optional": false,
           "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": 1,
-          "isLiteral": true
+          "elementType": "1 | -1",
+          "typeRef": {
+            "name": "1",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
       "discriminator": {
@@ -44267,7 +44065,7 @@
   "statistics": {
     "totalTypes": 543,
     "webviewToExtensionMessages": 205,
-    "extensionToWebviewMessages": 191,
+    "extensionToWebviewMessages": 183,
     "inlineMessagesExtracted": 0
   }
 }
