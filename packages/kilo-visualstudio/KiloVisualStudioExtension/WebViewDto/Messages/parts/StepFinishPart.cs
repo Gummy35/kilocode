@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "step-finish"
 /// Source: parts.ts
 /// </summary>
-public class StepFinishPart
+public class StepFinishPart : BasePart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

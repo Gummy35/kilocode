@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "skill"
 /// Source: ..\marketplace.ts
 /// </summary>
-public class SkillMarketplaceItem
+public class SkillMarketplaceItem : MarketplaceItemBase
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

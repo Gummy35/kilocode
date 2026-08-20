@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "mcp"
 /// Source: ..\marketplace.ts
 /// </summary>
-public class McpMarketplaceItem
+public class McpMarketplaceItem : MarketplaceItemBase
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

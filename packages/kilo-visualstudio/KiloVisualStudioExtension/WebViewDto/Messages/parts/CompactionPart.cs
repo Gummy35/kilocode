@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "compaction"
 /// Source: parts.ts
 /// </summary>
-public class CompactionPart
+public class CompactionPart : BasePart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

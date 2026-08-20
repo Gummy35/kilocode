@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "step-start"
 /// Source: parts.ts
 /// </summary>
-public class StepStartPart
+public class StepStartPart : BasePart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

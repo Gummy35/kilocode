@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "reasoning"
 /// Source: parts.ts
 /// </summary>
-public class ReasoningPart
+public class ReasoningPart : BasePart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -74,4 +74,4 @@ packages/opencode/.artifacts/
 # Visual Studio related dirs
 packages/kilo-visualstudio/**/bin/
 packages/kilo-visualstudio/**/obj/
-.vs/**
+**/.vs

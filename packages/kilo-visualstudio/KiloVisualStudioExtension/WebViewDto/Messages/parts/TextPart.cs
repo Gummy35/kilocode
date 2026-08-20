@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "text"
 /// Source: parts.ts
 /// </summary>
-public class TextPart
+public class TextPart : BasePart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "agentManager.runStatus"
 /// Source: extension-messages.ts
 /// </summary>
-public class AgentManagerRunStatusMessage
+public class AgentManagerRunStatusMessage : RunStatus
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

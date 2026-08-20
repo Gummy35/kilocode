@@ -357,7 +357,8 @@ function extractDiscriminator(properties: PropertyDefinition[]): DiscriminatorIn
  * 1. Get interface name
  * 2. Extract all property signatures
  * 3. Detect discriminator field
- * 4. Record source file location
+ * 4. Extract base types from extends clause
+ * 5. Record source file location
  * 
  * @param node - Interface declaration node
  * @param context - Extraction context
@@ -385,6 +386,24 @@ function extractInterfaceDeclaration(
   }
 
   const discriminator = extractDiscriminator(properties)
+  
+  // Extract base types from extends clause
+  let extendsBase: string | undefined
+  if (node.heritageClauses && node.heritageClauses.length > 0) {
+    for (const clause of node.heritageClauses) {
+      if (clause.token === ts.SyntaxKind.ExtendsKeyword) {
+        for (const typeRef of clause.types) {
+          const baseTypeName = typeRef.expression.getText()
+          // For simple extends (e.g., "extends BasePart"), use the base type name
+          // For generic extends (e.g., "extends BasePart<T>"), extract just the type name
+          const simpleName = baseTypeName.split('<')[0]
+          if (!extendsBase) {
+            extendsBase = simpleName
+          }
+        }
+      }
+    }
+  }
 
   return {
     name,
@@ -392,6 +411,7 @@ function extractInterfaceDeclaration(
     properties,
     discriminator: discriminator || undefined,
     sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
+    extendsBase,
   }
 }
 

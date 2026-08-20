@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="KiloExtensionDTOs/KiloExtensionDTOs.csproj" />
+  <Project Path="KiloVisualStudioExtension.Tests/KiloVisualStudioExtension.Tests.csproj" />
+  <Project Path="KiloVisualStudioExtension/KiloVisualStudioExtension.csproj">
+    <Deploy />
+  </Project>
+</Solution>

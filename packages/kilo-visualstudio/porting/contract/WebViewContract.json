@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "ae80930e5479fcf6022ff0f7f8ca23c85accf903",
-    "generatedAt": "2026-08-20T12:02:05.384Z"
+    "commit": "76f001a31f36b86e3cdfeb6850eab960d2b0459c",
+    "generatedAt": "2026-08-20T13:47:09.822Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -17999,7 +17999,8 @@
         "field": "type",
         "value": "mcp"
       },
-      "sourceFile": "..\\marketplace.ts"
+      "sourceFile": "..\\marketplace.ts",
+      "extendsBase": "MarketplaceItemBase"
     },
     {
       "name": "AgentContent",
@@ -18118,7 +18119,8 @@
         "field": "type",
         "value": "agent"
       },
-      "sourceFile": "..\\marketplace.ts"
+      "sourceFile": "..\\marketplace.ts",
+      "extendsBase": "MarketplaceItemBase"
     },
     {
       "name": "SkillMarketplaceItem",
@@ -18191,7 +18193,8 @@
         "field": "type",
         "value": "skill"
       },
-      "sourceFile": "..\\marketplace.ts"
+      "sourceFile": "..\\marketplace.ts",
+      "extendsBase": "MarketplaceItemBase"
     },
     {
       "name": "InstallMarketplaceItemOptions",
@@ -23369,7 +23372,8 @@
         "field": "type",
         "value": "text"
       },
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "extendsBase": "BasePart"
     },
     {
       "name": "FilePartSource",
@@ -23489,7 +23493,8 @@
         "field": "type",
         "value": "file"
       },
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "extendsBase": "BasePart"
     },
     {
       "name": "ToolPart",
@@ -23562,7 +23567,8 @@
         "field": "type",
         "value": "tool"
       },
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "extendsBase": "BasePart"
     },
     {
       "name": "ReasoningPart",
@@ -23609,7 +23615,8 @@
         "field": "type",
         "value": "reasoning"
       },
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "extendsBase": "BasePart"
     },
     {
       "name": "StepStartPart",
@@ -23643,7 +23650,8 @@
         "field": "type",
         "value": "step-start"
       },
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "extendsBase": "BasePart"
     },
     {
       "name": "StepThroughputMetrics",
@@ -23811,7 +23819,8 @@
         "field": "type",
         "value": "step-finish"
       },
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "extendsBase": "BasePart"
     },
     {
       "name": "CompactionPart",
@@ -23871,7 +23880,8 @@
         "field": "type",
         "value": "compaction"
       },
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "extendsBase": "BasePart"
     },
     {
       "name": "PartDelta",
@@ -32457,7 +32467,8 @@
         "field": "type",
         "value": "agentManager.runStatus"
       },
-      "sourceFile": "extension-messages.ts"
+      "sourceFile": "extension-messages.ts",
+      "extendsBase": "RunStatus"
     },
     {
       "name": "AgentManagerKeybindingsMessage",

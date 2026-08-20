@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "file"
 /// Source: parts.ts
 /// </summary>
-public class FilePart
+public class FilePart : BasePart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

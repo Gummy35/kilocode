@@ -30,7 +30,7 @@ import * as path from "path"
 // Contract is 2 levels up (from tools/webview-contract-extractor to packages/kilo-visualstudio)
 const VS_DIR = path.resolve(__dirname, "..", "..")
 const CONTRACT_PATH = path.join(VS_DIR, "porting/contract/WebViewContract.json")
-const OUTPUT_PATH = path.join(VS_DIR, "KiloVisualStudioExtension/WebViewDto")
+const OUTPUT_PATH = path.join(VS_DIR, "KiloExtensionDTOs")
 
 /**
  * Type reference in a property definition
@@ -72,6 +72,16 @@ interface EnumDefinition {
 }
 
 /**
+ * Inheritance candidate for heuristic detection
+ */
+interface InheritanceCandidate {
+  derivedType: TypeDefinition
+  baseType: TypeDefinition
+  confidence: number
+  reasons: string[]
+}
+
+/**
  * Type definition from the contract
  */
 interface TypeDefinition {
@@ -82,6 +92,9 @@ interface TypeDefinition {
   discriminator?: DiscriminatorInfo  // For message types
   sourceFile: string  // Original TypeScript source file
   description?: string
+  extendsBase?: string  // Explicit interface extends relationship
+  baseType?: string  // For Partial<T> & Pick<T, ...> pattern
+  requiredFields?: string[]  // Required fields from Pick<T, ...>
 }
 
 /**
@@ -919,17 +932,34 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
     if (sourceComment) sb.push(sourceComment)
   }
   
-  // Handle inheritance for Partial<T> & Pick<T, ...> pattern
-  if (typeDef.baseType) {
-    sb.push(`public class ${typeDef.name} : ${pascalCase(typeDef.baseType)}`)
+  // Handle inheritance for Partial<T> & Pick<T, ...> pattern AND explicit extends
+  const baseClassName = typeDef.extendsBase || typeDef.baseType
+  if (baseClassName) {
+    sb.push(`public class ${typeDef.name} : ${pascalCase(baseClassName)}`)
   } else {
     sb.push(`public class ${typeDef.name}`)
   }
   sb.push("{")
 
   if (typeDef.properties) {
+    // Get base class property names to skip (for extendsBase inheritance)
+    const basePropNames = new Set<string>()
+    if (typeDef.extendsBase && typeDefinitions.has(typeDef.extendsBase)) {
+      const baseDef = typeDefinitions.get(typeDef.extendsBase)!
+      if (baseDef.properties) {
+        for (const baseProp of baseDef.properties) {
+          basePropNames.add(baseProp.name)
+        }
+      }
+    }
+    
     for (const prop of typeDef.properties) {
       // Skip properties that are in the base type - they're inherited
+      // For extendsBase, skip if property exists in base class
+      // For baseType (Partial<T> & Pick<T, ...>), use requiredFields to determine what to skip
+      if (basePropNames.has(prop.name)) {
+        continue
+      }
       if (typeDef.baseType && typeDef.requiredFields && !typeDef.requiredFields.includes(prop.name)) {
         continue
       }
@@ -1108,10 +1138,33 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
   sb.push("/// Source: " + message.sourceFile)
   sb.push("/// </summary>")
   const sanitizedName = pascalCase(message.name)
-  sb.push("public class " + sanitizedName)
+  
+  // Check for inheritance relationship
+  const messageTypeDef = typeDefinitions.get(message.name)
+  const baseClassName = messageTypeDef?.extendsBase || messageTypeDef?.baseType
+  if (baseClassName) {
+    sb.push("public class " + sanitizedName + " : " + pascalCase(baseClassName))
+  } else {
+    sb.push("public class " + sanitizedName)
+  }
   sb.push("{")
 
+  // Get base class property names to skip (for extendsBase inheritance)
+  const basePropNames = new Set<string>()
+  if (messageTypeDef?.extendsBase && typeDefinitions.has(messageTypeDef.extendsBase)) {
+    const baseDef = typeDefinitions.get(messageTypeDef.extendsBase)!
+    if (baseDef.properties) {
+      for (const baseProp of baseDef.properties) {
+        basePropNames.add(baseProp.name)
+      }
+    }
+  }
+
   for (const prop of message.properties) {
+    // Skip properties that are in the base type - they're inherited
+    if (basePropNames.has(prop.name)) {
+      continue
+    }
     const mapped = mapToCSharpType(prop)
     const nullable = mapped.isNullable ? "?" : ""
     const jsonAttr = `    [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`
@@ -1305,28 +1358,28 @@ console.log()
 
 // Create namespace-based folder structure with PascalCase folder names
 const DIRECTORY_MAP: Record<string, string> = {
-  'Shared': path.join(OUTPUT_PATH, "Messages", "Shared"),
-  'Connection': path.join(OUTPUT_PATH, "Messages", "Connection"),
-  'Parts': path.join(OUTPUT_PATH, "Messages", "Parts"),
-  'Sessions': path.join(OUTPUT_PATH, "Messages", "Sessions"),
-  'Permissions': path.join(OUTPUT_PATH, "Messages", "Permissions"),
-  'Questions': path.join(OUTPUT_PATH, "Messages", "Questions"),
-  'Providers': path.join(OUTPUT_PATH, "Messages", "Providers"),
-  'Agents': path.join(OUTPUT_PATH, "Messages", "Agents"),
-  'KiloConfig': path.join(OUTPUT_PATH, "Messages", "KiloConfig"),
-  'Profile': path.join(OUTPUT_PATH, "Messages", "Profile"),
-  'AgentManager': path.join(OUTPUT_PATH, "Messages", "AgentManager"),
-  'Migration': path.join(OUTPUT_PATH, "Messages", "Migration"),
-  'Memory': path.join(OUTPUT_PATH, "Messages", "Memory"),
-  'ExtensionMessages': path.join(OUTPUT_PATH, "Messages", "ExtensionMessages"),
-  'WebviewMessages': path.join(OUTPUT_PATH, "Messages", "WebviewMessages"),
+  'Shared': path.join(OUTPUT_PATH, "Shared"),
+  'Connection': path.join(OUTPUT_PATH, "Connection"),
+  'Parts': path.join(OUTPUT_PATH, "Parts"),
+  'Sessions': path.join(OUTPUT_PATH, "Sessions"),
+  'Permissions': path.join(OUTPUT_PATH, "Permissions"),
+  'Questions': path.join(OUTPUT_PATH, "Questions"),
+  'Providers': path.join(OUTPUT_PATH, "Providers"),
+  'Agents': path.join(OUTPUT_PATH, "Agents"),
+  'KiloConfig': path.join(OUTPUT_PATH, "KiloConfig"),
+  'Profile': path.join(OUTPUT_PATH, "Profile"),
+  'AgentManager': path.join(OUTPUT_PATH, "AgentManager"),
+  'Migration': path.join(OUTPUT_PATH, "Migration"),
+  'Memory': path.join(OUTPUT_PATH, "Memory"),
+  'ExtensionMessages': path.join(OUTPUT_PATH, "ExtensionMessages"),
+  'WebviewMessages': path.join(OUTPUT_PATH, "WebviewMessages"),
 }
 
 function getDirectoryForFolder(folder: string): string {
   return DIRECTORY_MAP[folder] || DIRECTORY_MAP['Shared']
 }
 
-const ns = "KiloVisualStudioExtension.WebView.Generated"
+const ns = "KiloExtensionDTOs"
 
 // Create all directories
 for (const dir of Object.values(DIRECTORY_MAP)) {
@@ -1557,6 +1610,73 @@ ${enumDef.members.map((m, i) => `    ${pascalCase(m)}${i < enumDef.members.lengt
 const generatedOrder: string[] = []
 const visited = new Set<string>()
 
+/**
+ * Detect inheritance relationships using heuristics
+ * 
+ * Returns a map of derived type name -> base type name
+ */
+function detectInheritance(): Map<string, string> {
+  const inheritanceMap = new Map<string, string>()
+  
+  // First, use explicit extendsBase from contract (highest confidence)
+  for (const [typeName, typeDef] of typeDefinitions) {
+    if (typeDef.extendsBase && typeDefinitions.has(typeDef.extendsBase)) {
+      inheritanceMap.set(typeName, typeDef.extendsBase)
+    }
+  }
+  
+  // Then, apply heuristic detection for types without explicit extendsBase
+  for (const [typeName, typeDef] of typeDefinitions) {
+    if (typeDef.kind !== 'interface' || !typeDef.properties || inheritanceMap.has(typeName)) {
+      continue
+    }
+    
+    // Heuristic 1: Name prefix matching + same source file
+    for (const [baseName, baseDef] of typeDefinitions) {
+      if (baseName === typeName || baseDef.kind !== 'interface' || !baseDef.properties) {
+        continue
+      }
+      
+      // Check if typeName starts with baseName (e.g., "TextPart" starts with "Part")
+      if (!typeName.startsWith(baseName) && !baseName.endsWith(typeName)) {
+        continue
+      }
+      
+      // Check if same source file
+      if (typeDef.sourceFile !== baseDef.sourceFile) {
+        continue
+      }
+      
+      // Check if derived type has ALL properties of base type (property subset)
+      const basePropNames = new Set(baseDef.properties.map(p => p.name))
+      const derivedPropNames = new Set(typeDef.properties.map(p => p.name))
+      
+      const hasAllBaseProps = Array.from(basePropNames).every(name => derivedPropNames.has(name))
+      
+      if (hasAllBaseProps && basePropNames.size > 0) {
+        // Confidence: name prefix (+10) + same file (+10) + property subset (+30) = 50
+        // Threshold is 50, so this qualifies
+        inheritanceMap.set(typeName, baseName)
+        console.log(`  Heuristic: ${typeName} extends ${baseName} (confidence: name prefix + property subset)`)
+        break
+      }
+    }
+  }
+  
+  return inheritanceMap
+}
+
+// Detect inheritance relationships
+console.log("Detecting inheritance relationships...")
+const inheritanceMap = detectInheritance()
+if (inheritanceMap.size > 0) {
+  console.log(`Found ${inheritanceMap.size} inheritance relationships:`)
+  for (const [derived, base] of inheritanceMap) {
+    console.log(`  ${derived} → ${base}`)
+  }
+}
+console.log()
+
 function generateTypeWithDeps(typeName: string) {
   if (visited.has(typeName)) return
   visited.add(typeName)
@@ -1566,6 +1686,11 @@ function generateTypeWithDeps(typeName: string) {
   
   // For interfaces, generate all dependencies first
   if (typeDef.kind === 'interface' && typeDef.properties) {
+    // Generate base type first if there's an inheritance relationship
+    const baseType = inheritanceMap.get(typeName)
+    if (baseType && neededTypes.has(baseType)) {
+      generateTypeWithDeps(baseType)
+    }
     for (const prop of typeDef.properties) {
       if (prop.typeRef?.name && neededTypes.has(prop.typeRef.name)) {
         generateTypeWithDeps(prop.typeRef.name)
@@ -1612,6 +1737,19 @@ for (const [typeName, typeDef] of typeDefinitions) {
     
     if (hasValidProperties && !generatedOrder.includes(typeName)) {
       generatedOrder.push(typeName)
+    }
+  }
+}
+
+// Add base types that are extended by other types (for inheritance support)
+console.log("Adding base types for inheritance...")
+for (const [typeName, typeDef] of typeDefinitions) {
+  if (typeDef.extendsBase && !generatedOrder.includes(typeDef.extendsBase)) {
+    // Check if the base type has properties and should be generated
+    const baseDef = typeDefinitions.get(typeDef.extendsBase)
+    if (baseDef && baseDef.properties && baseDef.properties.length > 0) {
+      generatedOrder.push(typeDef.extendsBase)
+      console.log(`  Added base type: ${typeDef.extendsBase} (extended by ${typeName})`)
     }
   }
 }

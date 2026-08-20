@@ -43,8 +43,9 @@ export interface TypeDefinition {
   sourceFile: string
   description?: string
   typeRef?: TypeReference
-  baseType?: string  // For Partial<T> & Pick<T, ...> pattern
+  baseType?: string  // For Partial<T> & Pick<T, ...> pattern AND interface extends
   requiredFields?: string[]  // Required fields from Pick<T, ...>
+  extendsBase?: string  // Explicit interface extends relationship (e.g., TextPart extends BasePart)
 }
 
 export interface PropertyDefinition {

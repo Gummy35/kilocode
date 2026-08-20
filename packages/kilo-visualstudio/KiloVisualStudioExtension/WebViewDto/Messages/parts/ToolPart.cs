@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 /// Discriminator: type = "tool"
 /// Source: parts.ts
 /// </summary>
-public class ToolPart
+public class ToolPart : BasePart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
