@@ -561,4 +561,7 @@
     <Compile Include="WebviewMessages/WebviewMessage.cs" />
     <Compile Include="WebviewMessages/WebviewReadyRequest.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
 </Project>

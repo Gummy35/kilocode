@@ -8,7 +8,7 @@ namespace KiloVisualStudioExtension.ApiClient.Json
     /// </summary>
     public static class KiloJsonSerializer
     {
-        private static readonly JsonSerializerSettings _sharedSettings = CreateSharedSettings();
+        public static readonly JsonSerializerSettings _sharedSettings = CreateSharedSettings();
 
         /// <summary>
         /// Gets the shared JsonSerializerSettings instance used throughout the project.
@@ -19,7 +19,7 @@ namespace KiloVisualStudioExtension.ApiClient.Json
         /// Creates a new JsonSerializerSettings instance with Kilo-specific configuration.
         /// This is called once during static initialization and the result is reused.
         /// </summary>
-        private static JsonSerializerSettings CreateSharedSettings()
+        public static JsonSerializerSettings CreateSharedSettings()
         {
             var settings = new JsonSerializerSettings
             {
@@ -30,7 +30,7 @@ namespace KiloVisualStudioExtension.ApiClient.Json
 
             // Apply NSwag client customizations (via partial method in KiloApiClient)
             // This ensures SSE uses the same settings as HTTP API deserialization
-            KiloApiClient.UpdateJsonSerializerSettingsForShared(settings);
+            //  KiloApiClient.UpdateJsonSerializerSettingsForShared(settings);
 
             return settings;
         }
