@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace KiloVisualStudioExtension.ApiClient.Json
+namespace Common
 {
     /// <summary>
     /// Shared JSON serializer settings for the entire project.

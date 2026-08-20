@@ -11,7 +11,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using KiloVisualStudioExtension.ApiClient.Json;
+using Common;
 using KiloExtensionDTOs.WebviewMessages;
 using KiloExtensionDTOs.Shared;
 using KiloExtensionDTOs.Parts;

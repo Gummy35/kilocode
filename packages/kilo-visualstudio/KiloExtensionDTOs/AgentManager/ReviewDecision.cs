@@ -6,10 +6,16 @@
 
 #nullable enable
 
-namespace KiloExtensionDTOs.KiloConfig;
+namespace KiloExtensionDTOs.AgentManager;
 
 /// <summary>
-/// Type: SdkIndexingStatus (alias for IndexingStatus)
-/// Source: config.ts
+/// Enum: ReviewDecision
+/// Generated from union type
+/// Source: agent-manager.ts
 /// </summary>
-public class SdkIndexingStatus : IndexingStatus { }
+public enum ReviewDecision
+{
+    Pending,
+    Approved,
+    Changes_requested
+}

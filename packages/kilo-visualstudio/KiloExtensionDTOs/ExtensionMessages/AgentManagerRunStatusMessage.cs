@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.AgentManager;
 
 /// <summary>
 /// WebView message: AgentManagerRunStatusMessage

@@ -9,7 +9,12 @@
 namespace KiloExtensionDTOs.KiloConfig;
 
 /// <summary>
-/// Type: SdkIndexingStatus (alias for IndexingStatus)
+/// Enum: CodeEditDisplay
+/// Generated from union type
 /// Source: config.ts
 /// </summary>
-public class SdkIndexingStatus : IndexingStatus { }
+public enum CodeEditDisplay
+{
+    Expanded,
+    Collapsed
+}
