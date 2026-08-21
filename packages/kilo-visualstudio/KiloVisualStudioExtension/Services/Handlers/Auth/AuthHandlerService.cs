@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
+using ProfileResponse = KiloVisualStudioExtension.ApiClient.Response23;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Auth
 {

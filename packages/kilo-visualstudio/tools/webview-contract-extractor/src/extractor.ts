@@ -226,6 +226,78 @@ function extractPropertyDefinition(
     }
   }
   
+  // Check for inline object types (type literals) in property declarations
+  if (ts.isPropertySignature(declaration) && declaration.type) {
+    // Inline object type: { email: string, name?: string, ... }
+    if (ts.isTypeLiteralNode(declaration.type)) {
+      const typeLiteral = declaration.type
+      const inlineProperties: PropertyDefinition[] = []
+      
+      for (const member of typeLiteral.members) {
+        if (ts.isPropertySignature(member) && member.name) {
+          const memberSymbol = typeChecker.getSymbolAtLocation(member.name)
+          if (memberSymbol) {
+            const memberPropDef = extractPropertyDefinition(memberSymbol, typeChecker, context)
+            if (memberPropDef) {
+              inlineProperties.push(memberPropDef)
+            }
+          }
+        }
+      }
+      
+      if (inlineProperties.length > 0) {
+        // Generate a unique name for this inline type
+        const inlineTypeName = `${name}Type`
+        const inlineTypeDef: TypeDefinition = {
+          name: inlineTypeName,
+          kind: "interface",
+          properties: inlineProperties,
+          sourceFile: path.relative(VS_CODE_TYPES_PATH, declaration.getSourceFile().fileName),
+        }
+        context.types.set(inlineTypeName, inlineTypeDef)
+        
+        // Update typeRef to point to this inline type
+        typeRef = { name: inlineTypeName, kind: "interface" }
+        propertyType = inlineTypeName
+      }
+    }
+    // Inline array type: Array<{ id: string, name: string, role: string }>
+    else if (ts.isTypeReferenceNode(declaration.type) && declaration.type.typeName.getText() === 'Array') {
+      const typeArgs = declaration.type.typeArguments
+      if (typeArgs && typeArgs.length > 0 && ts.isTypeLiteralNode(typeArgs[0])) {
+        const inlineTypeLiteral = typeArgs[0]
+        const inlineProperties: PropertyDefinition[] = []
+        
+        for (const member of inlineTypeLiteral.members) {
+          if (ts.isPropertySignature(member) && member.name) {
+            const memberSymbol = typeChecker.getSymbolAtLocation(member.name)
+            if (memberSymbol) {
+              const memberPropDef = extractPropertyDefinition(memberSymbol, typeChecker, context)
+              if (memberPropDef) {
+                inlineProperties.push(memberPropDef)
+              }
+            }
+          }
+        }
+        
+        if (inlineProperties.length > 0) {
+          const inlineTypeName = `${name}ItemType`
+          const inlineTypeDef: TypeDefinition = {
+            name: inlineTypeName,
+            kind: "interface",
+            properties: inlineProperties,
+            sourceFile: path.relative(VS_CODE_TYPES_PATH, declaration.getSourceFile().fileName),
+          }
+          context.types.set(inlineTypeName, inlineTypeDef)
+          
+          elementType = inlineTypeName
+          typeRef = { name: inlineTypeName, kind: "interface" }
+          propertyType = "array"
+        }
+      }
+    }
+  }
+  
   if (!typeRef) {
     if (type.flags & ts.TypeFlags.Union) {
       const unionType = type as ts.UnionType
@@ -296,8 +368,40 @@ function extractPropertyDefinition(
       propertyType = "array"
       const typeArgs = (type as ts.TypeReference).typeArguments
       if (typeArgs && typeArgs.length > 0) {
-        elementType = getTypeName(typeArgs[0], typeChecker)
-        typeRef = { name: getTypeName(typeArgs[0], typeChecker), kind: getTypeKind(typeArgs[0]) }
+        // Check if the array element is an inline type literal
+        if (typeArgs[0]!.flags & ts.TypeFlags.Object && ts.isTypeLiteralNode((typeArgs[0] as any).symbol?.declarations?.[0])) {
+          const typeLiteral = (typeArgs[0] as any).symbol?.declarations?.[0]
+          if (typeLiteral && ts.isTypeLiteralNode(typeLiteral)) {
+            const inlineProperties: PropertyDefinition[] = []
+            for (const member of typeLiteral.members) {
+              if (ts.isPropertySignature(member) && member.name) {
+                const memberSymbol = typeChecker.getSymbolAtLocation(member.name)
+                if (memberSymbol) {
+                  const memberPropDef = extractPropertyDefinition(memberSymbol, typeChecker, context)
+                  if (memberPropDef) {
+                    inlineProperties.push(memberPropDef)
+                  }
+                }
+              }
+            }
+            if (inlineProperties.length > 0) {
+              const inlineTypeName = `${name}ItemType`
+              const inlineTypeDef: TypeDefinition = {
+                name: inlineTypeName,
+                kind: "interface",
+                properties: inlineProperties,
+                sourceFile: path.relative(VS_CODE_TYPES_PATH, declaration.getSourceFile().fileName),
+              }
+              context.types.set(inlineTypeName, inlineTypeDef)
+              elementType = inlineTypeName
+              typeRef = { name: inlineTypeName, kind: "interface" }
+            }
+          }
+        }
+        if (!elementType) {
+          elementType = getTypeName(typeArgs[0], typeChecker)
+          typeRef = { name: getTypeName(typeArgs[0], typeChecker), kind: getTypeKind(typeArgs[0]) }
+        }
       }
     } else if (type.flags & ts.TypeFlags.Object && type.symbol?.name === "Record") {
       propertyType = "record"
@@ -309,7 +413,8 @@ function extractPropertyDefinition(
       propertyType = getTypeName(type, typeChecker)
       typeRef = { name: propertyType, kind: getTypeKind(type) }
     }
-  } else {
+  } else if (!propertyType && typeRef) {
+    // Only set propertyType from typeRef if it hasn't been set already
     propertyType = typeRef.name
   }
 

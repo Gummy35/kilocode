@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "76f001a31f36b86e3cdfeb6850eab960d2b0459c",
-    "generatedAt": "2026-08-20T13:47:09.822Z"
+    "commit": "2d1d5e26643390ab37d085ee5ec890bfb50d42fc",
+    "generatedAt": "2026-08-21T19:36:34.663Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -1490,13 +1490,13 @@
           },
           {
             "name": "labels",
-            "type": "__type",
+            "type": "labelsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "labelsType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -8459,13 +8459,13 @@
           },
           {
             "name": "time",
-            "type": "union",
+            "type": "timeType",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "timeType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -8519,13 +8519,13 @@
           },
           {
             "name": "text",
-            "type": "__type",
+            "type": "textType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "textType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -8712,13 +8712,13 @@
           },
           {
             "name": "time",
-            "type": "union",
+            "type": "timeType",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "timeType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -8746,13 +8746,13 @@
           },
           {
             "name": "time",
-            "type": "union",
+            "type": "timeType",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "timeType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -8793,26 +8793,26 @@
           },
           {
             "name": "time",
-            "type": "union",
+            "type": "timeType",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "timeType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
           },
           {
             "name": "model",
-            "type": "union",
+            "type": "modelType",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "modelType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -8858,13 +8858,13 @@
           },
           {
             "name": "tokens",
-            "type": "union",
+            "type": "tokensType",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "tokensType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -9069,13 +9069,13 @@
           },
           {
             "name": "data",
-            "type": "__type",
+            "type": "dataType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "dataType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -9434,13 +9434,13 @@
           },
           {
             "name": "selections",
-            "type": "__type",
+            "type": "selectionsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "selectionsType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -10616,13 +10616,13 @@
           },
           {
             "name": "error",
-            "type": "union",
+            "type": "errorType",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | __type",
+            "elementType": null,
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "errorType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -12144,13 +12144,13 @@
           },
           {
             "name": "settings",
-            "type": "__type",
+            "type": "settingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "settingsType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -12178,13 +12178,13 @@
           },
           {
             "name": "settings",
-            "type": "__type",
+            "type": "settingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "settingsType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -12249,10 +12249,10 @@
             "type": "array",
             "optional": false,
             "nullable": false,
-            "elementType": "__type",
+            "elementType": "modelsItemType",
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "modelsItemType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -12562,13 +12562,13 @@
           },
           {
             "name": "settings",
-            "type": "__type",
+            "type": "settingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "settingsType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -13831,13 +13831,13 @@
           },
           {
             "name": "settings",
-            "type": "__type",
+            "type": "settingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "settingsType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -16307,13 +16307,13 @@
           },
           {
             "name": "files",
-            "type": "union",
+            "type": "array",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | Array",
+            "elementType": "filesItemType",
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "filesItemType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -17448,13 +17448,13 @@
           },
           {
             "name": "models",
-            "type": "union",
+            "type": "array",
             "optional": true,
             "nullable": false,
-            "elementType": "undefined | Array",
+            "elementType": "modelsItemType",
             "typeRef": {
-              "name": "undefined",
-              "kind": "union"
+              "name": "modelsItemType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -18003,6 +18003,85 @@
       "extendsBase": "MarketplaceItemBase"
     },
     {
+      "name": "vscode_extensionsItemType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "agents.ts"
+    },
+    {
+      "name": "requirementsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "skills",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | Array",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "mcps",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | Array",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "vscode_extensions",
+          "type": "array",
+          "optional": true,
+          "nullable": false,
+          "elementType": "vscode_extensionsItemType",
+          "typeRef": {
+            "name": "vscode_extensionsItemType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "..\\marketplace.ts"
+    },
+    {
       "name": "AgentContent",
       "kind": "interface",
       "properties": [
@@ -18073,13 +18152,13 @@
         },
         {
           "name": "requirements",
-          "type": "union",
+          "type": "requirementsType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "requirementsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -18956,6 +19035,137 @@
       "sourceFile": "agent-manager.ts"
     },
     {
+      "name": "checksType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "status",
+          "type": "AggregateCheckStatus",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "AggregateCheckStatus",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "passed",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "failed",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "pending",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "PRCheck",
+          "typeRef": {
+            "name": "PRCheck",
+            "kind": "object"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
+      "name": "commentsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "total",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "unresolved",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "PRComment",
+          "typeRef": {
+            "name": "PRComment",
+            "kind": "object"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "agent-manager.ts"
+    },
+    {
       "name": "PRStatus",
       "kind": "interface",
       "properties": [
@@ -19026,26 +19236,26 @@
         },
         {
           "name": "checks",
-          "type": "__type",
+          "type": "checksType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "checksType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "comments",
-          "type": "union",
+          "type": "commentsType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "commentsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -20187,6 +20397,39 @@
       "sourceFile": "permissions.ts"
     },
     {
+      "name": "toolType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "messageID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "callID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "questions.ts"
+    },
+    {
       "name": "PermissionRequest",
       "kind": "interface",
       "properties": [
@@ -20283,13 +20526,13 @@
         },
         {
           "name": "tool",
-          "type": "union",
+          "type": "toolType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "toolType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -20704,6 +20947,39 @@
       "sourceFile": "agents.ts"
     },
     {
+      "name": "errorType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "data",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | __type",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts"
+    },
+    {
       "name": "AgentRequirementResult",
       "kind": "interface",
       "properties": [
@@ -20800,13 +21076,13 @@
         },
         {
           "name": "error",
-          "type": "union",
+          "type": "errorType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "errorType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -20846,13 +21122,13 @@
         },
         {
           "name": "vscode_extensions",
-          "type": "union",
+          "type": "array",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | Array",
+          "elementType": "vscode_extensionsItemType",
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "vscode_extensionsItemType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -21024,6 +21300,309 @@
       "sourceFile": "agents.ts"
     },
     {
+      "name": "limitType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "context",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "input",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | number",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "output",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
+      "name": "inputType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "text",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "image",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "audio",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "video",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "pdf",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
+      "name": "capabilitiesType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "reasoning",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "input",
+          "type": "inputType",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "inputType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
+      "name": "optionsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "description",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
+      "name": "autoRoutingType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "models",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "string",
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
+      "name": "terminalBenchType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "overallScore",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "avgAttemptCostUsd",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
+      "name": "cacheType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "read",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "write",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "parts.ts"
+    },
+    {
+      "name": "costType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "input",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "output",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "cache",
+          "type": "cacheType",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "cacheType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
       "name": "ProviderModel",
       "kind": "interface",
       "properties": [
@@ -21120,13 +21699,13 @@
         },
         {
           "name": "limit",
-          "type": "union",
+          "type": "limitType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "limitType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -21146,39 +21725,39 @@
         },
         {
           "name": "capabilities",
-          "type": "union",
+          "type": "capabilitiesType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "capabilitiesType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "options",
-          "type": "union",
+          "type": "optionsType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "optionsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "autoRouting",
-          "type": "union",
+          "type": "autoRoutingType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "autoRoutingType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -21237,10 +21816,43 @@
         },
         {
           "name": "terminalBench",
+          "type": "terminalBenchType",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "terminalBenchType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "cost",
+          "type": "costType",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "costType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "providers.ts"
+    },
+    {
+      "name": "metadataType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "noteKey",
           "type": "union",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": "undefined | string",
           "typeRef": {
             "name": "undefined",
             "kind": "union"
@@ -21249,11 +21861,24 @@
           "isLiteral": false
         },
         {
-          "name": "cost",
+          "name": "icon",
           "type": "union",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "priority",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | number",
           "typeRef": {
             "name": "undefined",
             "kind": "union"
@@ -21335,13 +21960,13 @@
         },
         {
           "name": "metadata",
-          "type": "union",
+          "type": "metadataType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "metadataType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -22002,6 +22627,324 @@
       "sourceFile": "config.ts"
     },
     {
+      "name": "kiloType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "baseUrl",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "organizationId",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "openaiType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "ollamaType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "baseUrl",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "openai-compatibleType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "baseUrl",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "geminiType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "mistralType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "vercel-ai-gatewayType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "bedrockType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "region",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "profile",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "openrouterType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "specificProvider",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "voyageType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "qdrantType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "url",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "apiKey",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
+      "name": "lancedbType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "directory",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts"
+    },
+    {
       "name": "IndexingConfig",
       "kind": "interface",
       "properties": [
@@ -22072,156 +23015,156 @@
         },
         {
           "name": "kilo",
-          "type": "union",
+          "type": "kiloType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "kiloType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "openai",
-          "type": "union",
+          "type": "openaiType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "openaiType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "ollama",
-          "type": "union",
+          "type": "ollamaType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "ollamaType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "openai-compatible",
-          "type": "union",
+          "type": "openai-compatibleType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "openai-compatibleType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "gemini",
-          "type": "union",
+          "type": "geminiType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "geminiType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "mistral",
-          "type": "union",
+          "type": "mistralType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "mistralType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "vercel-ai-gateway",
-          "type": "union",
+          "type": "vercel-ai-gatewayType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "vercel-ai-gatewayType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "bedrock",
-          "type": "union",
+          "type": "bedrockType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "bedrockType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "openrouter",
-          "type": "union",
+          "type": "openrouterType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "openrouterType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "voyage",
-          "type": "union",
+          "type": "voyageType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "voyageType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "qdrant",
-          "type": "union",
+          "type": "qdrantType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "qdrantType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "lancedb",
-          "type": "union",
+          "type": "lancedbType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "lancedbType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -23302,6 +24245,39 @@
       "sourceFile": "parts.ts"
     },
     {
+      "name": "timeType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "created",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "completed",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | number",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "sessions.ts"
+    },
+    {
       "name": "TextPart",
       "kind": "interface",
       "properties": [
@@ -23343,13 +24319,13 @@
         },
         {
           "name": "time",
-          "type": "union",
+          "type": "timeType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "timeType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -23374,6 +24350,52 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart"
+    },
+    {
+      "name": "textType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "end",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "parts.ts"
     },
     {
       "name": "FilePartSource",
@@ -23404,13 +24426,13 @@
         },
         {
           "name": "text",
-          "type": "__type",
+          "type": "textType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "textType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -23599,13 +24621,13 @@
         },
         {
           "name": "time",
-          "type": "union",
+          "type": "timeType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "timeType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -23634,13 +24656,13 @@
         },
         {
           "name": "time",
-          "type": "union",
+          "type": "timeType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "timeType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -23697,6 +24719,111 @@
       "sourceFile": "parts.ts"
     },
     {
+      "name": "modelType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "providerID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "modelID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "variant",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "sessions.ts"
+    },
+    {
+      "name": "tokensType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "input",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "output",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "reasoning",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | number",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "cache",
+          "type": "cacheType",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "cacheType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "parts.ts"
+    },
+    {
       "name": "StepFinishPart",
       "kind": "interface",
       "properties": [
@@ -23725,26 +24852,26 @@
         },
         {
           "name": "time",
-          "type": "union",
+          "type": "timeType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "timeType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "model",
-          "type": "union",
+          "type": "modelType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "modelType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -23790,13 +24917,13 @@
         },
         {
           "name": "tokens",
-          "type": "union",
+          "type": "tokensType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "tokensType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -23962,13 +25089,13 @@
         },
         {
           "name": "cache",
-          "type": "union",
+          "type": "cacheType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "cacheType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -24089,6 +25216,39 @@
       "sourceFile": "parts.ts"
     },
     {
+      "name": "pathType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "cwd",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "root",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "sessions.ts"
+    },
+    {
       "name": "Message",
       "kind": "interface",
       "properties": [
@@ -24172,13 +25332,13 @@
         },
         {
           "name": "time",
-          "type": "union",
+          "type": "timeType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "timeType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -24198,13 +25358,13 @@
         },
         {
           "name": "model",
-          "type": "union",
+          "type": "modelType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "modelType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -24263,26 +25423,26 @@
         },
         {
           "name": "path",
-          "type": "union",
+          "type": "pathType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "pathType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         },
         {
           "name": "error",
-          "type": "union",
+          "type": "errorType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "errorType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -25081,13 +26241,13 @@
         },
         {
           "name": "tool",
-          "type": "union",
+          "type": "toolType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "toolType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -25212,13 +26372,13 @@
         },
         {
           "name": "tool",
-          "type": "union",
+          "type": "toolType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "toolType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -25589,18 +26749,136 @@
       "sourceFile": "profile.ts"
     },
     {
+      "name": "organizationsItemType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "profile.ts"
+    },
+    {
+      "name": "profileType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "email",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "name",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "organizations",
+          "type": "array",
+          "optional": true,
+          "nullable": false,
+          "elementType": "organizationsItemType",
+          "typeRef": {
+            "name": "organizationsItemType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "selectedOrganizationId",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "hasPersonalAccount",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | false | true",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "profile.ts"
+    },
+    {
       "name": "ProfileData",
       "kind": "interface",
       "properties": [
         {
           "name": "profile",
-          "type": "__type",
+          "type": "profileType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "profileType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -26170,6 +27448,124 @@
       "sourceFile": "migration.ts"
     },
     {
+      "name": "defaultModelType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "migration.ts"
+    },
+    {
+      "name": "dataType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "providers",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "MigrationProviderInfo",
+          "typeRef": {
+            "name": "MigrationProviderInfo",
+            "kind": "object"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "mcpServers",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "MigrationMcpServerInfo",
+          "typeRef": {
+            "name": "MigrationMcpServerInfo",
+            "kind": "object"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "customModes",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "MigrationCustomModeInfo",
+          "typeRef": {
+            "name": "MigrationCustomModeInfo",
+            "kind": "object"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sessions",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | Array",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "defaultModel",
+          "type": "defaultModelType",
+          "optional": true,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "defaultModelType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "settings",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | LegacySettings",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "migration.ts"
+    },
+    {
       "name": "MigrationDataMessage",
       "kind": "interface",
       "properties": [
@@ -26211,13 +27607,13 @@
         },
         {
           "name": "data",
-          "type": "__type",
+          "type": "dataType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "dataType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -26653,6 +28049,124 @@
       "sourceFile": "migration.ts"
     },
     {
+      "name": "settingsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "attentionEnabled",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "attentionSound",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts"
+    },
+    {
+      "name": "selectionsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "providers",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "string",
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "mcpServers",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "string",
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "customModes",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "string",
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sessions",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | Array",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "defaultModel",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "settings",
+          "type": "settingsType",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "settingsType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "migration.ts"
+    },
+    {
       "name": "StartMigrationMessage",
       "kind": "interface",
       "properties": [
@@ -26694,13 +28208,13 @@
         },
         {
           "name": "selections",
-          "type": "__type",
+          "type": "selectionsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "selectionsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -28096,13 +29610,13 @@
         },
         {
           "name": "error",
-          "type": "union",
+          "type": "errorType",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | __type",
+          "elementType": null,
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "errorType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -29624,13 +31138,13 @@
         },
         {
           "name": "settings",
-          "type": "__type",
+          "type": "settingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "settingsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -29658,13 +31172,13 @@
         },
         {
           "name": "settings",
-          "type": "__type",
+          "type": "settingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "settingsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -29711,6 +31225,39 @@
       "sourceFile": "extension-messages.ts"
     },
     {
+      "name": "modelsItemType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts"
+    },
+    {
       "name": "ImageModelsLoadedMessage",
       "kind": "interface",
       "properties": [
@@ -29729,10 +31276,10 @@
           "type": "array",
           "optional": false,
           "nullable": false,
-          "elementType": "__type",
+          "elementType": "modelsItemType",
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "modelsItemType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -30042,13 +31589,13 @@
         },
         {
           "name": "settings",
-          "type": "__type",
+          "type": "settingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "settingsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -31410,13 +32957,13 @@
         },
         {
           "name": "settings",
-          "type": "__type",
+          "type": "settingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "settingsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -33781,6 +35328,39 @@
       "sourceFile": "extension-messages.ts"
     },
     {
+      "name": "filesItemType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "mime",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts"
+    },
+    {
       "name": "AgentManagerSendInitialMessage",
       "kind": "interface",
       "properties": [
@@ -33887,13 +35467,13 @@
         },
         {
           "name": "files",
-          "type": "union",
+          "type": "array",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | Array",
+          "elementType": "filesItemType",
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "filesItemType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -35028,13 +36608,13 @@
         },
         {
           "name": "models",
-          "type": "union",
+          "type": "array",
           "optional": true,
           "nullable": false,
-          "elementType": "undefined | Array",
+          "elementType": "modelsItemType",
           "typeRef": {
-            "name": "undefined",
-            "kind": "union"
+            "name": "modelsItemType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -37056,6 +38636,273 @@
       "sourceFile": "webview-messages.ts"
     },
     {
+      "name": "labelsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "scope",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "statusLoaded",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "statusLoadedLegacy",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "statusNotLoaded",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "statusCreate",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "noWorkspace",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "openFailed",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceXdg",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceHomeKilo",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceHomeKilocode",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceHomeOpencode",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceEnvFile",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceEnvDir",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceEnvContent",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceProjectKilo",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceProjectRoot",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceProjectKilocode",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "sourceProjectOpencode",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "webview-messages.ts"
+    },
+    {
       "name": "OpenConfigFileRequest",
       "kind": "interface",
       "properties": [
@@ -37084,13 +38931,13 @@
         },
         {
           "name": "labels",
-          "type": "__type",
+          "type": "labelsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "labelsType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -44074,7 +45921,7 @@
     "warnings": []
   },
   "statistics": {
-    "totalTypes": 543,
+    "totalTypes": 584,
     "webviewToExtensionMessages": 205,
     "extensionToWebviewMessages": 183,
     "inlineMessagesExtracted": 0

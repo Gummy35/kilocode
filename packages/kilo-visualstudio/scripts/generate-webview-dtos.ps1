@@ -12,10 +12,12 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$ProjectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$ExtractorDir = Join-Path $PSScriptRoot "webview-contract-extractor"
-$ContractPath = Join-Path $ProjectRoot "porting\contract\WebViewContract.json"
-$OutputPath = Join-Path $ProjectRoot "KiloVisualStudioExtension\WebView\Generated"
+$PSScriptDir = Split-Path -Parent $PSScriptRoot
+$ProjectRoot = Split-Path -Parent $PSScriptDir
+$ProjectRoot = Split-Path -Parent $ProjectRoot  # Go up one more level to kilocode root
+$ExtractorDir = Join-Path $ProjectRoot "packages\kilo-visualstudio\tools\webview-contract-extractor"
+$ContractPath = Join-Path $ProjectRoot "packages\kilo-visualstudio\porting\contract\WebViewContract.json"
+$OutputPath = Join-Path $ProjectRoot "packages\kilo-visualstudio\KiloExtensionDTOs\src"
 
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "WebView Contract Extraction Pipeline" -ForegroundColor Cyan
@@ -25,14 +27,22 @@ Write-Host ""
 # Clean step
 if ($Clean) {
     Write-Host "Cleaning generated artifacts..." -ForegroundColor Yellow
+    
     if (Test-Path $ContractPath) {
         Remove-Item $ContractPath -Force
         Write-Host "  Removed: $ContractPath" -ForegroundColor Gray
     }
     if (Test-Path $OutputPath) {
-        Remove-Item $OutputPath -Recurse -Force
-        Write-Host "  Removed: $OutputPath" -ForegroundColor Gray
+        try {
+            Remove-Item $OutputPath -Recurse -Force
+            Write-Host "  Removed: $OutputPath" -ForegroundColor Gray
+        } catch {
+            Write-Host "  Could not remove $OutputPath (in use), deleting contents only..." -ForegroundColor Yellow
+            Get-ChildItem $OutputPath | Remove-Item -Recurse -Force
+            Write-Host "  Deleted contents of: $OutputPath" -ForegroundColor Gray
+        }
     }
+    
     Write-Host ""
 }
 
@@ -60,57 +70,25 @@ if (-not $SkipExtraction) {
     Write-Host ""
     Write-Host "Contract generated successfully: $ContractPath" -ForegroundColor Green
     Write-Host ""
-    
-    Set-Location $ProjectRoot
 } else {
     Write-Host "Step 1: Skipping extraction (already exists)" -ForegroundColor Yellow
     Write-Host ""
 }
 
-# Step 2: Run C# DTO generator
+# Step 2: Run TypeScript DTO generator
 if (-not $SkipGeneration) {
-    Write-Host "Step 2: Running C# DTO generator..." -ForegroundColor Cyan
+    Write-Host "Step 2: Running TypeScript DTO generator..." -ForegroundColor Cyan
     Write-Host ""
     
     if (-not (Test-Path $ContractPath)) {
         throw "Error: Contract file not found at $ContractPath. Run extraction first."
     }
     
-    # Create generator project if it doesn't exist
-    $GeneratorDir = Join-Path $PSScriptRoot "generator"
-    if (-not (Test-Path $GeneratorDir)) {
-        New-Item -ItemType Directory -Path $GeneratorDir | Out-Null
-    }
+    # Run the TypeScript generator
+    Set-Location $ExtractorDir
     
-    # Create generator project file
-    $ProjContent = @'
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-</Project>
-'@
-    
-    $ProjPath = Join-Path $GeneratorDir "Generator.csproj"
-    if (-not (Test-Path $ProjPath)) {
-        Set-Content -Path $ProjPath -Value $ProjContent
-    }
-    
-    # Copy generator source files
-    Copy-Item (Join-Path $PSScriptRoot "src\Generator.cs") $GeneratorDir -Force
-    Copy-Item (Join-Path $PSScriptRoot "src\ContractModels.cs") $GeneratorDir -Force
-    
-    # Build and run generator
-    Set-Location $GeneratorDir
-    
-    Write-Host "Building generator..." -ForegroundColor Yellow
-    dotnet build -c Release --verbosity quiet
-    
-    Write-Host "Generating C# DTOs..." -ForegroundColor Yellow
-    dotnet run -c Release -- --contract "$ContractPath" --output "$OutputPath" --namespace "KiloVisualStudioExtension.WebView.Generated"
+    Write-Host "Generating C# DTOs from WebView contract..." -ForegroundColor Yellow
+    bun run generator.ts
     
     if (-not (Test-Path $OutputPath)) {
         throw "Error: DTOs were not generated at $OutputPath"
@@ -131,7 +109,7 @@ if (-not $SkipGeneration) {
 Write-Host "Step 3: Verifying generated code compiles..." -ForegroundColor Cyan
 Write-Host ""
 
-$VsProj = Join-Path $ProjectRoot "KiloVisualStudioExtension\KiloVisualStudioExtension.csproj"
+$VsProj = Join-Path $ProjectRoot "packages\kilo-visualstudio\KiloExtensionDTOs\KiloExtensionDTOs.csproj"
 if (Test-Path $VsProj) {
     Write-Host "Building Visual Studio extension with generated DTOs..." -ForegroundColor Yellow
     dotnet build $VsProj --verbosity minimal

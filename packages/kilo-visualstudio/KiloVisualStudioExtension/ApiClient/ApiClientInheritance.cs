@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using System.Collections.Generic;
+
 namespace KiloVisualStudioExtension.ApiClient
 {
   /// <summary>
@@ -68,4 +71,34 @@ namespace KiloVisualStudioExtension.ApiClient
   }
   public partial class Response51 : IMemoryResponseBase { }
 
+
+
+
+ 
+  public partial class Balance
+  {
+    [JsonProperty("balance", Required = Required.Always)]
+    public double balance { get; set; }
+  }
+
+  public partial class KiloPass
+  {
+    [JsonProperty("currentPeriodBaseCreditsUsd", Required = Required.Always)]
+    public double CurrentPeriodBaseCreditsUsd { get; set; }
+
+    [JsonProperty("currentPeriodUsageUsd", Required = Required.Always)]
+    public double CurrentPeriodUsageUsd { get; set; }
+
+    [JsonProperty("currentPeriodBonusCreditsUsd", Required = Required.Always)]
+    public double CurrentPeriodBonusCreditsUsd { get; set; }
+
+    [JsonProperty("nextBillingAt", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+    public string NextBillingAt { get; set; }
+  }
+
+  public partial class CurrentOrgId
+  {
+    [JsonProperty("$value", Required = Required.Always)]
+    public string Value { get; set; }
+  }
 }

@@ -30,7 +30,7 @@ import * as path from "path"
 // Contract is 2 levels up (from tools/webview-contract-extractor to packages/kilo-visualstudio)
 const VS_DIR = path.resolve(__dirname, "..", "..")
 const CONTRACT_PATH = path.join(VS_DIR, "porting/contract/WebViewContract.json")
-const OUTPUT_PATH = path.join(VS_DIR, "KiloExtensionDTOs")
+const OUTPUT_PATH = path.join(VS_DIR, "KiloExtensionDTOs/src")
 
 /**
  * Type reference in a property definition
@@ -597,10 +597,10 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
     if (csharpEquivalent) {
       return { type: csharpEquivalent, isNullable: prop.optional || prop.nullable, originalType: refName }
     }
-    console.log(`DEBUG has: ${refName} - has=${typeDefinitions.has(refName)}, keys=${Array.from(typeDefinitions.keys()).filter(k => k.includes('Memory')).join(', ')}`)
+    
     if (typeDefinitions.has(refName)) {
       const typeDef = typeDefinitions.get(refName)!
-      console.log(`DEBUG: ${refName} found, kind=${typeDef.kind}, unionMembers=${JSON.stringify(typeDef.unionMembers)}`)
+      
       // Check if the type is from node_modules with no properties
       const isNodeModules = typeDef.sourceFile.includes('node_modules')
       const hasNoProperties = !typeDef.properties || typeDef.properties.length === 0
@@ -614,9 +614,9 @@ function mapToCSharpType(prop: PropertyDefinition): { type: string, originalType
       if (typeDef.kind === 'union') {
         // Skip union types with no members (indicates members couldn't be resolved from external imports)
         const memberCount = Array.isArray(typeDef.unionMembers) ? typeDef.unionMembers.length : (typeDef.unionMembers ? Object.keys(typeDef.unionMembers).length : 0)
-        console.log(`DEBUG union: ${refName} - memberCount=${memberCount}, isArray=${Array.isArray(typeDef.unionMembers)}, unionMembers=${JSON.stringify(typeDef.unionMembers)}`)
+        
         if (memberCount === 0) {
-          console.log(`DEBUG: Returning object for ${refName}`)
+          
           return { type: 'object', isNullable: prop.optional || prop.nullable, originalType: refName }
         }
         
@@ -963,10 +963,11 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
   
   // Handle inheritance for Partial<T> & Pick<T, ...> pattern AND explicit extends
   const baseClassName = typeDef.extendsBase || typeDef.baseType
+  const className = pascalCase(typeDef.name)
   if (baseClassName) {
-    sb.push(`public class ${typeDef.name} : ${pascalCase(baseClassName)}`)
+    sb.push(`public class ${className} : ${pascalCase(baseClassName)}`)
   } else {
-    sb.push(`public class ${typeDef.name}`)
+    sb.push(`public class ${className}`)
   }
   sb.push("{")
 
@@ -1013,6 +1014,46 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
       
       sb.push(jsonAttr + comment + summary + propertyDecl)
     }
+  }
+
+  // Generate nested types (inline object types) as inner classes
+  // Only generate as nested if the type is NOT already generated as a standalone file
+  const nestedTypes = Array.from(typeDefinitions.values()).filter(td => 
+    td.kind === 'interface' && 
+    td.properties &&
+    td.name !== typeDef.name &&
+    (typeDef.properties?.some(p => p.typeRef?.name === td.name || p.elementType === td.name) || false)
+  )
+
+  for (const nestedType of nestedTypes) {
+    // Check if this type is already generated as a standalone file
+    const nestedFolder = getSourceFileFolder(nestedType.sourceFile)
+    const isStandaloneType = neededTypes.has(nestedType.name) || generatedTypes.has(nestedType.name)
+    
+    // Skip nested generation if this type is already generated standalone
+    if (isStandaloneType) {
+      continue
+    }
+    
+    const nestedClassName = pascalCase(nestedType.name)
+    sb.push("    /// <summary>")
+    sb.push(`    /// Nested type: ${nestedType.name}`)
+    sb.push("    /// </summary>")
+    sb.push("    public class " + nestedClassName)
+    sb.push("    {")
+    
+    if (nestedType.properties) {
+      for (const prop of nestedType.properties) {
+        const mapped = mapToCSharpType(prop)
+        const nullable = mapped.isNullable ? "?" : ""
+        const jsonAttr = `        [JsonProperty("${prop.name}"${mapped.isNullable ? ", NullValueHandling = NullValueHandling.Ignore" : ""})]\n`
+        const comment = mapped.originalType ? `        // Original TypeScript type: ${mapped.originalType}\n` : ""
+        sb.push(jsonAttr + comment + `        public ${mapped.type}${nullable} ${pascalCase(prop.name)} { get; set; }`)
+      }
+    }
+    
+    sb.push("    }")
+    sb.push("")
   }
 
   sb.push("}")
@@ -2093,7 +2134,7 @@ public class ${pascalCase(typeName)} { }
   
   const code = generateTypeClass(typeDef, typeFolder)
   const typeTargetDir = getDirectoryForFolder(typeFolder)
-  const filePath = path.join(typeTargetDir, `${typeDef.name}.cs`)
+  const filePath = path.join(typeTargetDir, `${pascalCase(typeDef.name)}.cs`)
   fs.writeFileSync(filePath, code)
   generatedTypes.add(typeDef.name)
   console.log(`  Generated: ${typeDef.name} (${typeFolder})`)
@@ -2168,3 +2209,4 @@ console.log(`  Types: ${generatedTypes.size}`)
 console.log(`  WebView→Extension: ${contract.messages.webviewToExtension.length} message classes`)
 console.log(`  Extension→WebView: ${contract.messages.extensionToWebview.length} message classes`)
 console.log(`  Discriminator factory: WebViewMessageFactory.cs`)
+
