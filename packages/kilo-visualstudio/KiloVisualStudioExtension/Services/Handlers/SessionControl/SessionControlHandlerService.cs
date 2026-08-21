@@ -11,16 +11,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
     /// </summary>
     public class SessionControlHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new SessionControlHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public SessionControlHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public SessionControlHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -35,7 +38,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
             
             var sessionID = payload.HasValue && payload.Value.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString())
                 ? sid.GetString()
-                : _provider.GetCurrentSessionID();
+                : Provider.GetCurrentSessionID();
             
             if (string.IsNullOrEmpty(sessionID))
             {
@@ -46,10 +49,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
             System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: aborting session {sessionID}");
             
             var statusMessage = new { type = "sessionStatus", sessionID = sessionID, status = "idle" };
-            _provider.PostMessage(JsonSerializer.Serialize(statusMessage));
+            Provider.PostMessage(JsonSerializer.Serialize(statusMessage));
             
             var turnClosedMessage = new { type = "sessionTurnClosed", sessionID = sessionID, reason = "interrupted" };
-            _provider.PostMessage(JsonSerializer.Serialize(turnClosedMessage));
+            Provider.PostMessage(JsonSerializer.Serialize(turnClosedMessage));
         }
 
         /// <summary>
@@ -63,7 +66,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
             if (!payload.HasValue) return;
             var text = payload.Value.TryGetProperty("text", out var t) ? t.GetString() : "";
             if (string.IsNullOrEmpty(text)) return;
-            await _provider.HandlePromptAsync(payload);
+            await Provider.HandlePromptAsync(payload);
         }
 
         /// <summary>
@@ -77,7 +80,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Fork session payload is required");
+                await Provider.SendErrorAsync("Missing payload", "Fork session payload is required");
                 return;
             }
 
@@ -88,14 +91,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                 
                 if (string.IsNullOrEmpty(sessionID))
                 {
-                    await _provider.SendErrorAsync("Invalid payload", "Session ID is required");
+                    await Provider.SendErrorAsync("Invalid payload", "Session ID is required");
                     return;
                 }
                 
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -103,12 +106,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                 await nswagClient.Session_forkAsync(sessionID, System.Environment.CurrentDirectory, "", forkBody);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: session forked: {sessionID}");
                 
-                _provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, forkedFromID = sessionID }));
+                Provider.PostMessage(JsonSerializer.Serialize(new { type = "sessionForked", sessionID, forkedFromID = sessionID }));
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: fork session error: {ex.Message}");
-                await _provider.SendErrorAsync("Fork session error", ex.Message);
+                await Provider.SendErrorAsync("Fork session error", ex.Message);
             }
         }
 
@@ -122,16 +125,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Compact payload is required");
+                await Provider.SendErrorAsync("Missing payload", "Compact payload is required");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -143,7 +146,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Compact error", ex.Message);
+                await Provider.SendErrorAsync("Compact error", ex.Message);
             }
         }
 
@@ -157,16 +160,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Enhance prompt payload is required");
+                await Provider.SendErrorAsync("Missing payload", "Enhance prompt payload is required");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -176,12 +179,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                 var response = await nswagClient.EnhancePrompt_enhanceAsync(System.Environment.CurrentDirectory, "", enhanceBody);
                 if (response != null && !string.IsNullOrEmpty(response.Text))
                 {
-                    _provider.PostMessage(JsonSerializer.Serialize(new { type = "promptEnhanced", enhancedText = response.Text }));
+                    Provider.PostMessage(JsonSerializer.Serialize(new { type = "promptEnhanced", enhancedText = response.Text }));
                 }
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Enhance prompt error", ex.Message);
+                await Provider.SendErrorAsync("Enhance prompt error", ex.Message);
             }
         }
 
@@ -195,16 +198,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Import and send payload is required");
+                await Provider.SendErrorAsync("Missing payload", "Import and send payload is required");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -215,7 +218,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Import and send error", ex.Message);
+                await Provider.SendErrorAsync("Import and send error", ex.Message);
             }
         }
 
@@ -226,3 +229,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
         }
     }
 }
+

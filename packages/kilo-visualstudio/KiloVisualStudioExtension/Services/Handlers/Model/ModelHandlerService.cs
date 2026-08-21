@@ -13,16 +13,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
     /// </summary>
     public class ModelHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new ModelHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public ModelHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public ModelHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
                 type = "modelSelectionsLoaded",
                 selections = new {}
             };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -84,7 +87,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
         public async Task HandleRequestKiloEmbeddingModelsAsync(JsonElement? payload)
         {
             // Embedding models endpoint does not exist in current API
-            await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
+            await Provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
         }
 
         /// <summary>
@@ -98,22 +101,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendImageModelsAsync(Array.Empty<object>());
+                    await Provider.SendImageModelsAsync(Array.Empty<object>());
                     return;
                 }
 
                 var models = await nswagClient.Kilo_models_imagesAsync("", "");
                 var modelsList = models != null ? models.Select(m => (object)m).ToArray() : Array.Empty<object>();
 
-                await _provider.SendImageModelsAsync(modelsList);
+                await Provider.SendImageModelsAsync(modelsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] ModelHandler: Error fetching image models: {ex.Message}");
-                await _provider.SendImageModelsAsync(Array.Empty<object>());
+                await Provider.SendImageModelsAsync(Array.Empty<object>());
             }
         }
 
@@ -124,3 +127,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
         }
     }
 }
+

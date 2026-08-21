@@ -11,16 +11,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
     /// </summary>
     public class McpHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new McpHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public McpHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public McpHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -46,10 +49,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendMcpStatusAsync(JsonDocument.Parse("{}").RootElement);
+                    await Provider.SendMcpStatusAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
@@ -59,12 +62,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
                     ? JsonSerializer.SerializeToElement(mcpStatusDict) 
                     : JsonDocument.Parse("{}").RootElement;
 
-                await _provider.SendMcpStatusAsync(mcpStatus);
+                await Provider.SendMcpStatusAsync(mcpStatus);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] McpHandler: Error fetching MCP status: {ex.Message}");
-                await _provider.SendMcpStatusAsync(JsonDocument.Parse("{}").RootElement);
+                await Provider.SendMcpStatusAsync(JsonDocument.Parse("{}").RootElement);
             }
         }
 
@@ -90,16 +93,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "MCP configuration is required");
+                await Provider.SendErrorAsync("Missing payload", "MCP configuration is required");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -114,7 +117,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Connect MCP error", ex.Message);
+                await Provider.SendErrorAsync("Connect MCP error", ex.Message);
             }
         }
 
@@ -128,23 +131,23 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         {
             if (payload == null || !payload.Value.TryGetProperty("serverId", out var serverIdProp))
             {
-                await _provider.SendErrorAsync("Missing serverId", "serverId is required");
+                await Provider.SendErrorAsync("Missing serverId", "serverId is required");
                 return;
             }
 
             var serverId = serverIdProp.GetString();
             if (string.IsNullOrEmpty(serverId))
             {
-                await _provider.SendErrorAsync("Invalid serverId", "serverId cannot be empty");
+                await Provider.SendErrorAsync("Invalid serverId", "serverId cannot be empty");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -152,7 +155,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Disconnect MCP error", ex.Message);
+                await Provider.SendErrorAsync("Disconnect MCP error", ex.Message);
             }
         }
 
@@ -166,23 +169,23 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         {
             if (payload == null || !payload.Value.TryGetProperty("serverId", out var serverIdProp))
             {
-                await _provider.SendErrorAsync("Missing serverId", "serverId is required");
+                await Provider.SendErrorAsync("Missing serverId", "serverId is required");
                 return;
             }
 
             var serverId = serverIdProp.GetString();
             if (string.IsNullOrEmpty(serverId))
             {
-                await _provider.SendErrorAsync("Invalid serverId", "serverId cannot be empty");
+                await Provider.SendErrorAsync("Invalid serverId", "serverId cannot be empty");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -190,7 +193,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Authenticate MCP error", ex.Message);
+                await Provider.SendErrorAsync("Authenticate MCP error", ex.Message);
             }
         }
 
@@ -209,33 +212,33 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         {
             if (payload == null || !payload.Value.TryGetProperty("serverId", out var serverIdProp))
             {
-                await _provider.SendErrorAsync("Missing serverId", "serverId is required");
+                await Provider.SendErrorAsync("Missing serverId", "serverId is required");
                 return;
             }
 
             var serverId = serverIdProp.GetString();
             if (string.IsNullOrEmpty(serverId))
             {
-                await _provider.SendErrorAsync("Invalid serverId", "serverId cannot be empty");
+                await Provider.SendErrorAsync("Invalid serverId", "serverId cannot be empty");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
                 // TODO: NSwag client needs Mcp_removeAsync method added
                 // await nswagClient.Mcp_removeAsync(serverId, System.Environment.CurrentDirectory, "");
-                await _provider.SendErrorAsync("Not implemented", "MCP removal is not yet supported via NSwag");
+                await Provider.SendErrorAsync("Not implemented", "MCP removal is not yet supported via NSwag");
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Remove MCP error", ex.Message);
+                await Provider.SendErrorAsync("Remove MCP error", ex.Message);
             }
         }
 
@@ -246,3 +249,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
         }
     }
 }
+

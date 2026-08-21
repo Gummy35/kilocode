@@ -10,16 +10,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.StateManagement
     /// </summary>
     public class StateManagementService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new StateManagementService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public StateManagementService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public StateManagementService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.StateManagement
             if (payload.Value.TryGetProperty("state", out var state))
             {
                 // Store state via provider's internal method
-                await _provider.StoreStateAsync(state);
+                await Provider.StoreStateAsync(state);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] StateManagement: state saved");
             }
         }
@@ -51,11 +54,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.StateManagement
         {
             System.Diagnostics.Debug.WriteLine($"[Kilo] StateManagement: getState requested");
             
-            var state = await _provider.GetStoredStateAsync();
+            var state = await Provider.GetStoredStateAsync();
             if (state.HasValue)
             {
                 var message = new { type = "setState", state = state.Value };
-                _provider.PostMessage(JsonSerializer.Serialize(message));
+                Provider.PostMessage(JsonSerializer.Serialize(message));
                 System.Diagnostics.Debug.WriteLine($"[Kilo] StateManagement: state sent to webview");
             }
             else
@@ -71,3 +74,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.StateManagement
         }
     }
 }
+

@@ -13,16 +13,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
     /// </summary>
     public class NotificationHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new NotificationHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public NotificationHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public NotificationHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -35,22 +38,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendNotificationsAsync(Array.Empty<object>());
+                    await Provider.SendNotificationsAsync(Array.Empty<object>());
                     return;
                 }
 
                 var notifications = await nswagClient.Kilo_notificationsAsync("", "");
                 var notificationsList = notifications != null ? notifications.Select(n => (object)n).ToArray() : Array.Empty<object>();
 
-                await _provider.SendNotificationsAsync(notificationsList);
+                await Provider.SendNotificationsAsync(notificationsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] NotificationHandler: Error fetching notifications: {ex.Message}");
-                await _provider.SendNotificationsAsync(Array.Empty<object>());
+                await Provider.SendNotificationsAsync(Array.Empty<object>());
             }
         }
 
@@ -63,7 +66,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         public async Task HandleDismissNotificationAsync(JsonElement? payload)
         {
             // Notification dismiss endpoint does not exist in current API
-            await _provider.SendErrorAsync("Not supported", "Notification dismiss is not available in the current API");
+            await Provider.SendErrorAsync("Not supported", "Notification dismiss is not available in the current API");
         }
 
         /// <summary>
@@ -75,7 +78,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         public async Task HandleResetReadNotificationsAsync(JsonElement? payload)
         {
             // Reset read notifications endpoint does not exist in current API
-            await _provider.SendErrorAsync("Not supported", "Reset read notifications is not available in the current API");
+            await Provider.SendErrorAsync("Not supported", "Reset read notifications is not available in the current API");
         }
 
         public void Dispose()
@@ -85,3 +88,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         }
     }
 }
+

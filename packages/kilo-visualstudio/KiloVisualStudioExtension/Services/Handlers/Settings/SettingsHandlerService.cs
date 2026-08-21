@@ -11,16 +11,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// </summary>
     public class SettingsHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new SettingsHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public SettingsHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public SettingsHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         public void HandleRequestIndexingSettings(JsonElement? payload)
         {
             var message = new { type = "indexingSettingsLoaded", settings = new { showButtonWhenDisabled = true } };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         public void HandleRequestChatSettings(JsonElement? payload)
         {
             var message = new { type = "chatSettingsLoaded", settings = new { shiftTabCyclesVariant = true } };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -56,7 +59,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         public void HandleRequestThroughputSetting(JsonElement? payload)
         {
             var message = new { type = "throughputSettingLoaded", visible = true };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -79,7 +82,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
                     model = (string?)"" 
                 } 
             };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -92,22 +95,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendIndexingStatusAsync(JsonDocument.Parse("{}").RootElement);
+                    await Provider.SendIndexingStatusAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
                 var status = await nswagClient.Indexing_statusAsync("", "");
                 var statusData = status != null ? JsonSerializer.SerializeToElement(status) : JsonDocument.Parse("{}").RootElement;
 
-                await _provider.SendIndexingStatusAsync(statusData);
+                await Provider.SendIndexingStatusAsync(statusData);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SettingsHandler: Error fetching indexing status: {ex.Message}");
-                await _provider.SendIndexingStatusAsync(JsonDocument.Parse("{}").RootElement);
+                await Provider.SendIndexingStatusAsync(JsonDocument.Parse("{}").RootElement);
             }
         }
 
@@ -121,7 +124,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         public async Task HandleRequestWorkStyleAsync(JsonElement? payload)
         {
             // Work style endpoint does not exist in current API
-            await _provider.SendWorkStyleLoadedAsync(new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
+            await Provider.SendWorkStyleLoadedAsync(new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
         }
 
         /// <summary>
@@ -134,7 +137,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         public async Task HandleApplyWorkStyleAsync(JsonElement? payload)
         {
             // Work style endpoint does not exist in current API
-            await _provider.SendErrorAsync("Not supported", "Work style configuration is not available in the current API");
+            await Provider.SendErrorAsync("Not supported", "Work style configuration is not available in the current API");
         }
 
         public void Dispose()
@@ -144,3 +147,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         }
     }
 }
+

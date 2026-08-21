@@ -12,16 +12,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
     /// </summary>
     public class UiHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new UiHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public UiHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public UiHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
                 tab = tabProp.GetString();
             }
             var navigateMsg = new { type = "navigate", view = "settings", tab };
-            _provider.PostMessage(JsonSerializer.Serialize(navigateMsg));
+            Provider.PostMessage(JsonSerializer.Serialize(navigateMsg));
         }
 
         /// <summary>
@@ -66,7 +69,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Open sub-agent viewer payload is required");
+                await Provider.SendErrorAsync("Missing payload", "Open sub-agent viewer payload is required");
                 return;
             }
 
@@ -85,11 +88,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
                 }
 
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Open sub-agent viewer - session: {sessionID}");
-                _provider.PostMessage(JsonSerializer.Serialize(new { type = "subAgentViewerOpened", sessionID, title }));
+                Provider.PostMessage(JsonSerializer.Serialize(new { type = "subAgentViewerOpened", sessionID, title }));
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Open sub-agent viewer error", ex.Message);
+                await Provider.SendErrorAsync("Open sub-agent viewer error", ex.Message);
             }
         }
 
@@ -102,7 +105,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleReloadAsync(JsonElement? payload)
         {
-            var nswagClient = _provider.GetNswagClient();
+            var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null)
             {
                 System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: reload - no NSwag client");
@@ -116,7 +119,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
                 await nswagClient.Instance_reloadAsync(directory, "");
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Backend reloaded for directory {directory}");
                 
-                _provider.PostMessage(JsonSerializer.Serialize(new { type = "configReloaded" }));
+                Provider.PostMessage(JsonSerializer.Serialize(new { type = "configReloaded" }));
             }
             catch (Exception ex)
             {
@@ -134,7 +137,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Save image payload is required");
+                await Provider.SendErrorAsync("Missing payload", "Save image payload is required");
                 return;
             }
 
@@ -145,7 +148,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
                 
                 if (string.IsNullOrEmpty(imageData))
                 {
-                    await _provider.SendErrorAsync("Invalid payload", "Image data is required");
+                    await Provider.SendErrorAsync("Invalid payload", "Image data is required");
                     return;
                 }
                 
@@ -154,11 +157,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
                 System.IO.File.WriteAllBytes(path, bytes);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] UiHandler: Image saved: {path}");
                 
-                _provider.PostMessage(JsonSerializer.Serialize(new { type = "imageSaved", path }));
+                Provider.PostMessage(JsonSerializer.Serialize(new { type = "imageSaved", path }));
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Save image error", ex.Message);
+                await Provider.SendErrorAsync("Save image error", ex.Message);
             }
         }
 
@@ -169,3 +172,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         }
     }
 }
+

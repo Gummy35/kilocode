@@ -29,8 +29,14 @@ using KiloExtensionDTOs.Connection;
 
 namespace KiloVisualStudioExtension
 {
-  public class SSEHelper
+  public class SSEHelper: IDisposable
   {
+    private readonly ServiceProvider _serviceProvider;
+    private bool _disposed;
+
+    private VSProvider Provider => _serviceProvider.GetService<VSProvider>()
+        ?? throw new InvalidOperationException("VSProvider not registered in service provider");
+
     private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
     private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
     private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
@@ -62,17 +68,19 @@ namespace KiloVisualStudioExtension
     private readonly Action<string> _postMessage;
     private readonly JsonSerializer _serializer;
 
-    public SSEHelper(Action<string> postMessage, DTE dte = null)
+    public SSEHelper(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null)
     {
+      _serviceProvider = serviceProvider;
       _postMessage = postMessage;
       _serializer = KiloJsonSerializer.Create();
 
       if (dte != null)
       {
-        var vsProvider = new VisualStudioDirectoryProvider(dte);
+        var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(dte));
         _projectDirectoryProvider = vsProvider.CreateProvider(
             projectDirectoryOverride: null, // or specify a path like @"C:\MyProject"
             sessionDirectories: _sessionDirectories);
+        _serviceProvider.AddService(_projectDirectoryProvider);
       }
     }
 
@@ -1610,6 +1618,11 @@ namespace KiloVisualStudioExtension
       return IsSessionTracked(sessionId);
     }
 
+    public void Dispose()
+    {
+      if (_disposed) return;
+      _disposed = true;
+    }
 
   }
 }

@@ -157,3 +157,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.CloudSession
         void PostMessage(object message);
     }
 }
+

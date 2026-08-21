@@ -4,36 +4,33 @@
 // import type { KiloClient, Session } from "@kilocode/sdk/v2/client"
 // import { retry } from "../services/cli-backend/retry"
 // import { getErrorMessage } from "../kilo-provider-utils"
+using KiloExtensionDTOs.Memory;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Utils;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using KiloVisualStudioExtension.Utils;
 using System.Reflection.Emit;
-
-using MemoryStatusResponse = KiloVisualStudioExtension.ApiClient.Response42;
-using MemoryShowResponse = KiloVisualStudioExtension.ApiClient.Response43;
-using MemoryEnableResponse = KiloVisualStudioExtension.ApiClient.Response44;
-using MemoryDisableResponse = KiloVisualStudioExtension.ApiClient.Response45;
+using System.Threading.Tasks;
 using MemoryConfigureResponse = KiloVisualStudioExtension.ApiClient.Response46;
-using MemoryRebuildResponse = KiloVisualStudioExtension.ApiClient.Response47;
-using MemoryRememberResponse = KiloVisualStudioExtension.ApiClient.Response48;
-using MemoryCorrectResponse = KiloVisualStudioExtension.ApiClient.Response49;
-using MemoryForgetResponse = KiloVisualStudioExtension.ApiClient.Response50;
-using MemoryPurgeResponse = KiloVisualStudioExtension.ApiClient.Response51;
-
-using MemoryRememberBody = KiloVisualStudioExtension.ApiClient.Body68;
 using MemoryCorrectBody = KiloVisualStudioExtension.ApiClient.Body69;
+using MemoryCorrectResponse = KiloVisualStudioExtension.ApiClient.Response49;
+using MemoryDisableResponse = KiloVisualStudioExtension.ApiClient.Response45;
+using MemoryEnableResponse = KiloVisualStudioExtension.ApiClient.Response44;
 using MemoryForgetBody = KiloVisualStudioExtension.ApiClient.Body70;
+using MemoryForgetResponse = KiloVisualStudioExtension.ApiClient.Response50;
 using MemoryPurgeBody = KiloVisualStudioExtension.ApiClient.Body71;
-
-
-using KiloExtensionDTOs.Memory;
+using MemoryPurgeResponse = KiloVisualStudioExtension.ApiClient.Response51;
+using MemoryRebuildResponse = KiloVisualStudioExtension.ApiClient.Response47;
+using MemoryRememberBody = KiloVisualStudioExtension.ApiClient.Body68;
+using MemoryRememberResponse = KiloVisualStudioExtension.ApiClient.Response48;
+using MemoryShowResponse = KiloVisualStudioExtension.ApiClient.Response43;
+using MemoryStatusResponse = KiloVisualStudioExtension.ApiClient.Response42;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Memory
 {
@@ -183,8 +180,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
   }
 
   // export class KiloProviderMemory {
-  public class MemoryHandlerService
+  public class MemoryHandlerService : IDisposable
   {
+    private readonly ServiceProvider _serviceProvider;
+    private bool _disposed;
+
+    private VSProvider Provider => _serviceProvider.GetService<VSProvider>()
+        ?? throw new InvalidOperationException("VSProvider not registered in service provider");
+
     // const CACHE_LIMIT = 8
     internal const int CACHE_LIMIT = 8;
     // const STORED_LIMIT = 16
@@ -201,8 +204,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     private Task _tail = Task.CompletedTask;
 
     //   constructor(private readonly input: KiloProviderMemoryInput) {}
-    public MemoryHandlerService(IKiloProviderMemoryInput input)
+    public MemoryHandlerService(ServiceProvider serviceProvider, IKiloProviderMemoryInput input)
     {
+      _serviceProvider = serviceProvider;
       _input = input;
     }
 
@@ -1012,5 +1016,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
       }
       return await func();
     }
+
+    public void Dispose()
+    {
+      if (_disposed) return;
+      _disposed = true;
+    }
   }
 }
+

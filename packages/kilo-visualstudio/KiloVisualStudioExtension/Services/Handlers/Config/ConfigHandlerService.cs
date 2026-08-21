@@ -13,16 +13,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
     /// </summary>
     public class ConfigHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new ConfigHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public ConfigHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public ConfigHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -48,10 +51,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
+                    await Provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
@@ -66,12 +69,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                     features = JsonDocument.Parse("{}").RootElement;
                 }
 
-                await _provider.SendConfigLoadedAsync(config, features);
+                await Provider.SendConfigLoadedAsync(config, features);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] ConfigHandler: Error fetching config: {ex.Message}");
-                await _provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
+                await Provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
             }
         }
 
@@ -98,16 +101,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Payload is required for updateSetting");
+                await Provider.SendErrorAsync("Missing payload", "Payload is required for updateSetting");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -119,7 +122,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Update setting error", ex.Message);
+                await Provider.SendErrorAsync("Update setting error", ex.Message);
             }
         }
 
@@ -146,16 +149,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         {
             if (payload == null)
             {
-                await _provider.SendErrorAsync("Missing payload", "Payload is required for updateConfig");
+                await Provider.SendErrorAsync("Missing payload", "Payload is required for updateConfig");
                 return;
             }
 
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendErrorAsync("Not connected", "Not connected to backend");
+                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
                     return;
                 }
 
@@ -167,7 +170,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
             }
             catch (Exception ex)
             {
-                await _provider.SendErrorAsync("Update config error", ex.Message);
+                await Provider.SendErrorAsync("Update config error", ex.Message);
             }
         }
 
@@ -204,7 +207,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
             
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null) return;
                 
                 // Config model doesn't have a Path property - use default config path
@@ -232,3 +235,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         }
     }
 }
+

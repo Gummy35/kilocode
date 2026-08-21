@@ -13,17 +13,20 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
     /// </summary>
     public class AgentRequestService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
 
         /// <summary>
         /// Creates a new AgentRequestService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public AgentRequestService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public AgentRequestService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Handles the requestAgents message from the webview.
@@ -32,7 +35,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestAgentsAsync()
         {
-            var nswagClient = _provider.GetNswagClient();
+            var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null)
             {
                 await SendEmptyAgentsAsync();
@@ -87,7 +90,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
                     allAgents = agentsList.ToArray(),
                     defaultAgent = defaultAgent
                 };
-                _provider.PostMessage(JsonSerializer.Serialize(message));
+                Provider.PostMessage(JsonSerializer.Serialize(message));
             }
             catch (Exception ex)
             {
@@ -105,7 +108,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
                 allAgents = Array.Empty<object>(),
                 defaultAgent = "code"
             };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
             await Task.CompletedTask;
         }
 
@@ -116,3 +119,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
         }
     }
 }
+

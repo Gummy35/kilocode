@@ -13,16 +13,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
     /// </summary>
     public class ProviderRequestService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new ProviderRequestService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public ProviderRequestService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public ProviderRequestService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestProvidersAsync()
         {
-            var nswagClient = _provider.GetNswagClient();
+            var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null)
             {
                 await SendEmptyProvidersAsync();
@@ -84,7 +87,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
                     authMethods = new Dictionary<string, object[]>(),
                     authStates = new Dictionary<string, object>()
                 };
-                _provider.PostMessage(JsonSerializer.Serialize(message));
+                Provider.PostMessage(JsonSerializer.Serialize(message));
             }
             catch (Exception ex)
             {
@@ -105,7 +108,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
                 authMethods = new Dictionary<string, object[]>(),
                 authStates = new Dictionary<string, object>()
             };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
             await Task.CompletedTask;
         }
 
@@ -116,3 +119,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
         }
     }
 }
+

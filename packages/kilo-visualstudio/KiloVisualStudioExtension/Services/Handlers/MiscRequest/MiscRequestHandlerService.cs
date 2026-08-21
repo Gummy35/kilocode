@@ -14,16 +14,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     /// </summary>
     public class MiscRequestHandlerService : IDisposable
     {
-        private readonly VSProvider _provider;
+        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
         /// Creates a new MiscRequestHandlerService instance.
         /// </summary>
-        /// <param name="provider">The VSProvider instance to use for webview communication.</param>
-        public MiscRequestHandlerService(VSProvider provider)
+        /// <param name="serviceProvider">The service provider for dependency injection.</param>
+        public MiscRequestHandlerService(ServiceProvider serviceProvider)
         {
-            _provider = provider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
               type = "recentsLoaded", 
               recents = selected 
             };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -64,7 +67,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
           var message = new { type = "favoritesLoaded", 
               favorites = favorites
           };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         public void HandleRequestVariants(JsonElement? payload)
         {
             var message = new { type = "variantsLoaded", variants = new { } };
-            _provider.PostMessage(JsonSerializer.Serialize(message));
+            Provider.PostMessage(JsonSerializer.Serialize(message));
         }
 
         /// <summary>
@@ -89,22 +92,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendSkillsAsync(Array.Empty<object>());
+                    await Provider.SendSkillsAsync(Array.Empty<object>());
                     return;
                 }
 
                 var skills = await nswagClient.App_skillsAsync("", "");
                 var skillsList = skills != null ? skills.Select(s => (object)s).ToArray() : Array.Empty<object>();
 
-                await _provider.SendSkillsAsync(skillsList);
+                await Provider.SendSkillsAsync(skillsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching skills: {ex.Message}");
-                await _provider.SendSkillsAsync(Array.Empty<object>());
+                await Provider.SendSkillsAsync(Array.Empty<object>());
             }
         }
 
@@ -118,22 +121,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendCommandsAsync(Array.Empty<object>());
+                    await Provider.SendCommandsAsync(Array.Empty<object>());
                     return;
                 }
 
                 var commands = await nswagClient.Command_listAsync("", "");
                 var commandsList = commands != null ? commands.Select(c => (object)c).ToArray() : Array.Empty<object>();
 
-                await _provider.SendCommandsAsync(commandsList);
+                await Provider.SendCommandsAsync(commandsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching commands: {ex.Message}");
-                await _provider.SendCommandsAsync(Array.Empty<object>());
+                await Provider.SendCommandsAsync(Array.Empty<object>());
             }
         }
 
@@ -147,22 +150,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
             try
             {
-                var nswagClient = _provider.GetNswagClient();
+                var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await _provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
+                    await Provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
                     return;
                 }
 
                 var config = await nswagClient.Global_config_getAsync();
                 var configData = config != null ? JsonSerializer.SerializeToElement(config) : JsonDocument.Parse("{}").RootElement;
 
-                await _provider.SendGlobalConfigAsync(configData);
+                await Provider.SendGlobalConfigAsync(configData);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching global config: {ex.Message}");
-                await _provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
+                await Provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
             }
         }
 
@@ -174,7 +177,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestIndexingStatusAsync(JsonElement? payload)
         {
-            await _provider.SendIndexingStatusAsync(JsonDocument.Parse("\"off\"").RootElement);
+            await Provider.SendIndexingStatusAsync(JsonDocument.Parse("\"off\"").RootElement);
         }
 
         /// <summary>
@@ -185,7 +188,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestKiloEmbeddingModelsAsync(JsonElement? payload)
         {
-            await _provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
+            await Provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
         }
 
         /// <summary>
@@ -196,7 +199,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestImageModelsAsync(JsonElement? payload)
         {
-            await _provider.SendImageModelsAsync(Array.Empty<object>());
+            await Provider.SendImageModelsAsync(Array.Empty<object>());
         }
 
         public void Dispose()
@@ -206,3 +209,4 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         }
     }
 }
+

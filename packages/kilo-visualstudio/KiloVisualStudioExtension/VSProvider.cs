@@ -1,4 +1,9 @@
 using EnvDTE80;
+using KiloExtensionDTOs;
+using KiloExtensionDTOs.Agents;
+using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.KiloConfig;
+using KiloExtensionDTOs.Profile;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Services.Handlers.AgentRequest;
@@ -7,6 +12,7 @@ using KiloVisualStudioExtension.Services.Handlers.CloudSession;
 using KiloVisualStudioExtension.Services.Handlers.Config;
 using KiloVisualStudioExtension.Services.Handlers.Interaction;
 using KiloVisualStudioExtension.Services.Handlers.Mcp;
+using KiloVisualStudioExtension.Services.Handlers.Memory;
 using KiloVisualStudioExtension.Services.Handlers.MiscRequest;
 using KiloVisualStudioExtension.Services.Handlers.Model;
 using KiloVisualStudioExtension.Services.Handlers.Notification;
@@ -16,20 +22,25 @@ using KiloVisualStudioExtension.Services.Handlers.SessionControl;
 using KiloVisualStudioExtension.Services.Handlers.Settings;
 using KiloVisualStudioExtension.Services.Handlers.StateManagement;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
-using KiloVisualStudioExtension.WebView.Generated;
+using KiloVisualStudioExtension.Utils;
+using MessagePack;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json.Linq;
+using StreamJsonRpc.Protocol;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using VSLangProj110;
+using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
 
 namespace KiloVisualStudioExtension
@@ -52,10 +63,154 @@ namespace KiloVisualStudioExtension
   /// </summary>
   public class VSProvider : IDisposable
   {
+    public static string viewType = "kilo-code.SidebarProvider";
+    private bool disposedValue;
+    private readonly string instanceId = Guid.NewGuid().ToString();
+
+    //  private webview: vscode.Webview | null = null
+    //  private currentSession: Session | null = null
+    //  /** Remembers the last selected session so /new can stay in the same worktree after clearSession. */
+    //  private contextSessionID: string | undefined
+    //  private connectionState: "connecting" | "connected" | "disconnected" | "error" = "connecting"
+    //  private connectionGeneration = 0
+    //  private loginAttempt = 0
+    //  private isWebviewReady = false
+    //  private readonly extensionVersion =
+    //    vscode.extensions.getExtension("kilocode.kilo-code")?.packageJSON?.version ?? "unknown"
+    //  private cachedProvidersMessage: unknown = null
+    //  /**
+    //   * Provider API keys retained extension-side for authenticated model
+    //   * fetches (#10139). Keys are stripped before provider data reaches the
+    //   * webview, so fetch requests for an existing provider carry a providerID
+    //   * and the key is resolved here. Refreshed on every provider fetch.
+    //   */
+    //  private storedProviderKeys: Record<string, StoredProviderKey> = {}
+    //  /** Coalesce provider refreshes — at most one follow-up rerun when a request lands mid-flight. */
+    //  private providersRefresh: Promise<void> | null = null
+    //  private providersQueued = false
+    //  private providersGeneration = 0
+    //  private sandboxRevision = 0
+    //  private cachedAgentsMessage: unknown = null
+    //  /** Cached skillsLoaded payload so requestSkills can be served before client is ready */
+    //  private cachedSkillsMessage: unknown = null
+    //  /** Cached commandsLoaded payload so requestCommands can be served before client is ready */
+    //  private cachedCommandsMessage: unknown = null
+    //  /** Cached configLoaded payload so requestConfig can be served before client is ready */
+    //  private cachedConfigMessage: unknown = null
+    //  private cachedGlobalConfig: Config | null = null
+    //  /** Cached indexingStatusLoaded payload so requestIndexingStatus can be served before client is ready */
+    //  private cachedIndexingStatusMessage: unknown = null
+    //  /** Cached kiloEmbeddingModelsLoaded payload so requestKiloEmbeddingModels is resilient offline. */
+    //  private cachedKiloEmbeddingModelsMessage: unknown = null
+    //  /** Cached imageModelsLoaded payload so requestImageModels is resilient offline. */
+    //  private cachedImageModelsMessage: unknown = null
+    //  /** Cached mcpStatusLoaded payload so requestMcpStatus can be served before client is ready */
+    //  private cachedMcpStatusMessage: unknown = null
+    //  /** Ref-count of in-flight handleUpdateConfig calls; prevents fetchAndSendConfig from sending stale data */
+    //  private pending = 0
+    //  private configWarningsShown = false
+    //  /** Cached notificationsLoaded payload */
+    //  private cachedNotificationsMessage: NotificationsMessage | null = null
+    //  private pendingKiloModel: { modelID?: string; agent?: string
+    //  } | null = null
+    //  private pendingReviewComments: { comments: unknown[]; autoSend: boolean
+    //}
+    //[] = []
+    //  private readyResolvers: (() => void)[] = []
+    //  private promptRecoveryQueued = false
+    //  private promptRecovery: Promise<void> | null = null
+    //  private trackedSessionIds: Set<string> = new Set()
+    private readonly HashSet<string> _openSessionIds = [];
+
+    //  private modelUsageSessionIds: Set<string> = new Set()
+    //  private syncedChildSessions: Set<string> = new Set()
+    //  private readonly checkpoints = new Map<string, Promise<void>>()
+    //  private readonly sessionCreations = new Map<string, Promise<{ sid: string; dir: string } | undefined >> ()
+    //  private readonly draftSessions = new Map<string, { sid: string; dir: string; expires: number } > ()
+    private readonly Dictionary<string, DraftSession> _draftSessions = new Dictionary<string, DraftSession>();
+
+    //  private readonly sandboxTransitions = new Map<string, Promise<void>>()
+    //  private readonly revisions = new Map<string, { id: string; seq: number } > ()
+    //  private readonly refreshes = new Map<string, number>()
+    //  private readonly anacondaDesktop = new AnacondaDesktopBridge()
+    //  private sessionStatusMap = new Map<string, SessionStatus["type"]>() // Latest status used for destructive config warnings.
+    //  private sessionDirectories = new Map<string, string>() // Per-session directory overrides, such as Agent Manager worktrees.
+    //  private readonly aborts = new SessionAbort()
+    //  private projectID: string | undefined // Current workspace project ID used to filter sessions.
+    //  private loadMessagesAbort: AbortController | null = null // Current load request cancellation.
+    //  private lastReconciledAt = new Map<string, number>() // Per-session focus-mode reconcile timestamp.
+    //  private pendingSessionRefresh = false // Refresh requested before the client is ready.
+    //  private readonly streams = new SessionStreamScheduler((msg) => this.postMessage(msg))
+    //  private readonly visibleTaskStreams = new VisibleTaskStreams((id, visible) => this.streams.setVisible(id, visible))
+    //  private readonly confirmations = new MessageConfirmation()
+    //  private readonly costs = new MaxCostNudge()
+    //  private readonly activeAlerts = new Map<string, number>() // sid -> limit currently shown in UI
+    //  private readonly memory = new KiloProviderMemory({
+    //    client: () => this.client ?? undefined,
+    //    session: () => this.currentSession ?? undefined,
+    //    // Honor disabled project scope (null in a multi-root panel): no workspace fallback,
+    //    // so memory operations never silently target an arbitrary folder.
+    //    dir: (sessionID) => this.getProjectDirectory(sessionID),
+    //    post: (message) => this.postMessage(message),
+    //  })
+    //  private unsubscribeEvent: (() => void) | null = null
+    //  private unsubscribeState: (() => void) | null = null
+    //  /** Cached migration data so migration doesn't re-read from disk/SecretStorage. */ // legacy-migration
+    //  private migrationCache: MigrationContext["migrationCache"] = new Map()
+    //  /** Guard to prevent checkAndShowMigrationWizard running concurrently. */ // legacy-migration
+    //  private migrationCheckInFlight = false // legacy-migration
+    //  private unsubscribeNotificationDismiss: (() => void) | null = null
+    //  private unsubscribeLanguageChange: (() => void) | null = null
+    //  private unsubscribeProfileChange: (() => void) | null = null
+    //  private unsubscribeFavoritesChange: (() => void) | null = null
+    //  private unsubscribeModelSelectorExpanded: (() => void) | null = null
+    //  private unsubscribeMigrationComplete: (() => void) | null = null // legacy-migration
+    //  private unsubscribeClearPendingPrompts: (() => void) | null = null
+    //  private unsubscribeDirectoryProvider: (() => void) | null = null
+    //  private unsubscribeSandboxPreference: (() => void) | null = null
+    //  private initConnectionPromise: Promise<void> | null = null
+    //  private webviewMessageDisposable: vscode.Disposable | null = null
+    //  private autocompleteConfigDisposable: vscode.Disposable | null = null
+    //  private indexingConfigDisposable: vscode.Disposable | null = null
+    //  private chatConfigDisposable: vscode.Disposable | null = null
+    //  private throughputConfigDisposable: vscode.Disposable | null = null
+    //  private telemetryStateDisposable: vscode.Disposable | null = null
+    //  private viewStateDisposable: vscode.Disposable | null = null
+    //  private visibilityDisposable: vscode.Disposable | null = null
+    //  private autoApproveBridge: ReturnType < typeof createAutoApproveBridge> | null = null
+    //  private readonly marketplaceRemove = createMarketplaceRemover()
+
+    //  private ignoreController: FileIgnoreController | null = null
+    //  private ignoreControllerDir: string | null = null
+    //  private chatAutocomplete: ChatTextAreaAutocomplete | null = null
+    //  private projectDirectory: string | null | undefined
+    //  private slimEditMetadata = true
+
+    //  private pendingFollowup: Followup | null = null
+    //  private followupListeners: Array < (session: Session, directory: string) => void> = []
+    //private statsPoller: GitStatsPoller | null = null
+    //  private statsGitOps: GitOps | null = null
+    //  private cachedStats: unknown = null
+    //  private cachedGitRepo = false
+
+    //  private onBeforeMessage: ((msg: Record<string, unknown>) => Promise < Record<string, unknown> | null >) | null = null
+
+    //  private continueInWorktreeHandler:
+    //    | ((sessionId: string, progress: (status: string, detail ?: string, error ?: string) => void) => Promise<void>)
+    //    | null = null
+
+    //  private createWorktreeHandler: ((baseBranch ?: string, branchName ?: string) => Promise<void>) | null = null
+
+    //  private diffVirtualProvider: import("./DiffVirtualProvider").DiffVirtualProvider | undefined
+    //  private remoteService: RemoteStatusService | null = null
+    //  private unsubscribeRemote: (() => void) | null = null
+    //  private readonly requirements: AgentRequirementsController
     protected readonly KiloWebViewControl _webView;
     protected readonly KiloConnectionService _connectionService;
+    private readonly KiloProviderOptions _opts;
     protected readonly SSEHelper _sseHelper;
     private readonly SessionStreamScheduler _streamScheduler;
+    protected readonly ServiceProvider _serviceProvider;
 
     private readonly SessionHandlerService _sessionHandler;
     private readonly AuthHandlerService _authHandler;
@@ -71,6 +226,7 @@ namespace KiloVisualStudioExtension
     private readonly InteractionHandlerService _interactionHandler;
     private readonly SessionControlHandlerService _sessionControlHandler;
     private readonly UiHandlerService _uiHandler;
+    private readonly MemoryHandlerService _memoryHandler;
     private readonly RemoteStatusService _remoteService;
 
     private bool _isWebviewReady = false;
@@ -88,51 +244,86 @@ namespace KiloVisualStudioExtension
 
     /// <summary>
     /// Constructor for factory creation (webView may be null initially).
-    /// Initializes all handler services.
+    /// Initializes all handler services using dependency injection.
     /// </summary>
-    public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService)
+    public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService, KiloProviderOptions? opts = null)
     {
       _webView = webView!;
       _connectionService = connectionService;
-      _sseHelper = new SSEHelper(PostMessage);
+      _opts = opts ?? new KiloProviderOptions();
+      _serviceProvider = new ServiceProvider();
+
+      _serviceProvider.AddService(this);
+      _serviceProvider.AddService(connectionService);
+      _serviceProvider.AddService(webView ?? throw new ArgumentNullException(nameof(webView)));
+
+      _sseHelper = _serviceProvider.AddService(new SSEHelper(_serviceProvider, PostMessage));
       _connectionService.SetSSEHelper(_sseHelper);
-      _streamScheduler = new SessionStreamScheduler((sessionID, key, update) =>
+      _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler((sessionID, key, update) =>
       {
-        var message = new { type = "partUpdated", sessionID, messageID = key.Split(':')[1], part = update.Part, delta = update.TextDelta != null ? new { type = "text-delta", textDelta = update.TextDelta } : (object?)null };
-        PostMessage(JsonSerializer.Serialize(message));
-      });
+        var message = new KiloExtensionDTOs.PartUpdate
+        {
+          SessionID = sessionID,
+          MessageID = key.Split(':')[1],
+          Part = update.Part,
+          Delta = update.TextDelta != null ? new PartTextDelta { TextDelta = update.TextDelta } : null,
+        };
+        PostMessage(message);
+      }));
 
-      _sessionHandler = new SessionHandlerService(this);
-      _authHandler = new AuthHandlerService(this);
-      _configHandler = new ConfigHandlerService(this);
-      _providerRequestHandler = new ProviderRequestService(this);
-      _agentRequestHandler = new AgentRequestService(this);
-      _stateManagementHandler = new StateManagementService(this);
-      _mcpHandler = new McpHandlerService(this);
-      _notificationHandler = new NotificationHandlerService(this);
-      _modelHandler = new ModelHandlerService(this);
-      _settingsHandler = new SettingsHandlerService(this);
-      _miscRequestHandler = new MiscRequestHandlerService(this);
-      _interactionHandler = new InteractionHandlerService(this);
-      _sessionControlHandler = new SessionControlHandlerService(this);
-      _uiHandler = new UiHandlerService(this);
+      _sessionHandler = _serviceProvider.AddService(new SessionHandlerService(_serviceProvider));
+      _authHandler = _serviceProvider.AddService(new AuthHandlerService(_serviceProvider));
+      _configHandler = _serviceProvider.AddService(new ConfigHandlerService(_serviceProvider));
+      _providerRequestHandler = _serviceProvider.AddService(new ProviderRequestService(_serviceProvider));
+      _agentRequestHandler = _serviceProvider.AddService(new AgentRequestService(_serviceProvider));
+      _stateManagementHandler = _serviceProvider.AddService(new StateManagementService(_serviceProvider));
+      _mcpHandler = _serviceProvider.AddService(new McpHandlerService(_serviceProvider));
+      _notificationHandler = _serviceProvider.AddService(new NotificationHandlerService(_serviceProvider));
+      _modelHandler = _serviceProvider.AddService(new ModelHandlerService(_serviceProvider));
+      _settingsHandler = _serviceProvider.AddService(new SettingsHandlerService(_serviceProvider));
+      _miscRequestHandler = _serviceProvider.AddService(new MiscRequestHandlerService(_serviceProvider));
+      _interactionHandler = _serviceProvider.AddService(new InteractionHandlerService(_serviceProvider));
+      _sessionControlHandler = _serviceProvider.AddService(new SessionControlHandlerService(_serviceProvider));
+      _uiHandler = _serviceProvider.AddService(new UiHandlerService(_serviceProvider));
 
-      _remoteService = new RemoteStatusService();
+
+      _memoryHandler = _serviceProvider.AddService(new MemoryHandlerService(_serviceProvider, new MemoryInput(this)));
+
+      _remoteService = _serviceProvider.AddService(new RemoteStatusService());
       _sseHelper.SetRemoteStatusService(_remoteService);
 
       if (webView != null)
       {
         webView.OnMessageReceived += HandleMessageReceived;
+        _connectionService.OnStateChange += HandleStateChange;
+        _connectionService.OnSseEvent += HandleSseEvent;
       }
-      _connectionService.OnStateChange += HandleStateChange;
-      _connectionService.OnSseEvent += HandleSseEvent;
     }
 
     #region Internal Helper Methods for Handler Services
 
+    internal T? GetService<T>() where T : class
+    {
+      return _serviceProvider.GetService<T>();
+    }
+
     internal void PostMessage(string message)
     {
       _webView.PostMessage(message);
+    }
+
+    internal void PostMessage(object message)
+    {
+      try
+      {
+        if (message == null) return;
+        var s = (message is string) ? (string)message : JsonSerializer.Serialize(message);
+        _webView.PostMessage(s);
+      }
+      catch
+      {
+
+      }
     }
 
     internal KiloApiClient? GetNswagClient()
@@ -148,119 +339,99 @@ namespace KiloVisualStudioExtension
 
     internal async Task SendErrorAsync(string title, string message)
     {
-      var error = new { type = "error", title, message };
-      _webView.PostMessage(JsonSerializer.Serialize(error));
+      PostMessage(new ErrorMessage { Message = $"{title}: {message}" });
       await Task.CompletedTask;
     }
 
-    internal async Task SendProfileDataAsync(JsonElement profile)
+    internal async Task SendProfileDataAsync(ProfileData profile)
     {
-      var msg = new { type = "profileData", data = profile };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new ProfileDataMessage { Data = profile });
       await Task.CompletedTask;
     }
 
-    internal async Task SendConfigLoadedAsync(JsonElement config, JsonElement features)
+    internal async Task SendConfigLoadedAsync(KiloExtensionDTOs.KiloConfig.Config config, FeatureFlags features)
     {
-      var msg = new { type = "configLoaded", config, features };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new ConfigLoadedMessage { Config = config, Features = features });
       await Task.CompletedTask;
     }
 
     internal async Task SendMcpStatusAsync(JsonElement status)
     {
-      var msg = new { type = "mcpStatusLoaded", status };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      // todo : use strong typed data
+      PostMessage(new McpStatusLoadedMessage { Status = status });
       await Task.CompletedTask;
     }
 
-    internal async Task SendNotificationsAsync(object[] notifications)
+    internal async Task SendNotificationsAsync(List<KilocodeNotification> notifications)
     {
-      var msg = new { type = "notificationsLoaded", notifications };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new NotificationsLoadedMessage { Notifications = notifications });
       await Task.CompletedTask;
     }
 
     internal async Task SendKiloEmbeddingModelsAsync(object[] models)
     {
-      var msg = new { type = "kiloEmbeddingModelsLoaded", models };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      // TODO : check strong typed
+      PostMessage(new KiloEmbeddingModelsLoadedMessage { Catalog = models });
       await Task.CompletedTask;
     }
 
-    internal async Task SendImageModelsAsync(object[] models)
+    internal async Task SendImageModelsAsync(List<object> models)
     {
-      var msg = new { type = "imageModelsLoaded", models };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new ImageModelsLoadedMessage { Models = models });
       await Task.CompletedTask;
     }
 
-    internal async Task SendSkillsAsync(object[] skills)
+    internal async Task SendSkillsAsync(List<SkillInfo> skills)
     {
-      var msg = new { type = "skillsLoaded", skills };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new SkillsLoadedMessage { Skills = skills });
       await Task.CompletedTask;
     }
 
-    internal async Task SendCommandsAsync(object[] commands)
+    internal async Task SendCommandsAsync(List<SlashCommandInfo> commands)
     {
-      var msg = new { type = "commandsLoaded", commands };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new CommandsLoadedMessage { Commands = commands });
       await Task.CompletedTask;
     }
 
-    internal async Task SendGlobalConfigAsync(JsonElement config)
+    internal async Task SendGlobalConfigAsync(KiloExtensionDTOs.KiloConfig.Config config)
     {
-      var msg = new { type = "globalConfigLoaded", config };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new GlobalConfigLoadedMessage { Config = config });
       await Task.CompletedTask;
     }
 
     internal async Task SendIndexingStatusAsync(JsonElement status)
     {
-      var msg = new { type = "indexingStatusLoaded", status };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new IndexingStatusLoadedMessage { Status = status });
       await Task.CompletedTask;
     }
 
-    internal async Task SendWorkStyleLoadedAsync(object style)
+    internal async Task SendWorkStyleLoadedAsync(WorkStyleState style)
     {
-      var msg = new { type = "workStyleLoaded", style };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new WorkStyleLoadedMessage { Style = style });
       await Task.CompletedTask;
     }
 
-    internal async Task SendSessionCreatedAsync(JsonDocument response)
+    internal async Task SendSessionCreatedAsync(KiloExtensionDTOs.Sessions.SessionInfo session)
     {
-      if (response != null && response.RootElement.TryGetProperty("session", out var session))
-      {
-        var msg = new { type = "sessionCreated", session = session.Clone() };
-        _webView.PostMessage(JsonSerializer.Serialize(msg));
-      }
+      PostMessage(new SessionCreatedMessage { Session = session });
       await Task.CompletedTask;
     }
 
     internal async Task SendSessionDeletedAsync(string sessionID)
     {
-      var msg = new { type = "sessionDeleted", sessionID };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new SessionDeletedMessage { SessionID = sessionID });
       await Task.CompletedTask;
     }
 
-    internal async Task SendSessionUpdatedAsync(JsonDocument response)
+    internal async Task SendSessionUpdatedAsync(KiloExtensionDTOs.Sessions.SessionUpdate session)
     {
-      if (response != null && response.RootElement.TryGetProperty("session", out var session))
-      {
-        var msg = new { type = "sessionUpdated", session = session.Clone() };
-        _webView.PostMessage(JsonSerializer.Serialize(msg));
-      }
+      PostMessage(new SessionUpdatedMessage { Session = session });
       await Task.CompletedTask;
     }
 
     internal async Task SendMessageDeletedAsync(string sessionID, string messageID)
     {
-      var msg = new { type = "messageRemoved", sessionID, messageID };
-      _webView.PostMessage(JsonSerializer.Serialize(msg));
+      PostMessage(new MessageRemovedMessage { MessageID = messageID, SessionID = sessionID });
       await Task.CompletedTask;
     }
 
@@ -293,8 +464,93 @@ namespace KiloVisualStudioExtension
     internal void FocusSession(string? sessionID)
     {
       _streamScheduler.Focus(sessionID);
-      _webView.PostMessage(JsonSerializer.Serialize(new { type = "focusSession", sessionID = sessionID ?? "" }));
+      RegisterPresence();
     }
+
+    /**
+   * Drops every per-session cache entry we hold for the given id. Shared between
+   * the user-initiated delete path (handleDeleteSession, after the backend
+   * confirms) and the SSE session.deleted path (cascaded child deletes and
+   * external CLI/TUI deletes that arrive via the event stream), so both paths
+   * leave trackedSessionIds, sessionDirectories, and the related Maps in the
+   * same state — including currentSession / contextSessionID / focused-session
+   * registration. Without clearing those three, resolveSession() would still
+   * see the deleted id via this.currentSession and the next send would target
+   * a session the backend has already deleted.
+   */
+    internal void PruneDeletedSession(string sessionID)
+    {
+      UntrackSession(sessionID);
+      _openSessionIds.Remove(sessionID);
+      foreach (var key in _draftSessions.Keys.Where(k => _draftSessions[k].Sid == sessionID).ToArray())
+      {
+        _draftSessions.Remove(key);
+      }
+
+      _streamScheduler.Drop(sessionID);
+
+      //this.visibleTaskStreams.delete(sessionID)
+      //  this.syncedChildSessions.delete(sessionID)    
+      //  this.sessionDirectories.delete(sessionID)   
+      //this.aborts.delete(sessionID)
+      //this.lastReconciledAt.delete(sessionID)
+      //this.checkpoints.delete(sessionID)
+      //this.revisions.delete(sessionID)
+      //this.refreshes.delete(sessionID)
+      //this.sessionStatusMap.delete(sessionID)
+      //this.costs.onSessionDeleted(sessionID)
+      //const deletedAlertLimit = this.activeAlerts.get(sessionID)
+      //if (deletedAlertLimit !== undefined) {
+      //  this.activeAlerts.delete(sessionID)
+      //  this.postMessage({ type: "sessionCostAlertResolved", sessionID: sessionID, limit: deletedAlertLimit })
+      //}
+      _connectionService.PruneSession(sessionID);
+      if (GetCurrentSessionID() == sessionID)
+      {
+        SetContextSessionID(null);
+        SetCurrentSessionID(sessionID);
+      }
+      if (_streamScheduler.Focused == sessionID) FocusSession(null);
+    }
+
+    internal void TrackOpenSessions(List<string> ids)
+    {
+      var next = new HashSet<string>(ids);
+      foreach (var id in _openSessionIds)
+        if (!next.Contains(id))
+          UntrackSession(id);
+      _openSessionIds.Clear();
+      foreach (var id in _openSessionIds)
+      {
+        _openSessionIds.Add(id);
+        TrackSession(id);
+      }
+      var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+      foreach (var kv in _draftSessions)
+      {
+        if (next.Contains(kv.Value.Sid) || kv.Value.Expires <= now)
+          _draftSessions.Remove(kv.Key);
+      }
+      RegisterPresence();
+      RecoverPendingPrompts();
+    }
+
+    /**
+    * Report presence for this provider: the focused session is visible, and
+    * open local tab sessions (plus the focused one) stay attached even while
+    * the view is hidden.
+*/
+    internal void RegisterPresence()
+    {
+      if (_opts.DisableViewedRegistration) return;
+      var focused = _streamScheduler.Focused;
+      _connectionService.RegisterVisible(this.instanceId, focused != null ? [focused] : []);
+      var attached = new HashSet<string>(this._openSessionIds.ToArray());
+      if (focused != null)
+        attached.Add(focused);
+      _connectionService.RegisterAttached(this.instanceId, attached);
+    }
+
 
     internal void StopCurrentSessionProcesses(string? next)
     {
@@ -1581,32 +1837,5 @@ namespace KiloVisualStudioExtension
 
     #endregion
 
-  }
-
-  internal class JsonDocumentBuilder
-  {
-    private readonly Dictionary<string, JsonElement> _properties = new Dictionary<string, JsonElement>();
-
-    public void Add(string name, JsonElement value)
-    {
-      _properties[name] = value;
-    }
-
-    public JsonElement Build()
-    {
-      using var stream = new MemoryStream();
-      using var writer = new Utf8JsonWriter(stream);
-      writer.WriteStartObject();
-      foreach (var prop in _properties)
-      {
-        writer.WritePropertyName(prop.Key);
-        prop.Value.WriteTo(writer);
-      }
-      writer.WriteEndObject();
-      writer.Flush();
-      stream.Position = 0;
-      using var doc = JsonDocument.Parse(stream);
-      return doc.RootElement.Clone();
-    }
   }
 }
