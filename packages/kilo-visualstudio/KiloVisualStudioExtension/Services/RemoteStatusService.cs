@@ -138,14 +138,14 @@ namespace KiloVisualStudioExtension.Services
     /// <summary>
     /// Refreshes the remote status from the backend.
     /// </summary>
-    public async Task RefreshAsync()
+    public async Task RefreshAsync(string? directory = null, string? workspace = null)
     {
       if (_client == null)
         return;
 
       try
       {
-        var result = await _client.Remote_statusAsync().ConfigureAwait(false);
+        var result = await _client.Remote_statusAsync(directory ?? "", workspace ?? "").ConfigureAwait(false);
         if (result != null)
         {
           Update(new RemoteState(result.Enabled, result.Connected));
@@ -160,17 +160,17 @@ namespace KiloVisualStudioExtension.Services
     /// <summary>
     /// Toggles the remote control on/off.
     /// </summary>
-    public async Task ToggleAsync()
+    public async Task ToggleAsync(string? directory = null, string? workspace = null)
     {
       if (_client == null)
         return;
 
       try
       {
-        var result = await _client.Remote_statusAsync().ConfigureAwait(false);
+        var result = await _client.Remote_statusAsync(directory ?? "", workspace ?? "").ConfigureAwait(false);
         if (result != null)
         {
-          await SetEnabledAsync(!result.Enabled).ConfigureAwait(false);
+          await SetEnabledAsync(!result.Enabled, directory, workspace).ConfigureAwait(false);
         }
       }
       catch (Exception ex)
@@ -182,7 +182,7 @@ namespace KiloVisualStudioExtension.Services
     /// <summary>
     /// Enables or disables remote control.
     /// </summary>
-    public async Task SetEnabledAsync(bool enabled)
+    public async Task SetEnabledAsync(bool enabled, string? directory = null, string? workspace = null)
     {
       if (_client == null)
         return;
@@ -191,11 +191,11 @@ namespace KiloVisualStudioExtension.Services
       {
         if (enabled)
         {
-          await _client.Remote_enableAsync().ConfigureAwait(false);
+          await _client.Remote_enableAsync(directory ?? "", workspace ?? "").ConfigureAwait(false);
         }
         else
         {
-          await _client.Remote_disableAsync().ConfigureAwait(false);
+          await _client.Remote_disableAsync(directory ?? "", workspace ?? "").ConfigureAwait(false);
         }
         Update(new RemoteState(enabled, false));
       }
@@ -252,9 +252,9 @@ namespace KiloVisualStudioExtension.Services
         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
         try
         {
-          if (_statusBar != null && _statusBarCookie != uint.MaxValue)
+          if (_statusBar != null)
           {
-            _statusBar.ClearElement(_statusBarCookie);
+            _statusBar.SetText("");
           }
           _statusBar = null;
         }
@@ -343,51 +343,26 @@ namespace KiloVisualStudioExtension.Services
         // Freeze the status bar for updates
         _statusBar.FreezeOutput(1);
 
-        // Clear the previous element
-        if (_statusBarCookie != uint.MaxValue)
-        {
-          _statusBar.ClearElement(_statusBarCookie);
-        }
-
         if (!state.Enabled)
         {
           // Hide the status bar element when remote is disabled
+          _statusBar.SetText("");
           _statusBar.FreezeOutput(0);
           return;
         }
 
-        // Create the status bar element
-        object icon = (short)Microsoft.VisualStudio.VSConstants.VSStd97CmdID.StartPage;
+        // Set the status bar text
         string text = state.Connected
             ? "Kilo Remote: Connected"
             : "Kilo Remote: Connecting...";
-        string tooltip = state.Connected
-            ? "Remote control is active"
-            : "Connecting to remote control...";
-
-        // Set the status bar element with animation
-        _statusBar.Animation(1, ref icon);
-        _statusBar.SetElementText(0, text);
-        _statusBar.SetElementInfo(0, tooltip, tooltip, 0, null, (uint)VSConstants.ELEMF.ELEMDEF_UIE_TEXT, ref _statusBarCookie);
-
-        // Color based on state
-        if (state.Connected)
-        {
-          // Green for connected
-          _statusBar.SetElementInfo(0, tooltip, tooltip, 0, null, (uint)VSConstants.ELEMF.ELEMDEF_UIE_TEXT | (uint)VSConstants.ELEMF.ELEMDEF_UIE_BOLD, ref _statusBarCookie);
-        }
-        else
-        {
-          // Yellow/orange for connecting
-          _statusBar.SetElementInfo(0, tooltip, tooltip, 0, null, (uint)VSConstants.ELEMF.ELEMDEF_UIE_TEXT, ref _statusBarCookie);
-        }
+        _statusBar.SetText(text);
 
         _statusBar.FreezeOutput(0);
       }
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine($"[Kilo] RemoteStatusService: status bar update failed: {ex.Message}");
-        _statusBar.FreezeOutput(0);
+        _statusBar?.FreezeOutput(0);
       }
     }
 
