@@ -118,7 +118,7 @@ namespace KiloVisualStudioExtension.Utils
         Title = _options.Title;
       
       if (!string.IsNullOrEmpty(_options.PlaceHolder))
-        _searchBox.Hint = _options.PlaceHolder;
+        _searchBox.ToolTip = _options.PlaceHolder;
     }
 
     private void OnSearchTextChanged(object sender, TextChangedEventArgs e)

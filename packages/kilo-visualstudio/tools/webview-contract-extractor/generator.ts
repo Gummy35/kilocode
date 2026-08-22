@@ -860,7 +860,7 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
         } else if (refTypeDef) {
           // Non-SDK type or SDK type not in ApiClient - generate reference
           const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
-          if (refFolder !== folder && refFolder !== 'ExtensionMessages' && refFolder !== 'WebviewMessages') {
+          if (refFolder !== folder) {
             const refNs = refFolder === 'Shared' ? ns : (ns + "." + refFolder)
             referencedNamespaces.add(refNs)
           }
@@ -878,7 +878,7 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
               needsApiClientReference = true
             } else if (elemTypeDef) {
               const elemFolder = getSourceFileFolder(elemTypeDef.sourceFile)
-              if (elemFolder !== folder && elemFolder !== 'ExtensionMessages' && elemFolder !== 'WebviewMessages') {
+              if (elemFolder !== folder) {
                 const elemNs = elemFolder === 'Shared' ? ns : (ns + "." + elemFolder)
                 referencedNamespaces.add(elemNs)
               }

@@ -1,7 +1,9 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloExtensionDTOs.ExtensionMessages;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Utils;
 using ProfileResponse = KiloVisualStudioExtension.ApiClient.Response23;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Auth
@@ -61,7 +63,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
                 var profileResponse = await nswagClient.Kilo_profileAsync("", "");
                 if (profileResponse != null)
                 {
-                    await Provider.SendProfileDataAsync(JsonSerializer.SerializeToElement(profileResponse));
+                    await Provider.SendProfileDataAsync(EntityConverter.Convert(profileResponse));
                 }
             }
             catch (Exception ex)
@@ -98,8 +100,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
                 var profileResponse = await nswagClient.Kilo_profileAsync("", "");
                 if (profileResponse != null)
                 {
-                    var message = new { type = "profileData", data = JsonSerializer.SerializeToElement(profileResponse) };
-                    Provider.PostMessage(JsonSerializer.Serialize(message));
+                  await Provider.SendProfileDataAsync(EntityConverter.Convert(profileResponse));
                 }
             }
             catch (Exception ex)

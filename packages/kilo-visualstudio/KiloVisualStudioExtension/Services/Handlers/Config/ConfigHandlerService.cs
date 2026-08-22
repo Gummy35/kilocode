@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Utils;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Config
 {
@@ -54,27 +55,27 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
                 var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await Provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
+                    await Provider.SendConfigLoadedAsync(new KiloExtensionDTOs.KiloConfig.Config(), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
                     return;
                 }
 
                 var configResponse = await nswagClient.Global_config_getAsync();
-                var config = JsonDocument.Parse("{}").RootElement;
-                var features = JsonDocument.Parse("{}").RootElement;
+                //var config = JsonDocument.Parse("{}").RootElement;
+                //var features = JsonDocument.Parse("{}").RootElement;
                 
-                if (configResponse != null)
-                {
-                    config = JsonSerializer.SerializeToElement(configResponse);
-                    // Features is not a property of Config in the generated model
-                    features = JsonDocument.Parse("{}").RootElement;
-                }
+                //if (configResponse != null)
+                //{
+                //    config = JsonSerializer.SerializeToElement(configResponse);
+                //    // Features is not a property of Config in the generated model
+                //    features = JsonDocument.Parse("{}").RootElement;
+                //}
 
-                await Provider.SendConfigLoadedAsync(config, features);
+                await Provider.SendConfigLoadedAsync(EntityConverter.Convert(configResponse), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] ConfigHandler: Error fetching config: {ex.Message}");
-                await Provider.SendConfigLoadedAsync(JsonDocument.Parse("{}").RootElement, JsonDocument.Parse("{}").RootElement);
+                await Provider.SendConfigLoadedAsync(new KiloExtensionDTOs.KiloConfig.Config(), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
             }
         }
 

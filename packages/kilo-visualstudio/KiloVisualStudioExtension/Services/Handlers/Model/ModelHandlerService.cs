@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
+using ApiImageModel = KiloVisualStudioExtension.ApiClient.Anonymous10;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Model
 {
@@ -104,19 +106,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
                 var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await Provider.SendImageModelsAsync(Array.Empty<object>());
+                    await Provider.SendImageModelsAsync(new List<ApiImageModel>());
                     return;
                 }
 
                 var models = await nswagClient.Kilo_models_imagesAsync("", "");
-                var modelsList = models != null ? models.Select(m => (object)m).ToArray() : Array.Empty<object>();
+                var modelsList = models != null ? models : new List<ApiImageModel>();
 
                 await Provider.SendImageModelsAsync(modelsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] ModelHandler: Error fetching image models: {ex.Message}");
-                await Provider.SendImageModelsAsync(Array.Empty<object>());
+                await Provider.SendImageModelsAsync(new List<ApiImageModel>());
             }
         }
 

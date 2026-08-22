@@ -42,6 +42,8 @@ using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
+using ApiImageModel = KiloVisualStudioExtension.ApiClient.Anonymous10;
+
 
 namespace KiloVisualStudioExtension
 {
@@ -375,9 +377,15 @@ namespace KiloVisualStudioExtension
       await Task.CompletedTask;
     }
 
-    internal async Task SendImageModelsAsync(List<object> models)
+    internal async Task SendImageModelsAsync(List<ApiImageModel> models)
     {
-      PostMessage(new ImageModelsLoadedMessage { Models = models });
+      PostMessage(new ImageModelsLoadedMessage {
+        Models = models.Select(m => new ModelsItemType
+        {
+          Id = m.Id,
+          Name = m.Name
+        }).ToList()
+      });
       await Task.CompletedTask;
     }
 

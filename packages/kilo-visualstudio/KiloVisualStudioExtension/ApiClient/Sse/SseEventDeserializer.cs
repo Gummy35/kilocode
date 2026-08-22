@@ -1,3 +1,4 @@
+using Common;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.ApiClient.Json;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -62,26 +63,26 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
       });
     }
 
-    public static JObject UnwrapSyncEvent(JObject obj)
-    {
-      var type = obj["type"]?.Value<string>() ?? "";
-      if (type != "sync") return obj;
+    //public static JObject UnwrapSyncEvent(JObject obj)
+    //{
+    //  var type = obj["type"]?.Value<string>() ?? "";
+    //  if (type != "sync") return obj;
 
-      var payload = obj.ContainsKey("syncEvent") ? NormalizeEvent(obj) : obj;
-      var name = payload["name"]?.Value<string>() ?? "";
+    //  var payload = obj.ContainsKey("syncEvent") ? NormalizeEvent(obj) : obj;
+    //  var name = payload["name"]?.Value<string>() ?? "";
 
-      return name switch
-      {
-        "message.updated.1" => JObject.FromObject(new { id = payload["id"], type = "message.updated", properties = payload["data"] }),
-        "message.removed.1" => JObject.FromObject(new { id = payload["id"], type = "message.removed", properties = payload["data"] }),
-        "message.part.updated.1" => JObject.FromObject(new { id = payload["id"], type = "message.part.updated", properties = payload["data"] }),
-        "message.part.removed.1" => JObject.FromObject(new { id = payload["id"], type = "message.part.removed", properties = payload["data"] }),
-        "message.created.1" => JObject.FromObject(new { id = payload["id"], type = "message.created", properties = payload["data"] }),
-        "session.updated.1" => JObject.FromObject(new { source = "sync", id = payload["id"], seq = payload["seq"], type = "session.updated", properties = payload["data"] }),
-        "message.deleted.1" => JObject.FromObject(new { id = payload["id"], type = "session.deleted", properties = payload["data"] }),
-        _ => null
-      };
-    }
+    //  return name switch
+    //  {
+    //    "message.updated.1" => JObject.FromObject(new { id = payload["id"], type = "message.updated", properties = payload["data"] }),
+    //    "message.removed.1" => JObject.FromObject(new { id = payload["id"], type = "message.removed", properties = payload["data"] }),
+    //    "message.part.updated.1" => JObject.FromObject(new { id = payload["id"], type = "message.part.updated", properties = payload["data"] }),
+    //    "message.part.removed.1" => JObject.FromObject(new { id = payload["id"], type = "message.part.removed", properties = payload["data"] }),
+    //    "message.created.1" => JObject.FromObject(new { id = payload["id"], type = "message.created", properties = payload["data"] }),
+    //    "session.updated.1" => JObject.FromObject(new { source = "sync", id = payload["id"], seq = payload["seq"], type = "session.updated", properties = payload["data"] }),
+    //    "message.deleted.1" => JObject.FromObject(new { id = payload["id"], type = "session.deleted", properties = payload["data"] }),
+    //    _ => null
+    //  };
+    //}
 
 
     public static Events Deserialize(JToken obj)
@@ -131,159 +132,159 @@ namespace KiloVisualStudioExtension.ApiClient.Sse
       //            throw new JsonSerializationException($"Unknown SSE event structure");
     }
 
-    private static SseEvent DeserializeSyncEvent(JObject obj, JsonSerializer serializer)
-    {
-      var name = obj["name"]?.Value<string>() ?? "";
-      var id = obj["id"]?.Value<string>() ?? "";
-      var seq = obj["seq"]?.Value<int>() ?? 0;
-      var data = obj["data"];
+    //private static SseEvent DeserializeSyncEvent(JObject obj, JsonSerializer serializer)
+    //{
+    //  var name = obj["name"]?.Value<string>() ?? "";
+    //  var id = obj["id"]?.Value<string>() ?? "";
+    //  var seq = obj["seq"]?.Value<int>() ?? 0;
+    //  var data = obj["data"];
 
-      if (data == null)
-        throw new JsonSerializationException("Sync event missing 'data'");
+    //  if (data == null)
+    //    throw new JsonSerializationException("Sync event missing 'data'");
 
-      // var rebuild data compatible with nswag generated types
+    //  // var rebuild data compatible with nswag generated types
 
-      var d = new { id = id, type = name.Replace(".1", ""), properties = data };
-      var s = JObject.FromObject(d);
+    //  var d = new { id = id, type = name.Replace(".1", ""), properties = data };
+    //  var s = JObject.FromObject(d);
 
-      return name switch
-      {
-        "message.updated.1" => new MessageUpdatedSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = PolymorphicDeserializer.DeserializeEventMessageUpdated(data, serializer)
-        },
-        "message.removed.1" => new GenericSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = PolymorphicDeserializer.DeserializeEventMessageRemoved(data, serializer)
-        },
-        "message.part.updated.1" => new MessagePartUpdatedSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = PolymorphicDeserializer.DeserializeEventMessagePartUpdated(data, serializer)
-        },
-        "message.part.removed.1" => new GenericSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = PolymorphicDeserializer.DeserializeEventMessagePartRemoved(data, serializer)
-        },
-        "session.created.1" => new SessionCreatedSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = PolymorphicDeserializer.DeserializeEventSessionCreated(s, serializer)
-        },
-        "session.updated.1" => new SessionUpdatedSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = PolymorphicDeserializer.DeserializeEventSessionUpdated(data, serializer)
-        },
-        "session.deleted.1" => new GenericSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = PolymorphicDeserializer.DeserializeEventSessionDeleted(data, serializer)
-        },
-        _ => new GenericSyncEvent
-        {
-          EventType = "sync",
-          Name = name,
-          Id = id,
-          Seq = seq,
-          Data = data
-        }
-      };
-    }
+    //  return name switch
+    //  {
+    //    "message.updated.1" => new MessageUpdatedSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = PolymorphicDeserializer.DeserializeEventMessageUpdated(data, serializer)
+    //    },
+    //    "message.removed.1" => new GenericSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = PolymorphicDeserializer.DeserializeEventMessageRemoved(data, serializer)
+    //    },
+    //    "message.part.updated.1" => new MessagePartUpdatedSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = PolymorphicDeserializer.DeserializeEventMessagePartUpdated(data, serializer)
+    //    },
+    //    "message.part.removed.1" => new GenericSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = PolymorphicDeserializer.DeserializeEventMessagePartRemoved(data, serializer)
+    //    },
+    //    "session.created.1" => new SessionCreatedSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = PolymorphicDeserializer.DeserializeEventSessionCreated(s, serializer)
+    //    },
+    //    "session.updated.1" => new SessionUpdatedSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = PolymorphicDeserializer.DeserializeEventSessionUpdated(data, serializer)
+    //    },
+    //    "session.deleted.1" => new GenericSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = PolymorphicDeserializer.DeserializeEventSessionDeleted(data, serializer)
+    //    },
+    //    _ => new GenericSyncEvent
+    //    {
+    //      EventType = "sync",
+    //      Name = name,
+    //      Id = id,
+    //      Seq = seq,
+    //      Data = data
+    //    }
+    //  };
+    //}
 
-    private static SseEvent DeserializeStreamEvent(JObject obj, JsonSerializer serializer)
-    {
-      var type = obj["type"]?.Value<string>() ?? "";
-      var sessionID = obj["sessionID"]?.Value<string>() ?? "";
-      var directory = obj["directory"]?.Value<string>() ?? "";
-      var properties = obj["properties"] ?? throw new JsonSerializationException("Stream event missing 'properties'");
+    //private static SseEvent DeserializeStreamEvent(JObject obj, JsonSerializer serializer)
+    //{
+    //  var type = obj["type"]?.Value<string>() ?? "";
+    //  var sessionID = obj["sessionID"]?.Value<string>() ?? "";
+    //  var directory = obj["directory"]?.Value<string>() ?? "";
+    //  var properties = obj["properties"] ?? throw new JsonSerializationException("Stream event missing 'properties'");
 
-      return type switch
-      {
-        "message.part.updated" => //PolymorphicDeserializer.DeserializeEventMessagePartUpdated(obj, serializer)
-        new MessagePartUpdatedStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        }
-          ,
-        "message.updated" => new MessageUpdatedStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        },
-        "session.status" => new SessionStatusStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        },
-        "permission.asked" => new PermissionAskedStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        },
-        "question.asked" => new QuestionAskedStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        },
-        "suggestion.shown" => new SuggestionShownStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        },
-        "session.error" => new SessionErrorStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        },
-        _ => new GenericStreamEvent
-        {
-          EventType = type,
-          SessionID = sessionID,
-          Directory = directory,
-          Properties = properties
-        }
-      };
-    }
+    //  return type switch
+    //  {
+    //    "message.part.updated" => //PolymorphicDeserializer.DeserializeEventMessagePartUpdated(obj, serializer)
+    //    new MessagePartUpdatedStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    }
+    //      ,
+    //    "message.updated" => new MessageUpdatedStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    },
+    //    "session.status" => new SessionStatusStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    },
+    //    "permission.asked" => new PermissionAskedStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    },
+    //    "question.asked" => new QuestionAskedStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    },
+    //    "suggestion.shown" => new SuggestionShownStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    },
+    //    "session.error" => new SessionErrorStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    },
+    //    _ => new GenericStreamEvent
+    //    {
+    //      EventType = type,
+    //      SessionID = sessionID,
+    //      Directory = directory,
+    //      Properties = properties
+    //    }
+    //  };
+    //}
   }
 
   // Concrete event types for better type safety

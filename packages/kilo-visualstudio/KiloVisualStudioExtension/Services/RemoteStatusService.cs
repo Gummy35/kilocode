@@ -145,10 +145,10 @@ namespace KiloVisualStudioExtension.Services
 
       try
       {
-        var result = await _client.Remote.StatusAsync().ConfigureAwait(false);
-        if (result?.Data != null)
+        var result = await _client.Remote_statusAsync().ConfigureAwait(false);
+        if (result != null)
         {
-          Update(new RemoteState(result.Data.Enabled, result.Data.Connected));
+          Update(new RemoteState(result.Enabled, result.Connected));
         }
       }
       catch (Exception ex)
@@ -167,10 +167,10 @@ namespace KiloVisualStudioExtension.Services
 
       try
       {
-        var result = await _client.Remote.StatusAsync().ConfigureAwait(false);
-        if (result?.Data != null)
+        var result = await _client.Remote_statusAsync().ConfigureAwait(false);
+        if (result != null)
         {
-          await SetEnabledAsync(!result.Data.Enabled).ConfigureAwait(false);
+          await SetEnabledAsync(!result.Enabled).ConfigureAwait(false);
         }
       }
       catch (Exception ex)
@@ -191,11 +191,11 @@ namespace KiloVisualStudioExtension.Services
       {
         if (enabled)
         {
-          await _client.Remote.EnableAsync().ConfigureAwait(false);
+          await _client.Remote_enableAsync().ConfigureAwait(false);
         }
         else
         {
-          await _client.Remote.DisableAsync().ConfigureAwait(false);
+          await _client.Remote_disableAsync().ConfigureAwait(false);
         }
         Update(new RemoteState(enabled, false));
       }
