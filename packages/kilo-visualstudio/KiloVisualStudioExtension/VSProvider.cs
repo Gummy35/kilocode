@@ -130,6 +130,7 @@ namespace KiloVisualStudioExtension
     //  private readonly sessionCreations = new Map<string, Promise<{ sid: string; dir: string } | undefined >> ()
     //  private readonly draftSessions = new Map<string, { sid: string; dir: string; expires: number } > ()
     private readonly Dictionary<string, DraftSession> _draftSessions = new Dictionary<string, DraftSession>();
+    private int _loginAttempt = 0;
 
     //  private readonly sandboxTransitions = new Map<string, Promise<void>>()
     //  private readonly revisions = new Map<string, { id: string; seq: number } > ()
@@ -459,6 +460,11 @@ namespace KiloVisualStudioExtension
       return _connectionService.GetNswagClient();
     }
 
+    internal int GetLoginAttempt()
+    {
+      return _loginAttempt;
+    }
+
     internal bool IsConnected()
     {
       var nswagClient = _connectionService.GetNswagClient();
@@ -525,6 +531,22 @@ namespace KiloVisualStudioExtension
     {
       PostMessage(new CommandsLoadedMessage { Commands = commands });
       await Task.CompletedTask;
+    }
+
+    internal async Task DisposeGlobal()
+    {
+      _globalState.Clear();
+      await Task.CompletedTask;
+    }
+
+    internal async Task FetchAndSendProviders()
+    {
+      await _providerRequestHandler.HandleRequestProvidersAsync();
+    }
+
+    internal async Task FetchAndSendAgents()
+    {
+      await _agentRequestHandler.HandleRequestAgentsAsync();
     }
 
     internal async Task SendGlobalConfigAsync(KiloExtensionDTOs.KiloConfig.Config config)
@@ -956,11 +978,20 @@ namespace KiloVisualStudioExtension
             break;
 
           case "login":
+            _loginAttempt++;
             await _authHandler.HandleLoginAsync(payload);
             break;
 
           case "refreshProfile":
             await _authHandler.HandleRefreshProfileAsync(payload);
+            break;
+
+          case "logout":
+            await _authHandler.HandleLogoutAsync(payload);
+            break;
+
+          case "setOrganization":
+            await _authHandler.HandleSetOrganizationAsync(payload);
             break;
 
           case "openSettingsPanel":
