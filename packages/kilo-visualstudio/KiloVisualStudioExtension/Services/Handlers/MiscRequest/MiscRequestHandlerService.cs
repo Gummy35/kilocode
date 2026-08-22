@@ -5,6 +5,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Utils;
+using ApiImageModel = KiloVisualStudioExtension.ApiClient.Anonymous10;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
@@ -95,19 +97,32 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
                 var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await Provider.SendSkillsAsync(Array.Empty<object>());
+                    await Provider.SendSkillsAsync(new List<KiloExtensionDTOs.Agents.SkillInfo>());
                     return;
                 }
 
                 var skills = await nswagClient.App_skillsAsync("", "");
-                var skillsList = skills != null ? skills.Select(s => (object)s).ToArray() : Array.Empty<object>();
+                List<KiloExtensionDTOs.Agents.SkillInfo> skillsList;
+                if (skills != null)
+                {
+                    skillsList = skills.Select(s => new KiloExtensionDTOs.Agents.SkillInfo
+                    {
+                        Name = s.Name,
+                        Description = s.Description,
+                        Location = s.Location
+                    }).ToList();
+                }
+                else
+                {
+                    skillsList = new List<KiloExtensionDTOs.Agents.SkillInfo>();
+                }
 
                 await Provider.SendSkillsAsync(skillsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching skills: {ex.Message}");
-                await Provider.SendSkillsAsync(Array.Empty<object>());
+                await Provider.SendSkillsAsync(new List<KiloExtensionDTOs.Agents.SkillInfo>());
             }
         }
 
@@ -124,19 +139,32 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
                 var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await Provider.SendCommandsAsync(Array.Empty<object>());
+                    await Provider.SendCommandsAsync(new List<KiloExtensionDTOs.Agents.SlashCommandInfo>());
                     return;
                 }
 
                 var commands = await nswagClient.Command_listAsync("", "");
-                var commandsList = commands != null ? commands.Select(c => (object)c).ToArray() : Array.Empty<object>();
+                List<KiloExtensionDTOs.Agents.SlashCommandInfo> commandsList;
+                if (commands != null)
+                {
+                    commandsList = commands.Select(c => new KiloExtensionDTOs.Agents.SlashCommandInfo
+                    {
+                        Name = c.Name,
+                        Description = c.Description,
+                        Hints = c.Hints != null ? c.Hints.ToList() : new List<string>()
+                    }).ToList();
+                }
+                else
+                {
+                    commandsList = new List<KiloExtensionDTOs.Agents.SlashCommandInfo>();
+                }
 
                 await Provider.SendCommandsAsync(commandsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching commands: {ex.Message}");
-                await Provider.SendCommandsAsync(Array.Empty<object>());
+                await Provider.SendCommandsAsync(new List<KiloExtensionDTOs.Agents.SlashCommandInfo>());
             }
         }
 
@@ -153,19 +181,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
                 var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await Provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
+                    await Provider.SendGlobalConfigAsync(new KiloExtensionDTOs.KiloConfig.Config());
                     return;
                 }
 
                 var config = await nswagClient.Global_config_getAsync();
-                var configData = config != null ? JsonSerializer.SerializeToElement(config) : JsonDocument.Parse("{}").RootElement;
-
+                var configData = config != null ? EntityConverter.Convert(config) : new KiloExtensionDTOs.KiloConfig.Config();
                 await Provider.SendGlobalConfigAsync(configData);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching global config: {ex.Message}");
-                await Provider.SendGlobalConfigAsync(JsonDocument.Parse("{}").RootElement);
+                await Provider.SendGlobalConfigAsync(new KiloExtensionDTOs.KiloConfig.Config());
             }
         }
 
@@ -199,7 +226,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestImageModelsAsync(JsonElement? payload)
         {
-            await Provider.SendImageModelsAsync(Array.Empty<object>());
+            await Provider.SendImageModelsAsync(new List<ApiImageModel>());
         }
 
         public void Dispose()
