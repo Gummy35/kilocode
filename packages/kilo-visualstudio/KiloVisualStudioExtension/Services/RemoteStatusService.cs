@@ -289,7 +289,7 @@ namespace KiloVisualStudioExtension.Services
       ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
       {
         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-        UpdateStatusBarAsync(newState).ConfigureAwait(false);
+        await UpdateStatusBarAsync(newState);
       });
 
       // Post to webview if callback is provided

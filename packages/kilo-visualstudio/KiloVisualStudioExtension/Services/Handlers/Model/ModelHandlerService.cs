@@ -111,7 +111,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
                 }
 
                 var models = await nswagClient.Kilo_models_imagesAsync("", "");
-                var modelsList = models != null ? models : new List<ApiImageModel>();
+                var modelsList = models != null ? models.ToList() : new List<ApiImageModel>();
 
                 await Provider.SendImageModelsAsync(modelsList);
             }
