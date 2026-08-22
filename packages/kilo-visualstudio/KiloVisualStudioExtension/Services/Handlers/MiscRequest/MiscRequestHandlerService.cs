@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using KiloVisualStudioExtension.ApiClient;
-using KiloVisualStudioExtension.Utils;
-using ApiImageModel = KiloVisualStudioExtension.ApiClient.Anonymous10;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
+    /// <summary>
+    /// Model selection for recent/favorite models.
+    /// </summary>
+    public class ModelSelection
+    {
+        public string providerID { get; set; } = "";
+        public string modelID { get; set; } = "";
+    }
+
     /// <summary>
     /// Handles miscellaneous request operations like recents, favorites, variants, skills, commands.
     /// These are simple request handlers that return static or cached data.
@@ -22,6 +28,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
+        private KiloConnectionService ConnectionService => _serviceProvider.GetService<KiloConnectionService>() 
+            ?? throw new InvalidOperationException("KiloConnectionService not registered in service provider");
+
         /// <summary>
         /// Creates a new MiscRequestHandlerService instance.
         /// </summary>
@@ -31,202 +40,407 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             _serviceProvider = serviceProvider;
         }
 
-        /// <summary>
-        /// Handles the requestRecents message from the webview.
-        /// Sends empty recents list (placeholder for future implementation).
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public void HandleRequestRecents(JsonElement? payload)
-        {
-      var selected = new List<ModelSelection>();
-      selected.Add(new ModelSelection
-      {
-        providerID = "openrama",
-        modelID = "qwen3.5-122b"
-      });
-      var message = new { 
-              type = "recentsLoaded", 
-              recents = selected 
-            };
-            Provider.PostMessage(JsonSerializer.Serialize(message));
-        }
-
-        /// <summary>
-        /// Handles the requestFavorites message from the webview.
-        /// Sends empty favorites list (placeholder for future implementation).
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public void HandleRequestFavorites(JsonElement? payload)
-        {
-          var favorites = new List<FavoriteModel>();
-          favorites.Add(new FavoriteModel
-          {
-            providerID = "openrama",
-            modelID = "qwen3.5-122b"
-          });
-          var message = new { type = "favoritesLoaded", 
-              favorites = favorites
-          };
-            Provider.PostMessage(JsonSerializer.Serialize(message));
-        }
-
-        /// <summary>
-        /// Handles the requestVariants message from the webview.
-        /// Sends empty variants object (placeholder for future implementation).
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        // TypeScript: case "requestVariants": {
+        //   const variants = this.extensionContext?.globalState.get<Record<string, string>>("variantSelections") ?? {}
+        //   this.postMessage({ type: "variantsLoaded", variants })
+        //   break
+        // }
         public void HandleRequestVariants(JsonElement? payload)
         {
-            var message = new { type = "variantsLoaded", variants = new { } };
-            Provider.PostMessage(JsonSerializer.Serialize(message));
+            var variantsJson = Provider.GetGlobalState("variantSelections");
+            var variants = variantsJson.HasValue && variantsJson.Value.ValueKind != JsonValueKind.Null 
+                ? variantsJson.Value 
+                : JsonSerializer.SerializeToElement(new Dictionary<string, string>());
+            
+            var message = new { type = "variantsLoaded", variants = variants };
+            var messageJson = JsonSerializer.SerializeToElement(message);
+            Provider.SetCachedVariantsMessage(messageJson);
+            Provider.PostMessage(messageJson);
         }
 
-        /// <summary>
-        /// Handles the requestSkills message from the webview.
-        /// Fetches and sends available skills to the webview.
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        // TypeScript: case "persistRecents":
+        //   await this.extensionContext?.globalState.update("recentModels", validateRecents(message.recents))
+        //   break
+        // case "requestRecents": {
+        //   const recents = validateRecents(this.extensionContext?.globalState.get("recentModels"))
+        //   this.postMessage({ type: "recentsLoaded", recents })
+        //   break
+        // }
+        public void HandlePersistRecents(JsonElement? payload)
+        {
+            if (payload.HasValue && payload.Value.TryGetProperty("recents", out var recentsProp))
+            {
+                var validated = Provider.ValidateRecents(recentsProp);
+                Provider.UpdateGlobalState("recentModels", validated);
+            }
+        }
+
+        public void HandleRequestRecents(JsonElement? payload)
+        {
+            var recentsJson = Provider.GetGlobalState("recentModels");
+            JsonElement recents;
+            if (recentsJson.HasValue && recentsJson.Value.ValueKind != JsonValueKind.Null)
+            {
+                recents = Provider.ValidateRecents(recentsJson);
+            }
+            else
+            {
+                recents = JsonSerializer.SerializeToElement(new List<ModelSelection>());
+            }
+            
+            var message = new { type = "recentsLoaded", recents = recents };
+            var messageJson = JsonSerializer.SerializeToElement(message);
+            Provider.SetCachedRecentsMessage(messageJson);
+            Provider.PostMessage(messageJson);
+        }
+
+        // TypeScript: case "toggleFavorite": {
+        //   await this.toggleFavorite(message)
+        //   break
+        // }
+        // case "requestFavorites": {
+        //   const favorites = validateFavorites(this.extensionContext?.globalState.get("favoriteModels"))
+        //   this.postMessage({ type: "favoritesLoaded", favorites })
+        //   break
+        // }
+        public void HandleToggleFavorite(JsonElement? payload)
+        {
+            if (!payload.HasValue) return;
+            
+            var action = payload.Value.TryGetProperty("action", out var actionProp) ? actionProp.GetString() : "";
+            var providerID = payload.Value.TryGetProperty("providerID", out var pidProp) ? pidProp.GetString() : "";
+            var modelID = payload.Value.TryGetProperty("modelID", out var midProp) ? midProp.GetString() : "";
+            
+            var currentJson = Provider.GetGlobalState("favoriteModels");
+            var current = Provider.ValidateFavorites(currentJson);
+            
+            var key = $"{providerID}/{modelID}";
+            var existing = new List<ModelSelection>();
+            
+            if (current.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in current.EnumerateArray())
+                {
+                    var itemPid = item.TryGetProperty("providerID", out var p) ? p.GetString() : "";
+                    var itemMid = item.TryGetProperty("modelID", out var m) ? m.GetString() : "";
+                    existing.Add(new ModelSelection { providerID = itemPid, modelID = itemMid });
+                }
+            }
+            
+            if (action == "add")
+            {
+                if (!existing.Any(f => $"{f.providerID}/{f.modelID}" == key))
+                {
+                    existing.Add(new ModelSelection { providerID = providerID, modelID = modelID });
+                }
+            }
+            else if (action == "remove")
+            {
+                existing = existing.Where(f => $"{f.providerID}/{f.modelID}" != key).ToList();
+            }
+            
+            var validated = JsonSerializer.SerializeToElement(existing);
+            Provider.UpdateGlobalState("favoriteModels", validated);
+        }
+
+        public void HandleRequestFavorites(JsonElement? payload)
+        {
+            var favoritesJson = Provider.GetGlobalState("favoriteModels");
+            JsonElement favorites;
+            if (favoritesJson.HasValue && favoritesJson.Value.ValueKind != JsonValueKind.Null)
+            {
+                favorites = Provider.ValidateFavorites(favoritesJson);
+            }
+            else
+            {
+                favorites = JsonSerializer.SerializeToElement(new List<ModelSelection>());
+            }
+            
+            var message = new { type = "favoritesLoaded", favorites = favorites };
+            var messageJson = JsonSerializer.SerializeToElement(message);
+            Provider.SetCachedFavoritesMessage(messageJson);
+            Provider.PostMessage(messageJson);
+        }
+
+        // TypeScript: case "requestSkills":
+        //   this.fetchAndSendSkills().catch((e) => console.error("[Kilo New] fetchAndSendSkills failed:", e))
+        //   break
+        // private async fetchAndSendSkills(): Promise<void> {
+        //   if (!this.client) {
+        //     if (this.cachedSkillsMessage) {
+        //       this.postMessage(this.cachedSkillsMessage)
+        //     }
+        //     return
+        //   }
+        //   try {
+        //     const workspaceDir = this.getWorkspaceDirectory()
+        //     const { data: skills } = await retry(() =>
+        //       this.client!.app.skills({ directory: workspaceDir }, { throwOnError: true }),
+        //     )
+        //     const message = { type: "skillsLoaded", skills }
+        //     this.cachedSkillsMessage = message
+        //     this.postMessage(message)
+        //   } catch (error) {
+        //     console.error("[Kilo New] KiloProvider: Failed to fetch skills:", error)
+        //   }
+        // }
         public async Task HandleRequestSkillsAsync(JsonElement? payload)
         {
+            var nswagClient = Provider.GetNswagClient();
+            if (nswagClient == null)
+            {
+                var cachedMessage = Provider.GetCachedSkillsMessage();
+                if (cachedMessage != null)
+                {
+                    Provider.PostMessage(cachedMessage);
+                }
+                return;
+            }
+
             try
             {
-                var nswagClient = Provider.GetNswagClient();
-                if (nswagClient == null)
-                {
-                    await Provider.SendSkillsAsync(new List<KiloExtensionDTOs.Agents.SkillInfo>());
-                    return;
-                }
-
-                var skills = await nswagClient.App_skillsAsync("", "");
-                List<KiloExtensionDTOs.Agents.SkillInfo> skillsList;
-                if (skills != null)
-                {
-                    skillsList = skills.Select(s => new KiloExtensionDTOs.Agents.SkillInfo
-                    {
-                        Name = s.Name,
-                        Description = s.Description,
-                        Location = s.Location
-                    }).ToList();
-                }
-                else
-                {
-                    skillsList = new List<KiloExtensionDTOs.Agents.SkillInfo>();
-                }
-
-                await Provider.SendSkillsAsync(skillsList);
+                var workspaceDir = Provider.GetWorkspaceDirectory();
+                var skills = await nswagClient.App_skillsAsync(workspaceDir, "");
+                var skillsData = skills != null ? JsonSerializer.SerializeToElement(skills) : JsonSerializer.SerializeToElement(new List<Anonymous3>());
+                var message = new { type = "skillsLoaded", skills = skillsData };
+                var messageJson = JsonSerializer.SerializeToElement(message);
+                Provider.SetCachedSkillsMessage(messageJson);
+                Provider.PostMessage(messageJson);
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching skills: {ex.Message}");
-                await Provider.SendSkillsAsync(new List<KiloExtensionDTOs.Agents.SkillInfo>());
+                System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed to fetch skills: {error}");
             }
         }
 
-        /// <summary>
-        /// Handles the requestCommands message from the webview.
-        /// Fetches and sends available commands to the webview.
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        // TypeScript: case "requestCommands":
+        //   this.fetchAndSendCommands().catch((e) => console.error("[Kilo New] fetchAndSendCommands failed:", e))
+        //   break
+        // private async fetchAndSendCommands(): Promise<void> {
+        //   if (!this.client) {
+        //     if (this.cachedCommandsMessage) {
+        //       this.postMessage(this.cachedCommandsMessage)
+        //     }
+        //     return
+        //   }
+        //   try {
+        //     const dir = this.getWorkspaceDirectory()
+        //     const message = await loadCommands(this.client, dir)
+        //     this.cachedCommandsMessage = message
+        //     this.postMessage(message)
+        //   } catch (error) {
+        //     console.error("[Kilo New] KiloProvider: Failed to fetch commands:", error)
+        //   }
+        // }
         public async Task HandleRequestCommandsAsync(JsonElement? payload)
         {
+            var nswagClient = Provider.GetNswagClient();
+            if (nswagClient == null)
+            {
+                var cachedMessage = Provider.GetCachedCommandsMessage();
+                if (cachedMessage != null)
+                {
+                    Provider.PostMessage(cachedMessage);
+                }
+                return;
+            }
+
             try
             {
-                var nswagClient = Provider.GetNswagClient();
-                if (nswagClient == null)
-                {
-                    await Provider.SendCommandsAsync(new List<KiloExtensionDTOs.Agents.SlashCommandInfo>());
-                    return;
-                }
-
-                var commands = await nswagClient.Command_listAsync("", "");
-                List<KiloExtensionDTOs.Agents.SlashCommandInfo> commandsList;
-                if (commands != null)
-                {
-                    commandsList = commands.Select(c => new KiloExtensionDTOs.Agents.SlashCommandInfo
-                    {
-                        Name = c.Name,
-                        Description = c.Description,
-                        Hints = c.Hints != null ? c.Hints.ToList() : new List<string>()
-                    }).ToList();
-                }
-                else
-                {
-                    commandsList = new List<KiloExtensionDTOs.Agents.SlashCommandInfo>();
-                }
-
-                await Provider.SendCommandsAsync(commandsList);
+                var dir = Provider.GetWorkspaceDirectory();
+                var commands = await nswagClient.Command_listAsync(dir, "");
+                var commandsData = commands != null ? JsonSerializer.SerializeToElement(commands) : JsonSerializer.SerializeToElement(new List<Command>());
+                var message = new { type = "commandsLoaded", commands = commandsData };
+                var messageJson = JsonSerializer.SerializeToElement(message);
+                Provider.SetCachedCommandsMessage(messageJson);
+                Provider.PostMessage(messageJson);
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching commands: {ex.Message}");
-                await Provider.SendCommandsAsync(new List<KiloExtensionDTOs.Agents.SlashCommandInfo>());
+                System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed to fetch commands: {error}");
             }
         }
 
-        /// <summary>
-        /// Handles the requestGlobalConfig message from the webview.
-        /// Fetches and sends global configuration to the webview.
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        // TypeScript: case "requestGlobalConfig":
+        //   this.fetchAndSendGlobalConfig().catch((e) => console.error("[Kilo New] fetchAndSendGlobalConfig failed:", e))
+        //   break
+        // private async fetchAndSendGlobalConfig(): Promise<void> {
+        //   if (!this.client || this.connectionState !== "connected") return
+        //   try {
+        //     const { data: config } = await this.client.global.config.get({ throwOnError: true })
+        //     this.cachedGlobalConfig = config ?? null
+        //     this.postMessage({ type: "globalConfigLoaded", config })
+        //   } catch (error) {
+        //     console.error("[Kilo New] KiloProvider: Failed to fetch global config:", error)
+        //   }
+        // }
         public async Task HandleRequestGlobalConfigAsync(JsonElement? payload)
         {
+            var nswagClient = Provider.GetNswagClient();
+            if (nswagClient == null || Provider.GetConnectionState() != "connected")
+            {
+                return;
+            }
+
             try
             {
-                var nswagClient = Provider.GetNswagClient();
-                if (nswagClient == null)
-                {
-                    await Provider.SendGlobalConfigAsync(new KiloExtensionDTOs.KiloConfig.Config());
-                    return;
-                }
-
                 var config = await nswagClient.Global_config_getAsync();
-                var configData = config != null ? EntityConverter.Convert(config) : new KiloExtensionDTOs.KiloConfig.Config();
-                await Provider.SendGlobalConfigAsync(configData);
+                var configData = config != null ? JsonSerializer.SerializeToElement(config) : JsonSerializer.SerializeToElement(new object());
+                Provider.SetCachedGlobalConfig(configData);
+                var message = new { type = "globalConfigLoaded", config = configData };
+                Provider.PostMessage(JsonSerializer.SerializeToElement(message));
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                System.Diagnostics.Debug.WriteLine($"[Kilo] MiscRequestHandler: Error fetching global config: {ex.Message}");
-                await Provider.SendGlobalConfigAsync(new KiloExtensionDTOs.KiloConfig.Config());
+                System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed to fetch global config: {error}");
             }
         }
 
-        /// <summary>
-        /// Handles the requestIndexingStatus message from the webview.
-        /// Sends the indexing status to the webview.
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        // TypeScript: case "requestIndexingStatus":
+        //   this.fetchAndSendIndexingStatus().catch((e) =>
+        //     console.error("[Kilo New] fetchAndSendIndexingStatus failed:", e),
+        //   )
+        //   break
+        // private async fetchAndSendIndexingStatus(): Promise<void> {
+        //   if (!this.client) {
+        //     if (this.cachedIndexingStatusMessage) {
+        //       this.postMessage(this.cachedIndexingStatusMessage)
+        //     }
+        //     return
+        //   }
+        //   const config = this.connectionService.getServerConfig()
+        //   if (!config) return
+        //   try {
+        //     const dir = this.getWorkspaceDirectory(this.currentSession?.id)
+        //     const auth = Buffer.from(`kilo:${config.password}`).toString("base64")
+        //     const res = await fetch(`${config.baseUrl}/indexing/status`, {
+        //       headers: {
+        //         Authorization: `Basic ${auth}`,
+        //         ...(dir ? { "x-kilo-directory": dir } : {}),
+        //       },
+        //     })
+        //     if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        //     const status = (await res.json()) as IndexingStatus
+        //     const message = { type: "indexingStatusLoaded", status }
+        //     this.cachedIndexingStatusMessage = message
+        //     this.postMessage(message)
+        //   } catch (error) {
+        //     console.error("[Kilo New] KiloProvider: Failed to fetch indexing status:", error)
+        //   }
+        // }
         public async Task HandleRequestIndexingStatusAsync(JsonElement? payload)
         {
-            await Provider.SendIndexingStatusAsync(JsonDocument.Parse("\"off\"").RootElement);
+            var nswagClient = Provider.GetNswagClient();
+            if (nswagClient == null)
+            {
+                var cachedMessage = Provider.GetCachedIndexingStatusMessage();
+                if (cachedMessage != null)
+                {
+                    Provider.PostMessage(cachedMessage);
+                }
+                return;
+            }
+
+            var config = ConnectionService.GetServerConfig();
+            if (config == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var dir = Provider.GetWorkspaceDirectory(null);
+                var auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"kilo:{config.Password}"));
+                var baseUrl = config.BaseUrl;
+                
+                using var httpClient = new System.Net.Http.HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", auth);
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    httpClient.DefaultRequestHeaders.Add("x-kilo-directory", dir);
+                }
+                
+                var res = await httpClient.GetAsync($"{baseUrl}/indexing/status");
+                if (!res.IsSuccessStatusCode)
+                {
+                    throw new Exception($"HTTP {res.StatusCode}");
+                }
+                var statusJson = await res.Content.ReadAsStringAsync();
+                var status = JsonDocument.Parse(statusJson).RootElement;
+                var message = new { type = "indexingStatusLoaded", status };
+                var messageJson = JsonSerializer.SerializeToElement(message);
+                Provider.SetCachedIndexingStatusMessage(messageJson);
+                Provider.PostMessage(messageJson);
+            }
+            catch (Exception error)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed to fetch indexing status: {error}");
+            }
         }
 
-        /// <summary>
-        /// Handles the requestKiloEmbeddingModels message from the webview.
-        /// Sends the list of Kilo embedding models to the webview.
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        // TypeScript: case "requestKiloEmbeddingModels":
+        //   this.fetchAndSendKiloEmbeddingModels().catch((e) =>
+        //     console.error("[Kilo New] fetchAndSendKiloEmbeddingModels failed:", e),
+        //   )
+        //   break
+        // private async fetchAndSendKiloEmbeddingModels(): Promise<void> {
+        //   const catalog = await fetchKiloEmbeddingModelCatalog()
+        //   const message = { type: "kiloEmbeddingModelsLoaded", catalog }
+        //   this.cachedKiloEmbeddingModelsMessage = message
+        //   this.postMessage(message)
+        // }
         public async Task HandleRequestKiloEmbeddingModelsAsync(JsonElement? payload)
         {
-            await Provider.SendKiloEmbeddingModelsAsync(Array.Empty<object>());
+            var catalog = await FetchKiloEmbeddingModelCatalog();
+            var message = new { type = "kiloEmbeddingModelsLoaded", catalog };
+            var messageJson = JsonSerializer.SerializeToElement(message);
+            Provider.SetCachedKiloEmbeddingModelsMessage(messageJson);
+            Provider.PostMessage(messageJson);
         }
 
-        /// <summary>
-        /// Handles the requestImageModels message from the webview.
-        /// Sends the list of image generation models to the webview.
-        /// </summary>
-        /// <param name="payload">The message payload (unused).</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task<object> FetchKiloEmbeddingModelCatalog()
+        {
+            return new { };
+        }
+
+        // TypeScript: case "requestImageModels":
+        //   this.fetchAndSendImageModels().catch((e) => console.error("[Kilo New] fetchAndSendImageModels failed:", e))
+        //   break
+        // private async fetchAndSendImageModels(): Promise<void> {
+        //   const dir = this.getWorkspaceDirectory()
+        //   const result = await fetchImageModels(this.connectionService, dir)
+        //   if (!result.ok) {
+        //     if (this.cachedImageModelsMessage) {
+        //       this.postMessage(this.cachedImageModelsMessage)
+        //     }
+        //     return
+        //   }
+        //   const message = { type: "imageModelsLoaded" as const, models: result.models }
+        //   this.cachedImageModelsMessage = message
+        //   this.postMessage(message)
+        // }
         public async Task HandleRequestImageModelsAsync(JsonElement? payload)
         {
-            await Provider.SendImageModelsAsync(new List<ApiImageModel>());
+            var dir = Provider.GetWorkspaceDirectory();
+            var result = await FetchImageModels(dir);
+            if (!result.Ok)
+            {
+                var cachedMessage = Provider.GetCachedImageModelsMessage();
+                if (cachedMessage != null)
+                {
+                    Provider.PostMessage(cachedMessage);
+                }
+                return;
+            }
+            var message = new { type = "imageModelsLoaded", models = result.Models };
+            var messageJson = JsonSerializer.SerializeToElement(message);
+            Provider.SetCachedImageModelsMessage(messageJson);
+            Provider.PostMessage(messageJson);
+        }
+
+        private async Task<(bool Ok, object Models)> FetchImageModels(string dir)
+        {
+            return (true, new object[0]);
         }
 
         public void Dispose()

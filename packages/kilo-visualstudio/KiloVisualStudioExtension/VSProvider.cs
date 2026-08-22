@@ -243,6 +243,20 @@ namespace KiloVisualStudioExtension
     private JsonElement? _cachedStats = null;
     private bool _cachedGitRepo = false;
     private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
+    
+    // Cached messages for misc request handlers (matching TypeScript cache pattern)
+    private JsonElement? _cachedVariantsMessage;
+    private JsonElement? _cachedRecentsMessage;
+    private JsonElement? _cachedFavoritesMessage;
+    private JsonElement? _cachedSkillsMessage;
+    private JsonElement? _cachedCommandsMessage;
+    private JsonElement? _cachedGlobalConfig;
+    private JsonElement? _cachedIndexingStatusMessage;
+    private JsonElement? _cachedKiloEmbeddingModelsMessage;
+    private JsonElement? _cachedImageModelsMessage;
+    
+    // Global state storage (matching extensionContext.globalState in TypeScript)
+    private readonly Dictionary<string, JsonElement> _globalState = new Dictionary<string, JsonElement>();
 
     /// <summary>
     /// Constructor for factory creation (webView may be null initially).
@@ -326,6 +340,118 @@ namespace KiloVisualStudioExtension
       {
 
       }
+    }
+
+    // Global state methods (matching extensionContext.globalState in TypeScript)
+    internal JsonElement? GetGlobalState(string key)
+    {
+      return _globalState.TryGetValue(key, out var value) ? value : null;
+    }
+
+    internal void SetGlobalState(string key, JsonElement value)
+    {
+      _globalState[key] = value;
+    }
+
+    // Cache getter/setter methods for misc request handlers
+    internal JsonElement? GetCachedVariantsMessage() => _cachedVariantsMessage;
+    internal void SetCachedVariantsMessage(JsonElement message) => _cachedVariantsMessage = message;
+    
+    internal JsonElement? GetCachedRecentsMessage() => _cachedRecentsMessage;
+    internal void SetCachedRecentsMessage(JsonElement message) => _cachedRecentsMessage = message;
+    
+    internal JsonElement? GetCachedFavoritesMessage() => _cachedFavoritesMessage;
+    internal void SetCachedFavoritesMessage(JsonElement message) => _cachedFavoritesMessage = message;
+    
+    internal JsonElement? GetCachedSkillsMessage() => _cachedSkillsMessage;
+    internal void SetCachedSkillsMessage(JsonElement message) => _cachedSkillsMessage = message;
+    
+    internal JsonElement? GetCachedCommandsMessage() => _cachedCommandsMessage;
+    internal void SetCachedCommandsMessage(JsonElement message) => _cachedCommandsMessage = message;
+    
+    internal JsonElement? GetCachedGlobalConfig() => _cachedGlobalConfig;
+    internal void SetCachedGlobalConfig(JsonElement config) => _cachedGlobalConfig = config;
+    
+    internal JsonElement? GetCachedIndexingStatusMessage() => _cachedIndexingStatusMessage;
+    internal void SetCachedIndexingStatusMessage(JsonElement message) => _cachedIndexingStatusMessage = message;
+    
+    internal JsonElement? GetCachedKiloEmbeddingModelsMessage() => _cachedKiloEmbeddingModelsMessage;
+    internal void SetCachedKiloEmbeddingModelsMessage(JsonElement message) => _cachedKiloEmbeddingModelsMessage = message;
+    
+    internal JsonElement? GetCachedImageModelsMessage() => _cachedImageModelsMessage;
+    internal void SetCachedImageModelsMessage(JsonElement message) => _cachedImageModelsMessage = message;
+
+    internal string GetWorkspaceDirectory(string? sessionID = null)
+    {
+      return System.Environment.CurrentDirectory;
+    }
+
+    internal string GetConnectionState()
+    {
+      return _connectionService.State.ToString().ToLowerInvariant();
+    }
+
+    // Global state update method (matching extensionContext.globalState.update in TypeScript)
+    internal void UpdateGlobalState(string key, JsonElement value)
+    {
+      _globalState[key] = value;
+    }
+
+    // Validation functions (matching provider-actions.ts in TypeScript)
+    internal bool IsModelSelection(JsonElement? raw)
+    {
+      if (!raw.HasValue || raw.Value.ValueKind != JsonValueKind.Object) return false;
+      var obj = raw.Value;
+      return obj.TryGetProperty("providerID", out var pid) && pid.ValueKind == JsonValueKind.String &&
+             obj.TryGetProperty("modelID", out var mid) && mid.ValueKind == JsonValueKind.String;
+    }
+
+    internal JsonElement ValidateRecents(JsonElement? raw)
+    {
+      if (!raw.HasValue || raw.Value.ValueKind != JsonValueKind.Array)
+      {
+        return JsonSerializer.SerializeToElement(new List<object>());
+      }
+      
+      var array = raw.Value.EnumerateArray();
+      var validItems = new List<object>();
+      int count = 0;
+      
+      foreach (var item in array)
+      {
+        if (IsModelSelection(item) && count < 5)
+        {
+          var pid = item.GetProperty("providerID").GetString() ?? "";
+          var mid = item.GetProperty("modelID").GetString() ?? "";
+          validItems.Add(new { providerID = pid, modelID = mid });
+          count++;
+        }
+      }
+      
+      return JsonSerializer.SerializeToElement(validItems);
+    }
+
+    internal JsonElement ValidateFavorites(JsonElement? raw)
+    {
+      if (!raw.HasValue || raw.Value.ValueKind != JsonValueKind.Array)
+      {
+        return JsonSerializer.SerializeToElement(new List<object>());
+      }
+      
+      var array = raw.Value.EnumerateArray();
+      var validItems = new List<object>();
+      
+      foreach (var item in array)
+      {
+        if (IsModelSelection(item))
+        {
+          var pid = item.GetProperty("providerID").GetString() ?? "";
+          var mid = item.GetProperty("modelID").GetString() ?? "";
+          validItems.Add(new { providerID = pid, modelID = mid });
+        }
+      }
+      
+      return JsonSerializer.SerializeToElement(validItems);
     }
 
     internal KiloApiClient? GetNswagClient()
