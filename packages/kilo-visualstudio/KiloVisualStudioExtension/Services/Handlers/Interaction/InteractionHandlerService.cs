@@ -236,11 +236,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             if (!string.IsNullOrEmpty(requestId) && !string.IsNullOrEmpty(response))
             {
-                await HandlePermissionResponseInternalAsync(requestId, response, null);
+                await HandlePermissionResponseInternalAsync(requestId, response, null, Array.Empty<string>(), Array.Empty<string>());
             }
         }
 
-        private async Task HandlePermissionResponseInternalAsync(string requestId, string response, string? sessionID)
+        private async Task HandlePermissionResponseInternalAsync(string requestId, string response, string? sessionID, string[] approvedAlways, string[] deniedAlways)
         {
             var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null) return;
@@ -249,6 +249,48 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             if (!_permissionDirectories.TryGetValue(requestId, out dir))
             {
                 dir = Provider.GetWorkspaceDirectory(sessionID);
+            }
+
+            var staleCleanup = () =>
+            {
+                _permissionDirectories.Remove(requestId);
+                Provider.PostMessage(JsonSerializer.Serialize(new
+                {
+                    type = "permissionError",
+                    permissionID = requestId,
+                    stale = true
+                }));
+                _ = FetchAndSendPendingPermissionsAsync();
+            };
+
+            // Save always-rules first if any (matching VS Code pattern)
+            if (approvedAlways.Length > 0 || deniedAlways.Length > 0)
+            {
+                try
+                {
+                    var saveBody = new Body14
+                    {
+                        ApprovedAlways = approvedAlways.ToList(),
+                        DeniedAlways = deniedAlways.ToList()
+                    };
+                    await nswagClient.Permission_saveAlwaysRulesAsync(requestId, dir, "", saveBody);
+                }
+                catch (Exception ex)
+                {
+                    // Check if it's a 404/not found error
+                    if (IsNotFoundError(ex))
+                    {
+                        staleCleanup();
+                        return;
+                    }
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: failed to save always-rules: {ex.Message}");
+                    Provider.PostMessage(JsonSerializer.Serialize(new
+                    {
+                        type = "permissionError",
+                        permissionID = requestId
+                    }));
+                    return;
+                }
             }
 
             try
@@ -274,8 +316,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             {
                 if (IsNotFoundError(ex))
                 {
-                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: permission {requestId} is stale (404)");
-                    StalePermissionCleanup(requestId);
+                    staleCleanup();
                     return;
                 }
                 System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: permission reply error: {ex.Message}");
@@ -406,6 +447,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             string? requestId = null;
             string? response = null;
             string? sessionID = null;
+            string[]? approvedAlways = null;
+            string[]? deniedAlways = null;
 
             if (payload.Value.TryGetProperty("requestId", out var rid))
             {
@@ -419,10 +462,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             {
                 sessionID = sid.GetString();
             }
+            if (payload.Value.TryGetProperty("approvedAlways", out var approved) && approved.ValueKind == JsonValueKind.Array)
+            {
+                approvedAlways = approved.EnumerateArray().Select(a => a.GetString()!).ToArray();
+            }
+            if (payload.Value.TryGetProperty("deniedAlways", out var denied) && denied.ValueKind == JsonValueKind.Array)
+            {
+                deniedAlways = denied.EnumerateArray().Select(d => d.GetString()!).ToArray();
+            }
 
             if (!string.IsNullOrEmpty(requestId) && !string.IsNullOrEmpty(response))
             {
-                await HandlePermissionResponseInternalAsync(requestId, response, sessionID);
+                await HandlePermissionResponseInternalAsync(requestId, response, sessionID, approvedAlways ?? Array.Empty<string>(), deniedAlways ?? Array.Empty<string>());
             }
         }
 

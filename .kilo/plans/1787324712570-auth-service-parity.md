@@ -123,7 +123,7 @@ The audit identified the following critical inconsistencies between VS Code and 
 - [x] `InteractionHandlerService` has `_permissionDirectories` and `_questionDirectories` tracking
 - [x] `FetchAndSendPendingPermissionsAsync()` implemented
 - [x] `FetchAndSendPendingQuestionsAsync()` implemented
-- [x] `HandlePermissionResponseAsync()` fully implemented (uses directory tracking)
+- [x] `HandlePermissionResponseAsync()` fully implemented (uses directory tracking, **saves always-rules before reply**)
 - [x] `HandlePermissionReplyAsync()` uses directory tracking
 - [x] `HandleQuestionReplyAsync()` uses directory tracking
 - [x] `HandleQuestionRejectAsync()` uses directory tracking
@@ -132,8 +132,9 @@ The audit identified the following critical inconsistencies between VS Code and 
 - [x] `SSEHelper.GetSessionDirectories()` helper added
 - [x] `SSEHelper.IsTrackedSession()` helper added
 - [x] Recovery integrated into SSE reconnection flow (via `HandleStateChange`)
-- [x] `permissionResponse` message handler registered in `VSProvider`
-- [x] `questionReject` message handler registered in `VSProvider`
+- [x] `questionReply` message handler added to `VSProvider`
+- [x] `cancelLogin` message handler added to `VSProvider`
+- [x] `saveCustomProvider` message handler added to `VSProvider`
 - [ ] Unit tests for recovery scenarios
 
 ### Session Directory Tracking

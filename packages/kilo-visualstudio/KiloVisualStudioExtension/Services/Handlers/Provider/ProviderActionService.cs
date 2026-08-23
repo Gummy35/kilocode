@@ -213,6 +213,68 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
             }
         }
 
+        /// <summary>
+        /// Handles saveCustomProvider message - saves a custom provider configuration.
+        /// For now, handles API key storage. Config updates are handled separately.
+        /// </summary>
+        public async Task HandleSaveCustomProviderAsync(JsonElement? payload)
+        {
+            if (!payload.HasValue) return;
+
+            var requestId = payload.Value.TryGetProperty("requestId", out var rid) ? rid.GetString() : "";
+            var providerID = payload.Value.TryGetProperty("providerID", out var pid) ? pid.GetString() : "";
+            
+            if (string.IsNullOrEmpty(requestId) || string.IsNullOrEmpty(providerID))
+            {
+                PostProviderError(requestId, providerID, "connect", "Missing required parameters");
+                return;
+            }
+
+            try
+            {
+                var nswagClient = Provider.GetNswagClient();
+                if (nswagClient == null)
+                {
+                    PostProviderError(requestId, providerID, "connect", "Not connected to backend");
+                    return;
+                }
+
+                var apiKey = payload.Value.TryGetProperty("apiKey", out var key) ? key.GetString() : null;
+                var apiKeyChanged = payload.Value.TryGetProperty("apiKeyChanged", out var changed) ? changed.GetBoolean() : false;
+
+                // Handle API key if changed
+                if (apiKeyChanged)
+                {
+                    if (!string.IsNullOrEmpty(apiKey))
+                    {
+                        var authBody = new KiloVisualStudioExtension.ApiClient.Auth();
+                        authBody.AdditionalProperties["type"] = "api";
+                        authBody.AdditionalProperties["key"] = apiKey;
+                        await nswagClient.Auth_setAsync(providerID, authBody);
+                    }
+                    else
+                    {
+                        // Clear API key
+                        await nswagClient.Auth_removeAsync(providerID);
+                    }
+                }
+
+                await Provider.DisposeGlobal();
+                await Provider.FetchAndSendProviders();
+
+                Provider.PostMessage(JsonSerializer.Serialize(new 
+                { 
+                    type = "providerConnected", 
+                    requestId, 
+                    providerID 
+                }));
+            }
+            catch (Exception ex)
+            {
+                PostProviderError(requestId, providerID, "connect", ex.Message);
+            }
+        }
+
         private void PostProviderError(string requestId, string providerID, string action, string message)
         {
             Provider.PostMessage(JsonSerializer.Serialize(new 

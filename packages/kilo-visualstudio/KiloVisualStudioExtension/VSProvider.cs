@@ -889,6 +889,15 @@ namespace KiloVisualStudioExtension
             await _interactionHandler.HandleQuestionRejectAsync(payload);
             break;
 
+          case "questionReply":
+            await _interactionHandler.HandleQuestionReplyAsync(payload);
+            break;
+
+          case "cancelLogin":
+            _loginAttempt++;
+            PostMessage(JsonSerializer.Serialize(new { type = "deviceAuthCancelled" }));
+            break;
+
           case "connectProvider":
             await _providerActionService.HandleConnectProviderAsync(payload);
             break;
@@ -903,6 +912,10 @@ namespace KiloVisualStudioExtension
 
           case "completeProviderOAuth":
             await _providerActionService.HandleCompleteProviderOAuthAsync(payload);
+            break;
+
+          case "saveCustomProvider":
+            await _providerActionService.HandleSaveCustomProviderAsync(payload);
             break;
 
           case "createSession":
