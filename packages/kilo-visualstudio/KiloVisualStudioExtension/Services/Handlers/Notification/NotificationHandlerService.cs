@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloExtensionDTOs.Profile;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Services;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Notification
 {
@@ -18,6 +21,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
+
+        private ICacheService Cache => _serviceProvider.GetService<ICacheService>() 
+            ?? throw new InvalidOperationException("CacheService not registered in service provider");
 
         /// <summary>
         /// Creates a new NotificationHandlerService instance.
@@ -36,24 +42,61 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestNotificationsAsync(JsonElement? payload)
         {
+            // TypeScript: export async function fetchAndSendNotifications(ctx: NotificationsContext): Promise<void> {
+            //   if (!ctx.client)
+            //   {
+            //     const cached = ctx.cached()
+            //     if (cached)
+            //     {
+            //       const persisted = ctx.context?.globalState.get<string[]>(KEY, []) ?? []
+            //       const dismissedIds =
+            //         persisted.length > 0 ? Array.from(new Set([...cached.dismissedIds, ...persisted])) : cached.dismissedIds
+            //       const message = { ...cached, dismissedIds }
+            //       if (message !== cached) ctx.set(message)
+            //       ctx.post(message)
+            //     }
+            //     return
+            //   }
+            //
+            //   try
+            //   {
+            //     const { data: all } = await retry(() => ctx.client!.kilo.notifications(undefined, { throwOnError: true }))
+            //     const notifications = all.filter((n) => !n.showIn || n.showIn.includes("extension"))
+            //     const existing = ctx.context?.globalState.get<string[]>(KEY, []) ?? []
+            //     const active = new Set(notifications.map((n) => n.id))
+            //     const dismissedIds = notifications.length > 0 ? existing.filter((id) => active.has(id)) : existing
+            //     if (dismissedIds.length !== existing.length) await ctx.context?.globalState.update(KEY, dismissedIds)
+            //     const message = { type: "notificationsLoaded" as const, notifications, dismissedIds }
+            //     ctx.set(message)
+            //     ctx.post(message)
+            //   } catch (error) {
+            //     console.error("[Kilo New] KiloProvider: Failed to fetch notifications:", error)
+            //   }
+            // }
+
             try
             {
                 var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null)
                 {
-                    await Provider.SendNotificationsAsync(Array.Empty<object>());
+                    var cached = Cache.GetJson("notificationsLoadedMessage");
+                    if (cached.HasValue)
+                    {
+                        Provider.PostMessage(cached.Value);
+                    }
+                    await Provider.SendNotificationsAsync(new List<KilocodeNotification>());
                     return;
                 }
 
                 var notifications = await nswagClient.Kilo_notificationsAsync("", "");
-                var notificationsList = notifications != null ? notifications.Select(n => (object)n).ToArray() : Array.Empty<object>();
+                //var notificationsList = notifications != null ? notifications.Select(n => EntityConverter.Convert(n)).ToList() : new List<object>();
 
-                await Provider.SendNotificationsAsync(notificationsList);
+                //await Provider.SendNotificationsAsync(notificationsList);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] NotificationHandler: Error fetching notifications: {ex.Message}");
-                await Provider.SendNotificationsAsync(Array.Empty<object>());
+                //await Provider.SendNotificationsAsync(Array.Empty<object>());
             }
         }
 
@@ -88,4 +131,3 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
         }
     }
 }
-

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Services;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
@@ -31,6 +32,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         private KiloConnectionService ConnectionService => _serviceProvider.GetService<KiloConnectionService>() 
             ?? throw new InvalidOperationException("KiloConnectionService not registered in service provider");
 
+        private ICacheService Cache => _serviceProvider.GetService<ICacheService>() 
+            ?? throw new InvalidOperationException("CacheService not registered in service provider");
+
         /// <summary>
         /// Creates a new MiscRequestHandlerService instance.
         /// </summary>
@@ -47,14 +51,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         // }
         public void HandleRequestVariants(JsonElement? payload)
         {
-            var variantsJson = Provider.GetGlobalState("variantSelections");
-            var variants = variantsJson.HasValue && variantsJson.Value.ValueKind != JsonValueKind.Null 
-                ? variantsJson.Value 
-                : JsonSerializer.SerializeToElement(new Dictionary<string, string>());
+            var variants = Cache.GetJson("variantSelections") 
+                ?? JsonSerializer.SerializeToElement(new Dictionary<string, string>());
             
             var message = new { type = "variantsLoaded", variants = variants };
             var messageJson = JsonSerializer.SerializeToElement(message);
-            Provider.SetCachedVariantsMessage(messageJson);
+            _ = Cache.UpdateAsync("variantsLoadedMessage", messageJson);
             Provider.PostMessage(messageJson);
         }
 
@@ -71,26 +73,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             if (payload.HasValue && payload.Value.TryGetProperty("recents", out var recentsProp))
             {
                 var validated = Provider.ValidateRecents(recentsProp);
-                Provider.UpdateGlobalState("recentModels", validated);
+                _ = Cache.UpdateAsync("recentModels", validated);
             }
         }
 
         public void HandleRequestRecents(JsonElement? payload)
         {
-            var recentsJson = Provider.GetGlobalState("recentModels");
-            JsonElement recents;
-            if (recentsJson.HasValue && recentsJson.Value.ValueKind != JsonValueKind.Null)
-            {
-                recents = Provider.ValidateRecents(recentsJson);
-            }
-            else
-            {
-                recents = JsonSerializer.SerializeToElement(new List<ModelSelection>());
-            }
+            var recents = Cache.GetJson("recentModels") 
+                ?? JsonSerializer.SerializeToElement(new List<ModelSelection>());
             
             var message = new { type = "recentsLoaded", recents = recents };
             var messageJson = JsonSerializer.SerializeToElement(message);
-            Provider.SetCachedRecentsMessage(messageJson);
+            _ = Cache.UpdateAsync("recentsLoadedMessage", messageJson);
             Provider.PostMessage(messageJson);
         }
 
@@ -111,8 +105,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             var providerID = payload.Value.TryGetProperty("providerID", out var pidProp) ? pidProp.GetString() : "";
             var modelID = payload.Value.TryGetProperty("modelID", out var midProp) ? midProp.GetString() : "";
             
-            var currentJson = Provider.GetGlobalState("favoriteModels");
-            var current = Provider.ValidateFavorites(currentJson);
+            var current = Cache.GetJson("favoriteModels") 
+                ?? JsonSerializer.SerializeToElement(new List<ModelSelection>());
             
             var key = $"{providerID}/{modelID}";
             var existing = new List<ModelSelection>();
@@ -140,25 +134,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             }
             
             var validated = JsonSerializer.SerializeToElement(existing);
-            Provider.UpdateGlobalState("favoriteModels", validated);
+            _ = Cache.UpdateAsync("favoriteModels", validated);
         }
 
         public void HandleRequestFavorites(JsonElement? payload)
         {
-            var favoritesJson = Provider.GetGlobalState("favoriteModels");
-            JsonElement favorites;
-            if (favoritesJson.HasValue && favoritesJson.Value.ValueKind != JsonValueKind.Null)
-            {
-                favorites = Provider.ValidateFavorites(favoritesJson);
-            }
-            else
-            {
-                favorites = JsonSerializer.SerializeToElement(new List<ModelSelection>());
-            }
+            var favorites = Cache.GetJson("favoriteModels") 
+                ?? JsonSerializer.SerializeToElement(new List<ModelSelection>());
             
             var message = new { type = "favoritesLoaded", favorites = favorites };
             var messageJson = JsonSerializer.SerializeToElement(message);
-            Provider.SetCachedFavoritesMessage(messageJson);
+            _ = Cache.UpdateAsync("favoritesLoadedMessage", messageJson);
             Provider.PostMessage(messageJson);
         }
 
@@ -189,10 +175,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null)
             {
-                var cachedMessage = Provider.GetCachedSkillsMessage();
-                if (cachedMessage != null)
+                var cachedMessage = Cache.GetJson("skillsLoadedMessage");
+                if (cachedMessage.HasValue)
                 {
-                    Provider.PostMessage(cachedMessage);
+                    Provider.PostMessage(cachedMessage.Value);
                 }
                 return;
             }
@@ -204,7 +190,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
                 var skillsData = skills != null ? JsonSerializer.SerializeToElement(skills) : JsonSerializer.SerializeToElement(new List<Anonymous3>());
                 var message = new { type = "skillsLoaded", skills = skillsData };
                 var messageJson = JsonSerializer.SerializeToElement(message);
-                Provider.SetCachedSkillsMessage(messageJson);
+                _ = Cache.UpdateAsync("skillsLoadedMessage", messageJson);
                 Provider.PostMessage(messageJson);
             }
             catch (Exception error)
@@ -237,10 +223,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null)
             {
-                var cachedMessage = Provider.GetCachedCommandsMessage();
-                if (cachedMessage != null)
+                var cachedMessage = Cache.GetJson("commandsLoadedMessage");
+                if (cachedMessage.HasValue)
                 {
-                    Provider.PostMessage(cachedMessage);
+                    Provider.PostMessage(cachedMessage.Value);
                 }
                 return;
             }
@@ -252,7 +238,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
                 var commandsData = commands != null ? JsonSerializer.SerializeToElement(commands) : JsonSerializer.SerializeToElement(new List<Command>());
                 var message = new { type = "commandsLoaded", commands = commandsData };
                 var messageJson = JsonSerializer.SerializeToElement(message);
-                Provider.SetCachedCommandsMessage(messageJson);
+                _ = Cache.UpdateAsync("commandsLoadedMessage", messageJson);
                 Provider.PostMessage(messageJson);
             }
             catch (Exception error)
@@ -286,7 +272,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             {
                 var config = await nswagClient.Global_config_getAsync();
                 var configData = config != null ? JsonSerializer.SerializeToElement(config) : JsonSerializer.SerializeToElement(new object());
-                Provider.SetCachedGlobalConfig(configData);
+                await Cache.UpdateAsync("globalConfig", configData);
                 var message = new { type = "globalConfigLoaded", config = configData };
                 Provider.PostMessage(JsonSerializer.SerializeToElement(message));
             }
@@ -333,10 +319,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null)
             {
-                var cachedMessage = Provider.GetCachedIndexingStatusMessage();
-                if (cachedMessage != null)
+                var cachedMessage = Cache.GetJson("indexingStatusLoadedMessage");
+                if (cachedMessage.HasValue)
                 {
-                    Provider.PostMessage(cachedMessage);
+                    Provider.PostMessage(cachedMessage.Value);
                 }
                 return;
             }
@@ -369,7 +355,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
                 var status = JsonDocument.Parse(statusJson).RootElement;
                 var message = new { type = "indexingStatusLoaded", status };
                 var messageJson = JsonSerializer.SerializeToElement(message);
-                Provider.SetCachedIndexingStatusMessage(messageJson);
+                await Cache.UpdateAsync("indexingStatusLoadedMessage", messageJson);
                 Provider.PostMessage(messageJson);
             }
             catch (Exception error)
@@ -394,7 +380,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             var catalog = await FetchKiloEmbeddingModelCatalog();
             var message = new { type = "kiloEmbeddingModelsLoaded", catalog };
             var messageJson = JsonSerializer.SerializeToElement(message);
-            Provider.SetCachedKiloEmbeddingModelsMessage(messageJson);
+            await Cache.UpdateAsync("kiloEmbeddingModelsLoadedMessage", messageJson);
             Provider.PostMessage(messageJson);
         }
 
@@ -425,16 +411,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
             var result = await FetchImageModels(dir);
             if (!result.Ok)
             {
-                var cachedMessage = Provider.GetCachedImageModelsMessage();
-                if (cachedMessage != null)
+                var cachedMessage = Cache.GetJson("imageModelsLoadedMessage");
+                if (cachedMessage.HasValue)
                 {
-                    Provider.PostMessage(cachedMessage);
+                    Provider.PostMessage(cachedMessage.Value);
                 }
                 return;
             }
             var message = new { type = "imageModelsLoaded", models = result.Models };
             var messageJson = JsonSerializer.SerializeToElement(message);
-            Provider.SetCachedImageModelsMessage(messageJson);
+            await Cache.UpdateAsync("imageModelsLoadedMessage", messageJson);
             Provider.PostMessage(messageJson);
         }
 
@@ -450,4 +436,3 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         }
     }
 }
-

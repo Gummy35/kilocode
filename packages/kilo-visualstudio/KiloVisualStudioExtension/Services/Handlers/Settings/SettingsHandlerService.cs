@@ -123,8 +123,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleRequestWorkStyleAsync(JsonElement? payload)
         {
-            // Work style endpoint does not exist in current API
-            await Provider.SendWorkStyleLoadedAsync(new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
+          // Work style endpoint does not exist in current API
+          await Provider.SendWorkStyleLoadedAsync(KiloExtensionDTOs.WorkStyleState.Skipped);
+        //      new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
         }
 
         /// <summary>

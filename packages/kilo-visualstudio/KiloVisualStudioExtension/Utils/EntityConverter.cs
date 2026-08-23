@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
+using Notification = KiloVisualStudioExtension.ApiClient.Anonymous11;
 
 namespace KiloVisualStudioExtension.Utils
 {
