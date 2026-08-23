@@ -1,6 +1,6 @@
 # PORT-CORE-002: Authentication and Core Service Parity
 
-**Status:** Phase 3 In Progress - Recovery methods implemented, awaiting SSE integration  
+**Status:** Phase 3 Complete - Phases 4 and 5 remaining  
 **Created:** 2026-08-21  
 **Depends On:** `PORT-CLI-001` (CLI/HTTP client), `PORT-WEBVIEW-002` (WebView integration)  
 **Blocks:** `PORT-CORE-001` (remaining extension-host functionality)
@@ -131,7 +131,7 @@ The audit identified the following critical inconsistencies between VS Code and 
 - [x] `VSProvider.IsTrackedSession()` helper added
 - [x] `SSEHelper.GetSessionDirectories()` helper added
 - [x] `SSEHelper.IsTrackedSession()` helper added
-- [ ] Recovery integrated into SSE reconnection flow
+- [x] Recovery integrated into SSE reconnection flow (via `HandleStateChange`)
 - [ ] Unit tests for recovery scenarios
 
 ### Session Directory Tracking

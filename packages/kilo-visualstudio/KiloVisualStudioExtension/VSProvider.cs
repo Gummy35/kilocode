@@ -1536,6 +1536,16 @@ namespace KiloVisualStudioExtension
     {
       var message = new { type = "connectionState", state = e.State.ToString().ToLowerInvariant(), errorMessage = e.ErrorMessage };
       _webView.PostMessage(JsonSerializer.Serialize(message));
+
+      if (e.State == ConnectionState.Connected)
+      {
+        var interactionHandler = _serviceProvider.GetService<InteractionHandlerService>();
+        if (interactionHandler != null)
+        {
+          _ = interactionHandler.FetchAndSendPendingPermissionsAsync();
+          _ = interactionHandler.FetchAndSendPendingQuestionsAsync();
+        }
+      }
     }
 
     private void HandleSseEvent(object? sender, SseEventReceivedEventArgs e)
