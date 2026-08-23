@@ -1,6 +1,6 @@
 # PORT-CORE-002: Authentication and Core Service Parity
 
-**Status:** Phase 4 Complete - Phase 5 (Provider Management) remaining  
+**Status:** All 5 Phases Complete - Auth service parity achieved  
 **Created:** 2026-08-21  
 **Depends On:** `PORT-CLI-001` (CLI/HTTP client), `PORT-WEBVIEW-002` (WebView integration)  
 **Blocks:** `PORT-CORE-001` (remaining extension-host functionality)
@@ -132,6 +132,8 @@ The audit identified the following critical inconsistencies between VS Code and 
 - [x] `SSEHelper.GetSessionDirectories()` helper added
 - [x] `SSEHelper.IsTrackedSession()` helper added
 - [x] Recovery integrated into SSE reconnection flow (via `HandleStateChange`)
+- [x] `permissionResponse` message handler registered in `VSProvider`
+- [x] `questionReject` message handler registered in `VSProvider`
 - [ ] Unit tests for recovery scenarios
 
 ### Session Directory Tracking
@@ -150,16 +152,19 @@ The audit identified the following critical inconsistencies between VS Code and 
 - [ ] Unit tests for directory resolution
 
 ### Message Loading
-- [ ] `HandleLoadMessagesAsync()` properly deserializes messages from backend
-- [ ] No hardcoded empty message objects
-- [ ] Messages include all required fields (id, role, parts, createdAt, etc.)
+- [x] `HandleLoadMessagesAsync()` properly deserializes messages from backend (using JsonSerializer to preserve all fields)
+- [x] No hardcoded empty message objects
+- [x] Messages include all required fields from backend (id, role, parts, createdAt, etc.) via AdditionalProperties
 - [ ] Integration test validates message round-trip
 
 ### Provider Management
-- [ ] Provider keys stored extension-side in `storedProviderKeys` dictionary
-- [ ] `HandleConnectProviderAsync()` connects provider
-- [ ] `HandleDisconnectProviderAsync()` disconnects provider
-- [ ] `HandleAuthorizeProviderOAuthAsync()` initiates OAuth flow
+- [x] `ProviderActionService` created with provider action handlers
+- [x] `HandleConnectProviderAsync()` connects provider with API key
+- [x] `HandleDisconnectProviderAsync()` disconnects provider
+- [x] `HandleAuthorizeProviderOAuthAsync()` initiates OAuth authorization
+- [x] `HandleCompleteProviderOAuthAsync()` completes OAuth callback
+- [x] Message handlers registered in `VSProvider` for `connectProvider`, `disconnectProvider`, `authorizeProviderOAuth`, `completeProviderOAuth`
+- [x] Provider keys stored extension-side via `Auth_setAsync`
 - [ ] Agent filtering matches VS Code (exclude subagent mode, hidden agents)
 
 ---

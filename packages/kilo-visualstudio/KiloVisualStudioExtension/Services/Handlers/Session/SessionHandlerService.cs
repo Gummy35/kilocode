@@ -361,21 +361,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
                 
                 var items = new System.Collections.Generic.List<object>();
                 
-                foreach (var msg in messages)
+                foreach (var msgWrapper in messages)
                 {
-                    var createdAt = DateTimeOffset.UtcNow.ToString("o");
-                    var messageObj = new
-                    {
-                        id = "",
-                        sessionID = sessionID,
-                        role = "",
-                        parts = (System.Text.Json.JsonElement?)null,
-                        createdAt = createdAt,
-                        time = (System.Text.Json.JsonElement?)null,
-                        cost = (System.Text.Json.JsonElement?)null,
-                        tokens = (System.Text.Json.JsonElement?)null
-                    };
-                    items.Add(messageObj);
+                    // Serialize the entire message wrapper to preserve all backend fields
+                    var messageJson = JsonSerializer.Serialize(msgWrapper);
+                    var deserialized = JsonSerializer.Deserialize<JsonElement>(messageJson);
+                    items.Add(deserialized);
                 }
                 
                 var hasMore = false;

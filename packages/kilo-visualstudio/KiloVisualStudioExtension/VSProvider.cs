@@ -13,6 +13,7 @@ using KiloVisualStudioExtension.Services.Handlers.Config;
 using KiloVisualStudioExtension.Services.Handlers.Interaction;
 using KiloVisualStudioExtension.Services.Handlers.Mcp;
 using KiloVisualStudioExtension.Services.Handlers.Memory;
+using KiloVisualStudioExtension.Services.Handlers.Provider;
 using KiloVisualStudioExtension.Services.Handlers.MiscRequest;
 using KiloVisualStudioExtension.Services.Handlers.Model;
 using KiloVisualStudioExtension.Services.Handlers.Notification;
@@ -230,6 +231,7 @@ namespace KiloVisualStudioExtension
     private readonly SessionControlHandlerService _sessionControlHandler;
     private readonly UiHandlerService _uiHandler;
     private readonly MemoryHandlerService _memoryHandler;
+    private readonly ProviderActionService _providerActionService;
     private readonly RemoteStatusService _remoteService;
 
     private bool _isWebviewReady = false;
@@ -292,8 +294,8 @@ namespace KiloVisualStudioExtension
       _sessionControlHandler = _serviceProvider.AddService(new SessionControlHandlerService(_serviceProvider));
       _uiHandler = _serviceProvider.AddService(new UiHandlerService(_serviceProvider));
 
-
       _memoryHandler = _serviceProvider.AddService(new MemoryHandlerService(_serviceProvider, new MemoryInput(this)));
+      _providerActionService = _serviceProvider.AddService(new ProviderActionService(_serviceProvider));
 
       _remoteService = _serviceProvider.AddService(new RemoteStatusService());
       _sseHelper.SetRemoteStatusService(_remoteService);
@@ -875,8 +877,32 @@ namespace KiloVisualStudioExtension
             await _interactionHandler.HandlePermissionReplyAsync(payload);
             break;
 
+          case "permissionResponse":
+            await _interactionHandler.HandlePermissionResponseAsync(payload);
+            break;
+
           case "question/reply":
             await _interactionHandler.HandleQuestionReplyAsync(payload);
+            break;
+
+          case "questionReject":
+            await _interactionHandler.HandleQuestionRejectAsync(payload);
+            break;
+
+          case "connectProvider":
+            await _providerActionService.HandleConnectProviderAsync(payload);
+            break;
+
+          case "disconnectProvider":
+            await _providerActionService.HandleDisconnectProviderAsync(payload);
+            break;
+
+          case "authorizeProviderOAuth":
+            await _providerActionService.HandleAuthorizeProviderOAuthAsync(payload);
+            break;
+
+          case "completeProviderOAuth":
+            await _providerActionService.HandleCompleteProviderOAuthAsync(payload);
             break;
 
           case "createSession":
