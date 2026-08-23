@@ -66,6 +66,16 @@ namespace KiloVisualStudioExtension
     public ICollection<string> TrackedSessionIds => _trackedSessionIds;
     public IReadOnlyDictionary<string, string> SessionStatusMap => _sessionStatusMap;
 
+    internal IReadOnlyDictionary<string, string> GetSessionDirectories()
+    {
+      return _sessionDirectories;
+    }
+
+    internal bool IsTrackedSession(string sessionID)
+    {
+      return _trackedSessionIds.Contains(sessionID);
+    }
+
     private readonly Action<string> _postMessage;
     private readonly JsonSerializer _serializer;
 

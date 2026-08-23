@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,6 +15,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
     {
         private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
+
+        private readonly Dictionary<string, string> _permissionDirectories = new();
+        private readonly Dictionary<string, string> _questionDirectories = new();
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
@@ -167,31 +171,43 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             if (!string.IsNullOrEmpty(requestId) && !string.IsNullOrEmpty(response))
             {
-                var nswagClient = Provider.GetNswagClient();
-                if (nswagClient == null) return;
+                await HandlePermissionResponseInternalAsync(requestId, response, null);
+            }
+        }
+
+        private async Task HandlePermissionResponseInternalAsync(string requestId, string response, string? sessionID)
+        {
+            var nswagClient = Provider.GetNswagClient();
+            if (nswagClient == null) return;
+
+            string dir;
+            if (!_permissionDirectories.TryGetValue(requestId, out dir))
+            {
+                dir = Provider.GetWorkspaceDirectory(sessionID);
+            }
+
+            try
+            {
+                var reply = response.ToLowerInvariant() switch
+                {
+                    "approve" or "allow" => Body13Reply.Once,
+                    "always" => Body13Reply.Always,
+                    "reject" or "deny" => Body13Reply.Reject,
+                    _ => Body13Reply.Once
+                };
+
+                await nswagClient.Permission_replyAsync(requestId, dir, "", new Body13 
+                { 
+                    Reply = reply,
+                    Message = response 
+                });
                 
-                try
-                {
-                    var reply = response.ToLowerInvariant() switch
-                    {
-                        "approve" or "allow" => Body13Reply.Once,
-                        "always" => Body13Reply.Always,
-                        "reject" or "deny" => Body13Reply.Reject,
-                        _ => Body13Reply.Once
-                    };
-                    
-                    var replyBody = new Body13 
-                    { 
-                        Reply = reply,
-                        Message = response 
-                    };
-                    await nswagClient.Permission_replyAsync(requestId, System.Environment.CurrentDirectory, "", replyBody);
-                    System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: permission reply sent");
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: error sending permission reply: {ex.Message}");
-                }
+                _permissionDirectories.Remove(requestId);
+                System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: permission reply sent");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: permission reply error: {ex.Message}");
             }
         }
 
@@ -219,6 +235,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
             string? requestId = null;
             JsonElement? answers = null;
+            string? sessionID = null;
 
             if (payload.Value.TryGetProperty("requestId", out var rid))
             {
@@ -228,12 +245,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             {
                 answers = ans;
             }
+            if (payload.Value.TryGetProperty("sessionID", out var sid))
+            {
+                sessionID = sid.GetString();
+            }
 
             if (!string.IsNullOrEmpty(requestId) && answers.HasValue)
             {
                 var nswagClient = Provider.GetNswagClient();
                 if (nswagClient == null) return;
-                
+
+                string dir;
+                if (!_questionDirectories.TryGetValue(requestId, out dir))
+                {
+                    dir = Provider.GetWorkspaceDirectory(sessionID);
+                }
+
                 try
                 {
                     var answersArray = answers.Value.ValueKind == JsonValueKind.Array 
@@ -252,7 +279,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                     }
                     
                     var replyBody = new Body12 { Answers = questionAnswerList };
-                    await nswagClient.Question_replyAsync(requestId, System.Environment.CurrentDirectory, "", replyBody);
+                    await nswagClient.Question_replyAsync(requestId, dir, "", replyBody);
+                    _questionDirectories.Remove(requestId);
                     System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: question reply sent");
                 }
                 catch (Exception ex)
@@ -286,25 +314,28 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandlePermissionResponseAsync(JsonElement? payload)
         {
-            if (payload == null) return;
+            if (payload == null || !payload.HasValue) return;
 
-            try
+            string? requestId = null;
+            string? response = null;
+            string? sessionID = null;
+
+            if (payload.Value.TryGetProperty("requestId", out var rid))
             {
-                // TODO: NSwag client needs Permission_PostAsync method added
-                // var nswagClient = Provider.GetNswagClient();
-                // if (nswagClient == null)
-                // {
-                //     await Provider.SendErrorAsync("Not connected", "Not connected to backend");
-                //     return;
-                // }
-                // var permissionResponse = JsonSerializer.Deserialize<...>(payload.Value.GetRawText());
-                // await nswagClient.Permission_PostAsync(permissionResponse);
-                
-                await Provider.SendErrorAsync("Not implemented", "Permission response posting is not yet supported via NSwag");
+                requestId = rid.GetString();
             }
-            catch (Exception ex)
+            if (payload.Value.TryGetProperty("response", out var resp))
             {
-                await Provider.SendErrorAsync("Permission response error", ex.Message);
+                response = resp.GetString();
+            }
+            if (payload.Value.TryGetProperty("sessionID", out var sid))
+            {
+                sessionID = sid.GetString();
+            }
+
+            if (!string.IsNullOrEmpty(requestId) && !string.IsNullOrEmpty(response))
+            {
+                await HandlePermissionResponseInternalAsync(requestId, response, sessionID);
             }
         }
 
@@ -327,29 +358,173 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleQuestionRejectAsync(JsonElement? payload)
         {
-            if (payload == null) return;
+            if (payload == null || !payload.HasValue) return;
 
-            try
+            string? requestId = null;
+            string? sessionID = null;
+
+            if (payload.Value.TryGetProperty("requestId", out var rid))
+            {
+                requestId = rid.GetString();
+            }
+            if (payload.Value.TryGetProperty("sessionID", out var sid))
+            {
+                sessionID = sid.GetString();
+            }
+
+            if (!string.IsNullOrEmpty(requestId))
             {
                 var nswagClient = Provider.GetNswagClient();
-                if (nswagClient == null)
+                if (nswagClient == null) return;
+
+                string dir;
+                if (!_questionDirectories.TryGetValue(requestId, out dir))
                 {
-                    await Provider.SendErrorAsync("Not connected", "Not connected to backend");
-                    return;
+                    dir = Provider.GetWorkspaceDirectory(sessionID);
                 }
 
-                if (payload.Value.TryGetProperty("requestId", out var rid))
+                try
                 {
-                    var requestId = rid.GetString();
-                    if (!string.IsNullOrEmpty(requestId))
-                    {
-                        await nswagClient.Question_rejectAsync(requestId, System.Environment.CurrentDirectory, "");
-                    }
+                    await nswagClient.Question_rejectAsync(requestId, dir, "");
+                    _questionDirectories.Remove(requestId);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: question reject error: {ex.Message}");
                 }
             }
-            catch (Exception ex)
+        }
+
+        public async Task FetchAndSendPendingPermissionsAsync()
+        {
+            var nswagClient = Provider.GetNswagClient();
+            if (nswagClient == null) return;
+
+            var workspaceDir = Provider.GetWorkspaceDirectory();
+            var seen = new HashSet<string>();
+            var validDirs = new HashSet<string>();
+
+            var dirs = new HashSet<string> { workspaceDir };
+            foreach (var kvp in Provider.GetSessionDirectories())
             {
-                await Provider.SendErrorAsync("Question reject error", ex.Message);
+                if (Provider.IsTrackedSession(kvp.Key))
+                {
+                    dirs.Add(kvp.Value);
+                }
+            }
+
+            foreach (var dir in dirs)
+            {
+                try
+                {
+                    var perms = await nswagClient.Permission_listAsync(dir, "");
+                    validDirs.Add(dir);
+
+                    foreach (var perm in perms)
+                    {
+                        if (seen.Contains(perm.Id)) continue;
+                        seen.Add(perm.Id);
+
+                        if (!Provider.IsTrackedSession(perm.SessionID)) continue;
+
+                        _permissionDirectories[perm.Id] = dir;
+                        Provider.PostMessage(System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            type = "permissionRequest",
+                            permission = new
+                            {
+                                id = perm.Id,
+                                sessionID = perm.SessionID,
+                                toolName = perm.Permission,
+                                patterns = perm.Patterns,
+                                always = perm.Always,
+                                args = perm.Metadata,
+                                message = $"Permission required: {perm.Permission}",
+                                tool = perm.Tool != null ? System.Text.Json.JsonSerializer.SerializeToElement(perm.Tool) : (System.Text.Json.JsonElement?)null
+                            }
+                        }));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: failed to fetch permissions for {dir}: {ex.Message}");
+                }
+            }
+
+            PrunePermissionDirectories(seen, validDirs);
+        }
+
+        public async Task FetchAndSendPendingQuestionsAsync()
+        {
+            var nswagClient = Provider.GetNswagClient();
+            if (nswagClient == null) return;
+
+            var workspaceDir = Provider.GetWorkspaceDirectory();
+            var seen = new HashSet<string>();
+            var validDirs = new HashSet<string>();
+
+            var dirs = new HashSet<string> { workspaceDir };
+            foreach (var kvp in Provider.GetSessionDirectories())
+            {
+                if (Provider.IsTrackedSession(kvp.Key))
+                {
+                    dirs.Add(kvp.Value);
+                }
+            }
+
+            foreach (var dir in dirs)
+            {
+                try
+                {
+                    var questions = await nswagClient.Question_listAsync(dir, "");
+                    validDirs.Add(dir);
+
+                    foreach (var q in questions)
+                    {
+                        if (seen.Contains(q.Id)) continue;
+                        seen.Add(q.Id);
+
+                        if (!Provider.IsTrackedSession(q.SessionID)) continue;
+
+                        _questionDirectories[q.Id] = dir;
+                        Provider.PostMessage(System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            type = "questionRequest",
+                            question = new
+                            {
+                                id = q.Id,
+                                sessionID = q.SessionID,
+                                questions = q.Questions != null ? System.Text.Json.JsonSerializer.SerializeToElement(q.Questions) : (System.Text.Json.JsonElement?)null,
+                                blocking = q.Blocking,
+                                tool = q.Tool != null ? System.Text.Json.JsonSerializer.SerializeToElement(q.Tool) : (System.Text.Json.JsonElement?)null
+                            }
+                        }));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: failed to fetch questions for {dir}: {ex.Message}");
+                }
+            }
+
+            PruneQuestionDirectories(seen, validDirs);
+        }
+
+        private void PrunePermissionDirectories(HashSet<string> seen, HashSet<string> validDirs)
+        {
+            var toRemove = _permissionDirectories.Keys.Where(k => !seen.Contains(k)).ToList();
+            foreach (var key in toRemove)
+            {
+                _permissionDirectories.Remove(key);
+            }
+        }
+
+        private void PruneQuestionDirectories(HashSet<string> seen, HashSet<string> validDirs)
+        {
+            var toRemove = _questionDirectories.Keys.Where(k => !seen.Contains(k)).ToList();
+            foreach (var key in toRemove)
+            {
+                _questionDirectories.Remove(key);
             }
         }
 

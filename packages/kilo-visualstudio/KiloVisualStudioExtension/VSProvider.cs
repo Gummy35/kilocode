@@ -500,6 +500,16 @@ namespace KiloVisualStudioExtension
       await _agentRequestHandler.HandleRequestAgentsAsync();
     }
 
+    internal IReadOnlyDictionary<string, string> GetSessionDirectories()
+    {
+      return _sseHelper.GetSessionDirectories();
+    }
+
+    internal bool IsTrackedSession(string sessionID)
+    {
+      return _sseHelper.IsTrackedSession(sessionID);
+    }
+
     internal async Task SendGlobalConfigAsync(KiloExtensionDTOs.KiloConfig.Config config)
     {
       PostMessage(new GlobalConfigLoadedMessage { Config = config });

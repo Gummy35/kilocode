@@ -1,6 +1,6 @@
 # PORT-CORE-002: Authentication and Core Service Parity
 
-**Status:** Planning  
+**Status:** Phase 3 In Progress - Recovery methods implemented, awaiting SSE integration  
 **Created:** 2026-08-21  
 **Depends On:** `PORT-CLI-001` (CLI/HTTP client), `PORT-WEBVIEW-002` (WebView integration)  
 **Blocks:** `PORT-CORE-001` (remaining extension-host functionality)
@@ -96,22 +96,46 @@ The audit identified the following critical inconsistencies between VS Code and 
 
 ## Acceptance Criteria
 
+### NSwag Client
+- [x] Regenerated from `packages/opencode` OpenAPI spec
+- [x] `Auth_removeAsync()` exists
+- [x] `Provider_oauth_authorizeAsync()` exists
+- [x] `Provider_oauth_callbackAsync()` exists
+- [x] `Kilo_organization_setAsync()` exists
+- [x] `Permission_listAsync()` exists
+- [x] `Permission_replyAsync()` exists
+- [x] `Permission_saveAlwaysRulesAsync()` exists
+- [x] `Question_listAsync()` exists
+- [x] `Question_replyAsync()` exists
+- [x] `Question_rejectAsync()` exists
+- [x] Build succeeds with 0 errors
+
 ### Authentication
-- [ ] `HandleLoginAsync()` initiates OAuth device flow and returns verification URL + code
-- [ ] `HandleLogoutAsync()` removes credentials and clears profile
-- [ ] `HandleSetOrganizationAsync()` switches org and refreshes profile + providers + agents
-- [ ] All three methods match VS Code error handling patterns
+- [x] `HandleLoginAsync()` initiates OAuth device flow and returns verification URL + code
+- [x] `HandleLogoutAsync()` removes credentials and clears profile
+- [x] `HandleSetOrganizationAsync()` switches org and refreshes profile + providers + agents
+- [x] All three methods match VS Code error handling patterns
+- [x] Helper methods added to `VSProvider`: `GetLoginAttempt()`, `DisposeGlobal()`, `FetchAndSendProviders()`, `FetchAndSendAgents()`
+- [x] Message handlers registered for `logout` and `setOrganization`
 - [ ] Unit tests for each authentication flow
 
 ### Permission/Question Recovery
-- [ ] NSwag client has `Permission_PostAsync()` method
-- [ ] `HandlePermissionResponseAsync()` fully implemented (not TODO)
-- [ ] `fetchAndSendPendingPermissions()` recovers pending permissions on SSE reconnect
-- [ ] `fetchAndSendPendingQuestions()` recovers pending questions on SSE reconnect
+- [x] `InteractionHandlerService` has `_permissionDirectories` and `_questionDirectories` tracking
+- [x] `FetchAndSendPendingPermissionsAsync()` implemented
+- [x] `FetchAndSendPendingQuestionsAsync()` implemented
+- [x] `HandlePermissionResponseAsync()` fully implemented (uses directory tracking)
+- [x] `HandlePermissionReplyAsync()` uses directory tracking
+- [x] `HandleQuestionReplyAsync()` uses directory tracking
+- [x] `HandleQuestionRejectAsync()` uses directory tracking
+- [x] `VSProvider.GetSessionDirectories()` helper added
+- [x] `VSProvider.IsTrackedSession()` helper added
+- [x] `SSEHelper.GetSessionDirectories()` helper added
+- [x] `SSEHelper.IsTrackedSession()` helper added
+- [ ] Recovery integrated into SSE reconnection flow
 - [ ] Unit tests for recovery scenarios
 
 ### Session Directory Tracking
-- [ ] `SSEHelper` has `sessionDirectories` dictionary
+- [x] `SSEHelper` has `sessionDirectories` dictionary (pre-existing)
 - [ ] All session operations accept optional directory parameter
 - [ ] Worktree directory overrides work correctly
 - [ ] Agent Manager can set/get session directories
@@ -129,13 +153,6 @@ The audit identified the following critical inconsistencies between VS Code and 
 - [ ] `HandleDisconnectProviderAsync()` disconnects provider
 - [ ] `HandleAuthorizeProviderOAuthAsync()` initiates OAuth flow
 - [ ] Agent filtering matches VS Code (exclude subagent mode, hidden agents)
-
-### NSwag Client
-- [ ] Regenerated from `packages/opencode` OpenAPI spec
-- [ ] Permission response endpoint exists
-- [ ] MCP removal endpoint exists
-- [ ] All endpoints used in VS Code have NSwag equivalents
-- [ ] Build succeeds with 0 errors
 
 ---
 
