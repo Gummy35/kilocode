@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
+using Newtonsoft.Json.Linq;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 {
@@ -21,6 +23,69 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
+
+        /// <summary>
+        /// Detects if an exception represents a 404/NotFoundError (stale permission/question).
+        /// Matches the VS Code isNotFoundError() pattern from permission-handler.ts.
+        /// </summary>
+        private static bool IsNotFoundError(Exception ex)
+        {
+            if (ex is ApiException apiEx)
+            {
+                if (apiEx.StatusCode == 404) return true;
+                
+                if (!string.IsNullOrEmpty(apiEx.Response))
+                {
+                    try
+                    {
+                        var json = JObject.Parse(apiEx.Response);
+                        var data = json["data"];
+                        if (data != null)
+                        {
+                            var name = data["name"]?.ToString();
+                            var status = data["status"]?.ToString();
+                            if (name == "NotFoundError" || status == "404") return true;
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Performs stale cleanup for a permission - removes directory mapping and posts error to webview.
+        /// Matches the VS Code staleCleanup() pattern from permission-handler.ts.
+        /// </summary>
+        private void StalePermissionCleanup(string permissionId)
+        {
+            _permissionDirectories.Remove(permissionId);
+            Provider.PostMessage(JsonSerializer.Serialize(new
+            {
+                type = "permissionError",
+                permissionID = permissionId,
+                stale = true
+            }));
+            _ = FetchAndSendPendingPermissionsAsync();
+        }
+
+        /// <summary>
+        /// Performs stale cleanup for a question - removes directory mapping and posts error to webview.
+        /// Mirrors the permission stale cleanup pattern.
+        /// </summary>
+        private void StaleQuestionCleanup(string questionId)
+        {
+            _questionDirectories.Remove(questionId);
+            Provider.PostMessage(JsonSerializer.Serialize(new
+            {
+                type = "questionError",
+                questionID = questionId,
+                stale = true
+            }));
+            _ = FetchAndSendPendingQuestionsAsync();
+        }
 
         /// <summary>
         /// Creates a new InteractionHandlerService instance.
@@ -207,7 +272,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             }
             catch (Exception ex)
             {
+                if (IsNotFoundError(ex))
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: permission {requestId} is stale (404)");
+                    StalePermissionCleanup(requestId);
+                    return;
+                }
                 System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: permission reply error: {ex.Message}");
+                Provider.PostMessage(JsonSerializer.Serialize(new
+                {
+                    type = "permissionError",
+                    permissionID = requestId
+                }));
             }
         }
 
@@ -285,7 +361,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                 }
                 catch (Exception ex)
                 {
+                    if (IsNotFoundError(ex))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: question {requestId} is stale (404)");
+                        StaleQuestionCleanup(requestId);
+                        return;
+                    }
                     System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: error sending question reply: {ex.Message}");
+                    Provider.PostMessage(JsonSerializer.Serialize(new
+                    {
+                        type = "questionError",
+                        questionID = requestId
+                    }));
                 }
             }
         }
@@ -390,7 +477,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                 }
                 catch (Exception ex)
                 {
+                    if (IsNotFoundError(ex))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: question {requestId} is stale (404)");
+                        StaleQuestionCleanup(requestId);
+                        return;
+                    }
                     System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: question reject error: {ex.Message}");
+                    Provider.PostMessage(JsonSerializer.Serialize(new
+                    {
+                        type = "questionError",
+                        questionID = requestId
+                    }));
                 }
             }
         }

@@ -146,6 +146,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] AuthHandler: error refreshing profile: {ex.Message}");
+                Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = ex.Message }));
             }
         }
 
@@ -164,6 +165,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[Kilo] AuthHandler: logout error: {ex.Message}");
+                Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = ex.Message }));
             }
         }
 
