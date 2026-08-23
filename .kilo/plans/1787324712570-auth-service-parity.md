@@ -1,6 +1,6 @@
 # PORT-CORE-002: Authentication and Core Service Parity
 
-**Status:** Phase 3 Complete - Phases 4 and 5 remaining  
+**Status:** Phase 4 Complete - Phase 5 (Provider Management) remaining  
 **Created:** 2026-08-21  
 **Depends On:** `PORT-CLI-001` (CLI/HTTP client), `PORT-WEBVIEW-002` (WebView integration)  
 **Blocks:** `PORT-CORE-001` (remaining extension-host functionality)
@@ -136,9 +136,17 @@ The audit identified the following critical inconsistencies between VS Code and 
 
 ### Session Directory Tracking
 - [x] `SSEHelper` has `sessionDirectories` dictionary (pre-existing)
-- [ ] All session operations accept optional directory parameter
-- [ ] Worktree directory overrides work correctly
-- [ ] Agent Manager can set/get session directories
+- [x] `SetSessionDirectory()` method added
+- [x] `GetSessionDirectory()` method added  
+- [x] `ResolveDirectory()` method added
+- [x] `Session_messagesAsync` uses `ResolveDirectory()`
+- [x] `Session_deleteAsync` uses `ResolveDirectory()`
+- [x] `Session_updateAsync` uses `ResolveDirectory()`
+- [x] `Session_deleteMessageAsync` uses `ResolveDirectory()`
+- [x] `Session_getAsync` uses `ResolveDirectory()`
+- [x] `Session_revertAsync` uses `ResolveDirectory()`
+- [x] `Session_unrevertAsync` uses `ResolveDirectory()`
+- [ ] Worktree directory overrides work correctly (Agent Manager integration)
 - [ ] Unit tests for directory resolution
 
 ### Message Loading

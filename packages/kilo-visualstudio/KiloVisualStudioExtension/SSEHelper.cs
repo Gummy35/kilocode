@@ -68,12 +68,29 @@ namespace KiloVisualStudioExtension
 
     internal IReadOnlyDictionary<string, string> GetSessionDirectories()
     {
-      return _sessionDirectories;
+      return (IReadOnlyDictionary<string, string>)_projectDirectoryProvider.GetSessionDirectories();
     }
 
     internal bool IsTrackedSession(string sessionID)
     {
       return _trackedSessionIds.Contains(sessionID);
+    }
+
+    internal void SetSessionDirectory(string sessionID, string directory)
+    {
+      _projectDirectoryProvider.SetSessionDirectory(sessionID, directory);
+    }
+
+    internal string? GetSessionDirectory(string sessionID)
+    {
+      var dirs = _projectDirectoryProvider.GetSessionDirectories();
+      return dirs.TryGetValue(sessionID, out var dir) ? dir : null;
+    }
+
+    internal string ResolveDirectory(string? sessionID = null)
+    {
+      return _projectDirectoryProvider.GetWorkspaceDirectory(sessionID) 
+        ?? System.Environment.CurrentDirectory;
     }
 
     private readonly Action<string> _postMessage;

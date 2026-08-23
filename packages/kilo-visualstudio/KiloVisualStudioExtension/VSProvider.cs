@@ -510,6 +510,11 @@ namespace KiloVisualStudioExtension
       return _sseHelper.IsTrackedSession(sessionID);
     }
 
+    internal SSEHelper GetSSEHelper()
+    {
+      return _sseHelper;
+    }
+
     internal async Task SendGlobalConfigAsync(KiloExtensionDTOs.KiloConfig.Config config)
     {
       PostMessage(new GlobalConfigLoadedMessage { Config = config });

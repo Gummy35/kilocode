@@ -198,7 +198,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             }
             try
             {
-                await nswagClient.Session_deleteAsync(sessionID, System.Environment.CurrentDirectory, "");
+                var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+                await nswagClient.Session_deleteAsync(sessionID, directory, "");
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session deleted");
                 
                 if (Provider.GetCurrentSessionID() == sessionID)
@@ -251,8 +252,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             }
             try
             {
+                var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
                 var updateBody = new SessionUpdateRequest { Title = title };
-                await nswagClient.Session_updateAsync(sessionID, System.Environment.CurrentDirectory, "", updateBody);
+                await nswagClient.Session_updateAsync(sessionID, directory, "", updateBody);
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session renamed");
                 
                 if (Provider.GetCurrentSessionID() == sessionID)
@@ -348,7 +350,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             
             try
             {
-                var messages = await nswagClient.Session_messagesAsync(sessionID, System.Environment.CurrentDirectory, "", limit, before);
+                var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+                var messages = await nswagClient.Session_messagesAsync(sessionID, directory, "", limit, before);
                 
                 if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) return;
                 
@@ -444,7 +447,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
             if (nswagClient == null) return;
             try
             {
-                await nswagClient.Session_deleteMessageAsync(sessionID, messageID, System.Environment.CurrentDirectory, "");
+                var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+                await nswagClient.Session_deleteMessageAsync(sessionID, messageID, directory, "");
                 System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: message deleted");
             }
             catch (Exception ex)
@@ -588,7 +592,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                var session = await nswagClient.Session_getAsync(sessionID, System.Environment.CurrentDirectory, "");
+                var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+                var session = await nswagClient.Session_getAsync(sessionID, directory, "");
                 if (session != null)
                 {
                     var message = new { type = "sessionSynced", session = JsonSerializer.SerializeToElement(session) };
@@ -669,8 +674,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
+                var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
                 var revertBody = new RevertRequest { MessageID = messageID, PartID = null };
-                await nswagClient.Session_revertAsync(sessionID, System.Environment.CurrentDirectory, "", revertBody);
+                await nswagClient.Session_revertAsync(sessionID, directory, "", revertBody);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session reverted: {sessionID}");
                 
                 var message = new { type = "sessionReverted", sessionID, messageID };
@@ -704,7 +710,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
             try
             {
-                await nswagClient.Session_unrevertAsync(sessionID, System.Environment.CurrentDirectory, "");
+                var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+                await nswagClient.Session_unrevertAsync(sessionID, directory, "");
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session unreverted: {sessionID}");
                 
                 var message = new { type = "sessionUnreverted", sessionID };
