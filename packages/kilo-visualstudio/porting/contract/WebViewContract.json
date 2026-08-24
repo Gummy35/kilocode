@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "f711f032db1fd74d62013b366797b887da72b127",
-    "generatedAt": "2026-08-24T22:24:16.493Z"
+    "commit": "20f8e2bd8d6d60a5a9eb3f48df25a2e8fb8abd9d",
+    "generatedAt": "2026-08-24T22:42:15.717Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -29771,7 +29771,7 @@
         "field": "type",
         "value": "fontSizeChanged"
       },
-      "sourceFile": "Shared\\extension-messages.ts",
+      "sourceFile": "extension-messages.ts",
       "signatureHash": "3c3c38392d336db33c42db9ec75e58baebdcc70008b85acdf5f470cd84f92306"
     },
     {
@@ -30412,7 +30412,7 @@
         "field": "type",
         "value": "permissionResolved"
       },
-      "sourceFile": "Shared\\extension-messages.ts",
+      "sourceFile": "extension-messages.ts",
       "signatureHash": "00904432602d2b3d0365d56396af87584ed20113b90bfb905f13eb6c187898c8"
     },
     {
@@ -30687,7 +30687,7 @@
         "field": "type",
         "value": "sessionDeleted"
       },
-      "sourceFile": "Shared\\extension-messages.ts",
+      "sourceFile": "extension-messages.ts",
       "signatureHash": "60a0a622c068a0a0f775ee48ccb0704fe6b8c49ca63330939a89d75f5222d97d"
     },
     {
@@ -30735,7 +30735,7 @@
         "field": "type",
         "value": "messageRemoved"
       },
-      "sourceFile": "Shared\\extension-messages.ts",
+      "sourceFile": "extension-messages.ts",
       "signatureHash": "d0bc1a00b15be4b7fec96ad8ef947bc4c820433bd0f3ecf37c4b2fbc745f35ab"
     },
     {
@@ -33130,7 +33130,7 @@
         "field": "type",
         "value": "questionResolved"
       },
-      "sourceFile": "Shared\\extension-messages.ts",
+      "sourceFile": "extension-messages.ts",
       "signatureHash": "c6f5a6a188c7bb4a7afb30da1cea02d327dfcab7c9236f3f98bc2de169c21ef5"
     },
     {
@@ -33344,7 +33344,7 @@
         "field": "type",
         "value": "suggestionResolved"
       },
-      "sourceFile": "Shared\\extension-messages.ts",
+      "sourceFile": "extension-messages.ts",
       "signatureHash": "68f374af59e342d158f1fc22b379c369d7483c5937185c87dff699bfeeba0c7f"
     },
     {
@@ -33379,7 +33379,7 @@
         "field": "type",
         "value": "suggestionError"
       },
-      "sourceFile": "Shared\\extension-messages.ts",
+      "sourceFile": "extension-messages.ts",
       "signatureHash": "73a649e0c335c43fb38cf191168c9c760189b4440c33f403c86f39c5eba47afa"
     },
     {
@@ -46644,929 +46644,6 @@
       "sourceFile": "kilo-provider\\handlers\\migration.ts"
     },
     {
-      "name": "IndexingstatusloadedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "indexingStatusLoaded",
-          "isLiteral": true
-        },
-        {
-          "name": "status",
-          "type": "IndexingStatus",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "IndexingStatus",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "indexingStatusLoaded"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "c522e109872bbcdc003d993ee15c963a9d034b685da900a547168c8057ed1c1e"
-    },
-    {
-      "name": "MessagecreatedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "messageCreated",
-          "isLiteral": true
-        },
-        {
-          "name": "message",
-          "type": "record",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "Record",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "messageCreated"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "eccfa87da5d7f12597175bbdda3e3a7005a8b889ac7dc4ec0d5a69e8822ca2fa"
-    },
-    {
-      "name": "SessionstatusMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "sessionStatus",
-          "isLiteral": true
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "status",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "attempt",
-          "type": "number",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "number",
-            "kind": "number"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "message",
-          "type": "string",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "next",
-          "type": "number",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "number",
-            "kind": "number"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "sessionStatus"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "32acba503baf5175cc58f29a13a287997a9023b00ffa990880a7bdfa9de2d124"
-    },
-    {
-      "name": "SessionturnclosedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "sessionTurnClosed",
-          "isLiteral": true
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "reason",
-          "type": "\"completed\" | \"error\" | \"interrupted\"",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "\"completed\" | \"error\" | \"interrupted\"",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "sessionTurnClosed"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "a57023808408e3c7063dacba81810be98ee4bfc60580f9443a5b702195334743"
-    },
-    {
-      "name": "PermissionrequestMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "permissionRequest",
-          "isLiteral": true
-        },
-        {
-          "name": "permission",
-          "type": "{",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "{",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "id",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "toolName",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "patterns",
-          "type": "string[]",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string[]",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "always",
-          "type": "string[]",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string[]",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "args",
-          "type": "record",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "Record",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "message",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "tool",
-          "type": "{ messageID: string",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "{ messageID: string",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "callID",
-          "type": "string }",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string }",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "permissionRequest"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "d083bdebe4d65e203d1d997d6eb27a4e622dd21caaf4328ff20ff87b5d388e57"
-    },
-    {
-      "name": "TodoupdatedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "todoUpdated",
-          "isLiteral": true
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "items",
-          "type": "unknown[]",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "unknown[]",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "todoUpdated"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "af6a7c2b7ddde4c6d0ef88a80831f7fc89657b3ac156c0e19e14b5050d779e5f"
-    },
-    {
-      "name": "QuestionrequestMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "questionRequest",
-          "isLiteral": true
-        },
-        {
-          "name": "question",
-          "type": "{ id: string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "{ id: string",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "questions",
-          "type": "unknown[]",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "unknown[]",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "blocking",
-          "type": "boolean",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "boolean",
-            "kind": "boolean"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "tool",
-          "type": "unknown }",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "unknown }",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "questionRequest"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "bd1f03c462e901a3a7987348de69161b7738c5f372e5be141021f6ffb43abaa2"
-    },
-    {
-      "name": "SuggestionrequestMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "suggestionRequest",
-          "isLiteral": true
-        },
-        {
-          "name": "suggestion",
-          "type": "{",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "{",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "id",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "text",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "actions",
-          "type": "unknown[]",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "unknown[]",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "blocking",
-          "type": "boolean",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "boolean",
-            "kind": "boolean"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "tool",
-          "type": "unknown",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "unknown",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "suggestionRequest"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "edd921f9bf5addc67d1353782dd642311b7bc3a2379dc6e8995a79ab2064cae7"
-    },
-    {
-      "name": "PermissionerrorMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "permissionError",
-          "isLiteral": true
-        },
-        {
-          "name": "permissionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "stale",
-          "type": "boolean",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "boolean",
-            "kind": "boolean"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "permissionError"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "6abc6e8d1f94fd7b614104063ea32eef3b377b65a0169022c68b7248078085bf"
-    },
-    {
-      "name": "SessioncreatedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "sessionCreated",
-          "isLiteral": true
-        },
-        {
-          "name": "session",
-          "type": "ReturnType<typeof sessionToWebview>",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "ReturnType<typeof sessionToWebview>",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "draftID",
-          "type": "string",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "sessionCreated"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "d12f3ccb409115cfae51006029902c50abf3674e2ed33c70f03b218582147505"
-    },
-    {
-      "name": "SessionupdatedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "sessionUpdated",
-          "isLiteral": true
-        },
-        {
-          "name": "session",
-          "type": "ReturnType<typeof sessionToWebview>",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "ReturnType<typeof sessionToWebview>",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "sessionUpdated"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "9d2da869afca6a05fdd4aed3cf392e4e514ed746b836875cfdc6483556a6298b"
-    },
-    {
-      "name": "SessionerrorMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "sessionError",
-          "isLiteral": true
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "error",
-          "type": "unknown",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "unknown",
-            "kind": "object"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "sessionError"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "3887531bc09c02ba42e14230c0e574daec613185266992c3943deeb21ac93810"
-    },
-    {
-      "name": "SandboxstatusMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "stringLiteral",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "stringLiteral",
-            "kind": "stringLiteral"
-          },
-          "literalValue": "sandboxStatus",
-          "isLiteral": true
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "directory",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "enabled",
-          "type": "boolean",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "boolean",
-            "kind": "boolean"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "available",
-          "type": "boolean",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "boolean",
-            "kind": "boolean"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "reason",
-          "type": "string",
-          "optional": true,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "version",
-          "type": "number",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "number",
-            "kind": "number"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "sandboxStatus"
-      },
-      "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "e615decb094055b383bb6043b0eda54798a3080e03f486693583f859026d7a71"
-    },
-    {
       "name": "KiloClawStateMember0",
       "kind": "interface",
       "properties": [
@@ -50560,50 +49637,50 @@
         "PartUpdate",
         "PartBatch",
         "PartRemove",
-        "IndexingstatusloadedMessage",
-        "MessagecreatedMessage",
-        "SessionstatusMessage",
-        "SessionturnclosedMessage",
-        "PermissionrequestMessage",
-        "TodoupdatedMessage",
-        "QuestionrequestMessage",
+        "IndexingStatusLoadedMessage",
+        "MessageCreatedMessage",
+        "SessionStatusMessage",
+        "SessionTurnClosedMessage",
+        "PermissionRequestMessage",
+        "TodoUpdatedMessage",
+        "QuestionRequestMessage",
         "QuestionResolvedMessage",
-        "SuggestionrequestMessage",
+        "SuggestionRequestMessage",
         "SuggestionResolvedMessage",
         "SuggestionErrorMessage",
         "PermissionResolvedMessage",
-        "PermissionerrorMessage",
-        "SessioncreatedMessage",
-        "SessionupdatedMessage",
+        "PermissionErrorMessage",
+        "SessionCreatedMessage",
+        "SessionUpdatedMessage",
         "SessionDeletedMessage",
         "MessageRemovedMessage",
-        "SessionerrorMessage",
-        "SandboxstatusMessage"
+        "SessionErrorMessage",
+        "SandboxStatusMessage"
       ],
       "sourceFile": "kilo-provider-utils.ts",
       "unionMemberHashes": [
         "a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112",
         "2d52438d99ff50b6f756fd2c4dd1f477591f44114c2082ec9386edf94c6bdaf6",
         "d6df55074f9b271b596149241284d474f2c8c26a2678b94e62526fb1b5e915b1",
-        "c522e109872bbcdc003d993ee15c963a9d034b685da900a547168c8057ed1c1e",
-        "eccfa87da5d7f12597175bbdda3e3a7005a8b889ac7dc4ec0d5a69e8822ca2fa",
-        "32acba503baf5175cc58f29a13a287997a9023b00ffa990880a7bdfa9de2d124",
-        "a57023808408e3c7063dacba81810be98ee4bfc60580f9443a5b702195334743",
-        "d083bdebe4d65e203d1d997d6eb27a4e622dd21caaf4328ff20ff87b5d388e57",
-        "af6a7c2b7ddde4c6d0ef88a80831f7fc89657b3ac156c0e19e14b5050d779e5f",
-        "bd1f03c462e901a3a7987348de69161b7738c5f372e5be141021f6ffb43abaa2",
+        "819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d",
+        "36e7d414838dd1f04ff9311f57c570d29866430181de1a2338e46a189e326df1",
+        "97ee011c2f268541bee8c2fadfa7ec181fd4bff3886373dfe58616e9b8bbfe6f",
+        "a938740656f57f38c7bcacd3a4aaf00937749fec5eb5bf6d86744eab9f22aaa0",
+        "9636ea96f388fb6f20cdd75ad3bc50d13996272cb1b73b7b43c4ef60062e6596",
+        "a0596045b6dd6b760c3a5dba6eb65208424b86514ec2f68bb5a799f6d936b199",
+        "1a2ee502c778c05dbba3fd496aacb577dcf933fa25cc60d59891a0092bcc4090",
         "c6f5a6a188c7bb4a7afb30da1cea02d327dfcab7c9236f3f98bc2de169c21ef5",
-        "edd921f9bf5addc67d1353782dd642311b7bc3a2379dc6e8995a79ab2064cae7",
+        "4de29f967e1bd942c0889ef923718adb92dac36f1c9bc4f0160b6f18f0e4ecff",
         "68f374af59e342d158f1fc22b379c369d7483c5937185c87dff699bfeeba0c7f",
         "73a649e0c335c43fb38cf191168c9c760189b4440c33f403c86f39c5eba47afa",
         "00904432602d2b3d0365d56396af87584ed20113b90bfb905f13eb6c187898c8",
-        "6abc6e8d1f94fd7b614104063ea32eef3b377b65a0169022c68b7248078085bf",
-        "d12f3ccb409115cfae51006029902c50abf3674e2ed33c70f03b218582147505",
-        "9d2da869afca6a05fdd4aed3cf392e4e514ed746b836875cfdc6483556a6298b",
+        "8f1687301698cf8f81bbb6df59363dc36b08f6b09828bd3d34d785a8aa317c8e",
+        "b9ac2cefb8b6ae76c73dc35b900602b25e797be2193730e66469ca3983c07019",
+        "ce0108fff6e4a3f89b4f147fbe5df6a5566b4e8298660e3269870a6e791446dd",
         "60a0a622c068a0a0f775ee48ccb0704fe6b8c49ca63330939a89d75f5222d97d",
         "d0bc1a00b15be4b7fec96ad8ef947bc4c820433bd0f3ecf37c4b2fbc745f35ab",
-        "3887531bc09c02ba42e14230c0e574daec613185266992c3943deeb21ac93810",
-        "e615decb094055b383bb6043b0eda54798a3080e03f486693583f859026d7a71"
+        "5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0",
+        "9fd869e4062b7accdd0f2015957cb800351f9a8053a9695b72836361709a1019"
       ]
     },
     {
@@ -51211,7 +50288,7 @@
     "warnings": []
   },
   "statistics": {
-    "totalTypes": 676,
+    "totalTypes": 663,
     "webviewToExtensionMessages": 205,
     "extensionToWebviewMessages": 183,
     "inlineMessagesExtracted": 0

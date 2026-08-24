@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Connection;
 /// Source: extension-messages.ts
 /// Signature hash: a9c76a8ed7326cbcc3e9afc0742e1e5ffb0fc412b5da3f254cb6a2a5b6f5b28c
 /// </summary>
-public class ReadyMessage
+public class ReadyMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 3f2499d0cd6ae15c7e8318bf4c7038e076eaa9d6be313258f83e8fc96ed83c03
 /// </summary>
-public class ViewSubAgentSessionMessage
+public class ViewSubAgentSessionMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

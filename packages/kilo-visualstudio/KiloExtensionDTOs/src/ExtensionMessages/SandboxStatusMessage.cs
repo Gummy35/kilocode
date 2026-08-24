@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// WebView message: SandboxStatusMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 9fd869e4062b7accdd0f2015957cb800351f9a8053a9695b72836361709a1019
 /// </summary>
-public class SandboxStatusMessage
+public class SandboxStatusMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

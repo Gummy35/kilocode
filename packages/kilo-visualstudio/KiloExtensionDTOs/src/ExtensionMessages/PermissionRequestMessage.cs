@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using KiloExtensionDTOs.Permissions;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// WebView message: PermissionRequestMessage
@@ -20,7 +21,7 @@ using KiloExtensionDTOs.Permissions;
 /// Source: extension-messages.ts
 /// Signature hash: 9636ea96f388fb6f20cdd75ad3bc50d13996272cb1b73b7b43c4ef60062e6596
 /// </summary>
-public class PermissionRequestMessage
+public class PermissionRequestMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

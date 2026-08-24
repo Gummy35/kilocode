@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Profile;
 /// Source: extension-messages.ts
 /// Signature hash: 7d0149bdefd90035c298d402d1be03c984183d508b90b3c3d9edff05ce7d018c
 /// </summary>
-public class ProfileDataMessage
+public class ProfileDataMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

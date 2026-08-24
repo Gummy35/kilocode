@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 8fbac4ee88cec328799b4b83abbcecdcf5f973ff8d7dafa28d6e838345aa1c5d
 /// </summary>
-public class ClaudeCompatSettingLoadedMessage
+public class ClaudeCompatSettingLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

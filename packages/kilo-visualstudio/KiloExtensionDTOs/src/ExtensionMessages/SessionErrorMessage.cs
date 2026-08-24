@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// WebView message: SessionErrorMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0
 /// </summary>
-public class SessionErrorMessage
+public class SessionErrorMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

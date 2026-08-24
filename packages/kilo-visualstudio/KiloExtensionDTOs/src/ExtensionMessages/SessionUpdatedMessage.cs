@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using KiloExtensionDTOs.Sessions;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// WebView message: SessionUpdatedMessage
@@ -20,7 +21,7 @@ using KiloExtensionDTOs.Sessions;
 /// Source: extension-messages.ts
 /// Signature hash: ce0108fff6e4a3f89b4f147fbe5df6a5566b4e8298660e3269870a6e791446dd
 /// </summary>
-public class SessionUpdatedMessage
+public class SessionUpdatedMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

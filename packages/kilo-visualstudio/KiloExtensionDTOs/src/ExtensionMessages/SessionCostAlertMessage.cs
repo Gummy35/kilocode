@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 6176a7943b20e049c040600600bdb824522037d729fac0d551a85712ec8e995d
 /// </summary>
-public class SessionCostAlertMessage
+public class SessionCostAlertMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.ExtensionMessages;
 
 /// <summary>
 /// WebView message: MemoryOperationResultMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: memory.ts
 /// Signature hash: b87ab4bef2f31ebde54ca96c3326522ebffc8b6fb86fb27ccf260412b68b9fac
 /// </summary>
-public class MemoryOperationResultMessage
+public class MemoryOperationResultMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

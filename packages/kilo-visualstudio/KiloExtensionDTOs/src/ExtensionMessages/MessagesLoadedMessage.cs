@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Sessions;
 /// Source: extension-messages.ts
 /// Signature hash: dd3efc7dd97306335f7a2325057afb281b0782657e13d47f579611db37165019
 /// </summary>
-public class MessagesLoadedMessage
+public class MessagesLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

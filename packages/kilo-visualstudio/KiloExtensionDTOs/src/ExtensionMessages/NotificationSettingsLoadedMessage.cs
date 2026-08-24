@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 166c20f179c220ef49d651e4dff9117931ed466ef25a235463e91e5dd70cf6a7
 /// </summary>
-public class NotificationSettingsLoadedMessage
+public class NotificationSettingsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

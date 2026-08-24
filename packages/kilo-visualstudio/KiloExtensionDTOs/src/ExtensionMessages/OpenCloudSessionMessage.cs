@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 4e45c07d643b0d38c368f3f219a3d0b5ff75d3dd0ccfdea624ed7f182e6acaab
 /// </summary>
-public class OpenCloudSessionMessage
+public class OpenCloudSessionMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

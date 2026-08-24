@@ -1249,6 +1249,20 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
   for (const refNs of referencedNamespaces) {
     sb.push("using " + refNs + ";")
   }
+  
+  // Add using statements for interface namespaces
+  if (messageTypeDef?.signatureHash && hashToUnion.has(messageTypeDef.signatureHash)) {
+    const unionName = hashToUnion.get(messageTypeDef.signatureHash)!
+    const unionTypeDef = typeDefinitions.get(unionName)
+    if (unionTypeDef) {
+      const unionFolder = getSourceFileFolder(unionTypeDef.sourceFile)
+      if (unionFolder !== folder) {
+        const interfaceNs = unionFolder === 'Shared' ? ns : (ns + "." + unionFolder)
+        sb.push("using " + interfaceNs + ";")
+      }
+    }
+  }
+  
   sb.push("")
   sb.push("/// <summary>")
   sb.push("/// WebView message: " + message.name)
@@ -1261,11 +1275,26 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
   sb.push("/// </summary>")
   const sanitizedName = pascalCase(message.name)
   
+  // Check if this message implements any union interfaces
+  const implementedInterfaces: string[] = []
+  if (messageTypeDef?.signatureHash && hashToUnion.has(messageTypeDef.signatureHash)) {
+    const unionName = hashToUnion.get(messageTypeDef.signatureHash)!
+    implementedInterfaces.push(`I${pascalCase(unionName)}`)
+  }
+  
   const baseClassName = messageTypeDef?.extendsBase || messageTypeDef?.baseType
   if (baseClassName) {
-    sb.push("public class " + sanitizedName + " : " + pascalCase(baseClassName))
+    if (implementedInterfaces.length > 0) {
+      sb.push("public class " + sanitizedName + " : " + pascalCase(baseClassName) + ", " + implementedInterfaces.join(', '))
+    } else {
+      sb.push("public class " + sanitizedName + " : " + pascalCase(baseClassName))
+    }
   } else {
-    sb.push("public class " + sanitizedName)
+    if (implementedInterfaces.length > 0) {
+      sb.push("public class " + sanitizedName + " : " + implementedInterfaces.join(', '))
+    } else {
+      sb.push("public class " + sanitizedName)
+    }
   }
   sb.push("{")
 

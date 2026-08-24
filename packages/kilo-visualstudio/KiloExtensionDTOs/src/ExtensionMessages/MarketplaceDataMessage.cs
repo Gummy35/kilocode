@@ -21,7 +21,7 @@ using KiloExtensionDTOs;
 /// Source: extension-messages.ts
 /// Signature hash: de1d4bac99c05d91d118a93316c4e16ace4ef6d2bba6be39db8d3a8e218d5937
 /// </summary>
-public class MarketplaceDataMessage
+public class MarketplaceDataMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

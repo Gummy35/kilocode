@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: f22de60f7119367a78a19c0be52fef5211521e1b11b08a1a5f584daf5f84aa2e
 /// </summary>
-public class QuestionErrorMessage
+public class QuestionErrorMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

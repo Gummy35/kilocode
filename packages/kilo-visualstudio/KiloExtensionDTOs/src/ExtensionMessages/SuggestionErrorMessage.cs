@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// WebView message: SuggestionErrorMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 73a649e0c335c43fb38cf191168c9c760189b4440c33f403c86f39c5eba47afa
 /// </summary>
-public class SuggestionErrorMessage
+public class SuggestionErrorMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

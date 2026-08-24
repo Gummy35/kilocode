@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 6d40ce998b4849af88bfff8ed4f865e810bce757c61f9ed68a4b7ba397f929bf
 /// </summary>
-public class DiffViewerLoadingMessage
+public class DiffViewerLoadingMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

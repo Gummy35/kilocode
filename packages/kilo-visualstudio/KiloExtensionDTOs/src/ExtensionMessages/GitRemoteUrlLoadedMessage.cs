@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 8e73f23db224570e55431fe053027ae09e96e5d0e4c82a438efec94f2ed68c8c
 /// </summary>
-public class GitRemoteUrlLoadedMessage
+public class GitRemoteUrlLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.Types;
 
 /// <summary>
 /// WebView message: SessionForkedMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 768988e98a163415492ade684a5d62e0012b785dcc9a743f6ae4bbcd79cdbc80
 /// </summary>
-public class SessionForkedMessage
+public class SessionForkedMessage : IAgentManagerOutMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

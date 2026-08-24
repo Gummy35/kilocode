@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// WebView message: MessageRemovedMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: d0bc1a00b15be4b7fec96ad8ef947bc4c820433bd0f3ecf37c4b2fbc745f35ab
 /// </summary>
-public class MessageRemovedMessage
+public class MessageRemovedMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

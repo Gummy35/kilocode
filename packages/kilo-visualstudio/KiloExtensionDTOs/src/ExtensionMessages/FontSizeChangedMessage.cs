@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.Types;
 
 /// <summary>
 /// WebView message: FontSizeChangedMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 3c3c38392d336db33c42db9ec75e58baebdcc70008b85acdf5f470cd84f92306
 /// </summary>
-public class FontSizeChangedMessage
+public class FontSizeChangedMessage : IKiloClawOutMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

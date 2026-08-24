@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: parts.ts
 /// Signature hash: f4daab928abd8065febd65db1c33244ebe7ebfbb3336196af6598f4bc1e0a519
 /// </summary>
-public class ToolPart : BasePart
+public class ToolPart : BasePart, IPart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

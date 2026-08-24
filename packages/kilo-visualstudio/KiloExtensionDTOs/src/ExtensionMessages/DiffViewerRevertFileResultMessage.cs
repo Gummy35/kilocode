@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 3ca2eeed34ded09ec300f1809724311301cbfe12c476a1284203964f95395618
 /// </summary>
-public class DiffViewerRevertFileResultMessage
+public class DiffViewerRevertFileResultMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

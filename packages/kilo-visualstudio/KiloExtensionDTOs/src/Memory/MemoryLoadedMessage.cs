@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.ExtensionMessages;
 
 /// <summary>
 /// WebView message: MemoryLoadedMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: memory.ts
 /// Signature hash: e2d0705f0c0a48fd1c7424b51d4929eb833a902e9ec1fe9a2f852940500bd146
 /// </summary>
-public class MemoryLoadedMessage
+public class MemoryLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -20,7 +20,7 @@ using KiloExtensionDTOs.KiloConfig;
 /// Source: extension-messages.ts
 /// Signature hash: ebaad2a967b871fe58ae4efe631065b2257a01ad42cceb6fb1999b9a0693b322
 /// </summary>
-public class BrowserSettingsLoadedMessage
+public class BrowserSettingsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

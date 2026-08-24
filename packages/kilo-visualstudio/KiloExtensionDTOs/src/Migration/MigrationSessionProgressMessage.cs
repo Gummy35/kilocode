@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.ExtensionMessages;
 
 /// <summary>
 /// WebView message: MigrationSessionProgressMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: migration.ts
 /// Signature hash: 9ee47a55cfa622c134316481a8680f2713ddf47ff59cc7c77be3273dffad0faf
 /// </summary>
-public class MigrationSessionProgressMessage
+public class MigrationSessionProgressMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

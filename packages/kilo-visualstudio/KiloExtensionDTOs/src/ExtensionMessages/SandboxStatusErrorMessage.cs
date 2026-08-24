@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: ddab1419a2fe226f5f54318a2122a599da52d22ba19186b345876cd3f2f3e2f6
 /// </summary>
-public class SandboxStatusErrorMessage
+public class SandboxStatusErrorMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

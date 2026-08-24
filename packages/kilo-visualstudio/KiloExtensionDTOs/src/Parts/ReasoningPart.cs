@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Sessions;
 /// Source: parts.ts
 /// Signature hash: 92485d485d7193a7b24f0200cd56f3b2beef93aba70e77641bb7969153c22504
 /// </summary>
-public class ReasoningPart : BasePart
+public class ReasoningPart : BasePart, IPart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using KiloExtensionDTOs.Sessions;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// WebView message: SessionTurnClosedMessage
@@ -20,7 +21,7 @@ using KiloExtensionDTOs.Sessions;
 /// Source: extension-messages.ts
 /// Signature hash: a938740656f57f38c7bcacd3a4aaf00937749fec5eb5bf6d86744eab9f22aaa0
 /// </summary>
-public class SessionTurnClosedMessage
+public class SessionTurnClosedMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

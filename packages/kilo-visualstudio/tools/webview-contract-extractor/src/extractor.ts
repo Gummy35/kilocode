@@ -433,22 +433,38 @@ function extractAllUnionsFromSource(
           const discriminatorValue = discriminator.value
           const inlineTypeName = `${toPascalCase(discriminatorValue)}Message`
           
-          // Create a type definition with all extracted properties
-          const inlineTypeDef: TypeDefinition = {
-            name: inlineTypeName,
-            kind: "interface",
-            properties,
-            discriminator,
-            sourceFile,
+          // Check if a type with this discriminator already exists
+          let existingType: TypeDefinition | undefined
+          for (const [name, typeDef] of context.types) {
+            if (typeDef.discriminator?.value === discriminatorValue) {
+              existingType = typeDef
+              break
+            }
           }
           
-          inlineTypeDef.signatureHash = computeSignatureHash(inlineTypeDef)
-          
-          if (!context.types.has(inlineTypeName)) {
-            context.types.set(inlineTypeName, inlineTypeDef)
+          if (existingType) {
+            // Use the existing type instead of creating a new placeholder
+            if (!unionMembers.includes(existingType.name)) {
+              unionMembers.push(existingType.name)
+            }
+          } else {
+            // Create a type definition with all extracted properties
+            const inlineTypeDef: TypeDefinition = {
+              name: inlineTypeName,
+              kind: "interface",
+              properties,
+              discriminator,
+              sourceFile,
+            }
+            
+            inlineTypeDef.signatureHash = computeSignatureHash(inlineTypeDef)
+            
+            if (!context.types.has(inlineTypeName)) {
+              context.types.set(inlineTypeName, inlineTypeDef)
+            }
+            
+            unionMembers.push(inlineTypeName)
           }
-          
-          unionMembers.push(inlineTypeName)
         } else if (properties.length > 0) {
           // Inline type without discriminator - generate a name
           const inlineTypeName = `${typeName}Member${unionMembers.length}`
@@ -1593,9 +1609,11 @@ function createContract(context: ExtractionContext): WebViewContract {
   // Post-process: Compute union member hashes for union types
   // Build a map of type name -> signature hash for quick lookup
   const typeHashMap = new Map<string, string>()
+  const typeHashMapLower = new Map<string, string>()  // Case-insensitive lookup
   for (const typeDef of types) {
     if (typeDef.signatureHash) {
       typeHashMap.set(typeDef.name, typeDef.signatureHash)
+      typeHashMapLower.set(typeDef.name.toLowerCase(), typeDef.signatureHash)
     }
   }
   
@@ -1604,7 +1622,11 @@ function createContract(context: ExtractionContext): WebViewContract {
     if (typeDef.kind === 'union' && typeDef.unionMembers) {
       const hashes: string[] = []
       for (const memberName of typeDef.unionMembers) {
-        const hash = typeHashMap.get(memberName)
+        // First try exact match, then case-insensitive match
+        let hash = typeHashMap.get(memberName)
+        if (!hash) {
+          hash = typeHashMapLower.get(memberName.toLowerCase())
+        }
         if (hash) {
           hashes.push(hash)
         } else {

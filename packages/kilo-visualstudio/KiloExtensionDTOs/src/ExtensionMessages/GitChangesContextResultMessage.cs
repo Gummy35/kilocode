@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: cf4ad6b644cd59feccd9ba99745dbacdb477afc9b2e15e1a5e9a3fc121abdf3a
 /// </summary>
-public class GitChangesContextResultMessage
+public class GitChangesContextResultMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

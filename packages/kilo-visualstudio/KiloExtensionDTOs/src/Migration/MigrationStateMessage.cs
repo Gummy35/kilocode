@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.ExtensionMessages;
 
 /// <summary>
 /// WebView message: MigrationStateMessage
@@ -19,7 +20,7 @@ using Newtonsoft.Json;
 /// Source: migration.ts
 /// Signature hash: ceb61c645ddad49fa6e203b0151aa25b4bd62f609fea1615605947954d83be3d
 /// </summary>
-public class MigrationStateMessage
+public class MigrationStateMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
