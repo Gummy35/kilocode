@@ -6,22 +6,98 @@
  * which describes the message types used for communication between the Visual Studio extension's
  * webview and the extension host.
  * 
- * ## Input
- * - WebViewContract.json: Contains TypeScript type definitions and message schemas
+ * ## Architecture
  * 
- * ## Output
- * - C# classes in KiloVisualStudioExtension/WebViewDto/Messages/ organized by namespace
- * - WebViewMessageFactory.cs: Discriminator-based deserialization factory
+ * The generator performs a multi-stage code generation process:
  * 
- * ## Type Mapping
- * - Primitive types: string→string, number→double, boolean→bool, etc.
- * - Interfaces: Generated as C# classes with JsonProperty attributes
- * - Union types: String literal unions become enums; mixed unions become object or base class
- * - SDK types: Use ApiClient.TypeName if type exists in ApiClient
- * - config.ts types: Always generated locally (e.g., Config)
+ * 1. **Contract Loading**: Reads WebViewContract.json produced by extractor.ts
+ * 
+ * 2. **Enum Generation**: Processes string literal unions (e.g., `"open" | "closed" | "pending"`)
+ *    and generates C# enum types with appropriate attributes.
+ * 
+ * 3. **Interface Generation**: For each discriminated union (like `WebviewMessage`), generates
+ *    an empty marker interface (e.g., `IWebviewMessage`) that all union members implement.
+ * 
+ * 4. **Type Generation**: For each type definition in the contract:
+ *    - Computes signature hash to detect duplicates
+ *    - Checks if the type implements any union interfaces
+ *    - Generates C# class with JsonProperty attributes
+ *    - Handles inheritance (Partial<T> & Pick<T, ...> pattern)
+ * 
+ * 5. **Message Generation**: For each message in webviewToExtension and extensionToWebview:
+ *    - Generates C# class with discriminator field
+ *    - Tags class with union interface if hash matches
+ *    - Adds using statements for cross-namespace references
+ * 
+ * 6. **Factory Generation**: Creates WebViewMessageFactory.cs with discriminator-based
+ *    deserialization logic for polymorphic message handling.
+ * 
+ * ## Type Mapping Rules
+ * 
+ * | TypeScript | C# | Notes |
+ * |---|---|---|
+ * | `string` | `string` | |
+ * | `number` | `double` | C# uses double for all numbers |
+ * | `boolean` | `bool` | |
+ * | `P`, `T` (generics) | `object` | Generics become object |
+ * | `union` | `object` | Unions become object |
+ * | `Record<string, X>` | `object` | Dynamic objects |
+ * | `Array<T>` | `List<T>` | Collections |
+ * | `stringLiteral` | `string` with default | Discriminator values |
+ * 
+ * ## Deduplication
+ * 
+ * Before generation, the extractor deduplicates types by signature hash:
+ * - Types in `Shared/` folder take priority
+ * - Shorter names (prefix matches) take priority  
+ * - First occurrence wins for same-name duplicates
+ * 
+ * This ensures each unique structure is generated only once.
+ * 
+ * ## Interface Implementation Tagging
+ * 
+ * For discriminated unions like `WebviewMessage`:
+ * 1. Extractor computes `unionMemberHashes` for all 22 members
+ * 2. Generator builds `hashToUnion` map (memberHash → unionName)
+ * 3. For each class being generated, check if its signatureHash is in the map
+ * 4. If yes, add `: IUnionName` to the class declaration
+ * 5. Add using statement for the interface namespace if needed
+ * 
+ * ## AI Implementation Notes
+ * 
+ * ### Signature Hash Matching
+ * The key to interface tagging is matching the class's `signatureHash` against
+ * the union's `unionMemberHashes`. This works because:
+ * - Both use the same hash computation algorithm (SHA-256 of normalized structure)
+ * - The hash is stable across naming conventions and file locations
+ * - Case-insensitive lookup handles naming discrepancies
+ * 
+ * ### Using Statement Generation
+ * When a class implements an interface from a different namespace:
+ * - Determine the interface's folder from its sourceFile
+ * - Compute the interface namespace (Shared → base ns, else ns.Folder)
+ * - Add `using Namespace;` if different from class's namespace
+ * 
+ * ### Inheritance Detection
+ * The generator detects inheritance patterns:
+ * - `extendsBase` field: Explicit interface extends (e.g., `TextPart extends BasePart`)
+ * - `baseType` field: Partial<T> & Pick<T, ...> pattern
+ * - Heuristic detection: Matches derived/base types by property subset
  * 
  * ## Usage
- *   bun tools/webview-contract-extractor/generator.ts
+ * 
+ * ```bash
+ * # Run the generator (typically via generate-webview-dtos.ps1)
+ * bun tools/webview-contract-extractor/generator.ts
+ * 
+ * # Output: C# classes in KiloExtensionDTOs/src/
+ * ```
+ * 
+ * ## Files
+ * 
+ * - `generator.ts`: Main code generation logic (this file)
+ * - `extractor.ts`: TypeScript type extractor (produces WebViewContract.json)
+ * - `types.ts`: TypeScript type definitions for the contract structure
  */
 
 import * as fs from "fs"
@@ -205,15 +281,24 @@ function isInternalType(typeName: string): boolean {
 }
 
 /**
- * Parse a union type string into its members
- * Example: "string | number | undefined" → ["string", "number", "undefined"]
+ * Parse a union type string into its members.
+ * 
+ * ## Example
+ * Input: `"string | number | undefined"`
+ * Output: `["string", "number", "undefined"]`
+ * 
+ * AI Note: Simple split on `|` - no brace tracking needed since this is for
+ * elementType parsing, not full union extraction.
  */
 function parseUnionMembers(elementType: string): string[] {
   return elementType.split('|').map(p => p.trim())
 }
 
 /**
- * Check if a type is a string literal (wrapped in quotes)
+ * Check if a type is a string literal (wrapped in quotes).
+ * 
+ * AI Note: Used to detect inline enum candidates. String literals like `"open"` or `'closed'`
+ * are candidates for enum generation.
  */
 function isStringLiteral(type: string): boolean {
   if (typeof type !== 'string') return false
@@ -221,8 +306,13 @@ function isStringLiteral(type: string): boolean {
 }
 
 /**
- * Extract the value from a string literal type
- * Example: '"hello"' → 'hello'
+ * Extract the value from a string literal type.
+ * 
+ * ## Example
+ * Input: `'"hello"'`
+ * Output: `'hello'`
+ * 
+ * AI Note: Strips the outer quotes from a string literal type.
  */
 function getStringLiteralValue(type: string): string {
   const trimmed = type.trim()
@@ -1529,6 +1619,18 @@ function getDirectoryForFolder(folder: string): string {
 }
 
 const ns = "KiloExtensionDTOs"
+
+// ============================================================================
+// MAIN GENERATION FLOW
+// ============================================================================
+// 1. Create output directories
+// 2. Collect all types needed by messages (transitive dependencies)
+// 3. Generate enums for string literal unions
+// 4. Generate empty interfaces for discriminated unions
+// 5. Generate type classes with interface implementations
+// 6. Generate message classes with interface implementations
+// 7. Generate discriminator factory
+// ============================================================================
 
 // Create all directories
 for (const dir of Object.values(DIRECTORY_MAP)) {

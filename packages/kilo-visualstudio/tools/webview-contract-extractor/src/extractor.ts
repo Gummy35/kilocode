@@ -6,21 +6,118 @@
  * extension's webview code and generates a structured JSON contract file (WebViewContract.json)
  * that describes the communication protocol between the webview and the extension host.
  * 
- * ## Input
- * - TypeScript source files from packages/kilo-vscode/webview-ui/src/types/messages/
- * - Shared types from packages/kilo-vscode/src/shared/
+ * ## Architecture
  * 
- * ## Processing
- * - Uses TypeScript Compiler API to parse and analyze source files
- * - Extracts interfaces, type aliases, and union types
- * - Identifies message types via discriminator fields (type, status, role)
- * - Scans for inline messages in postMessage() calls
+ * The extractor performs a multi-pass analysis:
  * 
- * ## Output
- * - WebViewContract.json: Structured contract describing all types and messages
+ * 1. **File Discovery**: Recursively scans TypeScript source files in:
+ *    - `packages/kilo-vscode/webview-ui/src/types/messages/` - Message type definitions
+ *    - `packages/kilo-vscode/src/shared/` - Shared types used across the extension
+ *    - `packages/kilo-vscode/src/` - General source files for inline type extraction
+ * 
+ * 2. **Type Extraction**: Uses TypeScript Compiler API to:
+ *    - Parse all `.ts` files into ASTs
+ *    - Extract interface definitions (named types with properties)
+ *    - Extract type aliases (including union types)
+ *    - Resolve type references and inheritance relationships
+ * 
+ * 3. **Message Discovery**: Identifies messages through:
+ *    - **Named message types**: Interfaces/aliases with discriminator fields (`type`, `status`, `role`)
+ *    - **Inline messages**: Object types found in `postMessage()` calls
+ *    - **Union types**: Discriminated unions like `WebviewMessage = PartUpdate | PartBatch | ...`
+ * 
+ * 4. **Hash Computation**: For each type, computes a SHA-256 signature hash based on:
+ *    - Discriminator value (if present)
+ *    - Property names (sorted)
+ *    - C# normalized property types
+ *    - This enables detecting duplicate types across different files
+ * 
+ * 5. **Deduplication**: Resolves type duplicates using priority rules:
+ *    - Types in `Shared/` folder take priority
+ *    - Shorter names (prefix matches) take priority
+ *    - First occurrence wins for same-name duplicates
+ * 
+ * 6. **Union Member Hashing**: For each union type, computes hashes of all member types
+ *    to enable interface implementation tagging during code generation.
+ * 
+ * ## Output Structure (WebViewContract.json)
+ * 
+ * ```json
+ * {
+ *   "schemaVersion": "1.0.0",
+ *   "generatedFrom": { "repository": "kilocode", "branch": "...", "commit": "...", "generatedAt": "..." },
+ *   "metadata": { "extractorVersion": "1.0.0", "typescriptVersion": "...", "sourcePath": "..." },
+ *   "messages": {
+ *     "webviewToExtension": [ { "name": "...", "type": "...", "discriminator": {...}, "properties": [...], "sourceFile": "..." } ],
+ *     "extensionToWebview": [ ... ]
+ *   },
+ *   "types": [
+ *     { "name": "PartUpdate", "kind": "interface", "properties": [...], "signatureHash": "...", "sourceFile": "..." },
+ *     { "name": "WebviewMessage", "kind": "union", "unionMembers": [...], "unionMemberHashes": [...], "sourceFile": "..." }
+ *   ],
+ *   "diagnostics": { "errors": [...], "warnings": [...] },
+ *   "statistics": { "totalTypes": 676, "webviewToExtensionMessages": 22, "extensionToWebviewMessages": 170 }
+ * }
+ * ```
+ * 
+ * ## Key Concepts
+ * 
+ * ### Discriminator Fields
+ * Messages are identified by discriminator fields that uniquely identify the message type:
+ * - `type`: Most common discriminator (e.g., `"partUpdated"`, `"sessionStatus"`)
+ * - `status`: Used for status update messages
+ * - `role`: Used for messages with role-based differentiation
+ * 
+ * ### Signature Hash
+ * A SHA-256 hash computed from:
+ * - Discriminator value (if present)
+ * - Sorted property names with their C# normalized types
+ * - Example: `"partUpdated|delta:object|messageID:string|part:object|sessionID:string|type:string"`
+ * 
+ * This hash is **stable** across:
+ * - Different source files (same structure = same hash)
+ * - Different naming conventions (hash is based on structure, not names)
+ * 
+ * ### Union Member Hashes
+ * For discriminated unions like `WebviewMessage`, each member type's signature hash is computed
+ * and stored in `unionMemberHashes`. This enables the generator to:
+ * 1. Generate empty marker interfaces for each union
+ * 2. Tag generated classes with `: IUnionName` when their hash matches a union member
+ * 
+ * ## AI Implementation Notes
+ * 
+ * ### Type Normalization
+ * When computing signature hashes, TypeScript types are normalized to C# equivalents:
+ * - `string` → `string`
+ * - `number` → `double` (C# uses double for all numbers)
+ * - `boolean` → `bool`
+ * - `P` (generic) → `object`
+ * - `T` (generic) → `object`
+ * - `IndexingStatus | undefined` → `object` (unions become object)
+ * - `Record<string, unknown>` → `object`
+ * 
+ * ### Inline Type Handling
+ * Inline object types in unions (e.g., `{ type: "indexingStatusLoaded"; status: IndexingStatus }`)
+ * are converted to named interface types with PascalCase names derived from the discriminator value.
+ * 
+ * ### Case-Insensitive Lookup
+ * Union member names may have different casing than actual type definitions. The extractor
+ * performs case-insensitive lookup when computing `unionMemberHashes` to match members correctly.
  * 
  * ## Usage
- *   bun src/extractor.ts
+ * 
+ * ```bash
+ * # Run the extractor
+ * bun src/extractor.ts
+ * 
+ * # Output: WebViewContract.json in packages/kilo-visualstudio/porting/contract/
+ * ```
+ * 
+ * ## Files
+ * 
+ * - `extractor.ts`: Main extraction logic (this file)
+ * - `generator.ts`: C# code generator (uses WebViewContract.json as input)
+ * - `types.ts`: TypeScript type definitions for the contract structure
  */
 
 import * as ts from "typescript"
@@ -52,6 +149,9 @@ const OUTPUT_PATH = path.join(PKGS_DIR, "kilo-visualstudio/porting/contract/WebV
 /**
  * Recursively find all TypeScript files in a directory
  * Excludes hidden directories (starting with .) and node_modules
+ * 
+ * AI Note: This is a simple file walker - no complex logic here.
+ * Returns full paths to all .ts files found.
  */
 function findTsFiles(dir: string, files: string[] = []): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true })
@@ -88,9 +188,22 @@ interface ExtractionContext {
  * Parses inline object types like `{ type: "sessionStatus"; sessionID: string; status: string }`
  * and extracts property definitions.
  * 
+ * ## Parsing Logic
+ * 1. Removes outer braces if present
+ * 2. Splits on semicolons to get individual property declarations
+ * 3. For each property:
+ *    - Extracts property name (before `:`)
+ *    - Extracts type (after `:`)
+ *    - Detects optional marker (`?`)
+ *    - Detects literal values (strings, numbers, booleans)
+ *    - Identifies discriminator fields (type, status, role with literal values)
+ * 
  * @param inlineTypeBody - The body of the inline type (without braces)
- * @param discriminator - Discriminator info if found
- * @returns Array of property definitions
+ * @returns Object containing properties array and optional discriminator info
+ * 
+ * AI Note: Discriminator detection looks for properties named "type", "status", or "role"
+ * that have literal values (e.g., `type: "sessionStatus"`). These are used to identify
+ * message types and create polymorphic hierarchies.
  */
 function extractPropertiesFromInlineType(inlineTypeBody: string): { properties: PropertyDefinition[], discriminator: DiscriminatorInfo | undefined } {
   const properties: PropertyDefinition[] = []
@@ -170,13 +283,32 @@ function extractPropertiesFromInlineType(inlineTypeBody: string): { properties: 
  * Extract the WebviewMessage union from kilo-provider-utils.ts
  * This file is outside the webview-ui tsconfig, so we parse it manually
  * 
+ * ## Why This Function Exists
+ * The `kilo-provider-utils.ts` file contains the `WebviewMessage` discriminated union
+ * that defines all possible messages from webview to extension. This file is in `src/`
+ * which is outside the `webview-ui/tsconfig.json` scope, so the TypeScript Compiler API
+ * cannot analyze it directly. We parse it with regex instead.
+ * 
  * ## Processing Steps
- * 1. Read the source file and find the WebviewMessage type alias
+ * 1. Read the source file and find the WebviewMessage type alias using regex
  * 2. Use splitUnionMembers() to properly split union members while tracking nested braces
- * 3. For inline types (starting with `{`), extract properties and create temporary interfaces
- * 4. For named types, add as type references
- * 5. Compute signature hashes for all created types
- * 6. Create the WebviewMessage union with all member names
+ *    - This handles multi-line inline types like `{ type: "x"; prop: string }`
+ *    - Counter tracks brace depth to avoid splitting on `|` inside objects
+ * 3. For inline types (starting with `{`):
+ *    - Extract properties using extractPropertiesFromInlineType()
+ *    - Create temporary interface types with PascalCase names from discriminator
+ *    - Compute signature hashes for later deduplication
+ * 4. For named type references (e.g., `PartUpdate`):
+ *    - Add as union member (will be resolved from other source files)
+ * 5. Create the WebviewMessage union type definition
+ * 
+ * ## AI Implementation Notes
+ * - The regex pattern captures the entire union definition including multi-line members
+ * - splitUnionMembers() is critical for handling complex inline types
+ * - Inline types get converted to named interfaces for consistent code generation
+ * - The discriminator value becomes part of the generated type name (e.g., "sessionStatus" → "SessionstatusMessage")
+ * 
+ * @param context - Extraction context to store discovered types
  */
 function extractWebviewMessageFromProviderUtils(context: ExtractionContext): void {
   if (!fs.existsSync(VS_CODE_PROVIDER_UTILS_PATH)) {
@@ -273,6 +405,47 @@ function extractWebviewMessageFromProviderUtils(context: ExtractionContext): voi
  * 
  * @param typeDef - Type definition to hash
  * @returns Hex string hash of the signature (64 chars), or undefined if no discriminator
+ */
+/**
+ * Compute a signature hash for a type definition.
+ * 
+ * ## Purpose
+ * Creates a unique, stable hash that identifies types with identical structure,
+ * regardless of their name or location. This enables deduplication of types
+ * that appear in multiple files with the same structure.
+ * 
+ * ## Hash Computation
+ * 1. Start with discriminator value (if present): `"partUpdated"`
+ * 2. For each property (excluding the discriminator field itself):
+ *    - Format as `propertyName:CSharpType?` (optional marker if nullable)
+ *    - Normalize TypeScript types to C# equivalents using normalizeToCSharpType()
+ * 3. Sort properties alphabetically for consistent ordering
+ * 4. Join with `|` separator
+ * 5. Combine: `discriminator|prop1:type1|prop2:type2|...`
+ * 6. Hash with SHA-256
+ * 
+ * ## Type Normalization Rules (normalizeToCSharpType)
+ * - `string` → `string`
+ * - `number` → `double` (C# uses double for all numbers)
+ * - `boolean` → `bool`
+ * - `P`, `T` (generics) → `object`
+ * - Union types → `object`
+ * - `Record<string, unknown>` → `object`
+ * - Literal types → their base type (`"literal"` → `string`)
+ * 
+ * ## Example
+ * Type: `PartUpdate { type: "partUpdated"; sessionID: string; part: object }`
+ * Signature string: `"partUpdated|part:object|sessionID:string|type:string"`
+ * Hash: `a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112`
+ * 
+ * ## AI Implementation Notes
+ * - The hash is **deterministic**: same structure always produces same hash
+ * - Property order doesn't matter (sorted before hashing)
+ * - Type names don't matter, only their C# normalized equivalents
+ * - This enables detecting duplicate types across different files/namespaces
+ * 
+ * @param typeDef - Type definition to hash
+ * @returns 64-character hex string (SHA-256), or undefined if no discriminator
  */
 function computeSignatureHash(typeDef: TypeDefinition): string | undefined {
   if (!typeDef.discriminator || !typeDef.properties) {
@@ -1345,6 +1518,17 @@ function extractMessageTypes(
   context: ExtractionContext
 ): void {
   const typeChecker = context.typeChecker
+  
+  // ============================================================================
+  // MULTI-PASS EXTRACTION STRATEGY
+  // ============================================================================
+  // We use multiple passes to handle forward references and circular dependencies:
+  // 
+  // Pass 1: Extract all interfaces first (they may reference type aliases)
+  // Pass 2: Extract all type aliases (now that interfaces are available)
+  // Pass 3: Re-extract interfaces (to resolve type alias references from pass 2)
+  // Pass 4: Process message interfaces (add discriminator info and categorize)
+  // ============================================================================
   
   // First pass: Extract all interfaces first
   const visitFirstPass = (node: ts.Node): void => {
