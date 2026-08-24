@@ -1,5 +1,6 @@
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.WebviewMessages;
+using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.Utils;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -25,10 +26,6 @@ namespace KiloVisualStudioExtension.ApiClient
 
 
   public partial class AssistantMessage : Message {
-
-    [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))]
-    public Error Error { get; set; }
   }
   public partial class UserMessage : Message { }
 
@@ -36,29 +33,38 @@ namespace KiloVisualStudioExtension.ApiClient
   {
     public KiloExtensionDTOs.WebviewMessages.WebviewMessage GetWebViewMessage(string sessionID)
     {
+      var message = this.SyncEvent?.Data?.Info != null ? MessageConverter.Convert(this.SyncEvent.Data.Info) : null;
+      return new MessageCreatedMessage
+      {
+        Message = message
+      };
+      ////  this.SyncEvent.Data.Info.
+      //  return new MessageCreatedMessage
+      //  {
+      //    Message = 
+      //    {
 
-      return MessageConverter.Convert(this.SyncEvent.Data.Info);
-    //  this.SyncEvent.Data.Info.
-    //  return new MessageCreatedMessage
-    //  {
-    //    Message = 
-    //    {
-
-    //    }
-    //  }
-    //  const info = event.data.info
-    //    return {
-    //type: "messageCreated",
-    //      message:
-    //  {
-    //    ...info,
-    //        createdAt: new Date(info.time.created).toISOString(),
-    //      },
-    //    }
+      //    }
+      //  }
+      //  const info = event.data.info
+      //    return {
+      //type: "messageCreated",
+      //      message:
+      //  {
+      //    ...info,
+      //        createdAt: new Date(info.time.created).toISOString(),
+      //      },
+      //    }
     }
   }
 
-  
+  public partial class Error
+  {
+    public string Name { get; set; }
+
+    public object Data { get; set; } = new object();
+  }
+
   public partial class ProviderAuthError : Error { }
   public partial class UnknownError : Error { }
   public partial class MessageOutputLengthError : Error { }

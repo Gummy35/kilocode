@@ -272,7 +272,7 @@ namespace KiloVisualStudioExtension.Utils
     }
     public static ErrorType Convert(Error error)
     {
-      return new ErrorType { Data = error.}
+      return new ErrorType { Data = error.Data, Name = error.Name };
     }
 
     public static PathType Convert(Path2 path)
@@ -281,9 +281,9 @@ namespace KiloVisualStudioExtension.Utils
     }
   }
 
-  public class MessageConverter
+  public static class MessageConverter
   {
-    public KiloExtensionDTOs.Sessions.Message Convert(UserMessage message)
+    public static KiloExtensionDTOs.Sessions.Message Convert(UserMessage message)
     {
       return new KiloExtensionDTOs.Sessions.Message
       {
@@ -309,7 +309,7 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
-    public KiloExtensionDTOs.Sessions.Message Convert(AssistantMessage message)
+    public static KiloExtensionDTOs.Sessions.Message Convert(AssistantMessage message)
     {
       return new KiloExtensionDTOs.Sessions.Message
       {
@@ -324,17 +324,23 @@ namespace KiloVisualStudioExtension.Utils
         ModelID = message.ModelID,
         ParentID = message.ParentID,
         Parts = null,
-        Path = message.Path,
+        Path = EntityConverter.Convert(message.Path),
         ProviderID = message.ProviderID,
         Role = message.Role,
         SessionID = message.SessionID,
         Summary = message.Summary,
         Time = EntityConverter.Convert(message.Time),
-        Tokens = message.Tokens,
+        Tokens = EntityConverter.Convert(message.Tokens),
         CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds((long)message.Time.Created).ToString("O"),
       };
     }
 
+    public static KiloExtensionDTOs.Sessions.Message Convert(ApiClient.Message message)
+    {
+      if (message is AssistantMessage) return Convert((AssistantMessage)message);
+      if (message is UserMessage) return Convert((UserMessage)message);
+      return null;
+    }
 
   }
 }

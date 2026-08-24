@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Web.UI.Design;
 using static KiloVisualStudioExtension.Services.MessagePageFetcher;
 using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
+using Events = KiloVisualStudioExtension.ApiClient.Events;
 using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
 
 namespace KiloVisualStudioExtension
@@ -313,7 +314,7 @@ namespace KiloVisualStudioExtension
           // this.aborts.observe(sid, event.properties.status.type, directory)
           _aborts.Observe(sessionId, type, directory);
           // const msg = mapSSEEventToWebviewMessage(event, sid)
-          var msg = MapSseEventToWebviewMessage(e, sessionId);
+          var msg = MapSSEEventToWebviewMessage(e, sessionId);
           // if (msg) {
           if (msg != null)
           {
@@ -597,154 +598,154 @@ namespace KiloVisualStudioExtension
       }
     }
 
-    internal WebviewMessage mapSSEEventToWebviewMessage(Event evt, string sessionID)
+    internal WebviewMessage MapSSEEventToWebviewMessage(Events evt, string sessionID)
     {
       return evt is IWebviewMappable ? ((IWebviewMappable)evt).GetWebViewMessage(sessionID) : null;
-{
-          const info = event.data.info
-        return {
-    type: "messageCreated",
-          message:
-      {
-        ...info,
-            createdAt: new Date(info.time.created).toISOString(),
-          },
-        }
+      //{
+      //          const info = event.data.info
+      //        return {
+      //    type: "messageCreated",
+      //          message:
+      //      {
+      //        ...info,
+      //            createdAt: new Date(info.time.created).toISOString(),
+      //          },
+      //        }
+      //    }
+      //      case "message.removed.1":
+      //        return {
+      //          type: "messageRemoved",
+      //          sessionID: event.data.sessionID,
+      //          messageID: event.data.messageID,
+      //        }
+      //      case "message.part.updated.1":
+      //      case "message.part.removed.1":
+      //        return mapPartEvent(event, sessionID)
+      //      case "session.created.1":
+      //        return {
+      //    type: "sessionCreated",
+      //          session: sessionToWebview(event.data.info),
+      //        }
+      //      case "session.updated.1":
+      //        return null
+      //      case "session.deleted.1":
+      //        return {
+      //          type: "sessionDeleted",
+      //          sessionID: event.data.sessionID,
+      //        }
+      //  }
+      //}
+      //if (event.type === "message.part.delta") return mapPartEvent(event, sessionID)
+      //  switch (event.type) {
+      //    case "session.status":
+      //    {
+      //      const info = event.properties.status
+      //      const status = info.type
+      //      const extra = statusExtra(info)
+      //      return {
+      //      type: "sessionStatus" as const,
+      //      sessionID: event.properties.sessionID,
+      //        status,
+      //        ...extra,
+      //      }
+      //    }
+      //  case "session.turn.close":
+      //    return {
+      //    type: "sessionTurnClosed",
+      //        sessionID: event.properties.sessionID,
+      //        reason: event.properties.reason,
+      //      }
+      //  case "permission.asked":
+      //    return {
+      //    type: "permissionRequest",
+      //        permission:
+      //      {
+      //      id: event.properties.id,
+      //          sessionID: event.properties.sessionID,
+      //          toolName: event.properties.permission,
+      //          patterns: event.properties.patterns ?? [],
+      //          always: event.properties.always ?? [],
+      //          args: event.properties.metadata,
+      //          message: `Permission required: ${event.properties.permission}`,
+      //          tool: event.properties.tool,
+      //        },
+      //      }
+      //  case "permission.replied":
+      //    return {
+      //    type: "permissionResolved",
+      //        permissionID: event.properties.requestID,
+      //      }
+      //  case "todo.updated":
+      //    return {
+      //    type: "todoUpdated",
+      //        sessionID: event.properties.sessionID,
+      //        items: event.properties.todos,
+      //      }
+      //  case "question.asked":
+      //    return {
+      //    type: "questionRequest",
+      //        question:
+      //      {
+      //      id: event.properties.id,
+      //          sessionID: event.properties.sessionID,
+      //          questions: event.properties.questions,
+      //          blocking: event.properties.blocking,
+      //          tool: event.properties.tool,
+      //        },
+      //      }
+      //  case "question.replied":
+      //  case "question.rejected":
+      //    return {
+      //    type: "questionResolved",
+      //        requestID: event.properties.requestID,
+      //      }
+      //  case "suggestion.shown":
+      //    return {
+      //    type: "suggestionRequest",
+      //        suggestion:
+      //      {
+      //      id: event.properties.id,
+      //          sessionID: event.properties.sessionID,
+      //          text: event.properties.text,
+      //          actions: event.properties.actions,
+      //          blocking: event.properties.blocking,
+      //          tool: event.properties.tool,
+      //        },
+      //      }
+      //  case "suggestion.accepted":
+      //  case "suggestion.dismissed":
+      //    return {
+      //    type: "suggestionResolved",
+      //        requestID: event.properties.requestID,
+      //      }
+      //  case "session.error":
+      //    {
+      //      return {
+      //      type: "sessionError",
+      //        sessionID: event.properties.sessionID,
+      //        error: event.properties.error,
+      //      }
+      //    }
+      //  case "sandbox.status.changed":
+      //    return {
+      //    type: "sandboxStatus",
+      //        sessionID: event.properties.sessionID,
+      //        directory: event.properties.directory,
+      //        enabled: event.properties.enabled,
+      //        available: event.properties.available,
+      //        reason: event.properties.reason,
+      //        version: event.properties.version,
+      //      }
+      //  case "indexing.status":
+      //    return {
+      //    type: "indexingStatusLoaded",
+      //        status: event.properties.status,
+      //      }
+      //  default:
+      //    return null
+      //  }
+      //}
     }
-      case "message.removed.1":
-        return {
-          type: "messageRemoved",
-          sessionID: event.data.sessionID,
-          messageID: event.data.messageID,
-        }
-      case "message.part.updated.1":
-      case "message.part.removed.1":
-        return mapPartEvent(event, sessionID)
-      case "session.created.1":
-        return {
-    type: "sessionCreated",
-          session: sessionToWebview(event.data.info),
-        }
-      case "session.updated.1":
-        return null
-      case "session.deleted.1":
-        return {
-          type: "sessionDeleted",
-          sessionID: event.data.sessionID,
-        }
-  }
-}
-if (event.type === "message.part.delta") return mapPartEvent(event, sessionID)
-  switch (event.type) {
-    case "session.status":
-    {
-      const info = event.properties.status
-      const status = info.type
-      const extra = statusExtra(info)
-      return {
-      type: "sessionStatus" as const,
-      sessionID: event.properties.sessionID,
-        status,
-        ...extra,
-      }
-    }
-  case "session.turn.close":
-    return {
-    type: "sessionTurnClosed",
-        sessionID: event.properties.sessionID,
-        reason: event.properties.reason,
-      }
-  case "permission.asked":
-    return {
-    type: "permissionRequest",
-        permission:
-      {
-      id: event.properties.id,
-          sessionID: event.properties.sessionID,
-          toolName: event.properties.permission,
-          patterns: event.properties.patterns ?? [],
-          always: event.properties.always ?? [],
-          args: event.properties.metadata,
-          message: `Permission required: ${event.properties.permission}`,
-          tool: event.properties.tool,
-        },
-      }
-  case "permission.replied":
-    return {
-    type: "permissionResolved",
-        permissionID: event.properties.requestID,
-      }
-  case "todo.updated":
-    return {
-    type: "todoUpdated",
-        sessionID: event.properties.sessionID,
-        items: event.properties.todos,
-      }
-  case "question.asked":
-    return {
-    type: "questionRequest",
-        question:
-      {
-      id: event.properties.id,
-          sessionID: event.properties.sessionID,
-          questions: event.properties.questions,
-          blocking: event.properties.blocking,
-          tool: event.properties.tool,
-        },
-      }
-  case "question.replied":
-  case "question.rejected":
-    return {
-    type: "questionResolved",
-        requestID: event.properties.requestID,
-      }
-  case "suggestion.shown":
-    return {
-    type: "suggestionRequest",
-        suggestion:
-      {
-      id: event.properties.id,
-          sessionID: event.properties.sessionID,
-          text: event.properties.text,
-          actions: event.properties.actions,
-          blocking: event.properties.blocking,
-          tool: event.properties.tool,
-        },
-      }
-  case "suggestion.accepted":
-  case "suggestion.dismissed":
-    return {
-    type: "suggestionResolved",
-        requestID: event.properties.requestID,
-      }
-  case "session.error":
-    {
-      return {
-      type: "sessionError",
-        sessionID: event.properties.sessionID,
-        error: event.properties.error,
-      }
-    }
-  case "sandbox.status.changed":
-    return {
-    type: "sandboxStatus",
-        sessionID: event.properties.sessionID,
-        directory: event.properties.directory,
-        enabled: event.properties.enabled,
-        available: event.properties.available,
-        reason: event.properties.reason,
-        version: event.properties.version,
-      }
-  case "indexing.status":
-    return {
-    type: "indexingStatusLoaded",
-        status: event.properties.status,
-      }
-  default:
-    return null
-  }
-}
-
     //private void HandleSyncEvent(SyncEvent syncEvent)
     //{
     //  var name = syncEvent.Name;
@@ -898,12 +899,11 @@ if (event.type === "message.part.delta") return mapPartEvent(event, sessionID)
 
     private void HandleMessageUpdatedSync(EventMessageUpdated evt)
     {
-      var data = (ApiClient.EventMessageUpdated)evt.Data;
-      var info = data.Properties.Info;
+      var info = evt.Properties.Info;
       var infoJson = info.ToJson();
       var infoObj = JObject.Parse(infoJson);
       var messageID = infoObj["id"]?.Value<string>();
-      var sessionID = data.Properties.SessionID;
+      var sessionID = evt.Properties.SessionID;
 
       RecordMessageSessionId(messageID, sessionID);
 
