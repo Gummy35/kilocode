@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestCloudSessionsMessage
 /// Discriminator: type = "requestCloudSessions"
 /// Source: webview-messages.ts
+/// Signature hash: 988a9b425538a6dc25a8e38e14e0a46123250b81e3483f35ea6e16d9d8a140f4
 /// </summary>
 public class RequestCloudSessionsMessage
 {

@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: AgentManagerBranchesMessage
 /// Discriminator: type = "agentManager.branches"
 /// Source: extension-messages.ts
+/// Signature hash: 4004d45092bc36295ec907bf0a85c5bed6e1420953142e4467b47d937f1170b2
 /// </summary>
 public class AgentManagerBranchesMessage
 {

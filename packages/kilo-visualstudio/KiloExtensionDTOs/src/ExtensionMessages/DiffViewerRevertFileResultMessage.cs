@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DiffViewerRevertFileResultMessage
 /// Discriminator: type = "diffViewer.revertFileResult"
 /// Source: extension-messages.ts
+/// Signature hash: 3ca2eeed34ded09ec300f1809724311301cbfe12c476a1284203964f95395618
 /// </summary>
 public class DiffViewerRevertFileResultMessage
 {

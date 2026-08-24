@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerMultiVersionProgressMessage
 /// Discriminator: type = "agentManager.multiVersionProgress"
 /// Source: extension-messages.ts
+/// Signature hash: 9da9eb877f3973b9535e52abae6dcdca79f37340b70d6c4f71600235aa735c5a
 /// </summary>
 public class AgentManagerMultiVersionProgressMessage
 {

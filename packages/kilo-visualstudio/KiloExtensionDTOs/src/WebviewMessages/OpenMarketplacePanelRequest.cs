@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenMarketplacePanelRequest
 /// Discriminator: type = "openMarketplacePanel"
 /// Source: webview-messages.ts
+/// Signature hash: f9f335141e04a52732d0ed661c7818d45aa760edaf52bdb4ca58980b3ee07347
 /// </summary>
 public class OpenMarketplacePanelRequest
 {

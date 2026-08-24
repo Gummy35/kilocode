@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SessionCommandCompletedMessage
 /// Discriminator: type = "sessionCommandCompleted"
 /// Source: extension-messages.ts
+/// Signature hash: 747170cb5ff817943c49e3eba4f4f6acfbce1577dd1f6ea52c6b5953496f860e
 /// </summary>
 public class SessionCommandCompletedMessage
 {

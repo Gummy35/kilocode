@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Connection;
 /// WebView message: SessionStatusMessage
 /// Discriminator: type = "sessionStatus"
 /// Source: extension-messages.ts
+/// Signature hash: 97ee011c2f268541bee8c2fadfa7ec181fd4bff3886373dfe58616e9b8bbfe6f
 /// </summary>
 public class SessionStatusMessage
 {

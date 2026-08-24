@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestFilePickerMessage
 /// Discriminator: type = "requestFilePicker"
 /// Source: webview-messages.ts
+/// Signature hash: 59d2d4be11214df40d3d6e593977e40d901d5ddb0c1e21c76c0dc5548b913f4c
 /// </summary>
 public class RequestFilePickerMessage
 {

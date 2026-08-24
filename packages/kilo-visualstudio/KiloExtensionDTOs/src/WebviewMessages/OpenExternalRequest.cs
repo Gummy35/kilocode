@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenExternalRequest
 /// Discriminator: type = "openExternal"
 /// Source: webview-messages.ts
+/// Signature hash: fc5b766aa9059160ea314cd581d2023effebd55fcfe0990caa6b704a65e0c90a
 /// </summary>
 public class OpenExternalRequest
 {

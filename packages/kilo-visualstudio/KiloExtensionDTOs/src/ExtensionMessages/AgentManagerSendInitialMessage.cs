@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerSendInitialMessage
 /// Discriminator: type = "agentManager.sendInitialMessage"
 /// Source: extension-messages.ts
+/// Signature hash: 0c840eb310c1fdae4d78c532ed88aad8eb37739d86ee094c65e6a6432eea632a
 /// </summary>
 public class AgentManagerSendInitialMessage
 {

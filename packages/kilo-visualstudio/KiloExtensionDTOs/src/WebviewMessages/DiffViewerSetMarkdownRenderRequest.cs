@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DiffViewerSetMarkdownRenderRequest
 /// Discriminator: type = "diffViewer.setMarkdownRender"
 /// Source: webview-messages.ts
+/// Signature hash: 9fdb26b8b11cde370240d913ecb6a5d5cdf443829bb9854ca40f50cfbbc072a1
 /// </summary>
 public class DiffViewerSetMarkdownRenderRequest
 {

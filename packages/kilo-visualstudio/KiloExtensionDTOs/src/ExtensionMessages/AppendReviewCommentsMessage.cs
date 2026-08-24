@@ -18,6 +18,7 @@ using KiloExtensionDTOs;
 /// WebView message: AppendReviewCommentsMessage
 /// Discriminator: type = "appendReviewComments"
 /// Source: extension-messages.ts
+/// Signature hash: deb3f1b2ace1a98c600b8a43ac4a271026e8161cf719ba4d629a6787762cd9e7
 /// </summary>
 public class AppendReviewCommentsMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: GitStatusMessage
 /// Discriminator: type = "gitStatus"
 /// Source: extension-messages.ts
+/// Signature hash: 1740c337640bedb14e02f536a2c446f83d9c5f7e9757c2dbf8e869857ab0a633
 /// </summary>
 public class GitStatusMessage
 {

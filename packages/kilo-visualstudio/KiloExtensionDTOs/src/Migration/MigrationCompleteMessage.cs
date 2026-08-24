@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: MigrationCompleteMessage
 /// Discriminator: type = "migrationComplete"
 /// Source: migration.ts
+/// Signature hash: ac863ca58c93834f0ae3e15ff8d2a25c5b8a2fd6fdd23e473f5bfb5c1f3dc52f
 /// </summary>
 public class MigrationCompleteMessage
 {

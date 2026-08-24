@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: FetchCustomProviderModelsMessage
 /// Discriminator: type = "fetchCustomProviderModels"
 /// Source: webview-messages.ts
+/// Signature hash: 521bbfb6902fcc6d6d9577ccd8210f4b671fbd03dec52e27ebe4cf7d127f1e03
 /// </summary>
 public class FetchCustomProviderModelsMessage
 {

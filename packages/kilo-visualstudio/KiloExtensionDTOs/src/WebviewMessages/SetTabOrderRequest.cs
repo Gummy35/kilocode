@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetTabOrderRequest
 /// Discriminator: type = "agentManager.setTabOrder"
 /// Source: webview-messages.ts
+/// Signature hash: a95179260d09aaee6ce2528ac854039237ab13cf754db1c1fc10e41adee649bb
 /// </summary>
 public class SetTabOrderRequest
 {

@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: AgentManagerRunStatusMessage
 /// Discriminator: type = "agentManager.runStatus"
 /// Source: extension-messages.ts
+/// Signature hash: 0eea81ece28844f64a1355bf8a07063a29bcf8caf8e9e3dbdfd242611eae9e01
 /// </summary>
 public class AgentManagerRunStatusMessage : RunStatus
 {

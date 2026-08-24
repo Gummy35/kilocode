@@ -18,6 +18,7 @@ using KiloExtensionDTOs.KiloConfig;
 /// WebView message: GlobalConfigLoadedMessage
 /// Discriminator: type = "globalConfigLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 328ebec46d526d6fc6c8fa07ac50b23a2ace1582747c995de2e00fbaf53dae4b
 /// </summary>
 public class GlobalConfigLoadedMessage
 {

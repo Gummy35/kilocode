@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: PermissionResponseRequest
 /// Discriminator: type = "permissionResponse"
 /// Source: webview-messages.ts
+/// Signature hash: cc06e53d03d62330b4be777ac0a8545aabb71ee65e82cb44ab6db850e1635fbe
 /// </summary>
 public class PermissionResponseRequest
 {

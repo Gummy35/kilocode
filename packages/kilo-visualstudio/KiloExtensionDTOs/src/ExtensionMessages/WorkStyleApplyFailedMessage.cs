@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: WorkStyleApplyFailedMessage
 /// Discriminator: type = "workStyleApplyFailed"
 /// Source: extension-messages.ts
+/// Signature hash: 69e7531c660e832b2d07f8c44a22901d7bb8ef2d6279a226ebd5bd69a8a3e7de
 /// </summary>
 public class WorkStyleApplyFailedMessage
 {

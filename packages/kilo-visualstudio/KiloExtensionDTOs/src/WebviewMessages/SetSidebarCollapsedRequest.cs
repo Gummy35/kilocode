@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetSidebarCollapsedRequest
 /// Discriminator: type = "agentManager.setSidebarCollapsed"
 /// Source: webview-messages.ts
+/// Signature hash: f5d4d994c69b27a74792babdd2ac5d2eeeeafae160a7ab578c2e00053882756b
 /// </summary>
 public class SetSidebarCollapsedRequest
 {

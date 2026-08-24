@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestRemoteStatusMessage
 /// Discriminator: type = "requestRemoteStatus"
 /// Source: webview-messages.ts
+/// Signature hash: 8c0eaf1346810e367ec3eea79e465d2a8861e3f00647396e43afc2e853538b88
 /// </summary>
 public class RequestRemoteStatusMessage
 {

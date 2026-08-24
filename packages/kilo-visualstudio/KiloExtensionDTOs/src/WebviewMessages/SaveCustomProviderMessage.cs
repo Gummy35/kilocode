@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Providers;
 /// WebView message: SaveCustomProviderMessage
 /// Discriminator: type = "saveCustomProvider"
 /// Source: webview-messages.ts
+/// Signature hash: ed8262a23caef9819919481a9d6b89a0ec2bd3aebcf574beff76d987c881e064
 /// </summary>
 public class SaveCustomProviderMessage
 {

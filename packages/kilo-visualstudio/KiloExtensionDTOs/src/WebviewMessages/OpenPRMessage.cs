@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenPRMessage
 /// Discriminator: type = "agentManager.openPR"
 /// Source: webview-messages.ts
+/// Signature hash: dec9ef957a0986c7e3f91fd81a769a09f53c5a6b3153328cd88479e116e0f349
 /// </summary>
 public class OpenPRMessage
 {

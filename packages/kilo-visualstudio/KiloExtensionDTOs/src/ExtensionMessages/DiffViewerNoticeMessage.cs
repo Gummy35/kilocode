@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DiffViewerNoticeMessage
 /// Discriminator: type = "diffViewer.notice"
 /// Source: extension-messages.ts
+/// Signature hash: 29708702048bef1135a06b6c8777365aa8d9163fc18a774af6401c0ba9fdf805
 /// </summary>
 public class DiffViewerNoticeMessage
 {

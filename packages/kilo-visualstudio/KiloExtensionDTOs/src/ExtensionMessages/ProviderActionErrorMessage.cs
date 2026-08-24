@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ProviderActionErrorMessage
 /// Discriminator: type = "providerActionError"
 /// Source: extension-messages.ts
+/// Signature hash: 988ee60c16e8384331baf08818a1e6fb9d8594b4fde2531edf27e075eac57ccb
 /// </summary>
 public class ProviderActionErrorMessage
 {

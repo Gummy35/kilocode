@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace KiloExtensionDTOs.ExtensionMessages;
+namespace KiloExtensionDTOs;
 
 using System;
 using System.Collections.Generic;
@@ -12,21 +12,22 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 /// <summary>
-/// Part type: PartUpdatedMessage
-/// Discriminator: type = "partUpdated"
-/// Source: extension-messages.ts
+/// Type: updatesItemType
+/// Source: ..\..\..\..\src\shared\stream-messages.ts
 /// </summary>
-public class PartUpdatedMessage
+public class UpdatesItemType
 {
     [JsonProperty("type")]
-    // Original TypeScript type: stringLiteral
-    public string Type { get; set; } = "partUpdated";
+    // Original TypeScript type: literal
+    public string Type { get; set; }
     [JsonProperty("sessionID")]
     public string SessionID { get; set; }
     [JsonProperty("messageID")]
     public string MessageID { get; set; }
     [JsonProperty("part")]
+    // Original TypeScript type: P
     public object Part { get; set; }
     [JsonProperty("delta", NullValueHandling = NullValueHandling.Ignore)]
+    // Original TypeScript type: undefined | __type
     public object? Delta { get; set; }
 }

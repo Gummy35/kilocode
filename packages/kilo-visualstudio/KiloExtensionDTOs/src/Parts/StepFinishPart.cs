@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: StepFinishPart
 /// Discriminator: type = "step-finish"
 /// Source: parts.ts
+/// Signature hash: c96a834671e1050bc12f51ef53825c07c2ef24dc967a480ecd56be243e07e50c
 /// </summary>
 public class StepFinishPart : BasePart
 {

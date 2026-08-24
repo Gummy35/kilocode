@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SessionSearchResultMessage
 /// Discriminator: type = "sessionSearchResult"
 /// Source: extension-messages.ts
+/// Signature hash: ac85f63ccbfebfa357511e34bc73d9be12d185a9c68dfbeae087704d93fc0efc
 /// </summary>
 public class SessionSearchResultMessage
 {

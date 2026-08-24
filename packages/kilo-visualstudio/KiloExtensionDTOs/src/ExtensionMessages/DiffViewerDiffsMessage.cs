@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: DiffViewerDiffsMessage
 /// Discriminator: type = "diffViewer.diffs"
 /// Source: extension-messages.ts
+/// Signature hash: 1fd763ac3eeebcc1b7c5d466260d2b4b931f0cab3af5c126417ddfccdd759675
 /// </summary>
 public class DiffViewerDiffsMessage
 {

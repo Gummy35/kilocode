@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ProviderConnectedMessage
 /// Discriminator: type = "providerConnected"
 /// Source: extension-messages.ts
+/// Signature hash: 2b05f7bd88e27696a757f27af98506bac47de26abbb57f14b5d57e90e1caa6da
 /// </summary>
 public class ProviderConnectedMessage
 {

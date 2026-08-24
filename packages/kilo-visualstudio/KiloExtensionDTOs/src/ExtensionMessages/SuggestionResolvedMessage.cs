@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SuggestionResolvedMessage
 /// Discriminator: type = "suggestionResolved"
 /// Source: extension-messages.ts
+/// Signature hash: 68f374af59e342d158f1fc22b379c369d7483c5937185c87dff699bfeeba0c7f
 /// </summary>
 public class SuggestionResolvedMessage
 {

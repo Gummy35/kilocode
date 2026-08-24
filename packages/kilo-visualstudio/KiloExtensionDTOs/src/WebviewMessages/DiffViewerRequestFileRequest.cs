@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DiffViewerRequestFileRequest
 /// Discriminator: type = "diffViewer.requestFile"
 /// Source: webview-messages.ts
+/// Signature hash: b1291b8b10ed9e6bc2975338bd6622ecc901ae2fb5612064fe051190b6df9819
 /// </summary>
 public class DiffViewerRequestFileRequest
 {

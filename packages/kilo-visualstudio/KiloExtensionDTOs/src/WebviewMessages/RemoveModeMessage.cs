@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RemoveModeMessage
 /// Discriminator: type = "removeAgent"
 /// Source: webview-messages.ts
+/// Signature hash: 6604c66c36c0e822f07914bd7ec1da8e5ea8f8e4ea83b11f8f72f8fd5b9d8e9d
 /// </summary>
 public class RemoveModeMessage
 {

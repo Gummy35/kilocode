@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerWorktreeDiffLoadingMessage
 /// Discriminator: type = "agentManager.worktreeDiffLoading"
 /// Source: extension-messages.ts
+/// Signature hash: d58178e316d1ed8a2d2acce2ad27a9b908882f68d8ddfb3cef06c8a5630def14
 /// </summary>
 public class AgentManagerWorktreeDiffLoadingMessage
 {

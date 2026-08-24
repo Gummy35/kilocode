@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RunScriptRequest
 /// Discriminator: type = "agentManager.runScript"
 /// Source: webview-messages.ts
+/// Signature hash: b57329845141ffd868ab3891a0b9ea9edd72a82d9e764967319f801d40c9fd84
 /// </summary>
 public class RunScriptRequest
 {

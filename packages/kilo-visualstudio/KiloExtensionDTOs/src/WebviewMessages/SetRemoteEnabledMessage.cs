@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetRemoteEnabledMessage
 /// Discriminator: type = "setRemoteEnabled"
 /// Source: webview-messages.ts
+/// Signature hash: 4fe358daa7a8a74f5ab9501870e802b66fb50f41236c5f394825b706b037144b
 /// </summary>
 public class SetRemoteEnabledMessage
 {

@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: StepStartPart
 /// Discriminator: type = "step-start"
 /// Source: parts.ts
+/// Signature hash: 8a8068eb1bdd608866b3466a61a44103f453bdc23e5d96bf862f1dcb159a7192
 /// </summary>
 public class StepStartPart : BasePart
 {

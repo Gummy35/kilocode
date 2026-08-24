@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: CloudSessionImportedMessage
 /// Discriminator: type = "cloudSessionImported"
 /// Source: extension-messages.ts
+/// Signature hash: 7769521e06a7ab8a5f4a420afe1c470536922d624e68c5010e31e3b0684cd2f8
 /// </summary>
 public class CloudSessionImportedMessage
 {

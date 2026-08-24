@@ -10,13 +10,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// Part type: PartUpdate
 /// Discriminator: type = "partUpdated"
 /// Source: ..\..\..\..\src\shared\stream-messages.ts
+/// Signature hash: a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112
 /// </summary>
-public class PartUpdate
+public class PartUpdate : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: stringLiteral

@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: LoadMessagesRequest
 /// Discriminator: type = "loadMessages"
 /// Source: webview-messages.ts
+/// Signature hash: 3208520a3f4a1c4b955af050123e5c8c19c2a18a6bbc8ff8f085c22eb4084811
 /// </summary>
 public class LoadMessagesRequest
 {

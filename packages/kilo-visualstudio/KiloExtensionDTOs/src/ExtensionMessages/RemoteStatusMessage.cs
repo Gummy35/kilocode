@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RemoteStatusMessage
 /// Discriminator: type = "remoteStatus"
 /// Source: extension-messages.ts
+/// Signature hash: 20467bb9f697cf77823209e3bab7ca2f16ee2a865e2130d02ded66da1ae2c34e
 /// </summary>
 public class RemoteStatusMessage
 {

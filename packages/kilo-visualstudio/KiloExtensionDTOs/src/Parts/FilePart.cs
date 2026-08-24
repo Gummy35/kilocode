@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: FilePart
 /// Discriminator: type = "file"
 /// Source: parts.ts
+/// Signature hash: df3eb60ebe5520b3ebb029e2c55d9b538e4989479ee7137e7eed4007c32eff63
 /// </summary>
 public class FilePart : BasePart
 {

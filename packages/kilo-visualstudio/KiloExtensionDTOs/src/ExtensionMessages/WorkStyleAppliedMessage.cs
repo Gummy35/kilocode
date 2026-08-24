@@ -18,6 +18,7 @@ using KiloExtensionDTOs;
 /// WebView message: WorkStyleAppliedMessage
 /// Discriminator: type = "workStyleApplied"
 /// Source: extension-messages.ts
+/// Signature hash: 71827858fc19c493b75d85ac7f0e5ab1d4a1a41bfb051836790abc1e94cf3ff2
 /// </summary>
 public class WorkStyleAppliedMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerSessionAddedMessage
 /// Discriminator: type = "agentManager.sessionAdded"
 /// Source: extension-messages.ts
+/// Signature hash: 0ffb41b17f7727a3b33f4056c6f6c5609d2d1e7e5893a4ced6d7d752d2e3fae7
 /// </summary>
 public class AgentManagerSessionAddedMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestBranchesMessage
 /// Discriminator: type = "agentManager.requestBranches"
 /// Source: webview-messages.ts
+/// Signature hash: 2c0001293e63a0fa6e11d7b10e83d45f737dcc25dc8c3e22b4b832a8efe746d8
 /// </summary>
 public class RequestBranchesMessage
 {

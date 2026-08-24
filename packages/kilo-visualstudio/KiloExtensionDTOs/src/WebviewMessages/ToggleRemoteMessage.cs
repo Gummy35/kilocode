@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ToggleRemoteMessage
 /// Discriminator: type = "toggleRemote"
 /// Source: webview-messages.ts
+/// Signature hash: 2c8639b1d09dd359ff2d97b0c60abcabcb125cd499029b86f03a0d06107344ed
 /// </summary>
 public class ToggleRemoteMessage
 {

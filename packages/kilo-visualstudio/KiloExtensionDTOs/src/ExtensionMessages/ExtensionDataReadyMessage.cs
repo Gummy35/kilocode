@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ExtensionDataReadyMessage
 /// Discriminator: type = "extensionDataReady"
 /// Source: extension-messages.ts
+/// Signature hash: 0edb5815d5d40ff7502ad70f312e97eeae901c597effbc08bfdcd008fd65fb78
 /// </summary>
 public class ExtensionDataReadyMessage
 {

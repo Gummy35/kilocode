@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ToggleFavoriteRequest
 /// Discriminator: type = "toggleFavorite"
 /// Source: webview-messages.ts
+/// Signature hash: c6ce1540e1f4f1662775a685a2a7806287f7ae4c5ef75fd8e3d30f2be3af78d1
 /// </summary>
 public class ToggleFavoriteRequest
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CancelLoginRequest
 /// Discriminator: type = "cancelLogin"
 /// Source: webview-messages.ts
+/// Signature hash: 9c6311d91639676f38bc58833f45384798eb89cac4e8cf735485c718f44aa46f
 /// </summary>
 public class CancelLoginRequest
 {

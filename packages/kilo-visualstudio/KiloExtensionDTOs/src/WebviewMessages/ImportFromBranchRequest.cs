@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ImportFromBranchRequest
 /// Discriminator: type = "agentManager.importFromBranch"
 /// Source: webview-messages.ts
+/// Signature hash: 5e42c0d428f56af893f20f2ce1f8b383948ab0d544f1e6dbc1c0096036ccf08f
 /// </summary>
 public class ImportFromBranchRequest
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestAutocompleteSettingsMessage
 /// Discriminator: type = "requestAutocompleteSettings"
 /// Source: webview-messages.ts
+/// Signature hash: 90a7a04e70f53c61496667975cd783c6798c3359a6e801e64b7823c21258514d
 /// </summary>
 public class RequestAutocompleteSettingsMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: StopDiffWatchMessage
 /// Discriminator: type = "agentManager.stopDiffWatch"
 /// Source: webview-messages.ts
+/// Signature hash: b3465e53ecbf2141ea0e1d7c2beb0687b0ed6307f51dd372d8a57f40e6b0ccec
 /// </summary>
 public class StopDiffWatchMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenConfigFileRequest
 /// Discriminator: type = "openConfigFile"
 /// Source: webview-messages.ts
+/// Signature hash: 40e6544653040e781fd1af4498173ac9eb6abb7efea473adecc4c40ac072b897
 /// </summary>
 public class OpenConfigFileRequest
 {

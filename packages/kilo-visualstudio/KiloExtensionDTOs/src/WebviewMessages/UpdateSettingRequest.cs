@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: UpdateSettingRequest
 /// Discriminator: type = "updateSetting"
 /// Source: webview-messages.ts
+/// Signature hash: 6e7bd814efc30fb38062d9e7c5967ce2fdbb611709c03785a319b576bafaeef6
 /// </summary>
 public class UpdateSettingRequest
 {

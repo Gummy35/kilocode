@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AutoApproveStateMessage
 /// Discriminator: type = "autoApproveState"
 /// Source: extension-messages.ts
+/// Signature hash: 632164d9242067a77866f5780bf8cad0d126219a36f3110b9aebe8737294b0df
 /// </summary>
 public class AutoApproveStateMessage
 {

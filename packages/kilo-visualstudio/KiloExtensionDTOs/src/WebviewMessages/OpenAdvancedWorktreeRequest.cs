@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenAdvancedWorktreeRequest
 /// Discriminator: type = "openAdvancedWorktree"
 /// Source: webview-messages.ts
+/// Signature hash: c6600eed104a903decee447b74ef918918b3c6340f51ecd3813fe7b02440ef1d
 /// </summary>
 public class OpenAdvancedWorktreeRequest
 {

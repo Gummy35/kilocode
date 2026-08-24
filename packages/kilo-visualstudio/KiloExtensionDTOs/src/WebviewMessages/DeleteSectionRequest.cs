@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DeleteSectionRequest
 /// Discriminator: type = "agentManager.deleteSection"
 /// Source: webview-messages.ts
+/// Signature hash: 6b2ba5647bf7ea71b368959fdffcb296a00ff8fdf6b857a4a74ba3f6c212c1ed
 /// </summary>
 public class DeleteSectionRequest
 {

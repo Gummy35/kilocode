@@ -18,6 +18,7 @@ using KiloExtensionDTOs;
 /// WebView message: ImportAndSendMessage
 /// Discriminator: type = "importAndSend"
 /// Source: webview-messages.ts
+/// Signature hash: 0758d54bcb6a376c796e8d84e26ed27a9ac0ef5f453e146099e72cc08646cb87
 /// </summary>
 public class ImportAndSendMessage
 {

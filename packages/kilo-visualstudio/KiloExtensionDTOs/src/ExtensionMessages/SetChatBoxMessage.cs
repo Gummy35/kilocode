@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetChatBoxMessage
 /// Discriminator: type = "setChatBoxMessage"
 /// Source: extension-messages.ts
+/// Signature hash: ef4bd8459b1f1831295715d1444a60d89ea32fab84d0ba1a3e001226b64396b8
 /// </summary>
 public class SetChatBoxMessage
 {

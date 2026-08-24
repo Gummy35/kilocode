@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SidebarOpenSessionsMessage
 /// Discriminator: type = "sidebar.openSessions"
 /// Source: webview-messages.ts
+/// Signature hash: 8a12cb8b07d8cb665ade9d75cc96717026051e677a0cb1b6a5c0e21f3d90082f
 /// </summary>
 public class SidebarOpenSessionsMessage
 {

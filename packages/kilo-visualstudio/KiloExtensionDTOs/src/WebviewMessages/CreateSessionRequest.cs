@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CreateSessionRequest
 /// Discriminator: type = "createSession"
 /// Source: webview-messages.ts
+/// Signature hash: 761ace8c181baafb623a5d503e594bb491c7683469a61095105a9ba8e69dc25b
 /// </summary>
 public class CreateSessionRequest
 {

@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Questions;
 /// WebView message: TodoUpdatedMessage
 /// Discriminator: type = "todoUpdated"
 /// Source: extension-messages.ts
+/// Signature hash: a0596045b6dd6b760c3a5dba6eb65208424b86514ec2f68bb5a799f6d936b199
 /// </summary>
 public class TodoUpdatedMessage
 {

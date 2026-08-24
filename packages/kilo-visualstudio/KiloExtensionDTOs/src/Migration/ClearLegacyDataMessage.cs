@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ClearLegacyDataMessage
 /// Discriminator: type = "clearLegacyData"
 /// Source: migration.ts
+/// Signature hash: 46cbd30865a26d01dc29671d335caf664502e5a92fbf545e2619bcff3d5d6659
 /// </summary>
 public class ClearLegacyDataMessage
 {

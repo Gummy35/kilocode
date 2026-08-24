@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerRepoInfoMessage
 /// Discriminator: type = "agentManager.repoInfo"
 /// Source: extension-messages.ts
+/// Signature hash: 5e7210a41ef05ea17f4c43877afc9db9de66f8c9a90564990543166854d0f7b3
 /// </summary>
 public class AgentManagerRepoInfoMessage
 {

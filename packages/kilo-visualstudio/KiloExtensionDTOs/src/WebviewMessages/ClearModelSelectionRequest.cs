@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ClearModelSelectionRequest
 /// Discriminator: type = "clearModelSelection"
 /// Source: webview-messages.ts
+/// Signature hash: e5cb4a0d545898277ac7163eb0e29759a2d7c37d86f661e1ca619b7a54fb7cf4
 /// </summary>
 public class ClearModelSelectionRequest
 {

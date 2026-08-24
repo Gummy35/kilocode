@@ -238,10 +238,15 @@ function extractWebviewMessageFromProviderUtils(context: ExtractionContext): voi
   }
   
   // Add the WebviewMessage union to context.types
+  // WebviewMessage is a discriminated union by the "type" field
   const webviewMessageTypeDef: TypeDefinition = {
     name: "WebviewMessage",
     kind: "union",
     unionMembers,
+    discriminator: {
+      field: "type",
+      value: "WebviewMessage",  // Generic discriminator value for the union itself
+    },
     sourceFile: "kilo-provider-utils.ts",
   }
   
@@ -252,10 +257,19 @@ function extractWebviewMessageFromProviderUtils(context: ExtractionContext): voi
 
 /**
  * Generate a signature hash for a type definition
- * The signature is based on: discriminator value + sorted property names and types
+ * The signature is based on: discriminator value + sorted property names and C# types
  * This allows detecting types with identical structure across different files
  * 
  * Uses SHA-256 for collision resistance.
+ * 
+ * ## Normalization for C# Output
+ * Type values are normalized to match what the C# generator will produce:
+ * - Type parameters (e.g., "P", "T") → "object" (C# generator uses object for generics)
+ * - Union types → "object" (C# generator uses object for unions)
+ * - Literal types → "string" or "bool" or "double" based on literal value
+ * - Primitive types → C# equivalent (string, bool, double)
+ * - Arrays → "List<object>"
+ * - Records/maps → "Dictionary<object, object>"
  * 
  * @param typeDef - Type definition to hash
  * @returns Hex string hash of the signature (64 chars), or undefined if no discriminator
@@ -265,12 +279,61 @@ function computeSignatureHash(typeDef: TypeDefinition): string | undefined {
     return undefined
   }
   
-  // Build signature string: discriminator_value|prop1:type1|prop2:type2|...
+  // Normalize to C# output types (matches generator.ts mapToCSharpType logic)
+  const normalizeToCSharpType = (prop: PropertyDefinition): string => {
+    // Type parameters → object (C# generator uses object for generics)
+    if (/^[A-Z]$/.test(prop.type) || /^(T|P|K|V|E|R)$/.test(prop.type)) {
+      return "object"
+    }
+    // Union types → object
+    if (prop.type === "union") {
+      return "object"
+    }
+    // Literal types → based on value
+    if (prop.isLiteral && prop.literalValue !== null) {
+      if (typeof prop.literalValue === "string") return "string"
+      if (typeof prop.literalValue === "boolean") return "bool"
+      if (typeof prop.literalValue === "number") return "double"
+    }
+    // Primitive type mapping to C#
+    switch (prop.type) {
+      case "stringLiteral":
+      case "string":
+        return "string"
+      case "boolean":
+      case "booleanLiteral":
+        return "bool"
+      case "number":
+      case "numberLiteral":
+      case "integer":
+        return "double"
+      case "array":
+      case "readonlyarray":
+        return "List<object>"
+      case "map":
+      case "record":
+        return "Dictionary<object, object>"
+      case "typeParameter":
+        return "object"
+      case "object":
+      case "any":
+      case "unknown":
+        return "object"
+      case "Date":
+        return "DateTime"
+      default:
+        // For unknown types, use the type name as-is
+        return prop.type
+    }
+  }
+  
+  // Build signature string: discriminator_value|prop1:CSharpType1|prop2:CSharpType2|...
   const propsSig = typeDef.properties
     .filter(p => p.name !== 'type') // Exclude discriminator field itself
     .map(p => {
       const optionalMarker = p.optional ? '?' : ''
-      return `${p.name}:${p.type}${optionalMarker}`
+      const csharpType = normalizeToCSharpType(p)
+      return `${p.name}:${csharpType}${optionalMarker}`
     })
     .sort() // Sort to ensure consistent ordering
     .join('|')

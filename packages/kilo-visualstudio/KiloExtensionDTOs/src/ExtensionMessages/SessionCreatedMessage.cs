@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: SessionCreatedMessage
 /// Discriminator: type = "sessionCreated"
 /// Source: extension-messages.ts
+/// Signature hash: b9ac2cefb8b6ae76c73dc35b900602b25e797be2193730e66469ca3983c07019
 /// </summary>
 public class SessionCreatedMessage
 {

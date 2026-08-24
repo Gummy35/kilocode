@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: PreviewImageRequest
 /// Discriminator: type = "previewImage"
 /// Source: webview-messages.ts
+/// Signature hash: 4a373a76438879902df796f19404484fc269c0befeb4e5c851ee64d463ad99c9
 /// </summary>
 public class PreviewImageRequest
 {

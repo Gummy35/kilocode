@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: LoginRequest
 /// Discriminator: type = "login"
 /// Source: webview-messages.ts
+/// Signature hash: f9e0b9cded34bb4729522f93c7c04771887e360ec5070763c129ead9e798d007
 /// </summary>
 public class LoginRequest
 {

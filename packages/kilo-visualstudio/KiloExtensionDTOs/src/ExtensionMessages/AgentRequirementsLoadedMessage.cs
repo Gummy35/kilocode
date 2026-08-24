@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Agents;
 /// WebView message: AgentRequirementsLoadedMessage
 /// Discriminator: type = "agentRequirementsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 82ce29411d042052742586ef92be1d1d50a9cb34e7bd8ae787b64eb05aec64ee
 /// </summary>
 public class AgentRequirementsLoadedMessage
 {

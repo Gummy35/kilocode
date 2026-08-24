@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenChangesRequest
 /// Discriminator: type = "openChanges"
 /// Source: webview-messages.ts
+/// Signature hash: 02a6ca9abfa54cb1ce2f1d20842bb79643615bae88d9966b8e49be9b083ee05c
 /// </summary>
 public class OpenChangesRequest
 {

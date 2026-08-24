@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetDefaultBaseBranchRequest
 /// Discriminator: type = "agentManager.setDefaultBaseBranch"
 /// Source: webview-messages.ts
+/// Signature hash: b6913a0f7a11b70de97dae5c40aa48e873a052fcd3f8a73288316fd17cc54084
 /// </summary>
 public class SetDefaultBaseBranchRequest
 {

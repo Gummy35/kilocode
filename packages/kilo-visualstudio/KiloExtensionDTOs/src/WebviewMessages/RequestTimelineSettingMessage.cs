@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestTimelineSettingMessage
 /// Discriminator: type = "requestTimelineSetting"
 /// Source: webview-messages.ts
+/// Signature hash: d2267cf868b92da9b354ebc1c5d7b95e20686a51a6a720fcc2aef78b9cf5156c
 /// </summary>
 public class RequestTimelineSettingMessage
 {

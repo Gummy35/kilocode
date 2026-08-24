@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RetryConnectionRequest
 /// Discriminator: type = "retryConnection"
 /// Source: webview-messages.ts
+/// Signature hash: c8d85b35f779f97478e923faa8a710fe3758f056cfd436dd9548fe812c9dacd2
 /// </summary>
 public class RetryConnectionRequest
 {

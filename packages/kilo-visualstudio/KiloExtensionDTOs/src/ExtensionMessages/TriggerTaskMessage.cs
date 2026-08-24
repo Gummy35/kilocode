@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: TriggerTaskMessage
 /// Discriminator: type = "triggerTask"
 /// Source: extension-messages.ts
+/// Signature hash: e71a87c4a0b9466a294ecb07f507ec724453aa9c03edb12674e95a060d186a3f
 /// </summary>
 public class TriggerTaskMessage
 {

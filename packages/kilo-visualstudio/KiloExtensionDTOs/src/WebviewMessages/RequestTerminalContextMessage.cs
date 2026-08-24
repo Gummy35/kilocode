@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestTerminalContextMessage
 /// Discriminator: type = "requestTerminalContext"
 /// Source: webview-messages.ts
+/// Signature hash: cc66e66207493fd2bf672936ad5cdcbb13daa14eab7704e7887f6085f01111e4
 /// </summary>
 public class RequestTerminalContextMessage
 {

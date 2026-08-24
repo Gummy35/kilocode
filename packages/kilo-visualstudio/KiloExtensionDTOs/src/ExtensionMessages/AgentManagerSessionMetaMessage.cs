@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerSessionMetaMessage
 /// Discriminator: type = "agentManager.sessionMeta"
 /// Source: extension-messages.ts
+/// Signature hash: 08e17b3774a15e90f6b9512a57fae31892a62f73f16133732a476fc2cdc5a532
 /// </summary>
 public class AgentManagerSessionMetaMessage
 {

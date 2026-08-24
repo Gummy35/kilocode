@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ShowLocalTerminalRequest
 /// Discriminator: type = "agentManager.showLocalTerminal"
 /// Source: webview-messages.ts
+/// Signature hash: d974df9e4cb6c4a6c352bc28286812dcfb5dd5a07ea0d3054694fd9e3f0f2487
 /// </summary>
 public class ShowLocalTerminalRequest
 {

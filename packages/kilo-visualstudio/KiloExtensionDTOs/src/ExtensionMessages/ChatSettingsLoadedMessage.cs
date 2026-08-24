@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ChatSettingsLoadedMessage
 /// Discriminator: type = "chatSettingsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 675b7e4fcbdcf48fe108166914629a2424eec8d959c67155ad1ecdddcef7b884
 /// </summary>
 public class ChatSettingsLoadedMessage
 {

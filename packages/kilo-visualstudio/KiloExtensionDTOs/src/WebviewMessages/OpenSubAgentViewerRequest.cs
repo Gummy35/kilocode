@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenSubAgentViewerRequest
 /// Discriminator: type = "openSubAgentViewer"
 /// Source: webview-messages.ts
+/// Signature hash: 582f501519ca187736271e86c4c71f671e3767b180f2cbeca06f6ff782b44412
 /// </summary>
 public class OpenSubAgentViewerRequest
 {

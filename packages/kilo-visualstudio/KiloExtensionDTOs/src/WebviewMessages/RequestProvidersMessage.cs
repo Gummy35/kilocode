@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestProvidersMessage
 /// Discriminator: type = "requestProviders"
 /// Source: webview-messages.ts
+/// Signature hash: 49133198d6121dbd996d06f2ec5c6743b273b1a99262ac88a9f16d615c6beb00
 /// </summary>
 public class RequestProvidersMessage
 {

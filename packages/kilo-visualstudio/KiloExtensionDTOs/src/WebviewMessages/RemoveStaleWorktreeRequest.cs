@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RemoveStaleWorktreeRequest
 /// Discriminator: type = "agentManager.removeStaleWorktree"
 /// Source: webview-messages.ts
+/// Signature hash: 52bfaf5bb1b6d08f582b942560ba471517add96c5853a0651b1bb003220780d4
 /// </summary>
 public class RemoveStaleWorktreeRequest
 {

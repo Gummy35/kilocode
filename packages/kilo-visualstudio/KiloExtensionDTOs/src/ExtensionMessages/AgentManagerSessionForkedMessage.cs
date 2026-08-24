@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerSessionForkedMessage
 /// Discriminator: type = "agentManager.sessionForked"
 /// Source: extension-messages.ts
+/// Signature hash: efb62f768a4e58391227e604305d3961f0901ba2ac8b61b4456d4ac416ece0cd
 /// </summary>
 public class AgentManagerSessionForkedMessage
 {

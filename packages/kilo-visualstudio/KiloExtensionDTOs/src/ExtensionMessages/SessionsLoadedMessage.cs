@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: SessionsLoadedMessage
 /// Discriminator: type = "sessionsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 462449d3f9f6c572258febf2943d979e706f84dba5c51b0cb523a3842525b5d8
 /// </summary>
 public class SessionsLoadedMessage
 {

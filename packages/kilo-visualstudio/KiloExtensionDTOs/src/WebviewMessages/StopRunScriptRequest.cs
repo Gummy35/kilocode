@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: StopRunScriptRequest
 /// Discriminator: type = "agentManager.stopRunScript"
 /// Source: webview-messages.ts
+/// Signature hash: 43f69e8fde98d8fc051665e5d85fe2c9db3367533ec2a6beae9cf97d52485133
 /// </summary>
 public class StopRunScriptRequest
 {

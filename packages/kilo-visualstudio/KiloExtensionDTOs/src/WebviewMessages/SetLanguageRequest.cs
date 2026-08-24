@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetLanguageRequest
 /// Discriminator: type = "setLanguage"
 /// Source: webview-messages.ts
+/// Signature hash: 6028a11362e87f512f3b16aa9a510c8c4cc39be67376611221df4ae447ff88c1
 /// </summary>
 public class SetLanguageRequest
 {

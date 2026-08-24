@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ValidateFilesResultMessage
 /// Discriminator: type = "validateFilesResult"
 /// Source: extension-messages.ts
+/// Signature hash: e7532b3ade3dabbed3325e7104e343d2766965fa6e85f5cec3e12ebd4cd9a8c5
 /// </summary>
 public class ValidateFilesResultMessage
 {

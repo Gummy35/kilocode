@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DeleteWorktreeRequest
 /// Discriminator: type = "agentManager.deleteWorktree"
 /// Source: webview-messages.ts
+/// Signature hash: 67b67e135b824601f8d9cdc314f83d28de8854afec1c903bb8ec3ac7e590658f
 /// </summary>
 public class DeleteWorktreeRequest
 {

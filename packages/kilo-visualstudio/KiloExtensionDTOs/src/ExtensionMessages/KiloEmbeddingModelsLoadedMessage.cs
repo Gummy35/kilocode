@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: KiloEmbeddingModelsLoadedMessage
 /// Discriminator: type = "kiloEmbeddingModelsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd
 /// </summary>
 public class KiloEmbeddingModelsLoadedMessage
 {

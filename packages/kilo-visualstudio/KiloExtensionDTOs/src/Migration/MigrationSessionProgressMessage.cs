@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: MigrationSessionProgressMessage
 /// Discriminator: type = "migrationSessionProgress"
 /// Source: migration.ts
+/// Signature hash: 9ee47a55cfa622c134316481a8680f2713ddf47ff59cc7c77be3273dffad0faf
 /// </summary>
 public class MigrationSessionProgressMessage
 {

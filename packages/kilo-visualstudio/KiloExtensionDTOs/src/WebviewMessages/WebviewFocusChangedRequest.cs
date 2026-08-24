@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: WebviewFocusChangedRequest
 /// Discriminator: type = "webviewFocusChanged"
 /// Source: webview-messages.ts
+/// Signature hash: 5bd0f56cb9665303cd920b17d2c233636f6252d07c3119d435c8521695a87815
 /// </summary>
 public class WebviewFocusChangedRequest
 {

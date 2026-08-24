@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: MoveToSectionRequest
 /// Discriminator: type = "agentManager.moveToSection"
 /// Source: webview-messages.ts
+/// Signature hash: ef17161027d8e35557ceef8071061f35090934a9eb4283ca4366610235f125a1
 /// </summary>
 public class MoveToSectionRequest
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: MarketplaceInstallResultMessage
 /// Discriminator: type = "marketplaceInstallResult"
 /// Source: extension-messages.ts
+/// Signature hash: f7e8b249f3a9ffb4210061316d4530bff025d356bc4975b28f41aeb55d4de9f4
 /// </summary>
 public class MarketplaceInstallResultMessage
 {

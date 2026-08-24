@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ConnectProviderMessage
 /// Discriminator: type = "connectProvider"
 /// Source: webview-messages.ts
+/// Signature hash: 290e06aae1f2bc571299d2c51531ab2314e53e0ae433fb3897f82faa9cbc30bb
 /// </summary>
 public class ConnectProviderMessage
 {

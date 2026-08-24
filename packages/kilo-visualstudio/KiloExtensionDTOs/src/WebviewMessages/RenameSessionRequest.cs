@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RenameSessionRequest
 /// Discriminator: type = "renameSession"
 /// Source: webview-messages.ts
+/// Signature hash: 69827555d6548ccc2812ba6a059776cedc1ee5d7b6f255d822b285a61eb4ca77
 /// </summary>
 public class RenameSessionRequest
 {

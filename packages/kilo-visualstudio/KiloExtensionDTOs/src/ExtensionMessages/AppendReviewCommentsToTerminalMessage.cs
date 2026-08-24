@@ -18,6 +18,7 @@ using KiloExtensionDTOs;
 /// WebView message: AppendReviewCommentsToTerminalMessage
 /// Discriminator: type = "appendReviewCommentsToTerminal"
 /// Source: extension-messages.ts
+/// Signature hash: 53b1be87d48c87b038cfd24eca872b19ac90c66d8cd4e016bb3108c9536f07c4
 /// </summary>
 public class AppendReviewCommentsToTerminalMessage
 {

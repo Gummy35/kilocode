@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DisconnectMcpMessage
 /// Discriminator: type = "disconnectMcp"
 /// Source: webview-messages.ts
+/// Signature hash: f542a5d6402324a65840ed19e56ef79b9eaac1019167c0a7fb7ff1958e0296d2
 /// </summary>
 public class DisconnectMcpMessage
 {

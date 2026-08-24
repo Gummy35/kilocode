@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DismissAgentMigrationBannerMessage
 /// Discriminator: type = "dismissAgentMigrationBanner"
 /// Source: webview-messages.ts
+/// Signature hash: d6f931e702df82673d966367d61f69d2118a9d890c2c158c86319f95932bae6c
 /// </summary>
 public class DismissAgentMigrationBannerMessage
 {

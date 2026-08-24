@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerSessionClosedMessage
 /// Discriminator: type = "agentManager.sessionClosed"
 /// Source: extension-messages.ts
+/// Signature hash: e08ac5aaf35199db35f7ec12ce8aa410cd71bd31a2a3bd4c198881b36b13a6ec
 /// </summary>
 public class AgentManagerSessionClosedMessage
 {

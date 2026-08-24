@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerKeybindingsMessage
 /// Discriminator: type = "agentManager.keybindings"
 /// Source: extension-messages.ts
+/// Signature hash: 57a0b9e904ac18c38d432e8c777aa5b6ce104350e42f8e206bc8d8fca3d40b46
 /// </summary>
 public class AgentManagerKeybindingsMessage
 {

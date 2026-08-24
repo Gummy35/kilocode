@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: GitRemoteUrlLoadedMessage
 /// Discriminator: type = "gitRemoteUrlLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 8e73f23db224570e55431fe053027ae09e96e5d0e4c82a438efec94f2ed68c8c
 /// </summary>
 public class GitRemoteUrlLoadedMessage
 {

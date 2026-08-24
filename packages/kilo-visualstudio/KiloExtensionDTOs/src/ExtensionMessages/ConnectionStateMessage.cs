@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Connection;
 /// WebView message: ConnectionStateMessage
 /// Discriminator: type = "connectionState"
 /// Source: extension-messages.ts
+/// Signature hash: 96e95eb37a19ac3d4989d2ed8918254f5b8cb19cc2cc3f9363d855dfe0f821dd
 /// </summary>
 public class ConnectionStateMessage
 {

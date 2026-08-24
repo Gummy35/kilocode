@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestIndexingSettingsMessage
 /// Discriminator: type = "requestIndexingSettings"
 /// Source: webview-messages.ts
+/// Signature hash: 33719217c560168541e41acbb924cb6bf8beb5c18d18c06114848212ae1fa566
 /// </summary>
 public class RequestIndexingSettingsMessage
 {

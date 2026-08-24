@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: LanguageChangedMessage
 /// Discriminator: type = "languageChanged"
 /// Source: extension-messages.ts
+/// Signature hash: 983f9b93d7c284e829fb6088d42698f3ab732d8d211e2abc6b9a29eec0ab0797
 /// </summary>
 public class LanguageChangedMessage
 {

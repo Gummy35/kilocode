@@ -18,6 +18,7 @@ using KiloExtensionDTOs.KiloConfig;
 /// WebView message: ConfigUpdatedMessage
 /// Discriminator: type = "configUpdated"
 /// Source: extension-messages.ts
+/// Signature hash: 7057e8e846e599c052401c1d1d0e871b761749d0d2c9e3aed07702387ccb55d6
 /// </summary>
 public class ConfigUpdatedMessage
 {

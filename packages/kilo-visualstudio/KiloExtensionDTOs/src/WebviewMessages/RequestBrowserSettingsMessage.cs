@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestBrowserSettingsMessage
 /// Discriminator: type = "requestBrowserSettings"
 /// Source: webview-messages.ts
+/// Signature hash: e952b927f5a2c6dac0a1f8cd05f3417abd414d5e88548aadbde124bff620b774
 /// </summary>
 public class RequestBrowserSettingsMessage
 {

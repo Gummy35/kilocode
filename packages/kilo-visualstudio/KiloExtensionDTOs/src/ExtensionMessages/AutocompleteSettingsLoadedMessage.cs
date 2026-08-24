@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AutocompleteSettingsLoadedMessage
 /// Discriminator: type = "autocompleteSettingsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 14ddba67bbe6a2c3bdfedb08bc28bcc5de20f14fd0c1f043728856844c08b3e1
 /// </summary>
 public class AutocompleteSettingsLoadedMessage
 {

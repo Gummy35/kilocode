@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: PersistModelSelectorExpandedRequest
 /// Discriminator: type = "persistModelSelectorExpanded"
 /// Source: webview-messages.ts
+/// Signature hash: e068933aba72df8e8e8c3d760b719c7c60ff63c30a827af79993cfb42d2f19c2
 /// </summary>
 public class PersistModelSelectorExpandedRequest
 {

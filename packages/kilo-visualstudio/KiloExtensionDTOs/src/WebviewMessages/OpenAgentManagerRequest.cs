@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenAgentManagerRequest
 /// Discriminator: type = "openAgentManager"
 /// Source: webview-messages.ts
+/// Signature hash: 5b008815f35497a05d88ff4d2de16f85f91f1f131d34b2e028e7d67633b1fffb
 /// </summary>
 public class OpenAgentManagerRequest
 {

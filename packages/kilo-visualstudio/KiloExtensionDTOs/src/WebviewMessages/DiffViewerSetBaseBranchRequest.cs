@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DiffViewerSetBaseBranchRequest
 /// Discriminator: type = "diffViewer.setBaseBranch"
 /// Source: webview-messages.ts
+/// Signature hash: 490b236d433f6d187efeeb3b6755fa007d4b463fc5a21cc29cef2930ec6de9df
 /// </summary>
 public class DiffViewerSetBaseBranchRequest
 {

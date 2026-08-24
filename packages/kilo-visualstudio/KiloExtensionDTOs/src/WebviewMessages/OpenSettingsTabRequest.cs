@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenSettingsTabRequest
 /// Discriminator: type = "openSettingsTab"
 /// Source: webview-messages.ts
+/// Signature hash: 4d171d7964141c4ab8c3fbad8bc236011dd7deb009087fa8888e6bae6640f919
 /// </summary>
 public class OpenSettingsTabRequest
 {

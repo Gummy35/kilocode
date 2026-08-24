@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SpeechToTextStopMessage
 /// Discriminator: type = "speechToTextStop"
 /// Source: webview-messages.ts
+/// Signature hash: 0c671e8024b5db7c6b809c9acee0727a470fa41c29ab239bd3d4bf1a4f197a06
 /// </summary>
 public class SpeechToTextStopMessage
 {

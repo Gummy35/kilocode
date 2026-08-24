@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenContentRequest
 /// Discriminator: type = "openContent"
 /// Source: webview-messages.ts
+/// Signature hash: 3765934c3652c6614b8d1dd9ef20d7f7159d9e32ce53438cfcceb0fc93e16989
 /// </summary>
 public class OpenContentRequest
 {

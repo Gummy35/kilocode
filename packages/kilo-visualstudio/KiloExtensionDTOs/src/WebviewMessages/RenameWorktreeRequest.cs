@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RenameWorktreeRequest
 /// Discriminator: type = "agentManager.renameWorktree"
 /// Source: webview-messages.ts
+/// Signature hash: 8397cfcbfefdfee14a119fea66f9fc9585440cef274c730bdfbb65b5607c3b87
 /// </summary>
 public class RenameWorktreeRequest
 {

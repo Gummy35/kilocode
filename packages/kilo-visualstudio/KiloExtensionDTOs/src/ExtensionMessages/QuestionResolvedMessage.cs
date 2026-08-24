@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: QuestionResolvedMessage
 /// Discriminator: type = "questionResolved"
 /// Source: extension-messages.ts
+/// Signature hash: c6f5a6a188c7bb4a7afb30da1cea02d327dfcab7c9236f3f98bc2de169c21ef5
 /// </summary>
 public class QuestionResolvedMessage
 {

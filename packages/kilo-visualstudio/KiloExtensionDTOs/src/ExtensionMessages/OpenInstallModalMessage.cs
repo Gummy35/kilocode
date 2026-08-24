@@ -12,12 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs;
+using KiloExtensionDTOs.Types;
 
 /// <summary>
 /// WebView message: OpenInstallModalMessage
 /// Discriminator: type = "openInstallModal"
 /// Source: extension-messages.ts
+/// Signature hash: aad5690b6d4d2a0c3d36fddd6ad1322c81cee706df618a1ce50e624c7de746dc
 /// </summary>
 public class OpenInstallModalMessage
 {

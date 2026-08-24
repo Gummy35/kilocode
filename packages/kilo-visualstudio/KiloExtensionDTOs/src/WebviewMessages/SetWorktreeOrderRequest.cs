@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetWorktreeOrderRequest
 /// Discriminator: type = "agentManager.setWorktreeOrder"
 /// Source: webview-messages.ts
+/// Signature hash: 72ea23e4b90cb93a322eb4651be4769d9cec6d7a1e98ad9dc69a03b60e96ec48
 /// </summary>
 public class SetWorktreeOrderRequest
 {

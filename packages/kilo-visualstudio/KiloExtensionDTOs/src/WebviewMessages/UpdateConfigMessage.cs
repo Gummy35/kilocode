@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: UpdateConfigMessage
 /// Discriminator: type = "updateConfig"
 /// Source: webview-messages.ts
+/// Signature hash: 6c55c9dc1929b5da396851052d6b8c4b3fc11c848b8ccb74241f3a77708b8bd4
 /// </summary>
 public class UpdateConfigMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerOpenFileRequest
 /// Discriminator: type = "agentManager.openFile"
 /// Source: webview-messages.ts
+/// Signature hash: 2e4be43bc260080aee915520a5cfefc10717c7780c85c101d5504eddb368f0fb
 /// </summary>
 public class AgentManagerOpenFileRequest
 {

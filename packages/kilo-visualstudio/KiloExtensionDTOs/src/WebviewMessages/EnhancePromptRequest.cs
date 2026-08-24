@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: EnhancePromptRequest
 /// Discriminator: type = "enhancePrompt"
 /// Source: webview-messages.ts
+/// Signature hash: c6141247c1e53d932ee0ca7c88c0975a270fbeedc1a67baa1532d0391a3aeb93
 /// </summary>
 public class EnhancePromptRequest
 {

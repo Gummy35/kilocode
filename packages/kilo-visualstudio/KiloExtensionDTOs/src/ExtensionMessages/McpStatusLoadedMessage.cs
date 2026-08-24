@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: McpStatusLoadedMessage
 /// Discriminator: type = "mcpStatusLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 7d1bb9b490209eba99694271a63230265f8e5699a2c396f01c784a96b92b7e23
 /// </summary>
 public class McpStatusLoadedMessage
 {

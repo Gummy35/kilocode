@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: MemoryOperationResultMessage
 /// Discriminator: type = "memoryOperationResult"
 /// Source: memory.ts
+/// Signature hash: b87ab4bef2f31ebde54ca96c3326522ebffc8b6fb86fb27ccf260412b68b9fac
 /// </summary>
 public class MemoryOperationResultMessage
 {

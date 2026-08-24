@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RefreshProfileRequest
 /// Discriminator: type = "refreshProfile"
 /// Source: webview-messages.ts
+/// Signature hash: 4d09678ce2a7119930d89fee3710a7bf859200c228c3ea8f4ece75a602d15df7
 /// </summary>
 public class RefreshProfileRequest
 {

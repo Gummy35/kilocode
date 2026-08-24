@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Providers;
 /// WebView message: FavoritesLoadedMessage
 /// Discriminator: type = "favoritesLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 9b06c5ca7d253d3bccd9881c4ccbffc4d037bb8f910bfce20230cc1a568bcc68
 /// </summary>
 public class FavoritesLoadedMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: LogoutRequest
 /// Discriminator: type = "logout"
 /// Source: webview-messages.ts
+/// Signature hash: f20d422c748c0b002b1f8ff31f3ae3d2e966dd89eeab477fcf53cb86c8005a82
 /// </summary>
 public class LogoutRequest
 {

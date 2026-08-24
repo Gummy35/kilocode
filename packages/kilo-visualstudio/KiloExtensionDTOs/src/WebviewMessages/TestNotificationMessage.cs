@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: TestNotificationMessage
 /// Discriminator: type = "testNotification"
 /// Source: webview-messages.ts
+/// Signature hash: eb471ca19c70f228537ed4b0aaf9248ee320c3da3427be01926b07077a968f8b
 /// </summary>
 public class TestNotificationMessage
 {

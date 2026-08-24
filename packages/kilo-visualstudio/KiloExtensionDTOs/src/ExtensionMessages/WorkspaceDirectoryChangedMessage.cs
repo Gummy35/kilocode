@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: WorkspaceDirectoryChangedMessage
 /// Discriminator: type = "workspaceDirectoryChanged"
 /// Source: extension-messages.ts
+/// Signature hash: 0c67165971391a7787b807cc63f41f238fc0813b494d195577419ba978c7d855
 /// </summary>
 public class WorkspaceDirectoryChangedMessage
 {

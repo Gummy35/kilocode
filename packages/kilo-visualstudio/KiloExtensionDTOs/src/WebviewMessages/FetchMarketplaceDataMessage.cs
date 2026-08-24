@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: FetchMarketplaceDataMessage
 /// Discriminator: type = "fetchMarketplaceData"
 /// Source: webview-messages.ts
+/// Signature hash: f7a7048bdb653c60a228b3bde65a5e25ec83285d767e1c0323e122afe63ab2ad
 /// </summary>
 public class FetchMarketplaceDataMessage
 {

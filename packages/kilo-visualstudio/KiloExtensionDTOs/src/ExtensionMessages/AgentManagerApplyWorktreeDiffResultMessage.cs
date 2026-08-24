@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: AgentManagerApplyWorktreeDiffResultMessage
 /// Discriminator: type = "agentManager.applyWorktreeDiffResult"
 /// Source: extension-messages.ts
+/// Signature hash: 6993576040850f30811def20af1e2ac132b03e1b493bff7f244f44e3c208bc7d
 /// </summary>
 public class AgentManagerApplyWorktreeDiffResultMessage
 {

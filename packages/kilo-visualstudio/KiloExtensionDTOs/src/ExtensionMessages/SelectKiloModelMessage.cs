@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SelectKiloModelMessage
 /// Discriminator: type = "selectKiloModel"
 /// Source: extension-messages.ts
+/// Signature hash: b7bf27c4fdd5ac2b2c9d812a0bca05e8eb8439e21f1a389bc87f838af11b2ab9
 /// </summary>
 public class SelectKiloModelMessage
 {

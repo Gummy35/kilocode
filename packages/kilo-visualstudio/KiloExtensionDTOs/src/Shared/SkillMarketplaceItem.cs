@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SkillMarketplaceItem
 /// Discriminator: type = "skill"
 /// Source: ..\marketplace.ts
+/// Signature hash: 753a6bb40fcce57a00937f08f77e7746aec3b32344b89af43fa3966242ace61c
 /// </summary>
 public class SkillMarketplaceItem : MarketplaceItemBase
 {

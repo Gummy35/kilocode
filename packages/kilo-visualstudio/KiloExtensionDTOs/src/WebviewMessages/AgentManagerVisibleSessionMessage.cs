@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentManagerVisibleSessionMessage
 /// Discriminator: type = "agentManager.visibleSession"
 /// Source: webview-messages.ts
+/// Signature hash: f1e8e12973cd20ccdc16240f316b228fed151bd0041a9ebd888d24e3364970dc
 /// </summary>
 public class AgentManagerVisibleSessionMessage
 {

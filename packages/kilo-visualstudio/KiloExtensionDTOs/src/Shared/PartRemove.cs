@@ -10,13 +10,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
 /// Part type: PartRemove
 /// Discriminator: type = "partRemoved"
 /// Source: ..\..\..\..\src\shared\stream-messages.ts
+/// Signature hash: d6df55074f9b271b596149241284d474f2c8c26a2678b94e62526fb1b5e915b1
 /// </summary>
-public class PartRemove
+public class PartRemove : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: stringLiteral

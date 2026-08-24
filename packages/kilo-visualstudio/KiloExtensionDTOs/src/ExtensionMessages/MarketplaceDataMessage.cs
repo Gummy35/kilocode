@@ -12,12 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.Types;
 using KiloExtensionDTOs;
 
 /// <summary>
 /// WebView message: MarketplaceDataMessage
 /// Discriminator: type = "marketplaceData"
 /// Source: extension-messages.ts
+/// Signature hash: de1d4bac99c05d91d118a93316c4e16ace4ef6d2bba6be39db8d3a8e218d5937
 /// </summary>
 public class MarketplaceDataMessage
 {

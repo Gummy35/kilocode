@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: DiffViewerSetDiffStyleRequest
 /// Discriminator: type = "diffViewer.setDiffStyle"
 /// Source: webview-messages.ts
+/// Signature hash: 5b935e08a0446ec60d88c277cbdd01753e79c26884d21a23e8c5419a86a63d16
 /// </summary>
 public class DiffViewerSetDiffStyleRequest
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SandboxStatusErrorMessage
 /// Discriminator: type = "sandboxStatusError"
 /// Source: extension-messages.ts
+/// Signature hash: ddab1419a2fe226f5f54318a2122a599da52d22ba19186b345876cd3f2f3e2f6
 /// </summary>
 public class SandboxStatusErrorMessage
 {

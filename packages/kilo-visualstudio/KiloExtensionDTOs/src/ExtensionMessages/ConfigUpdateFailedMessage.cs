@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ConfigUpdateFailedMessage
 /// Discriminator: type = "configUpdateFailed"
 /// Source: extension-messages.ts
+/// Signature hash: fd6d28eeef8a10fd14044f7960b8c6d7358177b6953a81259c2417c0d650456f
 /// </summary>
 public class ConfigUpdateFailedMessage
 {

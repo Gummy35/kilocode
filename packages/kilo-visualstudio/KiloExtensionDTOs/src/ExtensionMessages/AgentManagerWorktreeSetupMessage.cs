@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: AgentManagerWorktreeSetupMessage
 /// Discriminator: type = "agentManager.worktreeSetup"
 /// Source: extension-messages.ts
+/// Signature hash: ee4035361ffe1381076f5697cc8330eebb12049468f5acdf05be74c69a3571a8
 /// </summary>
 public class AgentManagerWorktreeSetupMessage
 {

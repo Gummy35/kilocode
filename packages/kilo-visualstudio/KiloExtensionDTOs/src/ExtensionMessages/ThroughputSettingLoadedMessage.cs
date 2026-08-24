@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ThroughputSettingLoadedMessage
 /// Discriminator: type = "throughputSettingLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: f2acb96c7c999df68c29c7c5117b15d04cf36d9e8d71b020a787be1dce7f2814
 /// </summary>
 public class ThroughputSettingLoadedMessage
 {

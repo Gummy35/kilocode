@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AbortRequest
 /// Discriminator: type = "abort"
 /// Source: webview-messages.ts
+/// Signature hash: 29fe0be6191a76562c538ddfa0baf49a8a101f108fe1b115f7492b4685a4e09f
 /// </summary>
 public class AbortRequest
 {

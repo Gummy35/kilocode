@@ -12,12 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.Types;
 using KiloExtensionDTOs;
 
 /// <summary>
 /// WebView message: RemoveInstalledMarketplaceItemMessage
 /// Discriminator: type = "removeInstalledMarketplaceItem"
 /// Source: webview-messages.ts
+/// Signature hash: 24d1e4ce29e16f304c2eaca63aaa831f9df4dcd8b795de5187bd0aa0ef813267
 /// </summary>
 public class RemoveInstalledMarketplaceItemMessage
 {

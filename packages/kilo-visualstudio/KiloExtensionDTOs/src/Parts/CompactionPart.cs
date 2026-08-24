@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CompactionPart
 /// Discriminator: type = "compaction"
 /// Source: parts.ts
+/// Signature hash: e48c94329221ab913cda1a1c9957fc20ac3012d008c8024cd18141625eb99d28
 /// </summary>
 public class CompactionPart : BasePart
 {

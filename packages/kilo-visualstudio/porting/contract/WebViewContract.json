@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "64c5d17aa0503f7b3e98ee13ea23e29c238ed046",
-    "generatedAt": "2026-08-24T18:48:23.756Z"
+    "commit": "f711f032db1fd74d62013b366797b887da72b127",
+    "generatedAt": "2026-08-24T22:24:16.493Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -18001,7 +18001,7 @@
       },
       "sourceFile": "..\\marketplace.ts",
       "extendsBase": "MarketplaceItemBase",
-      "signatureHash": "2d1a423dc7d103c1b0ebf2859b181499b9019cea9eba12d02219a558d158bffd"
+      "signatureHash": "db21d46b3fd2d2046647250805af5ce94af60c849d17339419b042d45fc729e8"
     },
     {
       "name": "vscode_extensionsItemType",
@@ -23914,7 +23914,7 @@
         "value": "retry"
       },
       "sourceFile": "connection.ts",
-      "signatureHash": "8d9fc378fae70a9bebae9323159d7acd681b734153335b8b9b4f269c932f0974"
+      "signatureHash": "8b8917135196b40054634818075492d04c1eef12cdf8ceb9be791b3d9857d42f"
     },
     {
       "name": "OfflineMessage",
@@ -24043,7 +24043,7 @@
         "value": "partUpdated"
       },
       "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts",
-      "signatureHash": "8a0393b36b131aabf37db3bff1d6154ac758385d6af5fb93c51a0c22a20f94f6"
+      "signatureHash": "a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112"
     },
     {
       "name": "PartBatch",
@@ -24281,7 +24281,7 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "dcde7df14bb87690ecf64a5bf2de8c3ab8bc030d3fbbde672c9642d7425a506f"
+      "signatureHash": "564f5242718081f86a3749644878c4ac959ae368caed261825833eca23fccbb2"
     },
     {
       "name": "textType",
@@ -24450,7 +24450,7 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "02f76349a30c5d56ab9699676908d1bbbafc7771ed18121a03c6b5a087c3c7b1"
+      "signatureHash": "df3eb60ebe5520b3ebb029e2c55d9b538e4989479ee7137e7eed4007c32eff63"
     },
     {
       "name": "ToolPart",
@@ -24525,7 +24525,7 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "a0f6e9c6c57c4d5520c5b532e208672c95797ed2c595695b027592f010601150"
+      "signatureHash": "f4daab928abd8065febd65db1c33244ebe7ebfbb3336196af6598f4bc1e0a519"
     },
     {
       "name": "ReasoningPart",
@@ -24885,7 +24885,7 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "78a0a7ca36715d5216f161d415092c98f76c9f1f433b3d5df922e1d26c0c684a"
+      "signatureHash": "c96a834671e1050bc12f51ef53825c07c2ef24dc967a480ecd56be243e07e50c"
     },
     {
       "name": "CompactionPart",
@@ -24947,7 +24947,7 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "a160094460ee47dece3c9eb9d4a3d09617f08cff12277b0c56328a31b9574985"
+      "signatureHash": "e48c94329221ab913cda1a1c9957fc20ac3012d008c8024cd18141625eb99d28"
     },
     {
       "name": "PartDelta",
@@ -24982,7 +24982,7 @@
         "value": "text-delta"
       },
       "sourceFile": "parts.ts",
-      "signatureHash": "45a382bf3cf48c4b235799aa9b8d5a6c40b56e905fb78a4b9f7610107dbb9885"
+      "signatureHash": "54969db1945d8454baf4c995c2f783db2202f31dccfddd421610f34baf076801"
     },
     {
       "name": "TokenUsage",
@@ -25887,7 +25887,7 @@
         "value": "anacondaDesktopSync"
       },
       "sourceFile": "..\\..\\..\\..\\src\\shared\\anaconda-desktop-messages.ts",
-      "signatureHash": "48d46a7fb3084538f71adaad5a92e39ed00ede86520a054c47ab19948222eab3"
+      "signatureHash": "1850c213ed65114dbfe5fe0a42a70cf32cefa99174b1b41ab176373753dcabfc"
     },
     {
       "name": "CancelanacondadesktoprequestMessage",
@@ -25970,7 +25970,7 @@
         "value": "anacondaDesktopStatusResult"
       },
       "sourceFile": "..\\..\\..\\..\\src\\shared\\anaconda-desktop-messages.ts",
-      "signatureHash": "69fc9f736c4ce20a70028a39c7f674e9dd6715993dcb3b2bd06782c7ad675356"
+      "signatureHash": "c3de6e55f030a851f17065920f50cbf6924430955c7ddb3ccf079643d098f048"
     },
     {
       "name": "AnacondadesktopopenedMessage",
@@ -27632,7 +27632,7 @@
         "value": "migrationState"
       },
       "sourceFile": "migration.ts",
-      "signatureHash": "c7740f099557248d407c10a04b78cd3c9f23ea0ba18ab39969e29706488ec951"
+      "signatureHash": "ceb61c645ddad49fa6e203b0151aa25b4bd62f609fea1615605947954d83be3d"
     },
     {
       "name": "defaultModelType",
@@ -27898,7 +27898,7 @@
         "value": "migrationProgress"
       },
       "sourceFile": "migration.ts",
-      "signatureHash": "48f1a4b1a2924df981339619d4a47ae4b884b152de6ae94febde3f15697b56c2"
+      "signatureHash": "793e876d11b58badd8ac104721ac5b799ccad6ef1ecf2dfbc68ac14bc6958bcb"
     },
     {
       "name": "MigrationSessionProgressMessage",
@@ -28011,7 +28011,7 @@
         "value": "migrationSessionProgress"
       },
       "sourceFile": "migration.ts",
-      "signatureHash": "f101aa2c140b4d2ba36beb7cbcaf966aa807cfa10e4182d33378769b60e200b1"
+      "signatureHash": "9ee47a55cfa622c134316481a8680f2713ddf47ff59cc7c77be3273dffad0faf"
     },
     {
       "name": "MigrationCompleteMessage",
@@ -28072,7 +28072,7 @@
         "value": "migrationComplete"
       },
       "sourceFile": "migration.ts",
-      "signatureHash": "5e4ecd3f1dbae16bdc9024f473d6c1f8500525fd5ac3cea3ba623fa437e2b86d"
+      "signatureHash": "ac863ca58c93834f0ae3e15ff8d2a25c5b8a2fd6fdd23e473f5bfb5c1f3dc52f"
     },
     {
       "name": "RequestMigrationDataMessage",
@@ -28544,7 +28544,7 @@
         "value": "memoryLoaded"
       },
       "sourceFile": "memory.ts",
-      "signatureHash": "d062c30fe226699056563a54a8f33891fbb2596abc62d861d1c87aec2b3fd9a0"
+      "signatureHash": "e2d0705f0c0a48fd1c7424b51d4929eb833a902e9ec1fe9a2f852940500bd146"
     },
     {
       "name": "MemoryEventDetail",
@@ -28742,7 +28742,7 @@
         "value": "memoryEvent"
       },
       "sourceFile": "memory.ts",
-      "signatureHash": "235f7ac08abc071d596bdd8cefb9be1c751a5545c5caca06edd7e24e45e9c40e"
+      "signatureHash": "81139890b7353fbf56b131d40075ea467291bc3e6f8a13c42cb4d482a946d841"
     },
     {
       "name": "MemoryOperationResultMessage",
@@ -28842,7 +28842,7 @@
         "value": "memoryOperationResult"
       },
       "sourceFile": "memory.ts",
-      "signatureHash": "5712371cfd03a05883d70b2006562d3649f3c14adbe139615b130a9c829eb59c"
+      "signatureHash": "b87ab4bef2f31ebde54ca96c3326522ebffc8b6fb86fb27ccf260412b68b9fac"
     },
     {
       "name": "RequestMemoryMessage",
@@ -28877,7 +28877,7 @@
         "value": "requestMemory"
       },
       "sourceFile": "memory.ts",
-      "signatureHash": "07548e903ded6243e1d9a0bbed23b32985a83a51c74de20835bf6a31c86170fe"
+      "signatureHash": "5cfbdbda837703974da4b663257e63c16465f1bddf905c5d91f1bbda8c8f9d80"
     },
     {
       "name": "MemoryShowMessage",
@@ -28925,7 +28925,7 @@
         "value": "memoryShow"
       },
       "sourceFile": "memory.ts",
-      "signatureHash": "60140afef359ddbe6123d8aadfe8f440bd1d7ae81d5c9d319edb351ce9630ac3"
+      "signatureHash": "020a49629db7157c64c821108494c07892565a50afcabaa818c625d17f18c690"
     },
     {
       "name": "MemoryOperationMessage",
@@ -29064,7 +29064,7 @@
         "value": "memoryOperation"
       },
       "sourceFile": "memory.ts",
-      "signatureHash": "d41d59225ba2df8693880b516548e9cac2fef7817e4404c60475e4638255ec9a"
+      "signatureHash": "ed2121878c76bbd68d66b8c0cf9a448b3f8aa88da54808e55ac572770a5467ef"
     },
     {
       "name": "captureType",
@@ -29737,7 +29737,7 @@
         "value": "ready"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "9b536bc50502ba852e39d67e99ed773e4d9fbfbd5009b4e2bab854de00ba87a5"
+      "signatureHash": "a9c76a8ed7326cbcc3e9afc0742e1e5ffb0fc412b5da3f254cb6a2a5b6f5b28c"
     },
     {
       "name": "FontSizeChangedMessage",
@@ -29772,7 +29772,7 @@
         "value": "fontSizeChanged"
       },
       "sourceFile": "Shared\\extension-messages.ts",
-      "signatureHash": "99b64d09c127fe4aff2f352e8e14f94947ded0946d85a843ef5b550e663ef720"
+      "signatureHash": "3c3c38392d336db33c42db9ec75e58baebdcc70008b85acdf5f470cd84f92306"
     },
     {
       "name": "GitStatusMessage",
@@ -29807,7 +29807,7 @@
         "value": "gitStatus"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "611753580addd01dbe486442c9805fb55733bbeab49514a9d368843d1b807c4d"
+      "signatureHash": "1740c337640bedb14e02f536a2c446f83d9c5f7e9757c2dbf8e869857ab0a633"
     },
     {
       "name": "WorkspaceDirectoryChangedMessage",
@@ -29951,7 +29951,7 @@
         "value": "connectionState"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "0f5c0355d600226e30ef2d0e08fc9bad1bfe196837c88bd4560ec981c2fb0f2e"
+      "signatureHash": "96e95eb37a19ac3d4989d2ed8918254f5b8cb19cc2cc3f9363d855dfe0f821dd"
     },
     {
       "name": "ErrorMessage",
@@ -30012,7 +30012,7 @@
         "value": "error"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "446c5497fc7f2e34399d8b96ac243096a7f61312a77f9cea63abc96568bd188a"
+      "signatureHash": "20673c51e587a15cf6cb47d48a5e430aee1160e3c19ea8e83f292dd75367a3fe"
     },
     {
       "name": "SendMessageFailedMessage",
@@ -30125,7 +30125,7 @@
         "value": "sendMessageFailed"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "cef64da910de4d20b8af6ba1ba5e577d215d390b67c0f9b7f469115c665cbd64"
+      "signatureHash": "2069b6b851d17138f04b28883b9dc6f8a5fad36289fea13d1328c5bcac9055e7"
     },
     {
       "name": "SessionCommandCompletedMessage",
@@ -30247,7 +30247,7 @@
         "value": "sessionStatus"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "4248f2d3fd045c0dc01ce205bc4563fc8d69e2c17addbd10212fae5806155b41"
+      "signatureHash": "97ee011c2f268541bee8c2fadfa7ec181fd4bff3886373dfe58616e9b8bbfe6f"
     },
     {
       "name": "SessionTurnClosedMessage",
@@ -30343,7 +30343,7 @@
         "value": "sessionError"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "4ba69e2b8c118a0b069d497c24e70541aa91451584e26dc90420db160adcbe08"
+      "signatureHash": "5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0"
     },
     {
       "name": "PermissionRequestMessage",
@@ -30461,7 +30461,7 @@
         "value": "permissionError"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "34b09847431a8253e738ce994cf5cffb7a31d759524e15547959fc061011c8a0"
+      "signatureHash": "8f1687301698cf8f81bbb6df59363dc36b08f6b09828bd3d34d785a8aa317c8e"
     },
     {
       "name": "TodoUpdatedMessage",
@@ -30509,7 +30509,7 @@
         "value": "todoUpdated"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "627cddd88b07639aeb5e031b0cde1eeffc6b6c4d1ca71718782c8aaa024c1d74"
+      "signatureHash": "a0596045b6dd6b760c3a5dba6eb65208424b86514ec2f68bb5a799f6d936b199"
     },
     {
       "name": "SessionCreatedMessage",
@@ -30570,7 +30570,7 @@
         "value": "sessionCreated"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "247da1af56a3eb74f5e5923672cd0235ad249a92bd1feac5ab9ab2b089abbddc"
+      "signatureHash": "b9ac2cefb8b6ae76c73dc35b900602b25e797be2193730e66469ca3983c07019"
     },
     {
       "name": "SessionForkedMessage",
@@ -30836,7 +30836,7 @@
         "value": "messagesLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "b4a0ca0595ee88e299a0fb16178bef7f6c76dfcb52e48cbc753a7473a61b3c68"
+      "signatureHash": "dd3efc7dd97306335f7a2325057afb281b0782657e13d47f579611db37165019"
     },
     {
       "name": "SessionModelUsageLoadedMessage",
@@ -30897,7 +30897,7 @@
         "value": "sessionModelUsageLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "23411b38b14d5f262b953d0ffc7a9a803bc23417efdf7fc1cc64194131338a04"
+      "signatureHash": "7acd95bd57405a875333f108c682223c562081deac3f61aa7398b4a3ac73d9e3"
     },
     {
       "name": "SessionModelUsageChangedMessage",
@@ -31015,7 +31015,7 @@
         "value": "sessionsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e292a3a8fdeb6b3ca2abadc1c448312696d19e3c4cdc75e31eb00cc0b97aa21d"
+      "signatureHash": "462449d3f9f6c572258febf2943d979e706f84dba5c51b0cb523a3842525b5d8"
     },
     {
       "name": "CloudSessionsLoadedMessage",
@@ -31063,7 +31063,7 @@
         "value": "cloudSessionsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "36a202f1559558d0d6a4e30bd58ccfd29ef035ca2ba23cc4c8a3dff324184ab9"
+      "signatureHash": "a6905ea881276561bd0e8a74ed9ec51eaa8c4adc2418ac7fd346ad34f551a764"
     },
     {
       "name": "GitRemoteUrlLoadedMessage",
@@ -31098,7 +31098,7 @@
         "value": "gitRemoteUrlLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "c8857e73f2530fee23af4f6b6a84623300859e05ce27713c3ce41832f1854a9b"
+      "signatureHash": "8e73f23db224570e55431fe053027ae09e96e5d0e4c82a438efec94f2ed68c8c"
     },
     {
       "name": "CloudSessionDataLoadedMessage",
@@ -31159,7 +31159,7 @@
         "value": "cloudSessionDataLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "cfccb1a4f50695d333383efc9f496dd04e55adcd2ef1760944a59fbff84d7251"
+      "signatureHash": "13f44ab1dabb62e49b5c3f16bb37b697d91b6667a88e602cd661b58da3b0b4ce"
     },
     {
       "name": "CloudSessionImportedMessage",
@@ -31338,7 +31338,7 @@
         "value": "selectKiloModel"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e7bdf655c4ebab22e0581d4d67e25124f4cf55cdd142e8df4de4a04e27f0a27c"
+      "signatureHash": "b7bf27c4fdd5ac2b2c9d812a0bca05e8eb8439e21f1a389bc87f838af11b2ab9"
     },
     {
       "name": "ActionMessage",
@@ -31434,7 +31434,7 @@
         "value": "setChatBoxMessage"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "61f7846d8adf2d93652691be807d1b85ef53dcf0838782c5b88bda2bf3964a5b"
+      "signatureHash": "ef4bd8459b1f1831295715d1444a60d89ea32fab84d0ba1a3e001226b64396b8"
     },
     {
       "name": "AppendChatBoxMessage",
@@ -31517,7 +31517,7 @@
         "value": "appendReviewComments"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "0eff3e638e501cf9b3e892ce75439cd80bce0fb2d861333d40be4570420ccc47"
+      "signatureHash": "deb3f1b2ace1a98c600b8a43ac4a271026e8161cf719ba4d629a6787762cd9e7"
     },
     {
       "name": "AppendReviewCommentsToTerminalMessage",
@@ -31578,7 +31578,7 @@
         "value": "appendReviewCommentsToTerminal"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "9fd896f0c284b4a258cc1cf7de228aff8fb7b1d173bc6239c13e709cdd0b3701"
+      "signatureHash": "53b1be87d48c87b038cfd24eca872b19ac90c66d8cd4e016bb3108c9536f07c4"
     },
     {
       "name": "TriggerTaskMessage",
@@ -31648,7 +31648,7 @@
         "value": "profileData"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e073c4a0ee7d6379d3eaff1680653a517aebe8af61f396b7e35f5ef0c93fb197"
+      "signatureHash": "7d0149bdefd90035c298d402d1be03c984183d508b90b3c3d9edff05ce7d018c"
     },
     {
       "name": "DeviceAuthStartedMessage",
@@ -31709,7 +31709,7 @@
         "value": "deviceAuthStarted"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "715b0b8486af65620ddf436eb501bdd902afe354818c4a9e6b6144029180cafa"
+      "signatureHash": "3713efdb5ee35f8e046632df500e97ffa9dcf4f005a99138df7c94a0b2b590e9"
     },
     {
       "name": "DeviceAuthCompleteMessage",
@@ -31836,7 +31836,7 @@
         "value": "navigate"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "4f62ef2626aa6b01aee6fed24c61354f201de9a439a18cd866b8e300be604cf4"
+      "signatureHash": "a6f5dc10c5de5b611694c7bde97a8edc102ab076c549188067aa2d3502b82bb3"
     },
     {
       "name": "IndexingStatusLoadedMessage",
@@ -32044,7 +32044,7 @@
         "value": "imageModelsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "653ad134e964f7effef3d8e6da78210eead249202ae8a10ed232f864003fb2e2"
+      "signatureHash": "687206805a03368ab123d5c7bca04e75b925a384737d4a866021595d6dce4750"
     },
     {
       "name": "ProvidersLoadedMessage",
@@ -32144,7 +32144,7 @@
         "value": "providersLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "dbd43f2cefb7ec754f8638121ceb3bc562c08cb872b6394684c8e354d43012bc"
+      "signatureHash": "d9a0e5926de8d2192d5974628f62390d2bf94c8cdb1f6e62be6f18e27d07c20d"
     },
     {
       "name": "AgentsLoadedMessage",
@@ -32205,7 +32205,7 @@
         "value": "agentsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "cbd047d4981df8c2d7de81a1f4bb225f6e2c5e6645c51ac785070bbbca7c6353"
+      "signatureHash": "6441fe626273bce9c82af7d08b8b09475a5468cfda01a15d4dc38e8889547df1"
     },
     {
       "name": "SkillsLoadedMessage",
@@ -32240,7 +32240,7 @@
         "value": "skillsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "53cb005826fb821f5daab5677a765e732c7f67d20f0986fdbd965698bf37e743"
+      "signatureHash": "1f760508df8c764fed9aae03887f6a257bb0f51d7b73fb8b96329d566f981f5c"
     },
     {
       "name": "AgentRequirementsLoadedMessage",
@@ -32332,7 +32332,7 @@
         "value": "commandsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "9b64136fabedc09c9bc313ef6b5ff12a584769c1cf671142d1d3cdaab5937414"
+      "signatureHash": "2567692d00c2d83a0a7cbc162c049740210e9b0ca0cdef9e1383943256fcbc30"
     },
     {
       "name": "AutocompleteSettingsLoadedMessage",
@@ -32594,7 +32594,7 @@
         "value": "speechToTextError"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "c3e906a13457a1e462a0806aba5fe28d7388d0716dc5135fcd2442e327d85ae5"
+      "signatureHash": "a2cfb27ac42209d03654a8658e754135e05d58ad67ca9fa204d4cb900399a7bc"
     },
     {
       "name": "FileSearchItem",
@@ -32701,7 +32701,7 @@
         "value": "fileSearchResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "4fb065bb3092b7bde5686492ff375e3a81c2133cac61fcf156b8236db4736499"
+      "signatureHash": "1e5db7a28028622466328c7ba498342e7284c55adb68b2d7621efa12a538ccca"
     },
     {
       "name": "SessionSearchItem",
@@ -32795,7 +32795,7 @@
         "value": "sessionSearchResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "03ea29094123c3a3bff3dc058bcf5b1ee61da5abfe1ad3369af7a28ca7853d5d"
+      "signatureHash": "ac85f63ccbfebfa357511e34bc73d9be12d185a9c68dfbeae087704d93fc0efc"
     },
     {
       "name": "FilePickerResultMessage",
@@ -32904,7 +32904,7 @@
         "value": "terminalContextResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "92edd65b349cc9a649ef39e348be02e937343d5f757b6eb80d78ecb0ef1fa8af"
+      "signatureHash": "4cb73bf855dafc47a4f19fb21c5ed5dd7ca331a10a3fb6e518f44263bcdd7ff5"
     },
     {
       "name": "TerminalContextErrorMessage",
@@ -33013,7 +33013,7 @@
         "value": "gitChangesContextResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "efef3131e512cbd1b9a035460837f3ec09bdb8e9fd536e2f7c78783b54d37601"
+      "signatureHash": "cf4ad6b644cd59feccd9ba99745dbacdb477afc9b2e15e1a5e9a3fc121abdf3a"
     },
     {
       "name": "GitChangesContextErrorMessage",
@@ -33227,7 +33227,7 @@
         "value": "sessionCostAlert"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "a116ad41e7db9fd2f2733c222c29c675fe4c661e12474287c637645191b990b2"
+      "signatureHash": "6176a7943b20e049c040600600bdb824522037d729fac0d551a85712ec8e995d"
     },
     {
       "name": "SessionCostAlertResolvedMessage",
@@ -33275,7 +33275,7 @@
         "value": "sessionCostAlertResolved"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "f9aab26b1a253ae22616869e00e782854971e0ad9b5cb075a5ee5f9a529f427c"
+      "signatureHash": "f2529256c09ea041f5af844270fbcbe4fb6524a95ca94a6f363fb8c12234a771"
     },
     {
       "name": "SuggestionRequestMessage",
@@ -33450,7 +33450,7 @@
         "value": "claudeCompatSettingLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "b56712e05f2ccb5798271d1df83b4bb107b60d3c15549ea0e3b506f33cc62779"
+      "signatureHash": "8fbac4ee88cec328799b4b83abbcecdcf5f973ff8d7dafa28d6e838345aa1c5d"
     },
     {
       "name": "ExtensionSettings",
@@ -33557,7 +33557,7 @@
         "value": "configLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "241f17946e7f356bdbf37494757a4b070f822e6bbe45e2408e1343cddceb7373"
+      "signatureHash": "f5d5affffb26140d4a278af4c0d93b7ce93351d36ffe947215f197c12dc260d5"
     },
     {
       "name": "ConfigUpdatedMessage",
@@ -33644,7 +33644,7 @@
         "value": "configUpdated"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "f8e048f0dd17a044d424b747213c16952588cb6aa3a0c7c22770176a9cf5d81b"
+      "signatureHash": "7057e8e846e599c052401c1d1d0e871b761749d0d2c9e3aed07702387ccb55d6"
     },
     {
       "name": "ConfigUpdateFailedMessage",
@@ -33692,7 +33692,7 @@
         "value": "configUpdateFailed"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "79e89300f4c16ee49709ec6c7d34abba7df4ac6fb0d43a1ef9baa29776de9fcd"
+      "signatureHash": "fd6d28eeef8a10fd14044f7960b8c6d7358177b6953a81259c2417c0d650456f"
     },
     {
       "name": "GlobalConfigLoadedMessage",
@@ -33797,7 +33797,7 @@
         "value": "timelineSettingLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "0cfd8be48a1afc864403b153e399df4b19761478828c7e2b76905ca7acdfbd26"
+      "signatureHash": "36b428441e0aaf16355231543bf0dda0fab9168f0c26a5c61afe762773516ed5"
     },
     {
       "name": "ThroughputSettingLoadedMessage",
@@ -33832,7 +33832,7 @@
         "value": "throughputSettingLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "33c40ad75872e65e364d95a46ae4bb976c7ca71402a4edbd25952c2bca300d8b"
+      "signatureHash": "f2acb96c7c999df68c29c7c5117b15d04cf36d9e8d71b020a787be1dce7f2814"
     },
     {
       "name": "WorkStyleLoadedMessage",
@@ -33950,7 +33950,7 @@
         "value": "workStyleApplyFailed"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "d4d312794fe939df43484d61574b77606927ea394f41b34697c7629a075d2c1a"
+      "signatureHash": "69e7531c660e832b2d07f8c44a22901d7bb8ef2d6279a226ebd5bd69a8a3e7de"
     },
     {
       "name": "NotificationsLoadedMessage",
@@ -33998,7 +33998,7 @@
         "value": "notificationsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "9669dfedb67ffa6d2f0c140a271247f493a27ac8645643f1d046173a5a4dc060"
+      "signatureHash": "6bb683bc6c5327664b0d21ce2e5701013999bddb84343a27ac40b71b09c55bb1"
     },
     {
       "name": "AgentManagerSessionMetaMessage",
@@ -34085,7 +34085,7 @@
         "value": "agentManager.sessionMeta"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "b307eae64328afc98407506b56812a7a98cb911dfcefb789ffd227c25860cab6"
+      "signatureHash": "08e17b3774a15e90f6b9512a57fae31892a62f73f16133732a476fc2cdc5a532"
     },
     {
       "name": "AgentManagerRepoInfoMessage",
@@ -34133,7 +34133,7 @@
         "value": "agentManager.repoInfo"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "58d8a38e75964c32c5be9f9abd989f9b1f7910b472dc31ca63c1ed89e729be18"
+      "signatureHash": "5e7210a41ef05ea17f4c43877afc9db9de66f8c9a90564990543166854d0f7b3"
     },
     {
       "name": "AgentManagerWorktreeSetupMessage",
@@ -34233,7 +34233,7 @@
         "value": "agentManager.worktreeSetup"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "f95a68a9bfec3127b0643dcc273cefb03d62cb9108a885f2c5c4b7d0737e0d67"
+      "signatureHash": "ee4035361ffe1381076f5697cc8330eebb12049468f5acdf05be74c69a3571a8"
     },
     {
       "name": "AgentManagerSessionAddedMessage",
@@ -34342,7 +34342,7 @@
         "value": "agentManager.sessionForked"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e4fb47812e348e59125709f41a42cc49512a3667f65c548ccba7ab90ef4f7329"
+      "signatureHash": "efb62f768a4e58391227e604305d3961f0901ba2ac8b61b4456d4ac416ece0cd"
     },
     {
       "name": "AgentManagerSessionClosedMessage",
@@ -34594,7 +34594,7 @@
         "value": "agentManager.state"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "d498374084674d1cd8bd52687c16eca035a72e168b34f665901db7e87483dab6"
+      "signatureHash": "7a9b33e4611893b8f3afdd1f189a2afcad4789889f79e85fea2d1ecbbcf9cf58"
     },
     {
       "name": "AgentManagerTerminalCreatedMessage",
@@ -34681,7 +34681,7 @@
         "value": "agentManager.terminal.created"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "3d9c585e902b51cd8eed291eecaa59287a95a0756fa4fb40bec0138afee9cd7b"
+      "signatureHash": "02019123c3a117ac5ed33f3f7bdaa173bb3989583b2dd973bfeca1666de70a46"
     },
     {
       "name": "AgentManagerTerminalFontChangedMessage",
@@ -34799,7 +34799,7 @@
         "value": "agentManager.terminal.error"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "770bd101e14e961707627964f209812dea272bbcf120ba473927cbedc07ebf91"
+      "signatureHash": "7b7c411976c4066a2c803e828080339587e7ab57e8d5fd92584a8c5faab8b5e6"
     },
     {
       "name": "AgentManagerRunStatusMessage",
@@ -34892,7 +34892,7 @@
         "value": "autoApproveState"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "cdeb8532bab5bc21768bb17b60a9e97cc31ec6db83bf29cec84947694d805f3d"
+      "signatureHash": "632164d9242067a77866f5780bf8cad0d126219a36f3110b9aebe8737294b0df"
     },
     {
       "name": "SandboxStatusMessage",
@@ -35018,7 +35018,7 @@
         "value": "sandboxStatus"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "618384d666b2a394d7747ee953df16d9ad85f1db12aa4adb2f769511340953bc"
+      "signatureHash": "9fd869e4062b7accdd0f2015957cb800351f9a8053a9695b72836361709a1019"
     },
     {
       "name": "SandboxDefaultStatusMessage",
@@ -35118,7 +35118,7 @@
         "value": "sandboxDefaultStatus"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "28c4c9a5efdcea6e5408dd78e589e86fca23fff92fb71526bc690dcdc63f95e6"
+      "signatureHash": "6a33ea5d1adf3dd1bc0e8558acf5dd1fe479508ab5781bfb7fcc8153fe290452"
     },
     {
       "name": "SandboxStatusErrorMessage",
@@ -35205,7 +35205,7 @@
         "value": "sandboxStatusError"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "702a00dbadaeea5cdd7a62d2c29c4958c8e97a63eece3f58b2f97e969f72d5a5"
+      "signatureHash": "ddab1419a2fe226f5f54318a2122a599da52d22ba19186b345876cd3f2f3e2f6"
     },
     {
       "name": "AgentManagerMultiVersionProgressMessage",
@@ -35279,7 +35279,7 @@
         "value": "agentManager.multiVersionProgress"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "30b1354d2be04c8f21fb382b6142177d67dea9c813bb1d84dfe3d7590f76eecd"
+      "signatureHash": "9da9eb877f3973b9535e52abae6dcdca79f37340b70d6c4f71600235aa735c5a"
     },
     {
       "name": "VariantsLoadedMessage",
@@ -35349,7 +35349,7 @@
         "value": "recentsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "fcdb4e0f2ef1c167f1a1a48d6c62a046a21b0326310ae5b3f94444e6caf5a8e2"
+      "signatureHash": "b2e1a7bfb6229b78083c86ce6d3a8e480f90a87ac7637a5bf908adafbefcb450"
     },
     {
       "name": "ModelSelectorExpandedLoadedMessage",
@@ -35384,7 +35384,7 @@
         "value": "modelSelectorExpandedLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "f46f8895e530b4c2db5995d99dc16d80dd434f8384fd5d2d46918f8e84f77100"
+      "signatureHash": "18320e5789c0710e0cd5a81353220ae84ddb49614afa03c625b81b71dcc49089"
     },
     {
       "name": "FavoritesLoadedMessage",
@@ -35419,7 +35419,7 @@
         "value": "favoritesLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e2c012646093cbb7859b158051a83827e8669a25df20f895625af823e7ae2500"
+      "signatureHash": "9b06c5ca7d253d3bccd9881c4ccbffc4d037bb8f910bfce20230cc1a568bcc68"
     },
     {
       "name": "ModelSelectionsLoadedMessage",
@@ -35502,7 +35502,7 @@
         "value": "agentManager.branches"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "03baa2fde7e1a47e414004dfe4b4543581719a5bb66fde6ff5d484cec78c4564"
+      "signatureHash": "4004d45092bc36295ec907bf0a85c5bed6e1420953142e4467b47d937f1170b2"
     },
     {
       "name": "AgentManagerExternalWorktreesMessage",
@@ -35537,7 +35537,7 @@
         "value": "agentManager.externalWorktrees"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "19666ed86928d3da4a0c8fe5b6030e9152097731a537501590b72a28aa31ed68"
+      "signatureHash": "d77162e07523f60b6560ebf8f902bfdefd7fc5fb007caad6ac4d79c1f7b638c8"
     },
     {
       "name": "AgentManagerImportResultMessage",
@@ -35598,7 +35598,7 @@
         "value": "agentManager.importResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "b2cf42b373f8371aa53df20ef3a1557a7315331c527cbb6e7a10cd705105fc32"
+      "signatureHash": "33e481de0dd70e57f89a28ce47cda515b375ac43a1e2ed0ae01bd9377a177f52"
     },
     {
       "name": "AgentManagerWorktreeDiffMessage",
@@ -35646,7 +35646,7 @@
         "value": "agentManager.worktreeDiff"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "91e0145b64fd62c81c115e8d0f13976e84b9a8196352b5e2dedca3b94c369fd7"
+      "signatureHash": "e6962082eca91df3d4e4ae59ff6502bdd5c702e3d76f592997fdd09b03762cb0"
     },
     {
       "name": "AgentManagerWorktreeDiffFileMessage",
@@ -35707,7 +35707,7 @@
         "value": "agentManager.worktreeDiffFile"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "aca3ad602cd51fe85bf7271b9ef34e277f0cf6de682f6cf799c75ca676fe8a42"
+      "signatureHash": "8df92229153667218915f8b730ab93438f686631f626f2d7c2606c2277d2862c"
     },
     {
       "name": "AgentManagerWorktreeDiffLoadingMessage",
@@ -35755,7 +35755,7 @@
         "value": "agentManager.worktreeDiffLoading"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "10bd941d575d8a581670a0f664a6729014c76015747ec15e5f5b45e3f2f43583"
+      "signatureHash": "d58178e316d1ed8a2d2acce2ad27a9b908882f68d8ddfb3cef06c8a5630def14"
     },
     {
       "name": "AgentManagerApplyWorktreeDiffResultMessage",
@@ -35829,7 +35829,7 @@
         "value": "agentManager.applyWorktreeDiffResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "fd9b99cce73c926e08df94ecf8262c7cba7893e4fc22b6b2ad0763e6949157f4"
+      "signatureHash": "6993576040850f30811def20af1e2ac132b03e1b493bff7f244f44e3c208bc7d"
     },
     {
       "name": "AgentManagerRevertWorktreeFileResultMessage",
@@ -35903,7 +35903,7 @@
         "value": "agentManager.revertWorktreeFileResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "9d6152a9243d4220a61caab23e38b2a3a0daadb013058dc88e977a3e6a64727e"
+      "signatureHash": "b02d75f915b71cdee458445aae6f87c51e53e9936cfd09dd69e80ec6a74b86e5"
     },
     {
       "name": "AgentManagerWorktreeStatsMessage",
@@ -35938,7 +35938,7 @@
         "value": "agentManager.worktreeStats"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "474001142969284e6a91bbacd11bc4ffb155af1529341f5104c7a5ba96e6881e"
+      "signatureHash": "3a1318f0c5fbf2b565e3cc20ee4099e64198de8e844ae5ea3e53d0f497a76829"
     },
     {
       "name": "AgentManagerLocalStatsMessage",
@@ -36034,7 +36034,7 @@
         "value": "agentManager.prStatus"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "326e80f06ef7bc676402d5eb06b9ffd592dcbe80bebd904f165bf93b4d822199"
+      "signatureHash": "1324bed4c9c2c1af961141836fac48fe529b4777045f4d8fda6823221d1c5d4a"
     },
     {
       "name": "WorktreeStatsLoadedMessage",
@@ -36095,7 +36095,7 @@
         "value": "worktreeStatsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "18b15326bad9714c56f6f0bb29a8cd62ad6b28e2a769a93a79d4bb89610df046"
+      "signatureHash": "bda1c1463e9daf3cac215efef29fe3eff4ef6204c2216e54689a7e8a392740d2"
     },
     {
       "name": "AgentManagerSetSessionModelMessage",
@@ -36315,7 +36315,7 @@
         "value": "agentManager.sendInitialMessage"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "8f35228e231a27f8f84fb244573d60e6e6cde38c24525428dacbd539eaaf186d"
+      "signatureHash": "0c840eb310c1fdae4d78c532ed88aad8eb37739d86ee094c65e6a6432eea632a"
     },
     {
       "name": "EnhancePromptResultMessage",
@@ -36481,7 +36481,7 @@
         "value": "diffViewer.diffs"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "49294044d92270ee17fd79ce901ff6986af452490a29c712143705d7795b58c9"
+      "signatureHash": "1fd763ac3eeebcc1b7c5d466260d2b4b931f0cab3af5c126417ddfccdd759675"
     },
     {
       "name": "DiffViewerLoadingMessage",
@@ -36516,7 +36516,7 @@
         "value": "diffViewer.loading"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "436bc363c5bf309c1672526f0cdf21d5d08151c89a29c7c9a6059ffdb3e26e5c"
+      "signatureHash": "6d40ce998b4849af88bfff8ed4f865e810bce757c61f9ed68a4b7ba397f929bf"
     },
     {
       "name": "DiffViewerRevertFileResultMessage",
@@ -36577,7 +36577,7 @@
         "value": "diffViewer.revertFileResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "4ed9ae531fb35f595386dcb97e01c9c4772363ccaa6ae5aae433fbb0c3a7ceb4"
+      "signatureHash": "3ca2eeed34ded09ec300f1809724311301cbfe12c476a1284203964f95395618"
     },
     {
       "name": "DiffViewerDiffFileMessage",
@@ -36625,7 +36625,7 @@
         "value": "diffViewer.diffFile"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "be61037aff01c12179957923497a3d18b4220a39cc0678f9176404a2c2f5d69f"
+      "signatureHash": "88ae2f07e7f402b75a0515c503e88191e43863cdefaa9418e751d90468be04ae"
     },
     {
       "name": "DiffViewerMarkdownRenderMessage",
@@ -36660,7 +36660,7 @@
         "value": "diffViewer.markdownRender"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "82eb2da294255e7de6f58d215a2b9ce3ba6a673607453184f079a076834c95ba"
+      "signatureHash": "b1a872fd9c09cb8781b68c298a20a677759d8f28aa2e4701f6a497cfd5a30eba"
     },
     {
       "name": "SetAvailableSourcesMessage",
@@ -36708,7 +36708,7 @@
         "value": "setAvailableSources"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "5449470c823da130ab07b13b609ae65357c4ac9438d164840b69537ad3f810e4"
+      "signatureHash": "b68c2cb02d2b4eba3064e4cad7f5618860d7cff31f92eb3bc11a17d2947edcd4"
     },
     {
       "name": "DiffViewerCapabilitiesMessage",
@@ -36778,7 +36778,7 @@
         "value": "diffViewer.notice"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "bf0b236217ea7592622cb7893d1017e07900a316bceacdada3fab2c430e375fb"
+      "signatureHash": "29708702048bef1135a06b6c8777365aa8d9163fc18a774af6401c0ba9fdf805"
     },
     {
       "name": "DiffViewerBranchesLoadedMessage",
@@ -36878,7 +36878,7 @@
         "value": "diffViewer.branches"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "bc6bde86917d7ebb078d34ddba3bd93d0abff34ded92bdee6c7377779c2153de"
+      "signatureHash": "8a7884f3bb043710694631e5b90a2fc614319b9ee08d605668a2e47c4103439a"
     },
     {
       "name": "ClearPendingPromptsMessage",
@@ -36957,7 +36957,7 @@
         "value": "telemetryState"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "a2d8c0e0e730ad1e5279303496cfb3a66c9ba9bccdb3253daaf595276221e168"
+      "signatureHash": "d1ad8c7fcfface31b4478cdbee1f1a2066e513b297250fad2bddf495e1de7501"
     },
     {
       "name": "MarketplaceDataMessage",
@@ -37044,7 +37044,7 @@
         "value": "marketplaceData"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "1670dca643d65d9f25eeaf3cac3656b440c560780ff8709dfec7cbda71649570"
+      "signatureHash": "de1d4bac99c05d91d118a93316c4e16ace4ef6d2bba6be39db8d3a8e218d5937"
     },
     {
       "name": "MarketplaceInstallResultMessage",
@@ -37105,7 +37105,7 @@
         "value": "marketplaceInstallResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e96f2cec53db9e2bdd8358bcec2abceedd467442237d8df7d55d76849d866436"
+      "signatureHash": "f7e8b249f3a9ffb4210061316d4530bff025d356bc4975b28f41aeb55d4de9f4"
     },
     {
       "name": "OpenInstallModalMessage",
@@ -37201,7 +37201,7 @@
         "value": "marketplaceRemoveResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e28908dc1798655fae65ef6429605d7c942301d3c5559387b1f7173c364e4cab"
+      "signatureHash": "997c7c0f120dc17eee41bfa8c4c0ee9864b29acd10fb24eec70802e6a9154fde"
     },
     {
       "name": "ProviderOAuthReadyMessage",
@@ -37432,7 +37432,7 @@
         "value": "providerActionError"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "183afadcc179ac1907eaebe4196d7627800ca49d06b7e5a1f287b75fcd60b9c7"
+      "signatureHash": "988ee60c16e8384331baf08818a1e6fb9d8594b4fde2531edf27e075eac57ccb"
     },
     {
       "name": "CustomProviderModelsFetchedMessage",
@@ -37506,7 +37506,7 @@
         "value": "customProviderModelsFetched"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "d8e6eb7d8c708606ab8f62e9d2540b41ac30734e0d4b328c83726c725c55d79d"
+      "signatureHash": "1d4b3920a69df3fe87e36f7aff373e43fa30cada1cbd48bb8daa4bfadfa2e0c9"
     },
     {
       "name": "McpStatusEntry",
@@ -37635,7 +37635,7 @@
         "value": "continueInWorktreeProgress"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "d90adb816bb6a3802046390537e890cff89a288921a5f637007c53322a9933b4"
+      "signatureHash": "530dcb3a61d7b3cf03aca1f867ecf46caeab0930bfc40254c56902d9c08ec388"
     },
     {
       "name": "RemoteStatusMessage",
@@ -37683,7 +37683,7 @@
         "value": "remoteStatus"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "9b7b691c016705241571bb34103a292df08a0098d50acbc74b42f51776270bed"
+      "signatureHash": "20467bb9f697cf77823209e3bab7ca2f16ee2a865e2130d02ded66da1ae2c34e"
     },
     {
       "name": "ValidateFilesResultMessage",
@@ -37731,86 +37731,12 @@
         "value": "validateFilesResult"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "4b26234a6118abb4382b4fd3904430086b919d8c3ea8c9b7f4fc25c8e0976a88"
+      "signatureHash": "e7532b3ade3dabbed3325e7104e343d2766965fa6e85f5cec3e12ebd4cd9a8c5"
     },
     {
       "name": "DiffViewerNotice",
       "kind": "typeAlias",
       "sourceFile": "extension-messages.ts"
-    },
-    {
-      "name": "PartupdatedMessage",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "type",
-          "type": "literal",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "partUpdated",
-          "isLiteral": true
-        },
-        {
-          "name": "sessionID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "messageID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "part",
-          "type": "P",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "P",
-            "kind": "typeParameter"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "delta",
-          "type": "union",
-          "optional": true,
-          "nullable": false,
-          "elementType": "undefined | __type",
-          "typeRef": {
-            "name": "undefined",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "discriminator": {
-        "field": "type",
-        "value": "partUpdated"
-      },
-      "sourceFile": "extension-messages.ts",
-      "signatureHash": "a89434883af1775d20375b617c69a3b8d42ab477d54d33aa46f0982b8ff0e029"
     },
     {
       "name": "updatesItemType",
@@ -37914,7 +37840,7 @@
         "value": "partsUpdated"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "e10d05878e6ed7e16fbc8a1a0c896c7f0370decb36533d842956a3caa97ca55f"
+      "signatureHash": "fafa457b200c456c2a61504d34516ade1639c34ed60f704100f1eae996167c25"
     },
     {
       "name": "SendMessageRequest",
@@ -38092,7 +38018,7 @@
         "value": "sendMessage"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "352fdb1f6ce510fc625c5d74c8de223997c46b324cc1a7f331f91c8a72e3a925"
+      "signatureHash": "d90ef7634a05230a43e4929b03ee533997382dceff02397986ab1ddeba5f50ef"
     },
     {
       "name": "AbortRequest",
@@ -38188,7 +38114,7 @@
         "value": "revertSession"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "a7e8a81f56825798635d1c860bea9d873c09f7530b5aed10033ffa66cec96e76"
+      "signatureHash": "082407fede623d0c99e0f25d439908825d4a0c79e8420f89e4bc3c9a18757446"
     },
     {
       "name": "UnrevertSessionRequest",
@@ -38358,7 +38284,7 @@
         "value": "permissionResponse"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "a45dc10c5adc21df988964c184e3cfe4d4149747a9c8dfa29354629a9eefd750"
+      "signatureHash": "cc06e53d03d62330b4be777ac0a8545aabb71ee65e82cb44ab6db850e1635fbe"
     },
     {
       "name": "CreateSessionRequest",
@@ -38476,7 +38402,7 @@
         "value": "loadMessages"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "960ae6df43856cbcfbcfa540daadd328276b10decf9e0e9e19664f28ed1d1ad4"
+      "signatureHash": "3208520a3f4a1c4b955af050123e5c8c19c2a18a6bbc8ff8f085c22eb4084811"
     },
     {
       "name": "LoadSessionsRequest",
@@ -38607,7 +38533,7 @@
         "value": "requestCloudSessions"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "3b9577acd3b5505ea8aa353fcbad9ef7b1324b56433f237db13d14f23de663ff"
+      "signatureHash": "988a9b425538a6dc25a8e38e14e0a46123250b81e3483f35ea6e16d9d8a140f4"
     },
     {
       "name": "RequestGitRemoteUrlMessage",
@@ -38829,7 +38755,7 @@
         "value": "importAndSend"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "e9197c44575a4b05f226e106c801f4c83f43473e84a53221bca69ba1c859cb8b"
+      "signatureHash": "0758d54bcb6a376c796e8d84e26ed27a9ac0ef5f453e146099e72cc08646cb87"
     },
     {
       "name": "LoginRequest",
@@ -38991,7 +38917,7 @@
         "value": "openFile"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "03c1fdb07fbf83a31fb974b0198becfb1b57a4c9e299ba50f490cd8535b8ed0c"
+      "signatureHash": "3c922c54d108e3ba29c478769ebc3d40245e10f476f072b8492272c3f1350737"
     },
     {
       "name": "OpenContentRequest",
@@ -39039,7 +38965,7 @@
         "value": "openContent"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "2aadf02d1448da3049569c9bc5396a84ebe81e7edb76b7f448e9c3a737b8ccca"
+      "signatureHash": "3765934c3652c6614b8d1dd9ef20d7f7159d9e32ce53438cfcceb0fc93e16989"
     },
     {
       "name": "ValidateFilesRequest",
@@ -39087,7 +39013,7 @@
         "value": "validateFiles"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "ce13405d028ec54df7deb1d91d3c118487f45f2cc5d14469d4676643895ec85d"
+      "signatureHash": "f1568ce4214530320e0ac6407cfdf9186a83039c8550b15a3f42589c039f9445"
     },
     {
       "name": "CancelLoginRequest",
@@ -39144,7 +39070,7 @@
         "value": "setOrganization"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "1fe4f2d123796a161e2b88f6115b66fe2d305c6147a0b3b419d5d8835fd0b375"
+      "signatureHash": "e5658a04d39d5a63099bb6c477f994923ae95e725e297f9fc9bd2e93bf62b50f"
     },
     {
       "name": "WebviewReadyRequest",
@@ -39201,7 +39127,7 @@
         "value": "webviewFocusChanged"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "44da8de76557b2269ec90c12aed66eacbf3bce2f57464a2b3e33491d24b19631"
+      "signatureHash": "5bd0f56cb9665303cd920b17d2c233636f6252d07c3119d435c8521695a87815"
     },
     {
       "name": "SelectSourceRequest",
@@ -39319,7 +39245,7 @@
         "value": "compact"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "198ccfcc221f27ac635be1a1d8fbf3ad5ec42a3d368a5c4ada77325473d1c538"
+      "signatureHash": "a638c8a63950e9005d15ece18ad7fd312aa94aa09e53ec0f5a1e6a9474566562"
     },
     {
       "name": "OpenSettingsPanelRequest",
@@ -39354,7 +39280,7 @@
         "value": "openSettingsPanel"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "f4f792d72f2b9877a02617e74f5d7e64700bc45115acfdcdbb63aac785ebe79c"
+      "signatureHash": "1f31d0e3c9d35006729a4b2a28e598378cb5f3b3cbcfa6b831ef200724b275f0"
     },
     {
       "name": "OpenVSCodeSettingsRequest",
@@ -39704,7 +39630,7 @@
         "value": "openConfigFile"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "e4de5631491d292ba0088c8352af66a5373ca5e5e2c8657ede47a5400fe22377"
+      "signatureHash": "40e6544653040e781fd1af4498173ac9eb6abb7efea473adecc4c40ac072b897"
     },
     {
       "name": "OpenMarketplacePanelRequest",
@@ -39739,7 +39665,7 @@
         "value": "openMarketplacePanel"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "c915125b566d205fc16c1a23febab1e774c2853695b9f4928f87150d3fa3ad3f"
+      "signatureHash": "f9f335141e04a52732d0ed661c7818d45aa760edaf52bdb4ca58980b3ee07347"
     },
     {
       "name": "OpenAgentManagerRequest",
@@ -39923,7 +39849,7 @@
         "value": "requestAgentRequirements"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "9c4804d4242814c53ce335d373cafc2faccde9efab8de90b3bbb0f30684c8a86"
+      "signatureHash": "fae86a623b7a59733d7236512489da4554058ce7476b29378861b7a34142ee30"
     },
     {
       "name": "RequestCommandsMessage",
@@ -40123,7 +40049,7 @@
         "value": "sendCommand"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "8cbe2aec763bda8969c103eac384347ad53290582d445141fb15c8e87936cffd"
+      "signatureHash": "4e1a6819f37414dd6d18bd90c5d76d5ec0c3a79bf98ef1cb46d2db4f6144a204"
     },
     {
       "name": "RemoveSkillMessage",
@@ -40451,7 +40377,7 @@
         "value": "questionReply"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "33e66e90b50ff336442c71182281dbac31f216c5e374de8e9b7942046ea6cdc0"
+      "signatureHash": "22dae77ade0587b62010146aabb6a286822b791da4fc32ba30962394d4c62856"
     },
     {
       "name": "QuestionRejectRequest",
@@ -40499,7 +40425,7 @@
         "value": "questionReject"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "a77f442cace10f85f76c8a51d660d486013255eca209ecdb99b43d16c1b9cb45"
+      "signatureHash": "dc75daded53d0bed25d47b5e56a2a197d235cfb8baf6c5f38269e0640bd1798e"
     },
     {
       "name": "SessionCostAlertResponseRequest",
@@ -40560,7 +40486,7 @@
         "value": "sessionCostAlertResponse"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "45e251b49628b06224650c08d19e2742ad6b15ffc9ab2f8b398669f4d3082cae"
+      "signatureHash": "1928530a8c88033e57b694f60246bfe356c9dd5dab0aebcae3b2e7eede15ff32"
     },
     {
       "name": "SuggestionAcceptRequest",
@@ -40621,7 +40547,7 @@
         "value": "suggestionAccept"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "b4468050bc2f1b9a76217abe83435ef0af332e37f7226858c337ea6f43a6fbac"
+      "signatureHash": "9923fd7d2d33a44eb1ebbdd369c05693f3b4f92146d942751ec5808d38954c3f"
     },
     {
       "name": "SuggestionDismissRequest",
@@ -40940,7 +40866,7 @@
         "value": "speechToTextStart"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "2b8e19be2a0a48ee96738337a405de3ef57e721d351ed0045759eb06514f817f"
+      "signatureHash": "5b8d9fa06148e49108030e75912063d4e03a2659d2f9a3a1e836822cc8237cb9"
     },
     {
       "name": "SpeechToTextStopMessage",
@@ -41071,7 +40997,7 @@
         "value": "requestFileSearch"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "b393104dde4a2c99b67a80c555abd4ab18b61a277886dd7b8ab391516bf60277"
+      "signatureHash": "c6c1ffa9bf6413bdccb9faf7fae803c16554a15caed8183b3d60fcf533ec067c"
     },
     {
       "name": "RequestSessionSearchMessage",
@@ -41119,7 +41045,7 @@
         "value": "requestSessionSearch"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "4f2b9466dbc6024ee420d4a2c074edb4b5b24d173a26bbe9baa8ae96b6c0518e"
+      "signatureHash": "eff61fc2022834c62f5c0b0c5aefe40844d755483ab7b9dc31550bdae3a88976"
     },
     {
       "name": "RequestFilePickerMessage",
@@ -41202,7 +41128,7 @@
         "value": "requestTerminalContext"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "40939e997ec258b67c8723d4c6ef39a7b64f2b9732df694c0f8815203bfb3dcd"
+      "signatureHash": "cc66e66207493fd2bf672936ad5cdcbb13daa14eab7704e7887f6085f01111e4"
     },
     {
       "name": "RequestGitChangesContextMessage",
@@ -41263,7 +41189,7 @@
         "value": "requestGitChangesContext"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "d2455c96d3adc0e713bd3fc5d1ccbdd0d1dfa171c4acc91226dc478645016a29"
+      "signatureHash": "283160ecf371b3591b438ec4923147fc7ee258445a7cb012ac9a05379bc98e45"
     },
     {
       "name": "ChatCompletionAcceptedMessage",
@@ -41298,7 +41224,7 @@
         "value": "chatCompletionAccepted"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "eabd1f168affc728ce94ce3bdd232972afeeff89a2bcf038026d6ad30801cfb8"
+      "signatureHash": "8904537b319fb592c85e6a96784dc822e30ab7901ccc1968951fdb4efe13bf88"
     },
     {
       "name": "UpdateSettingRequest",
@@ -41346,7 +41272,7 @@
         "value": "updateSetting"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "bc24d1da7519bede460878d9ee01c9ef6444117893d8298f1d187cb52cf25d0b"
+      "signatureHash": "6e7bd814efc30fb38062d9e7c5967ce2fdbb611709c03785a319b576bafaeef6"
     },
     {
       "name": "RequestTimelineSettingMessage",
@@ -41530,7 +41456,7 @@
         "value": "streamSessionVisible"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "1156002430556f3456e266817821666c616984475f7f7c9516557201c3c76b2a"
+      "signatureHash": "cc3a18f6099879a9f65ebf33f05a4ee950dfdfe305f59023bac7d55075f5b7ab"
     },
     {
       "name": "RequestBrowserSettingsMessage",
@@ -41837,7 +41763,7 @@
         "value": "updateConfig"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "23d81944b5e069a920eddfd40bb16f4afa341fd3b03dcfa8da80be3eeea65400"
+      "signatureHash": "6c55c9dc1929b5da396851052d6b8c4b3fc11c848b8ccb74241f3a77708b8bd4"
     },
     {
       "name": "RequestNotificationSettingsMessage",
@@ -42078,7 +42004,7 @@
         "value": "syncSession"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "a41ca88c9b27f27f1dbd06f5595d1f3801f1925eed8cfa5f1f172d5a88c496ea"
+      "signatureHash": "8bb20496ab0a42ca36e18aa4ef3fa9aa5f64e58fd6ab26c5d7b7f810a99712e8"
     },
     {
       "name": "CreateWorktreeSessionRequest",
@@ -42165,7 +42091,7 @@
         "value": "agentManager.createWorktreeSession"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "2ea6f21cfe09ebc4affe04dd3fae185d824ea7b4e517a252bf37496f01d679ec"
+      "signatureHash": "7e9a2d45fbc4e992fd8f2466b3519a0898bce9fbfc81333ef21e44b46d2d8fa6"
     },
     {
       "name": "TelemetryRequest",
@@ -42213,7 +42139,7 @@
         "value": "telemetry"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "576346d60fcb5a23c96ec6e5846f6c955b56a7e2466018e98c6950efcbbb9726"
+      "signatureHash": "02a5367c38ad1343638f49fc0fd6fe070f01e194fabd1a07a7840c6e2571c1a1"
     },
     {
       "name": "CreateWorktreeRequest",
@@ -42274,7 +42200,7 @@
         "value": "agentManager.createWorktree"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "5ebadc5f9c6aa67cf92e3eedb9445b80ef71cc860c090f99aeb836f765f718d3"
+      "signatureHash": "4fc8a1853c468ef389ba45eca9c11da5ff14944a42289233f2c8a0f712737035"
     },
     {
       "name": "DeleteWorktreeRequest",
@@ -42462,7 +42388,7 @@
         "value": "agentManager.addSessionToWorktree"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "fd39598107f41facf68ad9ee49f46f9626ffc9174d4048f5aded688dd0012726"
+      "signatureHash": "e03234fe143062d9e9f9a04678b6cc486bdba6a4a511d9173d457ff055ef3a15"
     },
     {
       "name": "ForkSessionRequest",
@@ -42523,7 +42449,7 @@
         "value": "agentManager.forkSession"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "cfaae1b373fd2254ea2d06feadf598525362bb75a109f155b38a81de1c16dcb2"
+      "signatureHash": "bee2a16ac8a0e3fd5e40ac272177e07feb3fcc08dfd2cdc1ae9240f7224c164d"
     },
     {
       "name": "SidebarForkSessionRequest",
@@ -42571,7 +42497,7 @@
         "value": "forkSession"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "573146cdcb181f6ebe753a26a57a2eb06753b1777fb58b7dea2be27adfc9b8e1"
+      "signatureHash": "07773eb763202cdb5af6462658af9689a4ec8166d3065da05888d208cb5b599d"
     },
     {
       "name": "CloseSessionRequest",
@@ -42654,7 +42580,7 @@
         "value": "agentManager.persistSession"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "ae3c3e9e413859454e028220cab0da4c0088361bd1ad606dc87b4968e7cabb8e"
+      "signatureHash": "83f3c78015a9c30759500ab5f9a56f5d5f3de079a36d505d407a2f6230361775"
     },
     {
       "name": "ForgetSessionRequest",
@@ -43079,7 +43005,7 @@
         "value": "agentManager.terminal.create"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "53932bd9ded04e195ec6a74e1453c3ab5ddac131dbeccb9959a835a7524ef3fc"
+      "signatureHash": "3933b34ecaebd91783c7105495c62b1b45cf21a8d20956a44e05b67c08587ce1"
     },
     {
       "name": "AgentManagerTerminalCloseRequest",
@@ -43175,7 +43101,7 @@
         "value": "agentManager.terminal.resize"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "f85dba535e2498d140b37caf73e9b8fde7b8a7d379bda764d37b795da2ee0334"
+      "signatureHash": "abc007d147470bf109eafd178ab6fbdfd4184c3cc8db63e0b93146b57791a3f2"
     },
     {
       "name": "AgentManagerOpenFileRequest",
@@ -43249,7 +43175,7 @@
         "value": "agentManager.openFile"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "c527e49d1944416a79fc892170f56fe545c6044b866c9e0c1f7557c58b65a6aa"
+      "signatureHash": "2e4be43bc260080aee915520a5cfefc10717c7780c85c101d5504eddb368f0fb"
     },
     {
       "name": "CreateMultiVersionRequest",
@@ -43427,7 +43353,7 @@
         "value": "agentManager.createMultiVersion"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "219422ca7c899fb9d1b4f46c79e05969bb78cae81705c4a571cb3564357295f6"
+      "signatureHash": "5d225062540132b966a423bfd7b3b48d9a807d1572d615c028879a6e75b3711e"
     },
     {
       "name": "SetTabOrderRequest",
@@ -43475,7 +43401,7 @@
         "value": "agentManager.setTabOrder"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "a09d0dd223eb34f1d50fa11374d23b67b4a32ba0887c3153566995e95d308245"
+      "signatureHash": "a95179260d09aaee6ce2528ac854039237ab13cf754db1c1fc10e41adee649bb"
     },
     {
       "name": "SetWorktreeOrderRequest",
@@ -43510,7 +43436,7 @@
         "value": "agentManager.setWorktreeOrder"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "e12e0d50c1ba3ca83ebe035a395e6f89d46a1c62eb85284c76ba5deae876b75a"
+      "signatureHash": "72ea23e4b90cb93a322eb4651be4769d9cec6d7a1e98ad9dc69a03b60e96ec48"
     },
     {
       "name": "SetSessionsCollapsedRequest",
@@ -43545,7 +43471,7 @@
         "value": "agentManager.setSessionsCollapsed"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "d8d61bde321077b695fb4ef6188b3377488276f334e484c96c68ee67498ebea9"
+      "signatureHash": "2003ab25c0b0d15fe6306bf1fc1049e4c553773c0ca4f25f7cccdd977dd8bbf1"
     },
     {
       "name": "SetSidebarCollapsedRequest",
@@ -43580,7 +43506,7 @@
         "value": "agentManager.setSidebarCollapsed"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "8c3e24d4ff0b1af2f5b3eaba4840148cac439b6e3c271d6b8a6b79b5c06b3af1"
+      "signatureHash": "f5d4d994c69b27a74792babdd2ac5d2eeeeafae160a7ab578c2e00053882756b"
     },
     {
       "name": "SetReviewDiffStyleRequest",
@@ -43615,7 +43541,7 @@
         "value": "agentManager.setReviewDiffStyle"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "062a4cc90302586e2c4068aaad1cbf9f9ff60270dd67b4fa5a0263b42b91eb0f"
+      "signatureHash": "e83c4b2f3240e11fe3e1400b640aae16db64d061f2fd66d5398811bba791bb64"
     },
     {
       "name": "SetReviewMarkdownRenderRequest",
@@ -43650,7 +43576,7 @@
         "value": "agentManager.setReviewMarkdownRender"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "82c72d5bf671934c7a588e332a7e393f53c03a4ac2d9c8f736720b81d9efde2a"
+      "signatureHash": "694d47e8c66c8fc8d08b9a8ad28654afb4cad624cac05f9fb4ca5a7575475aaf"
     },
     {
       "name": "RequestBranchesMessage",
@@ -44092,7 +44018,7 @@
         "value": "agentManager.applyWorktreeDiff"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "f018b0170ad590a2d6db327156102d41b998b6be0587a122da6b64197602c266"
+      "signatureHash": "4fc5c275a40fd11f590c5c3215041662b56d6723026cf2c6bfcd9212def0fee4"
     },
     {
       "name": "RevertWorktreeFileMessage",
@@ -44293,7 +44219,7 @@
         "value": "openChanges"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "e9d3c126be8d65ecd03a158f043acae62f0727502adea0ab1444c14e02ad14a7"
+      "signatureHash": "02a6ca9abfa54cb1ce2f1d20842bb79643615bae88d9966b8e49be9b083ee05c"
     },
     {
       "name": "OpenDiffVirtualRequest",
@@ -44341,7 +44267,7 @@
         "value": "openDiffVirtual"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "2a8d52bc31d63a9c0769c654b3ef027fdf340f0e0ea1cf88def64a0663b24ded"
+      "signatureHash": "9c45366ee42688818739dc7c4e55e3e2454e627156192e2ebe1101d307681f81"
     },
     {
       "name": "DiffViewerSendCommentsRequest",
@@ -44389,7 +44315,7 @@
         "value": "diffViewer.sendComments"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "b0e365bfecb255026739ae6b7c8804e4273cec092104ce30f7cca954ad85afa0"
+      "signatureHash": "9d8862cc7a038ecbb589264b3816d1ac6fcbdd9b6948ae8d1177b042a3fdbb4d"
     },
     {
       "name": "DiffViewerSetDiffStyleRequest",
@@ -44424,7 +44350,7 @@
         "value": "diffViewer.setDiffStyle"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "b118da848d36d093603739527c983ae201376979c8c39958eea37fef7fc02116"
+      "signatureHash": "5b935e08a0446ec60d88c277cbdd01753e79c26884d21a23e8c5419a86a63d16"
     },
     {
       "name": "DiffViewerSetMarkdownRenderRequest",
@@ -44459,7 +44385,7 @@
         "value": "diffViewer.setMarkdownRender"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "ae1ef4ff6df93719015fcda48f4501454ca5d3683ec2f94f8724a8a631975414"
+      "signatureHash": "9fdb26b8b11cde370240d913ecb6a5d5cdf443829bb9854ca40f50cfbbc072a1"
     },
     {
       "name": "DiffViewerRevertFileRequest",
@@ -44608,7 +44534,7 @@
         "value": "diffViewer.setBaseBranch"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "f95be85601d0ac592edd3b1d44ce217e9d9573c4286ebc8b6a5ae3580ad823ab"
+      "signatureHash": "490b236d433f6d187efeeb3b6755fa007d4b463fc5a21cc29cef2930ec6de9df"
     },
     {
       "name": "DiffVirtualSetMarkdownRenderRequest",
@@ -44643,7 +44569,7 @@
         "value": "diffVirtual.setMarkdownRender"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "fc744b6250744187fc4b84e24b6193ea017f2fcc8c74d15ba72e6fd97e5f3ac9"
+      "signatureHash": "c608bd98de7c069683c8e18ba592bb3389c21c181848f687067937a1b4a33e38"
     },
     {
       "name": "RetryConnectionRequest",
@@ -44735,7 +44661,7 @@
         "value": "openSubAgentViewer"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "d8753d7d13ebdb437e4352fea99c5947b9cf621bf2cabcb53445a99586dc3ebb"
+      "signatureHash": "582f501519ca187736271e86c4c71f671e3767b180f2cbeca06f6ff782b44412"
     },
     {
       "name": "PreviewImageRequest",
@@ -44866,7 +44792,7 @@
         "value": "agentManager.setDefaultBaseBranch"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "989b4b619b996d9c44ada8f6668221954230ee44d780db2edb2adb21c5063d7e"
+      "signatureHash": "b6913a0f7a11b70de97dae5c40aa48e873a052fcd3f8a73288316fd17cc54084"
     },
     {
       "name": "AgentManagerOpenSessionsMessage",
@@ -44901,7 +44827,7 @@
         "value": "agentManager.openSessions"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "097cd27c836f80986ed9ea82f27ffed82696f0c456395048dfefae146fee91e7"
+      "signatureHash": "4c918a6cd4dfaf96a92c4ab43155bee0f6e9b99b095f02b6e58449bfa3609cbe"
     },
     {
       "name": "SidebarOpenSessionsMessage",
@@ -44936,7 +44862,7 @@
         "value": "sidebar.openSessions"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "2cda9b7c4779d1de2cb3027f3765db27badcc412bb5360838f4949e6a2454da7"
+      "signatureHash": "8a12cb8b07d8cb665ade9d75cc96717026051e677a0cb1b6a5c0e21f3d90082f"
     },
     {
       "name": "AgentManagerVisibleSessionMessage",
@@ -44971,7 +44897,7 @@
         "value": "agentManager.visibleSession"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "2d806ad3e786a2b7f200493c800ea15a1a1793f7f3f0f5634c5923d64cb80cb7"
+      "signatureHash": "f1e8e12973cd20ccdc16240f316b228fed151bd0041a9ebd888d24e3364970dc"
     },
     {
       "name": "RequestAutoApproveStateMessage",
@@ -45111,7 +45037,7 @@
         "value": "requestSandboxDefault"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "dbfc7785f0e726373a37694112ea152d6662da03cbbfbe0a4582d265d3f7e8d5"
+      "signatureHash": "5f93e2e5b89e989c4d90d611f607921a3ae1ed203ebf64607f52d9466be259b9"
     },
     {
       "name": "SetSandboxDefaultMessage",
@@ -45185,7 +45111,7 @@
         "value": "setSandboxDefault"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "ab863c397676e151f2350bb331c8adeb89e84eabdd1b449519ebe45f46f6a79d"
+      "signatureHash": "cc4fe1cdd44dc81e3ded0bdcf678f477b9d65e0d9a5e9aab9fbe8168095232ab"
     },
     {
       "name": "ToggleSandboxMessage",
@@ -45259,7 +45185,7 @@
         "value": "toggleSandbox"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "8051cb671899ea87450bd2bc9ced5c3adb3ea839d35f60d7ba2f6efe8e40427e"
+      "signatureHash": "9311559969da3a153ba28be1a7d0326446567a95169afb97786f77434d8f6e16"
     },
     {
       "name": "ToggleRemoteMessage",
@@ -45316,7 +45242,7 @@
         "value": "setRemoteEnabled"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "fa4c8712ac6d465fde49fb9ba28853240556eeb6318f07b71acb53a7f14141d4"
+      "signatureHash": "4fe358daa7a8a74f5ab9501870e802b66fb50f41236c5f394825b706b037144b"
     },
     {
       "name": "RequestRemoteStatusMessage",
@@ -45412,7 +45338,7 @@
         "value": "connectProvider"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "9d074756da4684be2cfc498b7c594074a54f6be8356bceb5befbbc631bc396b4"
+      "signatureHash": "290e06aae1f2bc571299d2c51531ab2314e53e0ae433fb3897f82faa9cbc30bb"
     },
     {
       "name": "AuthorizeProviderOAuthMessage",
@@ -45473,7 +45399,7 @@
         "value": "authorizeProviderOAuth"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "b101e236b7457195478fd31ec90e2ee3705071a2b996d163b99175129aa5aebc"
+      "signatureHash": "0ad26b1355d5dafd200fb271b216ddf31e325c42405204ec6829fcb7f9ada712"
     },
     {
       "name": "CompleteProviderOAuthMessage",
@@ -45547,7 +45473,7 @@
         "value": "completeProviderOAuth"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "179582e2a42265267358857aee57f362e74451d381a2ec3e66f2b0cc311e23a3"
+      "signatureHash": "77900347a8f85ea1122363f6106f62b0c2e3e909fce8c7b499e268dda0cb27b6"
     },
     {
       "name": "DisconnectProviderMessage",
@@ -45682,7 +45608,7 @@
         "value": "saveCustomProvider"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "7d19a97ea738db5c5a3214ecdf78cad0020197da6697340014773027695929ef"
+      "signatureHash": "ed8262a23caef9819919481a9d6b89a0ec2bd3aebcf574beff76d987c881e064"
     },
     {
       "name": "FetchCustomProviderModelsMessage",
@@ -45769,7 +45695,7 @@
         "value": "fetchCustomProviderModels"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "eccbdbb4ef09667864b03c8a167702e3da99e7194b66560fe30de6d6030c8812"
+      "signatureHash": "521bbfb6902fcc6d6d9577ccd8210f4b671fbd03dec52e27ebe4cf7d127f1e03"
     },
     {
       "name": "PersistRecentsRequest",
@@ -45804,7 +45730,7 @@
         "value": "persistRecents"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "5ebdec0d850189fa662be90c5ed598ee4ebd350127be63096ff812d4ca762d24"
+      "signatureHash": "dd6971e62b60f2c53a93b2eb245eee4a7232bc78c5a75cda57a03a81d73c65e3"
     },
     {
       "name": "RequestRecentsMessage",
@@ -45861,7 +45787,7 @@
         "value": "persistModelSelectorExpanded"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "c434e7f9512b3803d0f5881fc99fef4c8cf2891159752614faf05692536a173d"
+      "signatureHash": "e068933aba72df8e8e8c3d760b719c7c60ff63c30a827af79993cfb42d2f19c2"
     },
     {
       "name": "RequestModelSelectorExpandedMessage",
@@ -45944,7 +45870,7 @@
         "value": "toggleFavorite"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "f5d71e8c74f97f6025584dcea520eb5007e85f4b05b4dc17f5ba593172ff2157"
+      "signatureHash": "c6ce1540e1f4f1662775a685a2a7806287f7ae4c5ef75fd8e3d30f2be3af78d1"
     },
     {
       "name": "RequestFavoritesMessage",
@@ -46180,7 +46106,7 @@
         "value": "agentManager.createSection"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "9112a46de18ab1b6696d0d4b47805e6cf4e79e73d69ab35cd7c543973aa84a98"
+      "signatureHash": "79a3d803617230a2dab85feb92d8848efc40e4e3f700ef28567309af6f2d8b0a"
     },
     {
       "name": "RenameSectionRequest",
@@ -46311,7 +46237,7 @@
         "value": "agentManager.setSectionColor"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "9acfc028824106c1276f2f794e7941e31ba6d9be691fe676811723064b7e1ea8"
+      "signatureHash": "4eb8efb3d799a045aa45d7217225eae9512585a358b2f0e2ac2bdb2cbc18a3c9"
     },
     {
       "name": "ToggleSectionCollapsedRequest",
@@ -46394,7 +46320,7 @@
         "value": "agentManager.moveToSection"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "c833cbb66b83941bd6bdc899f468c43231462f184d639845a345aad41eeeac3d"
+      "signatureHash": "ef17161027d8e35557ceef8071061f35090934a9eb4283ca4366610235f125a1"
     },
     {
       "name": "MoveSectionRequest",
@@ -46442,7 +46368,7 @@
         "value": "agentManager.moveSection"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "75ea695b9871f1f5e270fa2a89f212b03704644ae3113f86ef24acb340c161b0"
+      "signatureHash": "07ffc4f3d530b4ed36ed4683a7fe4e4407a5030017cb0829ced66ab970da333d"
     },
     {
       "name": "FetchMarketplaceDataMessage",
@@ -46791,7 +46717,7 @@
         "value": "messageCreated"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "50faff46e4c57b8433b321434a9a66708682e647a214a17fce348a5786294c96"
+      "signatureHash": "eccfa87da5d7f12597175bbdda3e3a7005a8b889ac7dc4ec0d5a69e8822ca2fa"
     },
     {
       "name": "SessionstatusMessage",
@@ -46881,7 +46807,7 @@
         "value": "sessionStatus"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "8a71bc2d6bda2f597d99ab18a17688d35af5ff18d0c996cf70590977706083e3"
+      "signatureHash": "32acba503baf5175cc58f29a13a287997a9023b00ffa990880a7bdfa9de2d124"
     },
     {
       "name": "SessionturnclosedMessage",
@@ -47087,7 +47013,7 @@
         "value": "permissionRequest"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "b9f2eff9f31aba05059f4690eee873548fab4dca653a94e2dd8746ca453d5a3d"
+      "signatureHash": "d083bdebe4d65e203d1d997d6eb27a4e622dd21caaf4328ff20ff87b5d388e57"
     },
     {
       "name": "TodoupdatedMessage",
@@ -47228,7 +47154,7 @@
         "value": "questionRequest"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "e022780b88a2621d04b5a03e839fa14f1d44c5e3fadef9c00371db2ed9fece08"
+      "signatureHash": "bd1f03c462e901a3a7987348de69161b7738c5f372e5be141021f6ffb43abaa2"
     },
     {
       "name": "SuggestionrequestMessage",
@@ -47344,7 +47270,7 @@
         "value": "suggestionRequest"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "a7302cd93254f8193251458cc08861de9f2c65a14e361250bea169b863ba9b2e"
+      "signatureHash": "edd921f9bf5addc67d1353782dd642311b7bc3a2379dc6e8995a79ab2064cae7"
     },
     {
       "name": "PermissionerrorMessage",
@@ -47395,7 +47321,7 @@
         "value": "permissionError"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "0fa3fa2b4d305311b33be35e13aa60e73996a047949b37477050dff24d008274"
+      "signatureHash": "6abc6e8d1f94fd7b614104063ea32eef3b377b65a0169022c68b7248078085bf"
     },
     {
       "name": "SessioncreatedMessage",
@@ -47535,7 +47461,7 @@
         "value": "sessionError"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "bcac9686eeb8c85798a582410d4e8ae17afec3bf9535cf6e739b28a7caef8b01"
+      "signatureHash": "3887531bc09c02ba42e14230c0e574daec613185266992c3943deeb21ac93810"
     },
     {
       "name": "SandboxstatusMessage",
@@ -47638,7 +47564,7 @@
         "value": "sandboxStatus"
       },
       "sourceFile": "kilo-provider-utils.ts",
-      "signatureHash": "b1f99c32fbb8024c1bb48641a01f56901f7cd9f8c06b1e721ebc74a89b3dabdd"
+      "signatureHash": "e615decb094055b383bb6043b0eda54798a3080e03f486693583f859026d7a71"
     },
     {
       "name": "KiloClawStateMember0",
@@ -48977,7 +48903,7 @@
         "value": "kiloclaw.conversations"
       },
       "sourceFile": "kiloclaw\\types.ts",
-      "signatureHash": "7e2783e6b8dcf2e59eca9a448d90ca9dad347141469fcc283c53064906da69be"
+      "signatureHash": "99ad6cd6c41202973da5e9aec5e30821b3f2b421048bc64767f6e3beb1c4b016"
     },
     {
       "name": "KiloclawActiveconversationMessage",
@@ -49092,7 +49018,7 @@
         "value": "kiloclaw.messages"
       },
       "sourceFile": "kiloclaw\\types.ts",
-      "signatureHash": "ca190553af8aa3c82bc55391a21f6e9a59876031f7afa53efe3eed6bb3189bb5"
+      "signatureHash": "5ef78b70f5ed986537775ccb50f6dc7b6d731f1def1be61282c2cc725b8fb6c8"
     },
     {
       "name": "KiloclawMessageoptimisticMessage",
@@ -49974,7 +49900,7 @@
       "unionMemberHashes": [
         "0ef3b6c7dbb371ccd02af40b601e51ae94a3fd41e789ed7fbbd1b2a84a12759b",
         "dfc0b95a7f6ff65f545fe29dec04cf82afbc7af4c8e8045c5a116ce12efcbbb8",
-        "8d9fc378fae70a9bebae9323159d7acd681b734153335b8b9b4f269c932f0974",
+        "8b8917135196b40054634818075492d04c1eef12cdf8ceb9be791b3d9857d42f",
         "d4d0a70801277846f4b9141dad0457000a3cb562350db9fc71c3731a5212b144"
       ]
     },
@@ -50020,13 +49946,13 @@
       ],
       "sourceFile": "parts.ts",
       "unionMemberHashes": [
-        "dcde7df14bb87690ecf64a5bf2de8c3ab8bc030d3fbbde672c9642d7425a506f",
-        "02f76349a30c5d56ab9699676908d1bbbafc7771ed18121a03c6b5a087c3c7b1",
-        "a0f6e9c6c57c4d5520c5b532e208672c95797ed2c595695b027592f010601150",
+        "564f5242718081f86a3749644878c4ac959ae368caed261825833eca23fccbb2",
+        "df3eb60ebe5520b3ebb029e2c55d9b538e4989479ee7137e7eed4007c32eff63",
+        "f4daab928abd8065febd65db1c33244ebe7ebfbb3336196af6598f4bc1e0a519",
         "92485d485d7193a7b24f0200cd56f3b2beef93aba70e77641bb7969153c22504",
         "8a8068eb1bdd608866b3466a61a44103f453bdc23e5d96bf862f1dcb159a7192",
-        "78a0a7ca36715d5216f161d415092c98f76c9f1f433b3d5df922e1d26c0c684a",
-        "a160094460ee47dece3c9eb9d4a3d09617f08cff12277b0c56328a31b9574985"
+        "c96a834671e1050bc12f51ef53825c07c2ef24dc967a480ecd56be243e07e50c",
+        "e48c94329221ab913cda1a1c9957fc20ac3012d008c8024cd18141625eb99d28"
       ]
     },
     {
@@ -50089,7 +50015,7 @@
       "unionMemberHashes": [
         "a2f3c13ddc5fa3ca9962014b752707a597652622c92e4bab4e30f0e5c12fbb01",
         "3a0da365c786f9c808e974d770c03dad9e8054a09e33cde59486b236b2150646",
-        "48d46a7fb3084538f71adaad5a92e39ed00ede86520a054c47ab19948222eab3",
+        "1850c213ed65114dbfe5fe0a42a70cf32cefa99174b1b41ab176373753dcabfc",
         "8278d84f6d7fe6cf6f283b9c107cae5f3b85582040f9c8bd4f03a8947f9af4ac"
       ]
     },
@@ -50103,7 +50029,7 @@
       ],
       "sourceFile": "shared\\anaconda-desktop-messages.ts",
       "unionMemberHashes": [
-        "69fc9f736c4ce20a70028a39c7f674e9dd6715993dcb3b2bd06782c7ad675356",
+        "c3de6e55f030a851f17065920f50cbf6924430955c7ddb3ccf079643d098f048",
         "8fc0f60a3b9c8bd26aabcc1a7c3c3958a3b3c4c4d1c6c7f8cdbd9c0b04bb9134",
         "c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b"
       ]
@@ -50120,7 +50046,7 @@
       "unionMemberHashes": [
         "a2f3c13ddc5fa3ca9962014b752707a597652622c92e4bab4e30f0e5c12fbb01",
         "3a0da365c786f9c808e974d770c03dad9e8054a09e33cde59486b236b2150646",
-        "48d46a7fb3084538f71adaad5a92e39ed00ede86520a054c47ab19948222eab3"
+        "1850c213ed65114dbfe5fe0a42a70cf32cefa99174b1b41ab176373753dcabfc"
       ]
     },
     {
@@ -50133,7 +50059,7 @@
       ],
       "sourceFile": "..\\..\\..\\..\\src\\shared\\anaconda-desktop-messages.ts",
       "unionMemberHashes": [
-        "69fc9f736c4ce20a70028a39c7f674e9dd6715993dcb3b2bd06782c7ad675356",
+        "c3de6e55f030a851f17065920f50cbf6924430955c7ddb3ccf079643d098f048",
         "8fc0f60a3b9c8bd26aabcc1a7c3c3958a3b3c4c4d1c6c7f8cdbd9c0b04bb9134",
         "c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b"
       ]
@@ -50287,7 +50213,7 @@
         "AnacondadesktopopenedMessage",
         "AnacondadesktopsyncedMessage",
         "AnacondadesktopactionerrorMessage",
-        "PartupdatedMessage",
+        "PartUpdate",
         "PartsupdatedMessage",
         "ReadyMessage",
         "FontSizeChangedMessage",
@@ -50456,175 +50382,175 @@
       "sourceFile": "extension-messages.ts",
       "unionMemberHashes": [
         "d6df55074f9b271b596149241284d474f2c8c26a2678b94e62526fb1b5e915b1",
-        "69fc9f736c4ce20a70028a39c7f674e9dd6715993dcb3b2bd06782c7ad675356",
+        "c3de6e55f030a851f17065920f50cbf6924430955c7ddb3ccf079643d098f048",
         "8fc0f60a3b9c8bd26aabcc1a7c3c3958a3b3c4c4d1c6c7f8cdbd9c0b04bb9134",
         "c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b",
         "ae763f346054c66737256ab0537e3ce235ff49ecf5721ded085cef702fa0d212",
-        "a89434883af1775d20375b617c69a3b8d42ab477d54d33aa46f0982b8ff0e029",
-        "e10d05878e6ed7e16fbc8a1a0c896c7f0370decb36533d842956a3caa97ca55f",
-        "9b536bc50502ba852e39d67e99ed773e4d9fbfbd5009b4e2bab854de00ba87a5",
-        "99b64d09c127fe4aff2f352e8e14f94947ded0946d85a843ef5b550e663ef720",
-        "611753580addd01dbe486442c9805fb55733bbeab49514a9d368843d1b807c4d",
-        "0f5c0355d600226e30ef2d0e08fc9bad1bfe196837c88bd4560ec981c2fb0f2e",
-        "446c5497fc7f2e34399d8b96ac243096a7f61312a77f9cea63abc96568bd188a",
-        "cef64da910de4d20b8af6ba1ba5e577d215d390b67c0f9b7f469115c665cbd64",
+        "a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112",
+        "fafa457b200c456c2a61504d34516ade1639c34ed60f704100f1eae996167c25",
+        "a9c76a8ed7326cbcc3e9afc0742e1e5ffb0fc412b5da3f254cb6a2a5b6f5b28c",
+        "3c3c38392d336db33c42db9ec75e58baebdcc70008b85acdf5f470cd84f92306",
+        "1740c337640bedb14e02f536a2c446f83d9c5f7e9757c2dbf8e869857ab0a633",
+        "96e95eb37a19ac3d4989d2ed8918254f5b8cb19cc2cc3f9363d855dfe0f821dd",
+        "20673c51e587a15cf6cb47d48a5e430aee1160e3c19ea8e83f292dd75367a3fe",
+        "2069b6b851d17138f04b28883b9dc6f8a5fad36289fea13d1328c5bcac9055e7",
         "747170cb5ff817943c49e3eba4f4f6acfbce1577dd1f6ea52c6b5953496f860e",
-        "4248f2d3fd045c0dc01ce205bc4563fc8d69e2c17addbd10212fae5806155b41",
+        "97ee011c2f268541bee8c2fadfa7ec181fd4bff3886373dfe58616e9b8bbfe6f",
         "a938740656f57f38c7bcacd3a4aaf00937749fec5eb5bf6d86744eab9f22aaa0",
-        "4ba69e2b8c118a0b069d497c24e70541aa91451584e26dc90420db160adcbe08",
+        "5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0",
         "9636ea96f388fb6f20cdd75ad3bc50d13996272cb1b73b7b43c4ef60062e6596",
         "00904432602d2b3d0365d56396af87584ed20113b90bfb905f13eb6c187898c8",
-        "34b09847431a8253e738ce994cf5cffb7a31d759524e15547959fc061011c8a0",
-        "627cddd88b07639aeb5e031b0cde1eeffc6b6c4d1ca71718782c8aaa024c1d74",
-        "247da1af56a3eb74f5e5923672cd0235ad249a92bd1feac5ab9ab2b089abbddc",
+        "8f1687301698cf8f81bbb6df59363dc36b08f6b09828bd3d34d785a8aa317c8e",
+        "a0596045b6dd6b760c3a5dba6eb65208424b86514ec2f68bb5a799f6d936b199",
+        "b9ac2cefb8b6ae76c73dc35b900602b25e797be2193730e66469ca3983c07019",
         "768988e98a163415492ade684a5d62e0012b785dcc9a743f6ae4bbcd79cdbc80",
         "ce0108fff6e4a3f89b4f147fbe5df6a5566b4e8298660e3269870a6e791446dd",
         "60a0a622c068a0a0f775ee48ccb0704fe6b8c49ca63330939a89d75f5222d97d",
         "d0bc1a00b15be4b7fec96ad8ef947bc4c820433bd0f3ecf37c4b2fbc745f35ab",
-        "b4a0ca0595ee88e299a0fb16178bef7f6c76dfcb52e48cbc753a7473a61b3c68",
-        "23411b38b14d5f262b953d0ffc7a9a803bc23417efdf7fc1cc64194131338a04",
+        "dd3efc7dd97306335f7a2325057afb281b0782657e13d47f579611db37165019",
+        "7acd95bd57405a875333f108c682223c562081deac3f61aa7398b4a3ac73d9e3",
         "878e4208a40cdef561a7bce94c14f2fc91a9bd06c0d144d384f1e27316d03f75",
         "36e7d414838dd1f04ff9311f57c570d29866430181de1a2338e46a189e326df1",
-        "e292a3a8fdeb6b3ca2abadc1c448312696d19e3c4cdc75e31eb00cc0b97aa21d",
-        "36a202f1559558d0d6a4e30bd58ccfd29ef035ca2ba23cc4c8a3dff324184ab9",
-        "c8857e73f2530fee23af4f6b6a84623300859e05ce27713c3ce41832f1854a9b",
+        "462449d3f9f6c572258febf2943d979e706f84dba5c51b0cb523a3842525b5d8",
+        "a6905ea881276561bd0e8a74ed9ec51eaa8c4adc2418ac7fd346ad34f551a764",
+        "8e73f23db224570e55431fe053027ae09e96e5d0e4c82a438efec94f2ed68c8c",
         "223128bbacbf8dbaa92659866c11d18a3cc3ec518041902639599c5c578a9314",
-        "e073c4a0ee7d6379d3eaff1680653a517aebe8af61f396b7e35f5ef0c93fb197",
-        "715b0b8486af65620ddf436eb501bdd902afe354818c4a9e6b6144029180cafa",
+        "7d0149bdefd90035c298d402d1be03c984183d508b90b3c3d9edff05ce7d018c",
+        "3713efdb5ee35f8e046632df500e97ffa9dcf4f005a99138df7c94a0b2b590e9",
         "c0e8f0e2c9a36b59331189c6238ef1942a5f27e606c041c443382c04e2522f04",
         "f884c3033bca92b5306d6e63a8805056b6ab177ea7e08aa10a4b26a12bea4181",
         "1079fcc13d09c0186ad9e59b934577e658f097e1c0706cd1c8e27419acbde199",
-        "4f62ef2626aa6b01aee6fed24c61354f201de9a439a18cd866b8e300be604cf4",
+        "a6f5dc10c5de5b611694c7bde97a8edc102ab076c549188067aa2d3502b82bb3",
         "819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d",
         "16807cf2ae530d01a4a0124dea15f94387228ee3865117ebb30d9ac31258a0c3",
         "675b7e4fcbdcf48fe108166914629a2424eec8d959c67155ad1ecdddcef7b884",
         "82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd",
-        "653ad134e964f7effef3d8e6da78210eead249202ae8a10ed232f864003fb2e2",
-        "dbd43f2cefb7ec754f8638121ceb3bc562c08cb872b6394684c8e354d43012bc",
-        "cbd047d4981df8c2d7de81a1f4bb225f6e2c5e6645c51ac785070bbbca7c6353",
-        "53cb005826fb821f5daab5677a765e732c7f67d20f0986fdbd965698bf37e743",
+        "687206805a03368ab123d5c7bca04e75b925a384737d4a866021595d6dce4750",
+        "d9a0e5926de8d2192d5974628f62390d2bf94c8cdb1f6e62be6f18e27d07c20d",
+        "6441fe626273bce9c82af7d08b8b09475a5468cfda01a15d4dc38e8889547df1",
+        "1f760508df8c764fed9aae03887f6a257bb0f51d7b73fb8b96329d566f981f5c",
         "82ce29411d042052742586ef92be1d1d50a9cb34e7bd8ae787b64eb05aec64ee",
         "76f13f387ace843faf287725a3f4e4f76aaa9b2e147ca7adef87315064810756",
-        "9b64136fabedc09c9bc313ef6b5ff12a584769c1cf671142d1d3cdaab5937414",
+        "2567692d00c2d83a0a7cbc162c049740210e9b0ca0cdef9e1383943256fcbc30",
         "14ddba67bbe6a2c3bdfedb08bc28bcc5de20f14fd0c1f043728856844c08b3e1",
         "00e0998301bc26b74d107df6bbc8b9d1449596439fd8a19cf6f2f7679cc4d895",
         "2c4ec544229b813cd741de60936febcf3d0f51df5374fd5fc08468afa7fba073",
         "c012a062443b583bfdeff81eda6ab272554eeffb10925fd346a8c77cba93f506",
         "5ea5d445e94e3c47dc1c5644eb28c74898f9e16deb685098921d56c2465898e2",
-        "c3e906a13457a1e462a0806aba5fe28d7388d0716dc5135fcd2442e327d85ae5",
-        "4fb065bb3092b7bde5686492ff375e3a81c2133cac61fcf156b8236db4736499",
-        "03ea29094123c3a3bff3dc058bcf5b1ee61da5abfe1ad3369af7a28ca7853d5d",
+        "a2cfb27ac42209d03654a8658e754135e05d58ad67ca9fa204d4cb900399a7bc",
+        "1e5db7a28028622466328c7ba498342e7284c55adb68b2d7621efa12a538ccca",
+        "ac85f63ccbfebfa357511e34bc73d9be12d185a9c68dfbeae087704d93fc0efc",
         "6ae1783a823dfb0f76c4d92a6dc2c0afc2d3a508e33abcad88286ffa92b81c52",
-        "92edd65b349cc9a649ef39e348be02e937343d5f757b6eb80d78ecb0ef1fa8af",
+        "4cb73bf855dafc47a4f19fb21c5ed5dd7ca331a10a3fb6e518f44263bcdd7ff5",
         "f016b88502dfdc11df484fc4b21c97613abf1881f74ce00a49e655628d1f6ceb",
-        "efef3131e512cbd1b9a035460837f3ec09bdb8e9fd536e2f7c78783b54d37601",
+        "cf4ad6b644cd59feccd9ba99745dbacdb477afc9b2e15e1a5e9a3fc121abdf3a",
         "c9a8aa9e44d33287a5a9a283cf618c0b31ada2e7de66ad54d9ca75943dfa43ac",
         "1a2ee502c778c05dbba3fd496aacb577dcf933fa25cc60d59891a0092bcc4090",
         "c6f5a6a188c7bb4a7afb30da1cea02d327dfcab7c9236f3f98bc2de169c21ef5",
         "f22de60f7119367a78a19c0be52fef5211521e1b11b08a1a5f584daf5f84aa2e",
-        "a116ad41e7db9fd2f2733c222c29c675fe4c661e12474287c637645191b990b2",
-        "f9aab26b1a253ae22616869e00e782854971e0ad9b5cb075a5ee5f9a529f427c",
+        "6176a7943b20e049c040600600bdb824522037d729fac0d551a85712ec8e995d",
+        "f2529256c09ea041f5af844270fbcbe4fb6524a95ca94a6f363fb8c12234a771",
         "4de29f967e1bd942c0889ef923718adb92dac36f1c9bc4f0160b6f18f0e4ecff",
         "68f374af59e342d158f1fc22b379c369d7483c5937185c87dff699bfeeba0c7f",
         "73a649e0c335c43fb38cf191168c9c760189b4440c33f403c86f39c5eba47afa",
         "ebaad2a967b871fe58ae4efe631065b2257a01ad42cceb6fb1999b9a0693b322",
-        "b56712e05f2ccb5798271d1df83b4bb107b60d3c15549ea0e3b506f33cc62779",
-        "241f17946e7f356bdbf37494757a4b070f822e6bbe45e2408e1343cddceb7373",
-        "f8e048f0dd17a044d424b747213c16952588cb6aa3a0c7c22770176a9cf5d81b",
-        "79e89300f4c16ee49709ec6c7d34abba7df4ac6fb0d43a1ef9baa29776de9fcd",
+        "8fbac4ee88cec328799b4b83abbcecdcf5f973ff8d7dafa28d6e838345aa1c5d",
+        "f5d5affffb26140d4a278af4c0d93b7ce93351d36ffe947215f197c12dc260d5",
+        "7057e8e846e599c052401c1d1d0e871b761749d0d2c9e3aed07702387ccb55d6",
+        "fd6d28eeef8a10fd14044f7960b8c6d7358177b6953a81259c2417c0d650456f",
         "328ebec46d526d6fc6c8fa07ac50b23a2ace1582747c995de2e00fbaf53dae4b",
         "166c20f179c220ef49d651e4dff9117931ed466ef25a235463e91e5dd70cf6a7",
-        "0cfd8be48a1afc864403b153e399df4b19761478828c7e2b76905ca7acdfbd26",
-        "33c40ad75872e65e364d95a46ae4bb976c7ca71402a4edbd25952c2bca300d8b",
+        "36b428441e0aaf16355231543bf0dda0fab9168f0c26a5c61afe762773516ed5",
+        "f2acb96c7c999df68c29c7c5117b15d04cf36d9e8d71b020a787be1dce7f2814",
         "3ccd271851b8e7270446e00d0f4eec6feecd141261ad85705ca639547171c500",
         "71827858fc19c493b75d85ac7f0e5ab1d4a1a41bfb051836790abc1e94cf3ff2",
-        "d4d312794fe939df43484d61574b77606927ea394f41b34697c7629a075d2c1a",
-        "9669dfedb67ffa6d2f0c140a271247f493a27ac8645643f1d046173a5a4dc060",
-        "b307eae64328afc98407506b56812a7a98cb911dfcefb789ffd227c25860cab6",
-        "58d8a38e75964c32c5be9f9abd989f9b1f7910b472dc31ca63c1ed89e729be18",
-        "f95a68a9bfec3127b0643dcc273cefb03d62cb9108a885f2c5c4b7d0737e0d67",
+        "69e7531c660e832b2d07f8c44a22901d7bb8ef2d6279a226ebd5bd69a8a3e7de",
+        "6bb683bc6c5327664b0d21ce2e5701013999bddb84343a27ac40b71b09c55bb1",
+        "08e17b3774a15e90f6b9512a57fae31892a62f73f16133732a476fc2cdc5a532",
+        "5e7210a41ef05ea17f4c43877afc9db9de66f8c9a90564990543166854d0f7b3",
+        "ee4035361ffe1381076f5697cc8330eebb12049468f5acdf05be74c69a3571a8",
         "0ffb41b17f7727a3b33f4056c6f6c5609d2d1e7e5893a4ced6d7d752d2e3fae7",
-        "e4fb47812e348e59125709f41a42cc49512a3667f65c548ccba7ab90ef4f7329",
+        "efb62f768a4e58391227e604305d3961f0901ba2ac8b61b4456d4ac416ece0cd",
         "e08ac5aaf35199db35f7ec12ce8aa410cd71bd31a2a3bd4c198881b36b13a6ec",
-        "d498374084674d1cd8bd52687c16eca035a72e168b34f665901db7e87483dab6",
+        "7a9b33e4611893b8f3afdd1f189a2afcad4789889f79e85fea2d1ecbbcf9cf58",
         "0eea81ece28844f64a1355bf8a07063a29bcf8caf8e9e3dbdfd242611eae9e01",
         "57a0b9e904ac18c38d432e8c777aa5b6ce104350e42f8e206bc8d8fca3d40b46",
-        "cdeb8532bab5bc21768bb17b60a9e97cc31ec6db83bf29cec84947694d805f3d",
-        "618384d666b2a394d7747ee953df16d9ad85f1db12aa4adb2f769511340953bc",
-        "28c4c9a5efdcea6e5408dd78e589e86fca23fff92fb71526bc690dcdc63f95e6",
-        "702a00dbadaeea5cdd7a62d2c29c4958c8e97a63eece3f58b2f97e969f72d5a5",
-        "30b1354d2be04c8f21fb382b6142177d67dea9c813bb1d84dfe3d7590f76eecd",
+        "632164d9242067a77866f5780bf8cad0d126219a36f3110b9aebe8737294b0df",
+        "9fd869e4062b7accdd0f2015957cb800351f9a8053a9695b72836361709a1019",
+        "6a33ea5d1adf3dd1bc0e8558acf5dd1fe479508ab5781bfb7fcc8153fe290452",
+        "ddab1419a2fe226f5f54318a2122a599da52d22ba19186b345876cd3f2f3e2f6",
+        "9da9eb877f3973b9535e52abae6dcdca79f37340b70d6c4f71600235aa735c5a",
         "948b0ec869e108f76b28cbbe5931cb81db510006d565961303b788235937cd13",
-        "8f35228e231a27f8f84fb244573d60e6e6cde38c24525428dacbd539eaaf186d",
-        "61f7846d8adf2d93652691be807d1b85ef53dcf0838782c5b88bda2bf3964a5b",
+        "0c840eb310c1fdae4d78c532ed88aad8eb37739d86ee094c65e6a6432eea632a",
+        "ef4bd8459b1f1831295715d1444a60d89ea32fab84d0ba1a3e001226b64396b8",
         "c7e48cfcba4c61d94b4c1079f59f58f6ec8a60fc9f52c7abc7b8ac484dd0aeea",
-        "0eff3e638e501cf9b3e892ce75439cd80bce0fb2d861333d40be4570420ccc47",
-        "9fd896f0c284b4a258cc1cf7de228aff8fb7b1d173bc6239c13e709cdd0b3701",
+        "deb3f1b2ace1a98c600b8a43ac4a271026e8161cf719ba4d629a6787762cd9e7",
+        "53b1be87d48c87b038cfd24eca872b19ac90c66d8cd4e016bb3108c9536f07c4",
         "e71a87c4a0b9466a294ecb07f507ec724453aa9c03edb12674e95a060d186a3f",
         "8e287afb6ff9ef770f2b91e051d18e4c4dd15c5d46b337dc65249d487830aa3e",
-        "cfccb1a4f50695d333383efc9f496dd04e55adcd2ef1760944a59fbff84d7251",
+        "13f44ab1dabb62e49b5c3f16bb37b697d91b6667a88e602cd661b58da3b0b4ce",
         "7769521e06a7ab8a5f4a420afe1c470536922d624e68c5010e31e3b0684cd2f8",
         "b1c805391bbcc095b4e5d99460d21ddcf0e60e8b1d1131f17323028e2e5215a1",
         "4e45c07d643b0d38c368f3f219a3d0b5ff75d3dd0ccfdea624ed7f182e6acaab",
-        "e7bdf655c4ebab22e0581d4d67e25124f4cf55cdd142e8df4de4a04e27f0a27c",
-        "03baa2fde7e1a47e414004dfe4b4543581719a5bb66fde6ff5d484cec78c4564",
-        "19666ed86928d3da4a0c8fe5b6030e9152097731a537501590b72a28aa31ed68",
-        "b2cf42b373f8371aa53df20ef3a1557a7315331c527cbb6e7a10cd705105fc32",
+        "b7bf27c4fdd5ac2b2c9d812a0bca05e8eb8439e21f1a389bc87f838af11b2ab9",
+        "4004d45092bc36295ec907bf0a85c5bed6e1420953142e4467b47d937f1170b2",
+        "d77162e07523f60b6560ebf8f902bfdefd7fc5fb007caad6ac4d79c1f7b638c8",
+        "33e481de0dd70e57f89a28ce47cda515b375ac43a1e2ed0ae01bd9377a177f52",
         "0c67165971391a7787b807cc63f41f238fc0813b494d195577419ba978c7d855",
-        "91e0145b64fd62c81c115e8d0f13976e84b9a8196352b5e2dedca3b94c369fd7",
-        "aca3ad602cd51fe85bf7271b9ef34e277f0cf6de682f6cf799c75ca676fe8a42",
-        "10bd941d575d8a581670a0f664a6729014c76015747ec15e5f5b45e3f2f43583",
-        "fd9b99cce73c926e08df94ecf8262c7cba7893e4fc22b6b2ad0763e6949157f4",
-        "9d6152a9243d4220a61caab23e38b2a3a0daadb013058dc88e977a3e6a64727e",
-        "474001142969284e6a91bbacd11bc4ffb155af1529341f5104c7a5ba96e6881e",
+        "e6962082eca91df3d4e4ae59ff6502bdd5c702e3d76f592997fdd09b03762cb0",
+        "8df92229153667218915f8b730ab93438f686631f626f2d7c2606c2277d2862c",
+        "d58178e316d1ed8a2d2acce2ad27a9b908882f68d8ddfb3cef06c8a5630def14",
+        "6993576040850f30811def20af1e2ac132b03e1b493bff7f244f44e3c208bc7d",
+        "b02d75f915b71cdee458445aae6f87c51e53e9936cfd09dd69e80ec6a74b86e5",
+        "3a1318f0c5fbf2b565e3cc20ee4099e64198de8e844ae5ea3e53d0f497a76829",
         "f3e22e87de54e3e763ae4fb624dd41dd73cb06e075c9fdd1e5ddec0c58d6fcf9",
-        "326e80f06ef7bc676402d5eb06b9ffd592dcbe80bebd904f165bf93b4d822199",
-        "3d9c585e902b51cd8eed291eecaa59287a95a0756fa4fb40bec0138afee9cd7b",
+        "1324bed4c9c2c1af961141836fac48fe529b4777045f4d8fda6823221d1c5d4a",
+        "02019123c3a117ac5ed33f3f7bdaa173bb3989583b2dd973bfeca1666de70a46",
         "623713845eae26d5e2ba27483d6e0d3ed43cfcf4de822645a27719b38f7a81e7",
         "c8c35c9015bb355bbfa3f41fe5d0435011050866fa062572ef93b0d73524e77c",
-        "770bd101e14e961707627964f209812dea272bbcf120ba473927cbedc07ebf91",
-        "c7740f099557248d407c10a04b78cd3c9f23ea0ba18ab39969e29706488ec951",
+        "7b7c411976c4066a2c803e828080339587e7ab57e8d5fd92584a8c5faab8b5e6",
+        "ceb61c645ddad49fa6e203b0151aa25b4bd62f609fea1615605947954d83be3d",
         "7d26299641bee2766b2de5d196ec6cbd6ee45d279e0e3027103ef63e3cd021fa",
-        "48f1a4b1a2924df981339619d4a47ae4b884b152de6ae94febde3f15697b56c2",
-        "f101aa2c140b4d2ba36beb7cbcaf966aa807cfa10e4182d33378769b60e200b1",
-        "5e4ecd3f1dbae16bdc9024f473d6c1f8500525fd5ac3cea3ba623fa437e2b86d",
+        "793e876d11b58badd8ac104721ac5b799ccad6ef1ecf2dfbc68ac14bc6958bcb",
+        "9ee47a55cfa622c134316481a8680f2713ddf47ff59cc7c77be3273dffad0faf",
+        "ac863ca58c93834f0ae3e15ff8d2a25c5b8a2fd6fdd23e473f5bfb5c1f3dc52f",
         "347f59b23fb8347ff53410cbe875c0910d1eabda983b6e77066512205517af49",
         "f6ff514674add5643f46ca712330d50028556d2f5fc393c38576c103f9f87647",
         "3f2499d0cd6ae15c7e8318bf4c7038e076eaa9d6be313258f83e8fc96ed83c03",
-        "49294044d92270ee17fd79ce901ff6986af452490a29c712143705d7795b58c9",
-        "436bc363c5bf309c1672526f0cdf21d5d08151c89a29c7c9a6059ffdb3e26e5c",
-        "4ed9ae531fb35f595386dcb97e01c9c4772363ccaa6ae5aae433fbb0c3a7ceb4",
-        "be61037aff01c12179957923497a3d18b4220a39cc0678f9176404a2c2f5d69f",
-        "82eb2da294255e7de6f58d215a2b9ce3ba6a673607453184f079a076834c95ba",
-        "5449470c823da130ab07b13b609ae65357c4ac9438d164840b69537ad3f810e4",
+        "1fd763ac3eeebcc1b7c5d466260d2b4b931f0cab3af5c126417ddfccdd759675",
+        "6d40ce998b4849af88bfff8ed4f865e810bce757c61f9ed68a4b7ba397f929bf",
+        "3ca2eeed34ded09ec300f1809724311301cbfe12c476a1284203964f95395618",
+        "88ae2f07e7f402b75a0515c503e88191e43863cdefaa9418e751d90468be04ae",
+        "b1a872fd9c09cb8781b68c298a20a677759d8f28aa2e4701f6a497cfd5a30eba",
+        "b68c2cb02d2b4eba3064e4cad7f5618860d7cff31f92eb3bc11a17d2947edcd4",
         "71790b09ab512f5e56549142b8fef5d84e8f778dde5337c31068a0e67343c559",
-        "bf0b236217ea7592622cb7893d1017e07900a316bceacdada3fab2c430e375fb",
-        "bc6bde86917d7ebb078d34ddba3bd93d0abff34ded92bdee6c7377779c2153de",
-        "1670dca643d65d9f25eeaf3cac3656b440c560780ff8709dfec7cbda71649570",
-        "e96f2cec53db9e2bdd8358bcec2abceedd467442237d8df7d55d76849d866436",
-        "e28908dc1798655fae65ef6429605d7c942301d3c5559387b1f7173c364e4cab",
+        "29708702048bef1135a06b6c8777365aa8d9163fc18a774af6401c0ba9fdf805",
+        "8a7884f3bb043710694631e5b90a2fc614319b9ee08d605668a2e47c4103439a",
+        "de1d4bac99c05d91d118a93316c4e16ace4ef6d2bba6be39db8d3a8e218d5937",
+        "f7e8b249f3a9ffb4210061316d4530bff025d356bc4975b28f41aeb55d4de9f4",
+        "997c7c0f120dc17eee41bfa8c4c0ee9864b29acd10fb24eec70802e6a9154fde",
         "aad5690b6d4d2a0c3d36fddd6ad1322c81cee706df618a1ce50e624c7de746dc",
         "bcfe0a34d4d44b0d7b6756909f1ca1b7dff3698e46cce46db014303b3fb6e16b",
         "2b05f7bd88e27696a757f27af98506bac47de26abbb57f14b5d57e90e1caa6da",
         "230f8b9e9044b07ce2f885764116534949d7822469d057e6ece07c0f4064cfcd",
-        "183afadcc179ac1907eaebe4196d7627800ca49d06b7e5a1f287b75fcd60b9c7",
-        "d8e6eb7d8c708606ab8f62e9d2540b41ac30734e0d4b328c83726c725c55d79d",
-        "fcdb4e0f2ef1c167f1a1a48d6c62a046a21b0326310ae5b3f94444e6caf5a8e2",
-        "f46f8895e530b4c2db5995d99dc16d80dd434f8384fd5d2d46918f8e84f77100",
-        "e2c012646093cbb7859b158051a83827e8669a25df20f895625af823e7ae2500",
+        "988ee60c16e8384331baf08818a1e6fb9d8594b4fde2531edf27e075eac57ccb",
+        "1d4b3920a69df3fe87e36f7aff373e43fa30cada1cbd48bb8daa4bfadfa2e0c9",
+        "b2e1a7bfb6229b78083c86ce6d3a8e480f90a87ac7637a5bf908adafbefcb450",
+        "18320e5789c0710e0cd5a81353220ae84ddb49614afa03c625b81b71dcc49089",
+        "9b06c5ca7d253d3bccd9881c4ccbffc4d037bb8f910bfce20230cc1a568bcc68",
         "11f5b4735a6ccc9ddcdf39ffae2a9b8490dce874d8b881280c9811a55e4fec95",
         "983f9b93d7c284e829fb6088d42698f3ab732d8d211e2abc6b9a29eec0ab0797",
-        "d90adb816bb6a3802046390537e890cff89a288921a5f637007c53322a9933b4",
-        "18b15326bad9714c56f6f0bb29a8cd62ad6b28e2a769a93a79d4bb89610df046",
+        "530dcb3a61d7b3cf03aca1f867ecf46caeab0930bfc40254c56902d9c08ec388",
+        "bda1c1463e9daf3cac215efef29fe3eff4ef6204c2216e54689a7e8a392740d2",
         "7d1bb9b490209eba99694271a63230265f8e5699a2c396f01c784a96b92b7e23",
         "d2427c7d18f032b9933a65405fbe96d0523ebe28463f8e505060c6f4177f3f66",
         "0edb5815d5d40ff7502ad70f312e97eeae901c597effbc08bfdcd008fd65fb78",
-        "a2d8c0e0e730ad1e5279303496cfb3a66c9ba9bccdb3253daaf595276221e168",
-        "9b7b691c016705241571bb34103a292df08a0098d50acbc74b42f51776270bed",
-        "4b26234a6118abb4382b4fd3904430086b919d8c3ea8c9b7f4fc25c8e0976a88",
-        "d062c30fe226699056563a54a8f33891fbb2596abc62d861d1c87aec2b3fd9a0",
-        "235f7ac08abc071d596bdd8cefb9be1c751a5545c5caca06edd7e24e45e9c40e",
-        "5712371cfd03a05883d70b2006562d3649f3c14adbe139615b130a9c829eb59c"
+        "d1ad8c7fcfface31b4478cdbee1f1a2066e513b297250fad2bddf495e1de7501",
+        "20467bb9f697cf77823209e3bab7ca2f16ee2a865e2130d02ded66da1ae2c34e",
+        "e7532b3ade3dabbed3325e7104e343d2766965fa6e85f5cec3e12ebd4cd9a8c5",
+        "e2d0705f0c0a48fd1c7424b51d4929eb833a902e9ec1fe9a2f852940500bd146",
+        "81139890b7353fbf56b131d40075ea467291bc3e6f8a13c42cb4d482a946d841",
+        "b87ab4bef2f31ebde54ca96c3326522ebffc8b6fb86fb27ccf260412b68b9fac"
       ]
     },
     {
@@ -50656,28 +50582,28 @@
       ],
       "sourceFile": "kilo-provider-utils.ts",
       "unionMemberHashes": [
-        "8a0393b36b131aabf37db3bff1d6154ac758385d6af5fb93c51a0c22a20f94f6",
+        "a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112",
         "2d52438d99ff50b6f756fd2c4dd1f477591f44114c2082ec9386edf94c6bdaf6",
         "d6df55074f9b271b596149241284d474f2c8c26a2678b94e62526fb1b5e915b1",
         "c522e109872bbcdc003d993ee15c963a9d034b685da900a547168c8057ed1c1e",
-        "50faff46e4c57b8433b321434a9a66708682e647a214a17fce348a5786294c96",
-        "8a71bc2d6bda2f597d99ab18a17688d35af5ff18d0c996cf70590977706083e3",
+        "eccfa87da5d7f12597175bbdda3e3a7005a8b889ac7dc4ec0d5a69e8822ca2fa",
+        "32acba503baf5175cc58f29a13a287997a9023b00ffa990880a7bdfa9de2d124",
         "a57023808408e3c7063dacba81810be98ee4bfc60580f9443a5b702195334743",
-        "b9f2eff9f31aba05059f4690eee873548fab4dca653a94e2dd8746ca453d5a3d",
+        "d083bdebe4d65e203d1d997d6eb27a4e622dd21caaf4328ff20ff87b5d388e57",
         "af6a7c2b7ddde4c6d0ef88a80831f7fc89657b3ac156c0e19e14b5050d779e5f",
-        "e022780b88a2621d04b5a03e839fa14f1d44c5e3fadef9c00371db2ed9fece08",
+        "bd1f03c462e901a3a7987348de69161b7738c5f372e5be141021f6ffb43abaa2",
         "c6f5a6a188c7bb4a7afb30da1cea02d327dfcab7c9236f3f98bc2de169c21ef5",
-        "a7302cd93254f8193251458cc08861de9f2c65a14e361250bea169b863ba9b2e",
+        "edd921f9bf5addc67d1353782dd642311b7bc3a2379dc6e8995a79ab2064cae7",
         "68f374af59e342d158f1fc22b379c369d7483c5937185c87dff699bfeeba0c7f",
         "73a649e0c335c43fb38cf191168c9c760189b4440c33f403c86f39c5eba47afa",
         "00904432602d2b3d0365d56396af87584ed20113b90bfb905f13eb6c187898c8",
-        "0fa3fa2b4d305311b33be35e13aa60e73996a047949b37477050dff24d008274",
+        "6abc6e8d1f94fd7b614104063ea32eef3b377b65a0169022c68b7248078085bf",
         "d12f3ccb409115cfae51006029902c50abf3674e2ed33c70f03b218582147505",
         "9d2da869afca6a05fdd4aed3cf392e4e514ed746b836875cfdc6483556a6298b",
         "60a0a622c068a0a0f775ee48ccb0704fe6b8c49ca63330939a89d75f5222d97d",
         "d0bc1a00b15be4b7fec96ad8ef947bc4c820433bd0f3ecf37c4b2fbc745f35ab",
-        "bcac9686eeb8c85798a582410d4e8ae17afec3bf9535cf6e739b28a7caef8b01",
-        "b1f99c32fbb8024c1bb48641a01f56901f7cd9f8c06b1e721ebc74a89b3dabdd"
+        "3887531bc09c02ba42e14230c0e574daec613185266992c3943deeb21ac93810",
+        "e615decb094055b383bb6043b0eda54798a3080e03f486693583f859026d7a71"
       ]
     },
     {
@@ -51083,9 +51009,9 @@
         "96fb15df5c3c0eeaf06a3abead406108337129cbbc2a67cf5896aeb132cd7185",
         "5726d6684588a321ec0b05c4e22baa8148de1fa0168bf24bf7b2f57c88f8831d",
         "22bdb28b9bb6d23d8dfcc34edbf62d4713a01e99cdc195940a4141dc03b3a3e0",
-        "7e2783e6b8dcf2e59eca9a448d90ca9dad347141469fcc283c53064906da69be",
+        "99ad6cd6c41202973da5e9aec5e30821b3f2b421048bc64767f6e3beb1c4b016",
         "979e67cc8e5190acb067ab2ec258de1c1334f01998bf90cd63cf3c56560ec44c",
-        "ca190553af8aa3c82bc55391a21f6e9a59876031f7afa53efe3eed6bb3189bb5",
+        "5ef78b70f5ed986537775ccb50f6dc7b6d731f1def1be61282c2cc725b8fb6c8",
         "780f8550b5f9c5ea9648cd55a83c13f3aee9b65caebc294579d8f579ca8c4d8b",
         "40e841e0b076d29a964a896d05cc948e0f4396dd570059161c8d76623ccf5ba5",
         "4513a5be19aaf5a82865baf5f22fae183655ed4a8a4b0add3654a3a43057f142",
@@ -51093,7 +51019,7 @@
         "6d6bdbb492920ed6bffcdb95f0550c6890d07ce7cf46bfcb2ad94ebaf28ac729",
         "51f5bc4cedb993aa622217cdda1d0095763f72fc7f94c59fbf8027b3d44c88a7",
         "dad630981366e1386d630702cbe73aae16cf614ce7cfb865455b637b0d728d36",
-        "99b64d09c127fe4aff2f352e8e14f94947ded0946d85a843ef5b550e663ef720"
+        "3c3c38392d336db33c42db9ec75e58baebdcc70008b85acdf5f470cd84f92306"
       ]
     },
     {
@@ -51285,7 +51211,7 @@
     "warnings": []
   },
   "statistics": {
-    "totalTypes": 677,
+    "totalTypes": 676,
     "webviewToExtensionMessages": 205,
     "extensionToWebviewMessages": 183,
     "inlineMessagesExtracted": 0

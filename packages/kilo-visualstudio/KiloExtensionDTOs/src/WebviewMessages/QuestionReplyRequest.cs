@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: QuestionReplyRequest
 /// Discriminator: type = "questionReply"
 /// Source: webview-messages.ts
+/// Signature hash: 22dae77ade0587b62010146aabb6a286822b791da4fc32ba30962394d4c62856
 /// </summary>
 public class QuestionReplyRequest
 {

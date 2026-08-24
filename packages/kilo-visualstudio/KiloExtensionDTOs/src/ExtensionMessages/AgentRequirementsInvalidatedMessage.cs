@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AgentRequirementsInvalidatedMessage
 /// Discriminator: type = "agentRequirementsInvalidated"
 /// Source: extension-messages.ts
+/// Signature hash: 76f13f387ace843faf287725a3f4e4f76aaa9b2e147ca7adef87315064810756
 /// </summary>
 public class AgentRequirementsInvalidatedMessage
 {

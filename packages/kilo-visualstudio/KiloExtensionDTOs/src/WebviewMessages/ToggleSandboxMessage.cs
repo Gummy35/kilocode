@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ToggleSandboxMessage
 /// Discriminator: type = "toggleSandbox"
 /// Source: webview-messages.ts
+/// Signature hash: 9311559969da3a153ba28be1a7d0326446567a95169afb97786f77434d8f6e16
 /// </summary>
 public class ToggleSandboxMessage
 {

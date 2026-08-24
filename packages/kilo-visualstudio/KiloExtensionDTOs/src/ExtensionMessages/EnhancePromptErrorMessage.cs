@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: EnhancePromptErrorMessage
 /// Discriminator: type = "enhancePromptError"
 /// Source: extension-messages.ts
+/// Signature hash: f6ff514674add5643f46ca712330d50028556d2f5fc393c38576c103f9f87647
 /// </summary>
 public class EnhancePromptErrorMessage
 {

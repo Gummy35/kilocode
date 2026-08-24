@@ -18,6 +18,7 @@ using KiloExtensionDTOs;
 /// WebView message: SetWorkStyleMessage
 /// Discriminator: type = "setWorkStyle"
 /// Source: webview-messages.ts
+/// Signature hash: a5e369274991cee566d69eac3ae9293fe27577a8d894884450578cd7c68f09bc
 /// </summary>
 public class SetWorkStyleMessage
 {

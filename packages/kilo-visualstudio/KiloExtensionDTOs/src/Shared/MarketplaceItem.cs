@@ -6,10 +6,10 @@
 
 #nullable enable
 
-namespace KiloExtensionDTOs;
+namespace KiloExtensionDTOs.Types;
 
 /// <summary>
 /// Type: MarketplaceItem (placeholder for union)
-/// Source: ..\marketplace.ts
+/// Source: services\marketplace\types.ts
 /// </summary>
 public class MarketplaceItem { }

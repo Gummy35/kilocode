@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CopyToClipboardRequest
 /// Discriminator: type = "agentManager.copyToClipboard"
 /// Source: webview-messages.ts
+/// Signature hash: 51dd81b81cc30241e8c8daacf880591fc4417ae27cc2f9da2c33bfd5632e56f2
 /// </summary>
 public class CopyToClipboardRequest
 {

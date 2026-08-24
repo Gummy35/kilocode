@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: PromoteSessionRequest
 /// Discriminator: type = "agentManager.promoteSession"
 /// Source: webview-messages.ts
+/// Signature hash: 4b9f7163fb01a9c8e39a38ecbc87e1469d222d2310b6fbd2601f567c0f2e8f19
 /// </summary>
 public class PromoteSessionRequest
 {

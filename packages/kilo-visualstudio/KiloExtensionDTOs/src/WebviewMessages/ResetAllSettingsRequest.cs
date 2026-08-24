@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ResetAllSettingsRequest
 /// Discriminator: type = "resetAllSettings"
 /// Source: webview-messages.ts
+/// Signature hash: 88330352f18e030dbadb6812b84b037cb5b89c5907248ae37b4c430fb9f95d21
 /// </summary>
 public class ResetAllSettingsRequest
 {

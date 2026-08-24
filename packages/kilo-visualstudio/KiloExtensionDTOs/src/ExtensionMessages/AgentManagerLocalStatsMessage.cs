@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: AgentManagerLocalStatsMessage
 /// Discriminator: type = "agentManager.localStats"
 /// Source: extension-messages.ts
+/// Signature hash: f3e22e87de54e3e763ae4fb624dd41dd73cb06e075c9fdd1e5ddec0c58d6fcf9
 /// </summary>
 public class AgentManagerLocalStatsMessage
 {

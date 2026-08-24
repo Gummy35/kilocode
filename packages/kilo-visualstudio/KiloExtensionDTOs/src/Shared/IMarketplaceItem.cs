@@ -6,10 +6,13 @@
 
 #nullable enable
 
-namespace KiloExtensionDTOs.WebviewMessages;
+namespace KiloExtensionDTOs.Types;
 
 /// <summary>
-/// Type: WebviewMessage (placeholder for union)
-/// Source: webview-messages.ts
+/// Union Marker: MarketplaceItem
+/// Member count: 1
+/// Source: services\marketplace\types.ts
 /// </summary>
-public class WebviewMessage { }
+public interface IMarketplaceItem
+{
+}

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AuthorizeProviderOAuthMessage
 /// Discriminator: type = "authorizeProviderOAuth"
 /// Source: webview-messages.ts
+/// Signature hash: 0ad26b1355d5dafd200fb271b216ddf31e325c42405204ec6829fcb7f9ada712
 /// </summary>
 public class AuthorizeProviderOAuthMessage
 {

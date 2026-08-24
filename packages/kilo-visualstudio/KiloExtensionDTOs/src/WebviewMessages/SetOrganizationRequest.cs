@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SetOrganizationRequest
 /// Discriminator: type = "setOrganization"
 /// Source: webview-messages.ts
+/// Signature hash: e5658a04d39d5a63099bb6c477f994923ae95e725e297f9fc9bd2e93bf62b50f
 /// </summary>
 public class SetOrganizationRequest
 {

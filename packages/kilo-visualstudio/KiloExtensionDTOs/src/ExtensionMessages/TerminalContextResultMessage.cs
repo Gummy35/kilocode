@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: TerminalContextResultMessage
 /// Discriminator: type = "terminalContextResult"
 /// Source: extension-messages.ts
+/// Signature hash: 4cb73bf855dafc47a4f19fb21c5ed5dd7ca331a10a3fb6e518f44263bcdd7ff5
 /// </summary>
 public class TerminalContextResultMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ImportFromPRRequest
 /// Discriminator: type = "agentManager.importFromPR"
 /// Source: webview-messages.ts
+/// Signature hash: 4b8972657d4defb69d9c7dd9e13c2b33761bf3f267578e59bb1a5c403f16440a
 /// </summary>
 public class ImportFromPRRequest
 {

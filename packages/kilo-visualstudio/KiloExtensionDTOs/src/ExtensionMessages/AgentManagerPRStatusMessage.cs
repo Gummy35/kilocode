@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: AgentManagerPRStatusMessage
 /// Discriminator: type = "agentManager.prStatus"
 /// Source: extension-messages.ts
+/// Signature hash: 1324bed4c9c2c1af961141836fac48fe529b4777045f4d8fda6823221d1c5d4a
 /// </summary>
 public class AgentManagerPRStatusMessage
 {

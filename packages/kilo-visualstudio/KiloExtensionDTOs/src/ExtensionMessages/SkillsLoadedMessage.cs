@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Agents;
 /// WebView message: SkillsLoadedMessage
 /// Discriminator: type = "skillsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 1f760508df8c764fed9aae03887f6a257bb0f51d7b73fb8b96329d566f981f5c
 /// </summary>
 public class SkillsLoadedMessage
 {

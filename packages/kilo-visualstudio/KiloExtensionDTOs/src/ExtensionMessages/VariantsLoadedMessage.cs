@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: VariantsLoadedMessage
 /// Discriminator: type = "variantsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 8e287afb6ff9ef770f2b91e051d18e4c4dd15c5d46b337dc65249d487830aa3e
 /// </summary>
 public class VariantsLoadedMessage
 {

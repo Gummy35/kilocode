@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CloseSessionRequest
 /// Discriminator: type = "agentManager.closeSession"
 /// Source: webview-messages.ts
+/// Signature hash: 8c740b7831aa5faf0227c722eb96f45ec5fd69d9fef8740c1407aaa1d932751e
 /// </summary>
 public class CloseSessionRequest
 {

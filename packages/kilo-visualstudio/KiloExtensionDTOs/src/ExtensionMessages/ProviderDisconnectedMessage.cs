@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ProviderDisconnectedMessage
 /// Discriminator: type = "providerDisconnected"
 /// Source: extension-messages.ts
+/// Signature hash: 230f8b9e9044b07ce2f885764116534949d7822469d057e6ece07c0f4064cfcd
 /// </summary>
 public class ProviderDisconnectedMessage
 {

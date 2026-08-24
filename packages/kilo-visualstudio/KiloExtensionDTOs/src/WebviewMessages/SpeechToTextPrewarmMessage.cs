@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SpeechToTextPrewarmMessage
 /// Discriminator: type = "speechToTextPrewarm"
 /// Source: webview-messages.ts
+/// Signature hash: 4dfaee9bd3379976142bc3faf7899254d2f1d9d10d4563f7ef94f855198867f9
 /// </summary>
 public class SpeechToTextPrewarmMessage
 {

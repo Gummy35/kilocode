@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: OpenVSCodeSettingsRequest
 /// Discriminator: type = "openVSCodeSettings"
 /// Source: webview-messages.ts
+/// Signature hash: 8f4bca3858309affdc819fa743f0d7c930bd09b4cb014ee0e8c4313a7520a15e
 /// </summary>
 public class OpenVSCodeSettingsRequest
 {

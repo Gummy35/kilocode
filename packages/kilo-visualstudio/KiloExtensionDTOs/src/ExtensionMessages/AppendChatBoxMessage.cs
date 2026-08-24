@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: AppendChatBoxMessage
 /// Discriminator: type = "appendChatBoxMessage"
 /// Source: extension-messages.ts
+/// Signature hash: c7e48cfcba4c61d94b4c1079f59f58f6ec8a60fc9f52c7abc7b8ac484dd0aeea
 /// </summary>
 public class AppendChatBoxMessage
 {

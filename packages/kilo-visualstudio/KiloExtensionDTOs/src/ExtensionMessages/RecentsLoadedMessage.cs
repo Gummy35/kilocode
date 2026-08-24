@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Providers;
 /// WebView message: RecentsLoadedMessage
 /// Discriminator: type = "recentsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: b2e1a7bfb6229b78083c86ce6d3a8e480f90a87ac7637a5bf908adafbefcb450
 /// </summary>
 public class RecentsLoadedMessage
 {

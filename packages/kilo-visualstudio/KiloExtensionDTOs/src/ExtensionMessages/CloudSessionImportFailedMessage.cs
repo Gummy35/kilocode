@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CloudSessionImportFailedMessage
 /// Discriminator: type = "cloudSessionImportFailed"
 /// Source: extension-messages.ts
+/// Signature hash: b1c805391bbcc095b4e5d99460d21ddcf0e60e8b1d1131f17323028e2e5215a1
 /// </summary>
 public class CloudSessionImportFailedMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RevertWorktreeFileMessage
 /// Discriminator: type = "agentManager.revertWorktreeFile"
 /// Source: webview-messages.ts
+/// Signature hash: 73687280b781b8d0142c6529892b7d2205a034de7e8e77f76c88c8b9df14e026
 /// </summary>
 public class RevertWorktreeFileMessage
 {

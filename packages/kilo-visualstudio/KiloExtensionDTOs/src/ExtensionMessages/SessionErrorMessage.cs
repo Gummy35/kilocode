@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SessionErrorMessage
 /// Discriminator: type = "sessionError"
 /// Source: extension-messages.ts
+/// Signature hash: 5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0
 /// </summary>
 public class SessionErrorMessage
 {

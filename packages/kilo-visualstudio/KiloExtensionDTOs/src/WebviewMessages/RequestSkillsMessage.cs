@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestSkillsMessage
 /// Discriminator: type = "requestSkills"
 /// Source: webview-messages.ts
+/// Signature hash: 156698792597a7684046d0ad4e693994f9a323bd89f576941d0027ad5310dd1b
 /// </summary>
 public class RequestSkillsMessage
 {

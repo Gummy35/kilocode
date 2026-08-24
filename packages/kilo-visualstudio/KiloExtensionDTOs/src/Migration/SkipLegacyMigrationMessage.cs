@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SkipLegacyMigrationMessage
 /// Discriminator: type = "skipLegacyMigration"
 /// Source: migration.ts
+/// Signature hash: bf5c942f313d803fe17e8f891e1de29b6cd3da0f514f97079490c290afc7a086
 /// </summary>
 public class SkipLegacyMigrationMessage
 {

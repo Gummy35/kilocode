@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CreateWorktreeRequest
 /// Discriminator: type = "agentManager.createWorktree"
 /// Source: webview-messages.ts
+/// Signature hash: 4fc8a1853c468ef389ba45eca9c11da5ff14944a42289233f2c8a0f712737035
 /// </summary>
 public class CreateWorktreeRequest
 {

@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: ReasoningPart
 /// Discriminator: type = "reasoning"
 /// Source: parts.ts
+/// Signature hash: 92485d485d7193a7b24f0200cd56f3b2beef93aba70e77641bb7969153c22504
 /// </summary>
 public class ReasoningPart : BasePart
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SendCommandRequest
 /// Discriminator: type = "sendCommand"
 /// Source: webview-messages.ts
+/// Signature hash: 4e1a6819f37414dd6d18bd90c5d76d5ec0c3a79bf98ef1cb46d2db4f6144a204
 /// </summary>
 public class SendCommandRequest
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: CompactRequest
 /// Discriminator: type = "compact"
 /// Source: webview-messages.ts
+/// Signature hash: a638c8a63950e9005d15ece18ad7fd312aa94aa09e53ec0f5a1e6a9474566562
 /// </summary>
 public class CompactRequest
 {

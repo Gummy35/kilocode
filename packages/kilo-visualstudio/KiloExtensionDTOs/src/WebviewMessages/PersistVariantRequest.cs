@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: PersistVariantRequest
 /// Discriminator: type = "persistVariant"
 /// Source: webview-messages.ts
+/// Signature hash: 30dac2997d7f851761de2b0f989daa7bfe53c5fd49bdfea1f836945cf55b6c3d
 /// </summary>
 public class PersistVariantRequest
 {

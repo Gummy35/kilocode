@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ProviderOAuthReadyMessage
 /// Discriminator: type = "providerOAuthReady"
 /// Source: extension-messages.ts
+/// Signature hash: bcfe0a34d4d44b0d7b6756909f1ca1b7dff3698e46cce46db014303b3fb6e16b
 /// </summary>
 public class ProviderOAuthReadyMessage
 {

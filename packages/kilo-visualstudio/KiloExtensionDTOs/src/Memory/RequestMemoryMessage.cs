@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestMemoryMessage
 /// Discriminator: type = "requestMemory"
 /// Source: memory.ts
+/// Signature hash: 5cfbdbda837703974da4b663257e63c16465f1bddf905c5d91f1bbda8c8f9d80
 /// </summary>
 public class RequestMemoryMessage
 {

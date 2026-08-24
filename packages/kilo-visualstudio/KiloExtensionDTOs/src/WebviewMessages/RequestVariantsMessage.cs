@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestVariantsMessage
 /// Discriminator: type = "requestVariants"
 /// Source: webview-messages.ts
+/// Signature hash: 7e77e8bf306e911127657ebcf6e3d3672cd64728fbbb221ccfdd7652eb8bd146
 /// </summary>
 public class RequestVariantsMessage
 {

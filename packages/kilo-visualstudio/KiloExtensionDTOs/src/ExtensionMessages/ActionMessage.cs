@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ActionMessage
 /// Discriminator: type = "action"
 /// Source: extension-messages.ts
+/// Signature hash: 223128bbacbf8dbaa92659866c11d18a3cc3ec518041902639599c5c578a9314
 /// </summary>
 public class ActionMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RemoveSkillMessage
 /// Discriminator: type = "removeSkill"
 /// Source: webview-messages.ts
+/// Signature hash: 23bffab95094b6c621955672fd0a35ec7091ba0036009f3dfb9e0a4c407a3090
 /// </summary>
 public class RemoveSkillMessage
 {

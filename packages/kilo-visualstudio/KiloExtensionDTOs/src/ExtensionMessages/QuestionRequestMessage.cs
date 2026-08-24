@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Questions;
 /// WebView message: QuestionRequestMessage
 /// Discriminator: type = "questionRequest"
 /// Source: extension-messages.ts
+/// Signature hash: 1a2ee502c778c05dbba3fd496aacb577dcf933fa25cc60d59891a0092bcc4090
 /// </summary>
 public class QuestionRequestMessage
 {

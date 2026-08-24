@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Sessions;
 /// WebView message: SessionTurnClosedMessage
 /// Discriminator: type = "sessionTurnClosed"
 /// Source: extension-messages.ts
+/// Signature hash: a938740656f57f38c7bcacd3a4aaf00937749fec5eb5bf6d86744eab9f22aaa0
 /// </summary>
 public class SessionTurnClosedMessage
 {

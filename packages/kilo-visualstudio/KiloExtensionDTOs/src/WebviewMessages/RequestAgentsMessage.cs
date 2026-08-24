@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestAgentsMessage
 /// Discriminator: type = "requestAgents"
 /// Source: webview-messages.ts
+/// Signature hash: 9d856e77495bf224210c2cd3bbc85aa8aac98678d40c78718cc66d2842051863
 /// </summary>
 public class RequestAgentsMessage
 {

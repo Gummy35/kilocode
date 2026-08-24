@@ -18,6 +18,7 @@ using KiloExtensionDTOs.Profile;
 /// WebView message: NotificationsLoadedMessage
 /// Discriminator: type = "notificationsLoaded"
 /// Source: extension-messages.ts
+/// Signature hash: 6bb683bc6c5327664b0d21ce2e5701013999bddb84343a27ac40b71b09c55bb1
 /// </summary>
 public class NotificationsLoadedMessage
 {

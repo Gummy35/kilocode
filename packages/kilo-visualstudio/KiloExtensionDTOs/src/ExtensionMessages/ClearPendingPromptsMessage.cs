@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: ClearPendingPromptsMessage
 /// Discriminator: type = "clearPendingPrompts"
 /// Source: extension-messages.ts
+/// Signature hash: d2427c7d18f032b9933a65405fbe96d0523ebe28463f8e505060c6f4177f3f66
 /// </summary>
 public class ClearPendingPromptsMessage
 {

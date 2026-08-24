@@ -18,6 +18,7 @@ using KiloExtensionDTOs.AgentManager;
 /// WebView message: DiffViewerBranchesLoadedMessage
 /// Discriminator: type = "diffViewer.branches"
 /// Source: extension-messages.ts
+/// Signature hash: 8a7884f3bb043710694631e5b90a2fc614319b9ee08d605668a2e47c4103439a
 /// </summary>
 public class DiffViewerBranchesLoadedMessage
 {

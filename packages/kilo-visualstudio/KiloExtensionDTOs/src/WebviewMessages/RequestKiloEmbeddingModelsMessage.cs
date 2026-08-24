@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: RequestKiloEmbeddingModelsMessage
 /// Discriminator: type = "requestKiloEmbeddingModels"
 /// Source: webview-messages.ts
+/// Signature hash: 86bc1c0e692545eeb163e8e92fea03dec1b6dcdf12172c688e9627caba06e468
 /// </summary>
 public class RequestKiloEmbeddingModelsMessage
 {

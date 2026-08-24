@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: MessageRemovedMessage
 /// Discriminator: type = "messageRemoved"
 /// Source: extension-messages.ts
+/// Signature hash: d0bc1a00b15be4b7fec96ad8ef947bc4c820433bd0f3ecf37c4b2fbc745f35ab
 /// </summary>
 public class MessageRemovedMessage
 {

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: SessionCostAlertResolvedMessage
 /// Discriminator: type = "sessionCostAlertResolved"
 /// Source: extension-messages.ts
+/// Signature hash: f2529256c09ea041f5af844270fbcbe4fb6524a95ca94a6f363fb8c12234a771
 /// </summary>
 public class SessionCostAlertResolvedMessage
 {
