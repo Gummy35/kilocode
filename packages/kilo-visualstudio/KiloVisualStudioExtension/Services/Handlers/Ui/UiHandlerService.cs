@@ -10,9 +10,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
     /// Handles UI and panel operations like open settings panel, open sub-agent viewer, reload, save image.
     /// This matches the VS Code pattern where UI operations are extracted into separate handler modules.
     /// </summary>
-    public class UiHandlerService : IDisposable
-    {
-        private readonly ServiceProvider _serviceProvider;
+    public class UiHandlerService : ServiceProviderServiceBase
+  {
         private bool _disposed;
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
@@ -22,9 +21,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         /// Creates a new UiHandlerService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public UiHandlerService(ServiceProvider serviceProvider)
+        public UiHandlerService(ServiceProvider serviceProvider):base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         /// <summary>

@@ -5,6 +5,8 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Services.Handlers.Session;
+using KiloVisualStudioExtension.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Interaction
@@ -13,9 +15,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
     /// Handles user interaction operations like permission replies, question replies, and prompt handling.
     /// This matches the VS Code pattern where interaction handling is extracted into separate handler modules.
     /// </summary>
-    public class InteractionHandlerService : IDisposable
-    {
-        private readonly ServiceProvider _serviceProvider;
+    public class InteractionHandlerService : ServiceProviderServiceBase
+  {
         private bool _disposed;
 
         private readonly Dictionary<string, string> _permissionDirectories = new();
@@ -91,9 +92,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         /// Creates a new InteractionHandlerService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public InteractionHandlerService(ServiceProvider serviceProvider)
+        public InteractionHandlerService(ServiceProvider serviceProvider): base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -549,14 +549,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null) return;
 
-            var workspaceDir = Provider.GetWorkspaceDirectory();
+            var workspaceDir = _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
             var seen = new HashSet<string>();
             var validDirs = new HashSet<string>();
 
             var dirs = new HashSet<string> { workspaceDir };
-            foreach (var kvp in Provider.GetSessionDirectories())
+            foreach (var kvp in _serviceProvider.GetService<ProjectDirectoryProvider>().GetSessionDirectories())
             {
-                if (Provider.IsTrackedSession(kvp.Key))
+                if (_serviceProvider.GetService<SessionHandlerService>().IsTrackedSession(kvp.Key))
                 {
                     dirs.Add(kvp.Value);
                 }
@@ -574,7 +574,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                         if (seen.Contains(perm.Id)) continue;
                         seen.Add(perm.Id);
 
-                        if (!Provider.IsTrackedSession(perm.SessionID)) continue;
+                        if (!_serviceProvider.GetService<SessionHandlerService>().IsTrackedSession(perm.SessionID)) continue;
 
                         _permissionDirectories[perm.Id] = dir;
                         Provider.PostMessage(System.Text.Json.JsonSerializer.Serialize(new
@@ -608,14 +608,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             var nswagClient = Provider.GetNswagClient();
             if (nswagClient == null) return;
 
-            var workspaceDir = Provider.GetWorkspaceDirectory();
+            var workspaceDir = _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
             var seen = new HashSet<string>();
             var validDirs = new HashSet<string>();
 
             var dirs = new HashSet<string> { workspaceDir };
-            foreach (var kvp in Provider.GetSessionDirectories())
+            foreach (var kvp in _serviceProvider.GetService<ProjectDirectoryProvider>().GetSessionDirectories())
             {
-                if (Provider.IsTrackedSession(kvp.Key))
+                if (_serviceProvider.GetService<SessionHandlerService>().IsTrackedSession(kvp.Key))
                 {
                     dirs.Add(kvp.Value);
                 }
@@ -633,7 +633,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                         if (seen.Contains(q.Id)) continue;
                         seen.Add(q.Id);
 
-                        if (!Provider.IsTrackedSession(q.SessionID)) continue;
+                        if (!_serviceProvider.GetService<SessionHandlerService>().IsTrackedSession(q.SessionID)) continue;
 
                         _questionDirectories[q.Id] = dir;
                         Provider.PostMessage(System.Text.Json.JsonSerializer.Serialize(new

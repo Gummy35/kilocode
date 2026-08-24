@@ -9,17 +9,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
     /// Handles provider action operations like connect, disconnect, and OAuth authorization.
     /// Matches the VS Code pattern in provider-actions.ts.
     /// </summary>
-    public class ProviderActionService : IDisposable
+    public class ProviderActionService : ServiceProviderServiceBase
     {
-        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
-        public ProviderActionService(ServiceProvider serviceProvider)
+        public ProviderActionService(ServiceProvider serviceProvider):base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -292,5 +290,5 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
             if (_disposed) return;
             _disposed = true;
         }
-    }
+  }
 }

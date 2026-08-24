@@ -1,4 +1,5 @@
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Services;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;

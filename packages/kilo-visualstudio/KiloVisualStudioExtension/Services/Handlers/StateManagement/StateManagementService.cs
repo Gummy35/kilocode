@@ -8,9 +8,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.StateManagement
     /// Handles state management operations like setState and getState.
     /// This matches the VS Code pattern where state management is extracted into separate handler modules.
     /// </summary>
-    public class StateManagementService : IDisposable
-    {
-        private readonly ServiceProvider _serviceProvider;
+    public class StateManagementService : ServiceProviderServiceBase
+  {
         private bool _disposed;
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
@@ -20,9 +19,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.StateManagement
         /// Creates a new StateManagementService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public StateManagementService(ServiceProvider serviceProvider)
+        public StateManagementService(ServiceProvider serviceProvider) : base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         /// <summary>

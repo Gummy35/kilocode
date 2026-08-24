@@ -23,6 +23,11 @@ using KiloVisualStudioExtension.Services.Handlers.SessionControl;
 using KiloVisualStudioExtension.Services.Handlers.Settings;
 using KiloVisualStudioExtension.Services.Handlers.StateManagement;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
+using KiloVisualStudioExtension.Services.Handlers.Followup;
+using KiloVisualStudioExtension.Services.Handlers.Indexing;
+using KiloVisualStudioExtension.Services.Handlers.Sandbox;
+using KiloVisualStudioExtension.Services.Handlers.Network;
+using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Utils;
 using MessagePack;
 using Microsoft.VisualStudio.Shell;
@@ -64,7 +69,7 @@ namespace KiloVisualStudioExtension
   /// - SessionControlHandlerService: abort/sendMessage
   /// - UiHandlerService: openSettingsPanel/settingsTabChanged
   /// </summary>
-  public class VSProvider : IDisposable
+  public class VSProvider : ServiceProviderServiceBase, IDisposable
   {
     public static string viewType = "kilo-code.SidebarProvider";
     private bool disposedValue;
@@ -214,8 +219,6 @@ namespace KiloVisualStudioExtension
     private readonly KiloProviderOptions _opts;
     protected readonly SSEHelper _sseHelper;
     private readonly SessionStreamScheduler _streamScheduler;
-    protected readonly ServiceProvider _serviceProvider;
-
     private readonly SessionHandlerService _sessionHandler;
     private readonly AuthHandlerService _authHandler;
     private readonly ConfigHandlerService _configHandler;
@@ -251,17 +254,19 @@ namespace KiloVisualStudioExtension
     /// Constructor for factory creation (webView may be null initially).
     /// Initializes all handler services using dependency injection.
     /// </summary>
-    public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService, KiloProviderOptions? opts = null)
+    public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService, KiloProviderOptions? opts = null):base(new ServiceProvider())
     {
       _webView = webView!;
       _connectionService = connectionService;
       _opts = opts ?? new KiloProviderOptions();
-      _serviceProvider = new ServiceProvider();
-
+      
       _serviceProvider.AddService(this);
       _serviceProvider.AddService(connectionService);
       _serviceProvider.AddService(webView ?? throw new ArgumentNullException(nameof(webView)));
 
+      // Register MessageConfirmation as a per-instance service for SSEHelper access
+      var confirmations = _serviceProvider.GetService<MessageConfirmation>();
+      
       _sseHelper = _serviceProvider.AddService(new SSEHelper(_serviceProvider, PostMessage));
       _connectionService.SetSSEHelper(_sseHelper);
       _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler((sessionID, key, update) =>
@@ -277,27 +282,34 @@ namespace KiloVisualStudioExtension
       }));
 
       // Initialize CacheService - it manages its own internal storage
-      var cacheService = _serviceProvider.AddService(new CacheService());
+      var cacheService = _serviceProvider.GetService<CacheService>();
 
-      _sessionHandler = _serviceProvider.AddService(new SessionHandlerService(_serviceProvider));
-      _authHandler = _serviceProvider.AddService(new AuthHandlerService(_serviceProvider));
-      _configHandler = _serviceProvider.AddService(new ConfigHandlerService(_serviceProvider));
-      _providerRequestHandler = _serviceProvider.AddService(new ProviderRequestService(_serviceProvider));
-      _agentRequestHandler = _serviceProvider.AddService(new AgentRequestService(_serviceProvider));
-      _stateManagementHandler = _serviceProvider.AddService(new StateManagementService(_serviceProvider));
-      _mcpHandler = _serviceProvider.AddService(new McpHandlerService(_serviceProvider));
-      _notificationHandler = _serviceProvider.AddService(new NotificationHandlerService(_serviceProvider));
-      _modelHandler = _serviceProvider.AddService(new ModelHandlerService(_serviceProvider));
-      _settingsHandler = _serviceProvider.AddService(new SettingsHandlerService(_serviceProvider));
-      _miscRequestHandler = _serviceProvider.AddService(new MiscRequestHandlerService(_serviceProvider));
-      _interactionHandler = _serviceProvider.AddService(new InteractionHandlerService(_serviceProvider));
-      _sessionControlHandler = _serviceProvider.AddService(new SessionControlHandlerService(_serviceProvider));
-      _uiHandler = _serviceProvider.AddService(new UiHandlerService(_serviceProvider));
+      _sessionHandler = _serviceProvider.GetService<SessionHandlerService>();
+      _authHandler = _serviceProvider.GetService<AuthHandlerService>();
+      _configHandler = _serviceProvider.GetService<ConfigHandlerService>();
+      _providerRequestHandler = _serviceProvider.GetService<ProviderRequestService>();
+      
+      // Register new handler services for state that was previously in SSEHelper
+      var followupHandler = _serviceProvider.GetService<FollowupHandlerService>();
+      var indexingHandler = _serviceProvider.GetService<IndexingHandlerService>();
+      var sandboxHandler = _serviceProvider.GetService<SandboxHandlerService>();
+      var networkHandler = _serviceProvider.GetService<NetworkHandlerService>();
+      _agentRequestHandler = _serviceProvider.GetService<AgentRequestService>();
+      _stateManagementHandler = _serviceProvider.GetService<StateManagementService>();
+      _mcpHandler = _serviceProvider.GetService<McpHandlerService>();
+      _notificationHandler = _serviceProvider.GetService<NotificationHandlerService>();
+      _modelHandler = _serviceProvider.GetService<ModelHandlerService>();
+      _settingsHandler = _serviceProvider.GetService<SettingsHandlerService>();
+      _miscRequestHandler = _serviceProvider.GetService<MiscRequestHandlerService>();
+      _interactionHandler = _serviceProvider.GetService<InteractionHandlerService>();
+      _sessionControlHandler = _serviceProvider.GetService<SessionControlHandlerService>();
+      _uiHandler = _serviceProvider.GetService<UiHandlerService>();
 
-      _memoryHandler = _serviceProvider.AddService(new MemoryHandlerService(_serviceProvider, new MemoryInput(this)));
-      _providerActionService = _serviceProvider.AddService(new ProviderActionService(_serviceProvider));
+      _memoryHandler = _serviceProvider.GetService<MemoryHandlerService>();
+      _providerActionService = _serviceProvider.GetService<ProviderActionService>();
 
-      _remoteService = _serviceProvider.AddService(new RemoteStatusService());
+      _remoteService = _serviceProvider.GetService<RemoteStatusService>();
+
       _sseHelper.SetRemoteStatusService(_remoteService);
 
       if (webView != null)
@@ -310,11 +322,7 @@ namespace KiloVisualStudioExtension
 
     #region Internal Helper Methods for Handler Services
 
-    internal T? GetService<T>() where T : class
-    {
-      return _serviceProvider.GetService<T>();
-    }
-
+   
     internal void PostMessage(string message)
     {
       _webView.PostMessage(message);
@@ -481,7 +489,7 @@ namespace KiloVisualStudioExtension
 
     internal async Task DisposeGlobal()
     {
-      var cache = GetService<ICacheService>();
+      var cache = _serviceProvider.GetService<ICacheService>();
       if (cache != null)
       {
         // Clear all cache entries - iterate through a copy of keys
@@ -502,15 +510,15 @@ namespace KiloVisualStudioExtension
       await _agentRequestHandler.HandleRequestAgentsAsync();
     }
 
-    internal IReadOnlyDictionary<string, string> GetSessionDirectories()
-    {
-      return _sseHelper.GetSessionDirectories();
-    }
+    //internal IReadOnlyDictionary<string, string> GetSessionDirectories()
+    //{
+    //  return _sseHelper.GetSessionDirectories();
+    //}
 
-    internal bool IsTrackedSession(string sessionID)
-    {
-      return _sseHelper.IsTrackedSession(sessionID);
-    }
+    //internal bool IsTrackedSession(string sessionID)
+    //{
+    //  return _sseHelper.IsTrackedSession(sessionID);
+    //}
 
     internal SSEHelper GetSSEHelper()
     {
@@ -565,25 +573,27 @@ namespace KiloVisualStudioExtension
       _contextSessionID = null;
     }
 
-    internal void RemoveTrackedSession(string sessionID)
-    {
-      _sseHelper.UntrackSession(sessionID);
-    }
+    //internal void RemoveTrackedSession(string sessionID)
+    //{
+    //  SessionHandler.UntrackSession(sessionID);
+    //}
 
-    internal void TrackSession(string sessionID)
-    {
-      _sseHelper.TrackSession(sessionID);
-    }
+    //internal void TrackSession(string sessionID)
+    //{
+    //  SessionHandler.TrackSession(sessionID);
+    //}
 
-    internal bool IsSessionTracked(string sessionID)
-    {
-      return _sseHelper.IsSessionTracked(sessionID);
-    }
+    //internal bool IsSessionTracked(string sessionID)
+    //{
+    //  return SessionHandler.IsTrackedSession(sessionID);
+    //}
 
-    internal void UntrackSession(string sessionID)
-    {
-      _sseHelper.UntrackSession(sessionID);
-    }
+    //internal void UntrackSession(string sessionID)
+    //{
+    //  SessionHandler.UntrackSession(sessionID);
+    //}
+
+    private SessionHandlerService SessionHandler => ServiceProviderExtensions.GetService<SessionHandlerService>(_serviceProvider);
 
     internal void FocusSession(string? sessionID)
     {
@@ -604,7 +614,7 @@ namespace KiloVisualStudioExtension
    */
     internal void PruneDeletedSession(string sessionID)
     {
-      UntrackSession(sessionID);
+      SessionHandler.UntrackSession(sessionID);
       _openSessionIds.Remove(sessionID);
       foreach (var key in _draftSessions.Keys.Where(k => _draftSessions[k].Sid == sessionID).ToArray())
       {
@@ -642,12 +652,12 @@ namespace KiloVisualStudioExtension
       var next = new HashSet<string>(ids);
       foreach (var id in _openSessionIds)
         if (!next.Contains(id))
-          UntrackSession(id);
+          SessionHandler.UntrackSession(id);
       _openSessionIds.Clear();
       foreach (var id in _openSessionIds)
       {
         _openSessionIds.Add(id);
-        TrackSession(id);
+        SessionHandler.TrackSession(id);
       }
       var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
       foreach (var kv in _draftSessions)
@@ -713,17 +723,19 @@ namespace KiloVisualStudioExtension
       });
     }
 
-    internal string? GetCurrentSessionID()
+    public string? GetCurrentSessionID()
     {
       return _currentSessionID;
     }
 
-    internal void SetCurrentSessionID(string? sessionID)
+    public void SetCurrentSessionID(string? sessionID)
     {
       _currentSessionID = sessionID;
+      if (!string.IsNullOrEmpty(sessionID))
+        SessionHandler.TrackSession(sessionID);
     }
 
-    internal void SetContextSessionID(string? sessionID)
+    public void SetContextSessionID(string? sessionID)
     {
       _contextSessionID = sessionID;
     }
@@ -761,12 +773,8 @@ namespace KiloVisualStudioExtension
 
     #endregion
 
-    private string? _currentSessionID
-    {
-      get => _sseHelper.CurrentSessionID;
-      set => _sseHelper.SetCurrentSession(value);
-    }
-
+    private string? _currentSessionID;
+    
     private void HandleMessageReceived(object? sender, WebViewMessageEventArgs e)
     {
       System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: received message type={e.Type}");

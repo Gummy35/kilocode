@@ -46,7 +46,7 @@ namespace KiloVisualStudioExtension.Services
   /// - Updates Visual Studio status bar (IVsStatusbar)
   /// - Posts status updates to the webview for tool window badge rendering
   /// </summary>
-  public class RemoteStatusService : IDisposable
+  public class RemoteStatusService : ServiceProviderServiceBase
   {
     private RemoteState _state = new RemoteState(false, false);
     private readonly List<Action<RemoteState>> _listeners = new List<Action<RemoteState>>();
@@ -67,7 +67,7 @@ namespace KiloVisualStudioExtension.Services
     /// </summary>
     /// <param name="postMessageToWebView">Optional action to post messages to the webview. 
     /// If provided, state changes will be pushed to the webview as "remoteStatus" messages.</param>
-    public RemoteStatusService(Action<object>? postMessageToWebView = null)
+    public RemoteStatusService(ServiceProvider serviceProvider, Action<object>? postMessageToWebView = null): base(serviceProvider)
     {
       _postMessageToWebView = postMessageToWebView;
 
@@ -77,6 +77,7 @@ namespace KiloVisualStudioExtension.Services
         await InitializeAsync();
       });
     }
+
 
     /// <summary>
     /// Initializes the service with Visual Studio shell services.

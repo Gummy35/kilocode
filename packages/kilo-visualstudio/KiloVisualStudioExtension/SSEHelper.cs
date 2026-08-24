@@ -30,62 +30,60 @@ using KiloVisualStudioExtension.Services.Handlers.Memory;
 
 namespace KiloVisualStudioExtension
 {
-  public class SSEHelper: IDisposable
+  using KiloVisualStudioExtension.Services;
+  using KiloVisualStudioExtension.Services.Handlers.Session;
+  using KiloVisualStudioExtension.Services.Handlers.Followup;
+  using KiloVisualStudioExtension.Services.Handlers.Indexing;
+  using KiloVisualStudioExtension.Services.Handlers.Sandbox;
+  using KiloVisualStudioExtension.Services.Handlers.Network;
+  
+  public class SSEHelper: ServiceProviderServiceBase
   {
-    private readonly ServiceProvider _serviceProvider;
     private bool _disposed;
 
     private VSProvider Provider => _serviceProvider.GetService<VSProvider>()
         ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
+    private MessageConfirmation Confirmations => ServiceProviderExtensions.GetService<MessageConfirmation>(_serviceProvider);
+
+    private SessionHandlerService SessionHandler => ServiceProviderExtensions.GetService<SessionHandlerService>(_serviceProvider);
+
+    private FollowupHandlerService FollowupHandler => ServiceProviderExtensions.GetService<FollowupHandlerService>(_serviceProvider);
+
+    private IndexingHandlerService IndexingHandler => ServiceProviderExtensions.GetService<IndexingHandlerService>(_serviceProvider);
+
+    private SandboxHandlerService SandboxHandler => ServiceProviderExtensions.GetService<SandboxHandlerService>(_serviceProvider);
+
+    private NetworkHandlerService NetworkHandler => ServiceProviderExtensions.GetService<NetworkHandlerService>(_serviceProvider);
+
+    // Session state moved to SessionHandlerService - commented out to preserve for potential future use
+    // private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
+    // private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
+    // private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
+    // private readonly Dictionary<string, SessionRevision> _revisions = new Dictionary<string, SessionRevision>();
+    // private readonly HashSet<string> _modelUsageSessionIds = new HashSet<string>();
+    // private readonly Dictionary<string, MessageCost> _messageCosts = new Dictionary<string, MessageCost>();
+    // private readonly Dictionary<string, string> _messageSessionIds = new Dictionary<string, string>();
+    // private readonly Dictionary<string, string> _networkWaits = new Dictionary<string, string>();
     private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
-    private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
     private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
-    private readonly Dictionary<string, SessionRevision> _revisions = new Dictionary<string, SessionRevision>();
-    private readonly HashSet<string> _modelUsageSessionIds = new HashSet<string>();
-    private readonly Dictionary<string, MessageCost> _messageCosts = new Dictionary<string, MessageCost>();
-    private readonly Dictionary<string, string> _messageSessionIds = new Dictionary<string, string>();
-    private readonly Dictionary<string, string> _networkWaits = new Dictionary<string, string>();
     private readonly ProjectDirectoryProvider _projectDirectoryProvider;
 
-    private int _sandboxRevision = 0;
+    //private int _sandboxRevision = 0; // Commented out - moved to SandboxHandlerService
 
-    private Followup _pendingFollowup;
-    private string? _cachedIndexingStatusMessage = null;
+    //private Followup _pendingFollowup; // Commented out - moved to FollowupHandlerService
+    //private string? _cachedIndexingStatusMessage = null; // Commented out - moved to IndexingHandlerService
     private string? _currentProjectID = null;
 
     private RemoteStatusService? _remoteService;
 
-    public string? CurrentSessionID { get; private set; }
+    
     public string? CurrentProjectID
     {
       get => _currentProjectID;
       set => _currentProjectID = value;
     }
 
-    public ICollection<string> TrackedSessionIds => _trackedSessionIds;
-    public IReadOnlyDictionary<string, string> SessionStatusMap => _sessionStatusMap;
-
-    internal IReadOnlyDictionary<string, string> GetSessionDirectories()
-    {
-      return (IReadOnlyDictionary<string, string>)_projectDirectoryProvider.GetSessionDirectories();
-    }
-
-    internal bool IsTrackedSession(string sessionID)
-    {
-      return _trackedSessionIds.Contains(sessionID);
-    }
-
-    internal void SetSessionDirectory(string sessionID, string directory)
-    {
-      _projectDirectoryProvider.SetSessionDirectory(sessionID, directory);
-    }
-
-    internal string? GetSessionDirectory(string sessionID)
-    {
-      var dirs = _projectDirectoryProvider.GetSessionDirectories();
-      return dirs.TryGetValue(sessionID, out var dir) ? dir : null;
-    }
 
     internal string ResolveDirectory(string? sessionID = null)
     {
@@ -96,9 +94,8 @@ namespace KiloVisualStudioExtension
     private readonly Action<string> _postMessage;
     private readonly JsonSerializer _serializer;
 
-    public SSEHelper(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null)
+    public SSEHelper(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null): base(serviceProvider)
     {
-      _serviceProvider = serviceProvider;
       _postMessage = postMessage;
       _serializer = KiloJsonSerializer.Create();
 
@@ -123,27 +120,6 @@ namespace KiloVisualStudioExtension
     public void PostMessage(object message)
     {
       _postMessage(JsonConvert.SerializeObject(message));
-    }
-
-    public class SessionRevision
-    {
-      public long Id { get; set; }
-      public int Seq { get; set; }
-    }
-
-    //public class SessionStatus
-    //{
-    //  public string Type { get; set; } = "";
-    //  public int Attempt { get; set; }
-    //  public string? Message { get; set; }
-    //  public long? Next { get; set; }
-    //}
-
-    public class MessageCost
-    {
-      public string SessionID { get; set; } = "";
-      public string MessageID { get; set; } = "";
-      public double Cost { get; set; }
     }
 
     public void HandleEvent(SseEventReceivedEventArgs raw)
@@ -175,18 +151,18 @@ namespace KiloVisualStudioExtension
           var props = raw.Payload;
           // const eventSessionID = typeof props.sessionID === "string" ? props.sessionID : undefined
           // const active = this.currentSession?.id
-          var active = CurrentSessionID;
+          var active = Provider.GetCurrentSessionID();
           // const local =
           
           //   !directory || sameDirectory(directory, this.getProjectDirectory(active) ?? this.getWorkspaceDirectory(active))
           var local = string.IsNullOrEmpty(directory) || 
             PathUtils.SameDirectory(
               directory, 
-              _projectDirectoryProvider.GetProjectDirectory(CurrentSessionID) 
-                ?? _projectDirectoryProvider.GetWorkspaceDirectory(CurrentSessionID)
+              _projectDirectoryProvider.GetProjectDirectory(active) 
+                ?? _projectDirectoryProvider.GetWorkspaceDirectory(active)
             );
           // const trackedById = Boolean(eventSessionID && this.trackedSessionIds.has(eventSessionID))
-          var trackedById = !string.IsNullOrEmpty(sessionId) && _trackedSessionIds.Contains(sessionId);
+          var trackedById = !string.IsNullOrEmpty(sessionId) && SessionHandler.IsTrackedSession(sessionId);
           // Directory-scoped events (enable/disable/rebuild/configure/purge) carry no
           // sessionID, so also match any tracked session sharing the event directory —
           // e.g. a non-active Agent Manager tab on the same worktree.
@@ -196,7 +172,7 @@ namespace KiloVisualStudioExtension
           //       .map(([sid]) => sid)
           //   : []
           var trackedByDir = !string.IsNullOrEmpty(directory)
-            ? _sessionDirectories.Where(kvp => _trackedSessionIds.Contains(kvp.Key) && PathUtils.SameDirectory(directory, kvp.Value)).Select(kvp => kvp.Key).ToList()
+            ? _sessionDirectories.Where(kvp => SessionHandler.IsTrackedSession(kvp.Key) && PathUtils.SameDirectory(directory, kvp.Value)).Select(kvp => kvp.Key).ToList()
             : new List<string>();
           // const tracked = trackedById || trackedByDir.length > 0
           var tracked = trackedById || trackedByDir.Count > 0;
@@ -263,7 +239,7 @@ namespace KiloVisualStudioExtension
             }
             // void this.memory.fetch(sessionID)
             
-            Provider.GetService<MemoryHandlerService>().Fetch(target);
+            _serviceProvider.GetService<MemoryHandlerService>().Fetch(target);
           }
           // return
           return;
@@ -781,7 +757,7 @@ namespace KiloVisualStudioExtension
 
       if (infoObj["cost"]?.Type == JTokenType.Float && infoObj["role"]?.Value<string>() == "assistant")
       {
-        _messageCosts[messageID] = new MessageCost { SessionID = sessionID, MessageID = messageID, Cost = infoObj["cost"].Value<double>() };
+        SessionHandler.GetOrCreateMessageCost(messageID, sessionID).Cost = infoObj["cost"].Value<double>();
       }
 
       var timeObj = infoObj["time"];
@@ -833,10 +809,10 @@ namespace KiloVisualStudioExtension
       if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
       {
         var childId = metadataObj["sessionId"].Value<string>();
-        if (!string.IsNullOrEmpty(childId) && !_trackedSessionIds.Contains(childId))
+        if (!string.IsNullOrEmpty(childId) && !SessionHandler.IsTrackedSession(childId))
         {
           System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
-          _trackedSessionIds.Add(childId);
+          SessionHandler.TrackSession(childId);
         }
       }
 
@@ -867,10 +843,10 @@ namespace KiloVisualStudioExtension
       var info = data.Properties.Info;
       var sessionID = info.Id;
 
-      if (string.IsNullOrEmpty(CurrentSessionID))
+      if (string.IsNullOrEmpty(Provider.GetCurrentSessionID()))
       {
-        CurrentSessionID = sessionID;
-        _trackedSessionIds.Add(sessionID);
+        Provider.SetCurrentSessionID(sessionID);
+        SessionHandler.TrackSession(sessionID);
       }
 
       var createdAt = info.Time != null
@@ -911,9 +887,9 @@ namespace KiloVisualStudioExtension
         UpdateRevision(sessionID, evt.Id, evt.Seq);
       }
 
-      if (CurrentSessionID == sessionID)
+      if (Provider.GetCurrentSessionID() == sessionID)
       {
-        CurrentSessionID = sessionID;
+        Provider.SetCurrentSessionID(sessionID);
       }
 
       var createdAt = info.Time != null
@@ -1418,29 +1394,29 @@ namespace KiloVisualStudioExtension
     //  });
     //}
 
-    public void TrackSession(string sessionID)
-    {
-      _trackedSessionIds.Add(sessionID);
-    }
+    //public void TrackSession(string sessionID)
+    //{
+    //  _trackedSessionIds.Add(sessionID);
+    //}
 
-    public void UntrackSession(string sessionID)
-    {
-      _trackedSessionIds.Remove(sessionID);
-    }
+    //public void UntrackSession(string sessionID)
+    //{
+    //  _trackedSessionIds.Remove(sessionID);
+    //}
 
-    public bool IsSessionTracked(string sessionID)
-    {
-      return _trackedSessionIds.Contains(sessionID);
-    }
+    //public bool IsSessionTracked(string sessionID)
+    //{
+    //  return _trackedSessionIds.Contains(sessionID);
+    //}
 
-    public void SetCurrentSession(string? sessionID)
-    {
-      CurrentSessionID = sessionID;
-      if (!string.IsNullOrEmpty(sessionID))
-      {
-        _trackedSessionIds.Add(sessionID);
-      }
-    }
+    //public void SetCurrentSession(string? sessionID)
+    //{
+    //  CurrentSessionID = sessionID;
+    //  if (!string.IsNullOrEmpty(sessionID))
+    //  {
+    //    _trackedSessionIds.Add(sessionID);
+    //  }
+    //}
 
     private static string? ResolveSyncSessionId(JToken payload, Action<string, string>? onMessageUpdated = null)
     {
@@ -1485,17 +1461,18 @@ namespace KiloVisualStudioExtension
 
     public void RecordMessageSessionId(string messageID, string sessionID)
     {
-      _messageSessionIds[messageID] = sessionID;
+      SessionHandler.MapMessageToSession(messageID, sessionID);
     }
 
     public string? LookupMessageSessionId(string messageID)
     {
-      return _messageSessionIds.TryGetValue(messageID, out var sessionId) ? sessionId : null;
+      return SessionHandler.GetSessionIdForMessage(messageID);
     }
 
     public bool IsStaleEvent(string sessionID, string eventId, int seq)
     {
-      if (!_revisions.TryGetValue(sessionID, out var revision))
+      var revision = SessionHandler.GetRevision(sessionID);
+      if (revision == null)
       {
         return false;
       }
@@ -1511,11 +1488,11 @@ namespace KiloVisualStudioExtension
 
     public void UpdateRevision(string sessionID, string eventId, int seq)
     {
-      _revisions[sessionID] = new SessionRevision
+      SessionHandler.TrackRevision(sessionID, new SessionRevision
       {
         Id = long.Parse(eventId),
         Seq = seq
-      };
+      });
     }
 
     public bool IsEventFromForeignProject(string eventName, string? projectID)
@@ -1599,7 +1576,7 @@ namespace KiloVisualStudioExtension
 
     private bool MatchesPendingFollowup(ApiClient.Session session)
     {
-      return Followup.MatchesFollowup(_pendingFollowup, session.Directory, DateTimeOffset.Now.ToUnixTimeMilliseconds(), session.ParentID);
+      return FollowupHandler.MatchesPendingFollowup(session.Directory, DateTimeOffset.Now.ToUnixTimeMilliseconds(), session.ParentID);
     }
 
     private readonly HashSet<string> memoryEvents = ["memory.status", "memory.updated", "memory.error"];
@@ -1641,7 +1618,7 @@ namespace KiloVisualStudioExtension
       // the webview just cleaned up.
       if (evType == "session.deleted") return true;
 
-      return IsSessionTracked(sessionId);
+      return SessionHandler.IsTrackedSession(sessionId);
     }
 
     public void Dispose()
@@ -1650,5 +1627,18 @@ namespace KiloVisualStudioExtension
       _disposed = true;
     }
 
+  }
+
+  public partial class SessionRevision
+  {
+    public long Id { get; set; }
+    public int Seq { get; set; }
+  }
+
+  public partial class MessageCost
+  {
+    public string SessionID { get; set; } = "";
+    public string MessageID { get; set; } = "";
+    public double Cost { get; set; }
   }
 }

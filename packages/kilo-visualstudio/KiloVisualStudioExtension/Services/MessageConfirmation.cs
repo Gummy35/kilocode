@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.Services;
 
 namespace KiloVisualStudioExtension.Services
 {
@@ -8,70 +9,112 @@ namespace KiloVisualStudioExtension.Services
     /// Message confirmation state for tracking webview message delivery.
     /// Tracks which messages have been confirmed by the webview and allows
     /// async waiting for confirmation with timeout.
+    /// Matches the VS Code MessageConfirmation class from kilo-provider-utils.ts:122-172.
     /// </summary>
-    public class MessageConfirmation
+    public class MessageConfirmation : ServiceProviderServiceBase
+  {
+        private readonly Dictionary<string, Entry> _ids = new Dictionary<string, Entry>();
+
+    public MessageConfirmation(ServiceProvider serviceProvider) : base(serviceProvider)
     {
-        private readonly HashSet<string> _tracked = new HashSet<string>();
-        private readonly HashSet<string> _confirmed = new HashSet<string>();
-        private readonly Dictionary<string, List<TaskCompletionSource<bool>>> _waiters = new Dictionary<string, List<TaskCompletionSource<bool>>>();
+    }
+
+    private class Entry
+        {
+            public bool Confirmed { get; set; }
+            public HashSet<Action> Waits { get; set; } = new HashSet<Action>();
+        }
 
         /// <summary>
         /// Start tracking a message ID for confirmation.
+        /// Returns a cleanup action that removes the entry when invoked.
+        /// Matches the VS Code track() pattern from kilo-provider-utils.ts:125-132.
         /// </summary>
-        public void Track(string messageId)
+        public Action Track(string? id)
         {
-            _tracked.Add(messageId);
-            _waiters[messageId] = new List<TaskCompletionSource<bool>>();
+            if (id == null) return () => { };
+            
+            if (!_ids.TryGetValue(id, out var entry))
+            {
+                entry = new Entry();
+                _ids[id] = entry;
+            }
+            
+            return () => { _ids.Remove(id); };
         }
 
         /// <summary>
         /// Confirm that a message has been received by the webview.
         /// Resolves all waiters for this message.
+        /// Matches the VS Code confirm() pattern from kilo-provider-utils.ts:134-141.
         /// </summary>
-        public void Confirm(string messageId)
+        public void Confirm(string id)
         {
-            if (_tracked.Contains(messageId))
+            if (!_ids.TryGetValue(id, out var entry)) return;
+            
+            entry.Confirmed = true;
+            var waitsCopy = new List<Action>(entry.Waits);
+            foreach (var done in waitsCopy)
             {
-                _confirmed.Add(messageId);
-                if (_waiters.TryGetValue(messageId, out var sources))
-                {
-                    foreach (var source in sources)
-                        source.SetResult(true);
-                    sources.Clear();
-                }
+                done();
             }
         }
 
         /// <summary>
         /// Check if a message has been confirmed.
+        /// Matches the VS Code has() pattern from kilo-provider-utils.ts:143-146.
         /// </summary>
-        public bool Has(string messageId) => _confirmed.Contains(messageId);
-
-        /// <summary>
-        /// Wait for a message to be confirmed, with timeout.
-        /// Returns true if confirmed, false if timeout expires.
-        /// </summary>
-        public async Task<bool> Wait(string messageId, int timeoutMs)
+        public bool Has(string? id)
         {
-            if (_confirmed.Contains(messageId))
-                return true;
-
-            var tcs = new TaskCompletionSource<bool>();
-            if (_waiters.TryGetValue(messageId, out var sources))
-                sources.Add(tcs);
-
-            var completed = await Task.WhenAny(tcs.Task, Task.Delay(timeoutMs));
-            return completed == tcs.Task;
+            if (id == null) return false;
+            return _ids.TryGetValue(id, out var entry) && entry.Confirmed;
         }
 
         /// <summary>
-        /// Release tracking for a message, cleaning up all associated state.
+        /// Wait for a message to be confirmed, with timeout (default 1500ms).
+        /// Returns true if confirmed, false if timeout expires.
+        /// Matches the VS Code wait() pattern from kilo-provider-utils.ts:148-172.
         /// </summary>
-        public void Release(string messageId)
+        public Task<bool> Wait(string? id, int timeoutMs = 1500)
         {
-            _tracked.Remove(messageId);
-            _confirmed.Remove(messageId);
-            _waiters.Remove(messageId);
+            if (id == null) return Task.FromResult(false);
+            
+            if (!_ids.TryGetValue(id, out var entry)) return Task.FromResult(false);
+            if (entry.Confirmed) return Task.FromResult(true);
+
+            var tcs = new TaskCompletionSource<bool>();
+            
+            Action cleanup = null!;
+            Action done = null!;
+            
+            var timer = new System.Threading.Timer(
+                _ =>
+                {
+                    cleanup();
+                    if (!tcs.Task.IsCompleted)
+                        tcs.TrySetResult(entry.Confirmed);
+                },
+                null,
+                timeoutMs,
+                System.Threading.Timeout.Infinite
+            );
+            
+            cleanup = () =>
+            {
+                timer.Dispose();
+                entry.Waits.Remove(done);
+            };
+
+            done = () =>
+            {
+                cleanup();
+                if (!tcs.Task.IsCompleted)
+                    tcs.TrySetResult(true);
+            };
+
+            entry.Waits.Add(done);
+            
+            return tcs.Task;
         }
     }
 }

@@ -4,10 +4,10 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using KiloVisualStudioExtension.WebView.Generated;
-using KiloVisualStudioExtension.ApiClient.Json;
-using KiloVisualStudioExtension.KiloExtensionDTOs.WebviewMessages;
-using KiloVisualStudioExtension.KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.WebviewMessages;
+using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs;
+using Common;
 
 namespace KiloVisualStudioExtension.Tests.WebView
 {

@@ -180,9 +180,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
   }
 
   // export class KiloProviderMemory {
-  public class MemoryHandlerService : IDisposable
+  public class MemoryHandlerService : ServiceProviderServiceBase
   {
-    private readonly ServiceProvider _serviceProvider;
     private bool _disposed;
 
     private VSProvider Provider => _serviceProvider.GetService<VSProvider>()
@@ -204,10 +203,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
     private Task _tail = Task.CompletedTask;
 
     //   constructor(private readonly input: KiloProviderMemoryInput) {}
-    public MemoryHandlerService(ServiceProvider serviceProvider, IKiloProviderMemoryInput input)
-    {
-      _serviceProvider = serviceProvider;
-      _input = input;
+
+    public MemoryHandlerService(ServiceProvider serviceProvider, IKiloProviderMemoryInput input = null): base(serviceProvider)
+    {  
+      _input = input ?? new MemoryInput(serviceProvider.GetService<VSProvider>());
     }
 
     private readonly IKiloProviderMemoryInput _input;

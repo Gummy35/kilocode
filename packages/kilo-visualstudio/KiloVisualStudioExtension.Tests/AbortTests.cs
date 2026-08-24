@@ -1,11 +1,13 @@
 using FluentAssertions;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Services.Handlers.Session;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloVisualStudioExtension.Services;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
@@ -102,10 +104,10 @@ namespace KiloVisualStudioExtension.Tests
             TestHelpers.SetupAbortHandler(httpClient);
 
             var sseHelper = TestHelpers.CreateSSEHelper(webView.PostMessage);
-            sseHelper.SetCurrentSession("current-session");
+            sseHelper.ServiceProvider.GetService<VSProvider>().SetCurrentSessionID("current-session");
 
             // Act - abort without sessionID (should use current)
-            var sessionID = sseHelper.CurrentSessionID;
+            var sessionID = sseHelper.ServiceProvider.GetService<VSProvider>().GetCurrentSessionID();
             await httpClient.PostAsync($"/session/{sessionID}/abort", new StringContent("{}", Encoding.UTF8, "application/json"));
 
             // Assert - current session should be used
@@ -124,10 +126,10 @@ namespace KiloVisualStudioExtension.Tests
             TestHelpers.SetupAbortHandler(httpClient);
 
             var sseHelper = TestHelpers.CreateSSEHelper(webView.PostMessage);
-            sseHelper.SetCurrentSession("abort-session");
+      sseHelper.ServiceProvider.GetService<VSProvider>().SetCurrentSessionID("abort-session");
 
             // Act - abort the session
-            var sessionID = sseHelper.CurrentSessionID;
+            var sessionID = sseHelper.ServiceProvider.GetService<VSProvider>().GetCurrentSessionID();
             await httpClient.PostAsync($"/session/{sessionID}/abort", new StringContent("{}", Encoding.UTF8, "application/json"));
 
             // Assert - abort should complete
@@ -145,10 +147,10 @@ namespace KiloVisualStudioExtension.Tests
             TestHelpers.SetupAbortHandler(httpClient);
 
             var sseHelper = TestHelpers.CreateSSEHelper(webView.PostMessage);
-            sseHelper.SetCurrentSession("abort-session-2");
+      sseHelper.ServiceProvider.GetService<VSProvider>().SetCurrentSessionID("abort-session-2");
 
             // Act - abort the session
-            var sessionID = sseHelper.CurrentSessionID;
+            var sessionID = sseHelper.ServiceProvider.GetService<VSProvider>().GetCurrentSessionID();
             await httpClient.PostAsync($"/session/{sessionID}/abort", new StringContent("{}", Encoding.UTF8, "application/json"));
 
             // Assert - abort should complete
@@ -166,10 +168,10 @@ namespace KiloVisualStudioExtension.Tests
             TestHelpers.SetupAbortHandler(httpClient);
 
             var sseHelper = TestHelpers.CreateSSEHelper(webView.PostMessage);
-            sseHelper.SetCurrentSession("dir-session");
+            sseHelper.ServiceProvider.GetService<VSProvider>().SetCurrentSessionID("dir-session");
 
             // Act - abort with directory context
-            var sessionID = sseHelper.CurrentSessionID;
+            var sessionID = sseHelper.ServiceProvider.GetService<VSProvider>().GetCurrentSessionID();
             await httpClient.PostAsync($"/session/{sessionID}/abort", new StringContent("{}", Encoding.UTF8, "application/json"));
 
             // Assert - should complete without error

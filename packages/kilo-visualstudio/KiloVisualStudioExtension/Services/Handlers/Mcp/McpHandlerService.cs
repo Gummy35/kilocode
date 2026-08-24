@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
@@ -9,21 +10,51 @@ namespace KiloVisualStudioExtension.Services.Handlers.Mcp
     /// Handles MCP (Model Context Protocol) related operations like connectMcp, disconnectMcp, authenticateMcp.
     /// This matches the VS Code pattern where MCP handling is extracted into separate handler modules.
     /// </summary>
-    public class McpHandlerService : IDisposable
-    {
-        private readonly ServiceProvider _serviceProvider;
+    public class McpHandlerService : ServiceProviderServiceBase
+  {
         private bool _disposed;
+
+        private static string? _lastMcpOAuthUrl;
+        private static long _lastMcpOAuthTime;
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
         /// <summary>
+        /// Opens the MCP OAuth URL in the browser, deduplicating requests within 4 seconds.
+        /// Matches the VS Code openMcpOAuthUrlOnce() pattern from mcp-oauth.ts.
+        /// </summary>
+        public void OpenMcpOAuthUrlOnce(string url)
+        {
+            var now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if (!string.IsNullOrEmpty(_lastMcpOAuthUrl) && _lastMcpOAuthUrl == url && now - _lastMcpOAuthTime < 4000)
+            {
+                return;
+            }
+            _lastMcpOAuthUrl = url;
+            _lastMcpOAuthTime = now;
+
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Kilo] McpOAuth: Failed to open browser: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Creates a new McpHandlerService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public McpHandlerService(ServiceProvider serviceProvider)
+        public McpHandlerService(ServiceProvider serviceProvider):base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         /// <summary>

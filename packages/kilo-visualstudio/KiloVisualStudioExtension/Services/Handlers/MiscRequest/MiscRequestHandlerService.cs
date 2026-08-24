@@ -21,27 +21,26 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     /// Handles miscellaneous request operations like recents, favorites, variants, skills, commands.
     /// These are simple request handlers that return static or cached data.
     /// </summary>
-    public class MiscRequestHandlerService : IDisposable
-    {
+    public class MiscRequestHandlerService : ServiceProviderServiceBase
+  {
         private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
-        private KiloConnectionService ConnectionService => _serviceProvider.GetService<KiloConnectionService>() 
+        private KiloConnectionService ConnectionService => (KiloConnectionService)_serviceProvider.GetService(typeof(KiloConnectionService)) 
             ?? throw new InvalidOperationException("KiloConnectionService not registered in service provider");
 
-        private ICacheService Cache => _serviceProvider.GetService<ICacheService>() 
+        private ICacheService Cache => (ICacheService)_serviceProvider.GetService(typeof(ICacheService)) 
             ?? throw new InvalidOperationException("CacheService not registered in service provider");
 
         /// <summary>
         /// Creates a new MiscRequestHandlerService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public MiscRequestHandlerService(ServiceProvider serviceProvider)
+        public MiscRequestHandlerService(ServiceProvider serviceProvider):base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         // TypeScript: case "requestVariants": {

@@ -1,9 +1,11 @@
+using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Handlers.Session;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace KiloVisualStudioExtension
@@ -24,8 +26,8 @@ namespace KiloVisualStudioExtension
     /// - Load session messages when panel is ready
     /// - Handle closePanel messages from webview
     /// </summary>
-    public class SubAgentViewerProvider : IDisposable
-    {
+    public class SubAgentViewerProvider : ServiceProviderServiceBase
+  {
         /// <summary>
         /// Map of session IDs to their webview panels.
         /// </summary>
@@ -45,7 +47,7 @@ namespace KiloVisualStudioExtension
         /// </summary>
         /// <param name="extensionUri">The extension installation URI.</param>
         /// <param name="connectionService">The shared connection service for backend connectivity.</param>
-        public SubAgentViewerProvider(Uri extensionUri, KiloConnectionService connectionService)
+        public SubAgentViewerProvider(ServiceProvider serviceProvider, Uri extensionUri, KiloConnectionService connectionService): base(serviceProvider)
         {
             _extensionUri = extensionUri;
             _connectionService = connectionService;
@@ -96,7 +98,7 @@ namespace KiloVisualStudioExtension
             var provider = new VSProvider(webView, _connectionService);
             
             // Track session for SSE events
-            provider.TrackSession(sessionID);
+            _serviceProvider.GetService<SessionHandlerService>().TrackSession(sessionID);
             
             // Store references
             _panels[sessionID] = webView;

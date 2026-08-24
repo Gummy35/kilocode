@@ -1,4 +1,5 @@
 using System;
+using Common;
 using FluentAssertions;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.ApiClient.Json;

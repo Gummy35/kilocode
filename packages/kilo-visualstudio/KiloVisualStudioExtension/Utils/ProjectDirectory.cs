@@ -1,8 +1,9 @@
+using EnvDTE;
+using KiloVisualStudioExtension.Services;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
 
 namespace KiloVisualStudioExtension.Utils
 {
@@ -97,7 +98,7 @@ namespace KiloVisualStudioExtension.Utils
   /// Tracks session directories and provides directory resolution.
   /// Mirrors trackDirectory and getProjectDirectory from KiloProvider.ts
   /// </summary>
-  public class ProjectDirectoryProvider
+  public class ProjectDirectoryProvider: IServiceProviderService
   {
     private readonly string? _projectDirectoryOverride;
     private readonly Func<string?, string?> _getWorkspaceDirectory;
@@ -208,7 +209,7 @@ namespace KiloVisualStudioExtension.Utils
   /// <summary>
   /// Visual Studio-specific implementation using DTE.
   /// </summary>
-  public class VisualStudioDirectoryProvider
+  public class VisualStudioDirectoryProvider: IServiceProviderService
   {
     private readonly DTE _dte;
 

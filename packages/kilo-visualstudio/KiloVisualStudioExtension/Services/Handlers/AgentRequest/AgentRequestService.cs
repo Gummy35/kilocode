@@ -11,18 +11,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.AgentRequest
     /// Handles agent-related operations like requestAgents.
     /// This matches the VS Code pattern where agent handling is extracted into separate handler modules.
     /// </summary>
-    public class AgentRequestService : IDisposable
+    public class AgentRequestService : ServiceProviderServiceBase
     {
-        private readonly ServiceProvider _serviceProvider;
         private bool _disposed;
 
         /// <summary>
         /// Creates a new AgentRequestService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public AgentRequestService(ServiceProvider serviceProvider)
+        public AgentRequestService(ServiceProvider serviceProvider) : base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 

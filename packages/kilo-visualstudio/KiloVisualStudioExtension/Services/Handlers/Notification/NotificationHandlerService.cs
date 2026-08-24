@@ -14,24 +14,23 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
     /// This matches the VS Code pattern where notification handling is extracted into
     /// kilo-provider/notifications.ts.
     /// </summary>
-    public class NotificationHandlerService : IDisposable
-    {
-        private readonly ServiceProvider _serviceProvider;
+    public class NotificationHandlerService : ServiceProviderServiceBase
+  {
+  
         private bool _disposed;
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
-        private ICacheService Cache => _serviceProvider.GetService<ICacheService>() 
+        private ICacheService Cache => (ICacheService)_serviceProvider.GetService(typeof(ICacheService)) 
             ?? throw new InvalidOperationException("CacheService not registered in service provider");
 
         /// <summary>
         /// Creates a new NotificationHandlerService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public NotificationHandlerService(ServiceProvider serviceProvider)
+        public NotificationHandlerService(ServiceProvider serviceProvider):base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
         }
 
         /// <summary>

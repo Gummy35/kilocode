@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace KiloVisualStudioExtension
 {
-  public class ServiceProvider
+  public class ServiceProvider:IServiceProvider  
   {
     private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
 
@@ -15,12 +15,12 @@ namespace KiloVisualStudioExtension
       return instance;
     }
 
-    public T? GetService<T>() where T : class
-    {
-      if (_services.TryGetValue(typeof(T), out var service))
-        return (T)service;
-      return null;
-    }
+    //public T? GetService<T>() where T : class
+    //{
+    //  if (_services.TryGetValue(typeof(T), out var service))
+    //    return (T)service;
+    //  return null;
+    //}
 
     public object? GetService(Type serviceType)
     {
