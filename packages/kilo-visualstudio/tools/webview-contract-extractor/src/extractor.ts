@@ -45,6 +45,7 @@ const PKGS_DIR = path.resolve(__dirname, "..", "..", "..", "..")
 const VS_CODE_TYPES_PATH = path.join(PKGS_DIR, "kilo-vscode/webview-ui/src/types/messages")
 const VS_CODE_SHARED_PATH = path.join(PKGS_DIR, "kilo-vscode/src/shared")
 const VS_CODE_SRC_PATH = path.join(PKGS_DIR, "kilo-vscode/src")
+const VS_CODE_PROVIDER_UTILS_PATH = path.join(VS_CODE_SRC_PATH, "kilo-provider-utils.ts")
 const TSCONFIG_PATH = path.join(PKGS_DIR, "kilo-vscode/webview-ui/tsconfig.json")
 const OUTPUT_PATH = path.join(PKGS_DIR, "kilo-visualstudio/porting/contract/WebViewContract.json")
 
@@ -79,6 +80,360 @@ interface ExtractionContext {
   errors: string[]  // Extraction errors
   warnings: string[]  // Extraction warnings
   extractedMessages: Map<string, MessageType>  // Track extracted inline messages by discriminator value
+}
+
+/**
+ * Extract properties from an inline type definition string.
+ * 
+ * Parses inline object types like `{ type: "sessionStatus"; sessionID: string; status: string }`
+ * and extracts property definitions.
+ * 
+ * @param inlineTypeBody - The body of the inline type (without braces)
+ * @param discriminator - Discriminator info if found
+ * @returns Array of property definitions
+ */
+function extractPropertiesFromInlineType(inlineTypeBody: string): { properties: PropertyDefinition[], discriminator: DiscriminatorInfo | undefined } {
+  const properties: PropertyDefinition[] = []
+  let discriminator: DiscriminatorInfo | undefined
+  
+  // Remove outer braces if present
+  const body = inlineTypeBody.trim()
+  const inner = (body.startsWith('{') && body.endsWith('}')) ? body.slice(1, -1) : body
+  
+  // Split by semicolons or newlines
+  const propStrings = inner.split(/[;\n]/).map(s => s.trim()).filter(s => s)
+  
+  for (const propStr of propStrings) {
+    // Match property pattern: name?: type or name: type
+    const match = propStr.match(/^(\w+)(\?)?:\s*(.+?)$/)
+    if (!match) continue
+    
+    const propName = match[1]!
+    const isOptional = match[2] === '?'
+    const propTypeStr = match[3]!.trim()
+    
+    let propType: string
+    let literalValue: string | number | boolean | null = null
+    let isLiteral = false
+    let typeRef: TypeReference | null = null
+    
+    // Check for string literal: "value"
+    const stringLiteralMatch = propTypeStr.match(/^"([^"]+)"$/)
+    if (stringLiteralMatch) {
+      propType = "stringLiteral"
+      literalValue = stringLiteralMatch[1]!
+      isLiteral = true
+      typeRef = { name: propType, kind: "stringLiteral" }
+    }
+    // Check for basic types
+    else if (["string", "number", "boolean", "array", "object", "union"].includes(propTypeStr)) {
+      propType = propTypeStr
+      typeRef = { name: propType, kind: propType as any }
+    }
+    // Check for Record<...>
+    else if (propTypeStr.startsWith("Record<")) {
+      propType = "record"
+      typeRef = { name: "Record", kind: "object" }
+    }
+    // Named type reference
+    else {
+      propType = propTypeStr
+      typeRef = { name: propType, kind: "object" }
+    }
+    
+    const propDef: PropertyDefinition = {
+      name: propName,
+      type: propType,
+      optional: isOptional,
+      nullable: false,
+      elementType: null,
+      typeRef,
+      literalValue,
+      isLiteral,
+    }
+    
+    properties.push(propDef)
+    
+    // Check for discriminator
+    if (propName === "type" && isLiteral && typeof literalValue === "string") {
+      discriminator = {
+        field: "type",
+        value: literalValue,
+      }
+    }
+  }
+  
+  return { properties, discriminator }
+}
+
+/**
+ * Extract the WebviewMessage union from kilo-provider-utils.ts
+ * This file is outside the webview-ui tsconfig, so we parse it manually
+ * 
+ * ## Processing Steps
+ * 1. Read the source file and find the WebviewMessage type alias
+ * 2. Use splitUnionMembers() to properly split union members while tracking nested braces
+ * 3. For inline types (starting with `{`), extract properties and create temporary interfaces
+ * 4. For named types, add as type references
+ * 5. Compute signature hashes for all created types
+ * 6. Create the WebviewMessage union with all member names
+ */
+function extractWebviewMessageFromProviderUtils(context: ExtractionContext): void {
+  if (!fs.existsSync(VS_CODE_PROVIDER_UTILS_PATH)) {
+    context.warnings.push(`kilo-provider-utils.ts not found at ${VS_CODE_PROVIDER_UTILS_PATH}`)
+    return
+  }
+  
+  const sourceText = fs.readFileSync(VS_CODE_PROVIDER_UTILS_PATH, "utf-8")
+  
+  // First regex: extract the full WebviewMessage union definition
+  const unionRegex = /export\s+?type\s+?WebviewMessage\s*?=\n?((((\s*?\w+\s*?)\|)+(\s*?\w+\s*?))|(\s*?\|(\s*?\{)+[\s\S]*?(\s*?\})+)|(\s*?\|[\s\S]*?$))+/m
+  const unionMatch = sourceText.match(unionRegex)
+  if (!unionMatch) {
+    context.warnings.push("WebviewMessage type alias not found in kilo-provider-utils.ts")
+    return
+  }
+  
+  // Use the regex-based splitter to get individual members
+  const unionMembersRaw = splitUnionMembers(unionMatch[0])
+  const unionMembers: string[] = []
+  
+  for (const member of unionMembersRaw) {
+    // Skip null
+    if (member === 'null') continue
+    
+    // Check if it's an inline object type (starts with {)
+    if (member.startsWith('{')) {
+      // Extract properties from the inline type
+      const { properties, discriminator } = extractPropertiesFromInlineType(member)
+      
+      if (discriminator && properties.length > 0) {
+        const discriminatorValue = discriminator.value
+        const inlineTypeName = `${toPascalCase(discriminatorValue)}Message`
+        
+        // Create a type definition with all extracted properties
+        const inlineTypeDef: TypeDefinition = {
+          name: inlineTypeName,
+          kind: "interface",
+          properties,
+          discriminator,
+          sourceFile: "kilo-provider-utils.ts",
+        }
+        
+        inlineTypeDef.signatureHash = computeSignatureHash(inlineTypeDef)
+        
+        if (!context.types.has(inlineTypeName)) {
+          context.types.set(inlineTypeName, inlineTypeDef)
+        }
+        
+        unionMembers.push(inlineTypeName)
+      }
+    } else {
+      // Named type reference - remove generic parameters for the name
+      const typeName = member.split('<')[0].trim()
+      if (typeName && !unionMembers.includes(typeName)) {
+        unionMembers.push(typeName)
+      }
+    }
+  }
+  
+  // Add the WebviewMessage union to context.types
+  const webviewMessageTypeDef: TypeDefinition = {
+    name: "WebviewMessage",
+    kind: "union",
+    unionMembers,
+    sourceFile: "kilo-provider-utils.ts",
+  }
+  
+  context.types.set("WebviewMessage", webviewMessageTypeDef)
+  console.log(`  Extracted WebviewMessage from kilo-provider-utils.ts with ${unionMembers.length} members`)
+  console.log(`  Members: ${unionMembers.join(', ')}`)
+}
+
+/**
+ * Generate a signature hash for a type definition
+ * The signature is based on: discriminator value + sorted property names and types
+ * This allows detecting types with identical structure across different files
+ * 
+ * Uses SHA-256 for collision resistance.
+ * 
+ * @param typeDef - Type definition to hash
+ * @returns Hex string hash of the signature (64 chars), or undefined if no discriminator
+ */
+function computeSignatureHash(typeDef: TypeDefinition): string | undefined {
+  if (!typeDef.discriminator || !typeDef.properties) {
+    return undefined
+  }
+  
+  // Build signature string: discriminator_value|prop1:type1|prop2:type2|...
+  const propsSig = typeDef.properties
+    .filter(p => p.name !== 'type') // Exclude discriminator field itself
+    .map(p => {
+      const optionalMarker = p.optional ? '?' : ''
+      return `${p.name}:${p.type}${optionalMarker}`
+    })
+    .sort() // Sort to ensure consistent ordering
+    .join('|')
+  
+  const signature = `${typeDef.discriminator.value}|${propsSig}`
+  
+  // Use SHA-256 for collision resistance
+  const crypto = require('crypto')
+  return crypto.createHash('sha256').update(signature).digest('hex')
+}
+
+/**
+ * Split a union type definition into individual members using regex.
+ * 
+ * ## Algorithm
+ * 1. Use regex to match each union member pattern:
+ *    - Named types: `PartUpdate | PartBatch`
+ *    - Inline types: `| { type: "x"; ... }`
+ *    - Trailing members: `| null`
+ * 2. Strip leading `|` and trim each member
+ * 
+ * ## Example
+ * Input: `export type WebviewMessage =\n  | PartUpdate\n  | { type: "x" }\n  | null`
+ * Output: `["PartUpdate", "{ type: \"x\" }", "null"]`
+ * 
+ * @param unionText - The full union definition text (including `export type Name =`)
+ * @returns Array of union member strings
+ */
+function splitUnionMembers(unionText: string): string[] {
+  // Regex to match individual union members
+  // Matches: named types with |, inline types with braces, or trailing members
+  const memberRegex = /(((\s*?\w+\s*?)\|)+(\s*?\w+\s*?))|(\s*?\|(\s*?\{)+[\s\S]*?(\s*?\})+)|(\s*?\|[\s\S]*?$)/gm
+  
+  const members: string[] = []
+  let match: RegExpExecArray | null
+  
+  while ((match = memberRegex.exec(unionText)) !== null) {
+    let member = match[0].trim()
+    // Strip leading |
+    if (member.startsWith('|')) {
+      member = member.slice(1).trim()
+    }
+    // Strip trailing |
+    if (member.endsWith('|')) {
+      member = member.slice(0, -1).trim()
+    }
+    if (member) {
+      members.push(member)
+    }
+  }
+  
+  return members
+}
+
+/**
+ * Extract all union type definitions from a TypeScript source file.
+ * 
+ * ## Algorithm
+ * 1. Use regex to find all `export type Name = ...` patterns
+ * 2. For each match, split into union members
+ * 3. For inline types (starting with `{`), extract properties and create temporary interfaces
+ * 4. For named types, add as type references
+ * 5. Compute signature hashes for all created types
+ * 
+ * @param sourceText - TypeScript source code
+ * @param sourceFile - Source file path for reporting
+ * @param context - Extraction context
+ */
+function extractAllUnionsFromSource(
+  sourceText: string,
+  sourceFile: string,
+  context: ExtractionContext
+): void {
+  // Regex to match export type Name = ... union definitions
+  const unionTypeRegex = /export\s+?type\s+(\w+)\s*?=\n?((((\s*?\w+\s*?)\|)+(\s*?\w+\s*?))|(\s*?\|(\s*?\{)+[\s\S]*?(\s*?\})+)|(\s*?\|[\s\S]*?$))+/gm
+  
+  let match: RegExpExecArray | null
+  
+  while ((match = unionTypeRegex.exec(sourceText)) !== null) {
+    const typeName = match[1]!
+    const unionText = match[0]
+    
+    // Split into members
+    const membersRaw = splitUnionMembers(unionText)
+    const unionMembers: string[] = []
+    
+    for (const member of membersRaw) {
+      // Skip null
+      if (member === 'null') continue
+      
+      // Check if it's an inline object type (starts with {)
+      if (member.startsWith('{')) {
+        // Extract properties from the inline type
+        const { properties, discriminator } = extractPropertiesFromInlineType(member)
+        
+        if (discriminator && properties.length > 0) {
+          const discriminatorValue = discriminator.value
+          const inlineTypeName = `${toPascalCase(discriminatorValue)}Message`
+          
+          // Create a type definition with all extracted properties
+          const inlineTypeDef: TypeDefinition = {
+            name: inlineTypeName,
+            kind: "interface",
+            properties,
+            discriminator,
+            sourceFile,
+          }
+          
+          inlineTypeDef.signatureHash = computeSignatureHash(inlineTypeDef)
+          
+          if (!context.types.has(inlineTypeName)) {
+            context.types.set(inlineTypeName, inlineTypeDef)
+          }
+          
+          unionMembers.push(inlineTypeName)
+        } else if (properties.length > 0) {
+          // Inline type without discriminator - generate a name
+          const inlineTypeName = `${typeName}Member${unionMembers.length}`
+          const inlineTypeDef: TypeDefinition = {
+            name: inlineTypeName,
+            kind: "interface",
+            properties,
+            sourceFile,
+          }
+          
+          if (!context.types.has(inlineTypeName)) {
+            context.types.set(inlineTypeName, inlineTypeDef)
+          }
+          
+          unionMembers.push(inlineTypeName)
+        }
+      } else {
+        // Named type reference - remove generic parameters for the name
+        const typeNameOnly = member.split('<')[0].trim()
+        if (typeNameOnly && !unionMembers.includes(typeNameOnly)) {
+          unionMembers.push(typeNameOnly)
+        }
+      }
+    }
+    
+    // Add the union type to context.types
+    const unionTypeDef: TypeDefinition = {
+      name: typeName,
+      kind: "union",
+      unionMembers,
+      sourceFile,
+    }
+    
+    context.types.set(typeName, unionTypeDef)
+    console.log(`  Extracted ${typeName} from ${sourceFile} with ${unionMembers.length} members`)
+  }
+}
+
+/**
+ * Convert a string to PascalCase
+ */
+function toPascalCase(str: string): string {
+  return str
+    .replace(/[^a-zA-Z0-9]/g, ' ')
+    .split(' ')
+    .filter(p => p.length > 0)
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
+    .join('')
 }
 
 /**
@@ -510,7 +865,7 @@ function extractInterfaceDeclaration(
     }
   }
 
-  return {
+  const typeDef: TypeDefinition = {
     name,
     kind: "interface",
     properties,
@@ -518,6 +873,13 @@ function extractInterfaceDeclaration(
     sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
     extendsBase,
   }
+  
+  // Compute signature hash for types with discriminators
+  if (typeDef.discriminator && typeDef.properties) {
+    typeDef.signatureHash = computeSignatureHash(typeDef)
+  }
+  
+  return typeDef
 }
 
 /**
@@ -551,7 +913,68 @@ function extractTypeAliasDeclaration(
       // Try to get the name from the symbol first
       let memberName = getTypeName(memberType, typeChecker)
       
-      // If we got __type, try to parse from source file
+      // Check if this is an inline object type (type literal)
+      // Inline types have symbol name '__type' and the node is a TypeLiteralNode
+      const memberSymbol = memberType.getSymbol()
+      const isInlineObject = memberName === '__type' && 
+        (memberType.flags & ts.TypeFlags.Object) &&
+        memberSymbol?.declarations &&
+        memberSymbol.declarations.length > 0 &&
+        ts.isTypeLiteralNode(memberSymbol.declarations[0])
+      
+      if (isInlineObject) {
+        // Extract properties from the inline type literal
+        const typeLiteral = memberSymbol.declarations[0] as ts.TypeLiteralNode
+        const inlineProperties: PropertyDefinition[] = []
+        let discriminator: DiscriminatorInfo | undefined
+        
+        for (const member of typeLiteral.members) {
+          if (ts.isPropertySignature(member) && member.name) {
+            const propSymbol = typeChecker.getSymbolAtLocation(member.name)
+            if (propSymbol) {
+              const propDef = extractPropertyDefinition(propSymbol, typeChecker, context)
+              if (propDef) {
+                inlineProperties.push(propDef)
+                // Check for discriminator
+                if (propDef.name === 'type' && propDef.isLiteral && propDef.literalValue !== null) {
+                  discriminator = {
+                    field: 'type',
+                    value: String(propDef.literalValue),
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        if (inlineProperties.length > 0 && discriminator) {
+          // Generate a unique name for this inline type
+          const discriminatorValue = String(discriminator.value)
+          const inlineTypeName = `${toPascalCase(discriminatorValue)}Message`
+          
+          // Create a type definition for this inline type
+          const inlineTypeDef: TypeDefinition = {
+            name: inlineTypeName,
+            kind: "interface",
+            properties: inlineProperties,
+            discriminator: discriminator,
+            sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
+          }
+          
+          // Compute signature hash
+          inlineTypeDef.signatureHash = computeSignatureHash(inlineTypeDef)
+          
+          // Add to context.types so it can be referenced
+          if (!context.types.has(inlineTypeName)) {
+            context.types.set(inlineTypeName, inlineTypeDef)
+          }
+          
+          // Use the generated name as the member name
+          memberName = inlineTypeName
+        }
+      }
+      
+      // If we still got __type, try to parse from source file
       if (memberName === '__type') {
         const sourceFile = node.getSourceFile()
         const sourceText = sourceFile.getFullText()
@@ -639,13 +1062,20 @@ function extractTypeAliasDeclaration(
     }
 
     if (properties.length > 0) {
-      return {
+      const typeDef: TypeDefinition = {
         name,
         kind: "interface",
         properties,
         discriminator,
         sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
       }
+      
+      // Compute signature hash for types with discriminators
+      if (typeDef.discriminator && typeDef.properties) {
+        typeDef.signatureHash = computeSignatureHash(typeDef)
+      }
+      
+      return typeDef
     }
   }
 
@@ -667,13 +1097,20 @@ function extractTypeAliasDeclaration(
         // Check if this type alias has a discriminator in the referenced type
         const typeProp = referencedType.properties.find(p => p.name === 'type')
         if (typeProp) {
-          return {
+          const typeDef: TypeDefinition = {
             name,
             kind: "interface",
             properties: referencedType.properties,
             discriminator: referencedType.discriminator,
             sourceFile: path.relative(VS_CODE_TYPES_PATH, node.getSourceFile().fileName),
           }
+          
+          // Compute signature hash for types with discriminators
+          if (typeDef.discriminator && typeDef.properties) {
+            typeDef.signatureHash = computeSignatureHash(typeDef)
+          }
+          
+          return typeDef
         }
       }
     }
@@ -746,7 +1183,7 @@ function extractTypeAliasDeclaration(
                 optional: !requiredFields.has(prop.name),
               }))
               
-              return {
+              const typeDef: TypeDefinition = {
                 name,
                 kind: "interface",
                 properties: mergedProperties,
@@ -755,6 +1192,13 @@ function extractTypeAliasDeclaration(
                 baseType: partialType,
                 requiredFields: Array.from(requiredFields),
               }
+              
+              // Compute signature hash for types with discriminators
+              if (typeDef.discriminator && typeDef.properties) {
+                typeDef.signatureHash = computeSignatureHash(typeDef)
+              }
+              
+              return typeDef
             }
           }
         }
@@ -777,13 +1221,20 @@ function extractTypeAliasDeclaration(
       if (resolvedTypeName && context.types.has(resolvedTypeName)) {
         const resolvedTypeDef = context.types.get(resolvedTypeName)!
         if (resolvedTypeDef.properties && resolvedTypeDef.properties.length > 0) {
-          return {
+          const typeDef: TypeDefinition = {
             name,
             kind: resolvedTypeDef.kind,
             properties: resolvedTypeDef.properties,
             discriminator: resolvedTypeDef.discriminator,
             sourceFile: path.relative(VS_CODE_TYPES_PATH, resolvedSourceFile.fileName),
           }
+          
+          // Compute signature hash for types with discriminators
+          if (typeDef.discriminator && typeDef.properties) {
+            typeDef.signatureHash = computeSignatureHash(typeDef)
+          }
+          
+          return typeDef
         }
       }
     }
@@ -895,6 +1346,144 @@ function extractMessageTypes(
 }
 
 /**
+ * Deduplicate types by signature hash.
+ * 
+ * ## Deduplication Rules (in order)
+ * 1. **Shared folder priority**: If multiple types have the same hash and one is in Shared, keep it and replace all others
+ * 2. **Prefix matching**: If names differ and one is a prefix of another, keep the shorter name, move to Shared
+ * 3. **First occurrence**: If none in Shared, keep first with same name, move to Shared, replace others
+ * 
+ * ## Step 2: Union Interface Generation
+ * For each union type, generate a canonical interface name and add it to all types matching the union's member hashes.
+ * 
+ * @param types - Map of type definitions
+ * @param unions - Array of union type definitions
+ * @returns Deduplicated types map and updated unions
+ */
+function deduplicateTypes(
+  types: Map<string, TypeDefinition>,
+  unions: TypeDefinition[]
+): { types: Map<string, TypeDefinition>; unions: TypeDefinition[]; dedupStats: { removed: number; renamed: number; movedToShared: number } } {
+  const stats = { removed: 0, renamed: 0, movedToShared: 0 }
+  
+  // Build hash -> types map
+  const hashToTypes = new Map<string, TypeDefinition[]>()
+  for (const typeDef of types.values()) {
+    if (typeDef.signatureHash) {
+      if (!hashToTypes.has(typeDef.signatureHash)) {
+        hashToTypes.set(typeDef.signatureHash, [])
+      }
+      hashToTypes.get(typeDef.signatureHash)!.push(typeDef)
+    }
+  }
+  
+  // Track replacements: old name -> new canonical name
+  const replacements = new Map<string, string>()
+  
+  // Process each hash group
+  for (const [hash, typeGroup] of hashToTypes.entries()) {
+    if (typeGroup.length <= 1) continue
+    
+    // Sort by source file path to have deterministic ordering
+    typeGroup.sort((a, b) => a.sourceFile.localeCompare(b.sourceFile))
+    
+    // Rule 1: Check if any is in Shared
+    // Check for shared folder in path (case-insensitive)
+    const sharedType = typeGroup.find(t => {
+      const path = t.sourceFile.toLowerCase()
+      return path.includes('shared\\') || path.includes('shared/') || 
+             path.includes('\\shared\\') || path.includes('\\shared/') ||
+             path.startsWith('shared\\') || path.startsWith('shared/')
+    })
+    
+    let canonicalType: TypeDefinition
+    
+    if (sharedType) {
+      // Use Shared type as canonical
+      canonicalType = sharedType
+    } else {
+      // Rule 2: Check for prefix matching
+      const names = typeGroup.map(t => t.name).sort((a, b) => a.length - b.length)
+      let prefixFound = false
+      
+      for (let i = 1; i < names.length; i++) {
+        if (names[i]!.startsWith(names[0]!)) {
+          // names[0] is prefix of names[i]
+          const prefixType = typeGroup.find(t => t.name === names[0])
+          if (prefixType) {
+            canonicalType = prefixType
+            prefixFound = true
+            stats.renamed += typeGroup.length - 1
+            
+            // Create replacement mappings for longer names
+            for (let j = 1; j < names.length; j++) {
+              replacements.set(names[j]!, names[0]!)
+            }
+            break
+          }
+        }
+      }
+      
+      if (!prefixFound) {
+        // Rule 3: Use shortest name (first after sorting by length), move to Shared
+        canonicalType = typeGroup.find(t => t.name === names[0])!
+        const canonicalName = names[0]!
+        
+        // Move to Shared if not already
+        const path = canonicalType.sourceFile
+        if (!path.toLowerCase().includes('shared\\') && !path.toLowerCase().includes('shared/')) {
+          canonicalType.sourceFile = 'Shared\\' + path.split(/[\\/]/).pop()!
+          stats.movedToShared++
+        }
+        
+        stats.renamed += typeGroup.length - 1
+        
+        // Create replacement mappings for all other names
+        for (let i = 1; i < names.length; i++) {
+          replacements.set(names[i]!, canonicalName)
+        }
+      }
+    }
+    
+    // Mark all non-canonical types for removal
+    for (const typeDef of typeGroup) {
+      if (typeDef !== canonicalType) {
+        replacements.set(typeDef.name, canonicalType.name)
+        stats.removed++
+      }
+    }
+  }
+  
+  // Apply replacements: remove duplicate types and update references
+  // Remove types that have replacements
+  const toRemove: string[] = []
+  for (const [name, typeDef] of types.entries()) {
+    if (replacements.has(name) && replacements.get(name) !== name) {
+      toRemove.push(name)
+    }
+  }
+  
+  for (const name of toRemove) {
+    types.delete(name)
+  }
+  
+  // Update union member references
+  for (const union of unions) {
+    if (union.kind === 'union' && union.unionMembers) {
+      union.unionMembers = union.unionMembers.map(member => {
+        const replacement = replacements.get(member)
+        return replacement || member
+      })
+      
+      // Remove duplicates after replacement
+      union.unionMembers = [...new Set(union.unionMembers)]
+    }
+  }
+  
+  return { types, unions, dedupStats: stats }
+}
+
+/**
  * Create the WebViewContract from extraction context
  * 
  * Includes metadata about the extraction:
@@ -917,6 +1506,54 @@ function createContract(context: ExtractionContext): WebViewContract {
     // Git not available
   }
   
+  // Convert types to array
+  let allTypes = Array.from(context.types.values())
+  
+  // Separate unions from other types
+  const unions = allTypes.filter(t => t.kind === 'union')
+  let nonUnionTypes = allTypes.filter(t => t.kind !== 'union')
+  
+  // Deduplicate types by signature hash (only non-union types)
+  const typeMap = new Map(nonUnionTypes.map(t => [t.name, t]))
+  const dedupResult = deduplicateTypes(typeMap, unions)
+  nonUnionTypes = Array.from(dedupResult.types.values())
+  
+  console.log()
+  console.log("Deduplication statistics:")
+  console.log(`  Types removed: ${dedupResult.dedupStats.removed}`)
+  console.log(`  Types renamed: ${dedupResult.dedupStats.renamed}`)
+  console.log(`  Types moved to Shared: ${dedupResult.dedupStats.movedToShared}`)
+  
+  // Combine deduplicated non-union types with unions
+  const types = [...nonUnionTypes, ...dedupResult.unions]
+  
+  // Post-process: Compute union member hashes for union types
+  // Build a map of type name -> signature hash for quick lookup
+  const typeHashMap = new Map<string, string>()
+  for (const typeDef of types) {
+    if (typeDef.signatureHash) {
+      typeHashMap.set(typeDef.name, typeDef.signatureHash)
+    }
+  }
+  
+  // For each union type, compute the hashes of its members
+  for (const typeDef of types) {
+    if (typeDef.kind === 'union' && typeDef.unionMembers) {
+      const hashes: string[] = []
+      for (const memberName of typeDef.unionMembers) {
+        const hash = typeHashMap.get(memberName)
+        if (hash) {
+          hashes.push(hash)
+        } else {
+          // Member type not found or has no signature hash (e.g., primitive types)
+          // Use the member name as a placeholder
+          hashes.push(`__${memberName}`)
+        }
+      }
+      typeDef.unionMemberHashes = hashes
+    }
+  }
+  
   return {
     schemaVersion: "1.0.0",
     generatedFrom: {
@@ -934,13 +1571,13 @@ function createContract(context: ExtractionContext): WebViewContract {
       webviewToExtension: context.messages.webviewToExtension,
       extensionToWebview: context.messages.extensionToWebview,
     } as MessageCollections,
-    types: Array.from(context.types.values()),
+    types,
     diagnostics: {
       errors: context.errors,
       warnings: context.warnings,
     } as Diagnostics,
     statistics: {
-      totalTypes: context.types.size + context.extractedMessages.size,
+      totalTypes: types.length,
       webviewToExtensionMessages: context.messages.webviewToExtension.length,
       extensionToWebviewMessages: context.messages.extensionToWebview.length,
       inlineMessagesExtracted: context.extractedMessages.size,
@@ -1194,7 +1831,11 @@ function main(): void {
   )
   
   const program = ts.createProgram({
-    rootNames: parsedConfig.fileNames.filter(f => f.includes("webview-ui/src/types") || f.includes("src/shared")),
+    rootNames: parsedConfig.fileNames.filter(f => 
+      f.includes("webview-ui/src/types") || 
+      f.includes("src/shared") ||
+      f.includes("src/kilo-provider-utils.ts")
+    ),
     options: parsedConfig.options,
   })
 
@@ -1206,9 +1847,10 @@ function main(): void {
   console.log()
 
   for (const sourceFile of sourceFiles) {
-    // Only process files from the webview-ui/src/types directory or src/shared
+    // Only process files from the webview-ui/src/types directory, src/shared, or kilo-provider-utils.ts
     if (!sourceFile.fileName.includes("webview-ui/src/types") && 
-        !sourceFile.fileName.includes("src/shared")) {
+        !sourceFile.fileName.includes("src/shared") &&
+        !sourceFile.fileName.includes("src/kilo-provider-utils.ts")) {
       continue
     }
     
@@ -1218,7 +1860,7 @@ function main(): void {
   }
 
   console.log()
-  console.log("Scanning VS Code source files for postMessage calls...")
+  console.log("Scanning VS Code source files for postMessage calls and union types...")
   
   const allTsFiles = findTsFiles(VS_CODE_SRC_PATH).filter(f => 
     !f.includes("node_modules") && 
@@ -1231,6 +1873,10 @@ function main(): void {
   for (const filePath of allTsFiles) {
     const relativePath = path.relative(VS_CODE_SRC_PATH, filePath)
     const sourceText = fs.readFileSync(filePath, "utf-8")
+    
+    // Extract all union types from this file using regex
+    extractAllUnionsFromSource(sourceText, relativePath, context)
+    
     const sourceFile = ts.createSourceFile(
       filePath,
       sourceText,

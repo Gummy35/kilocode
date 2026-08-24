@@ -951,12 +951,18 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
     sb.push(`/// Part type: ${typeDef.name}`)
     sb.push(`/// Discriminator: ${typeDef.discriminator.field} = "${typeDef.discriminator.value}"`)
     sb.push(`/// Source: ${typeDef.sourceFile}`)
+    if (typeDef.signatureHash) {
+      sb.push(`/// Signature hash: ${typeDef.signatureHash}`)
+    }
     sb.push("/// </summary>")
     if (sourceComment) sb.push(sourceComment)
   } else {
     sb.push("/// <summary>")
     sb.push(`/// Type: ${typeDef.name}`)
     sb.push(`/// Source: ${typeDef.sourceFile}`)
+    if (typeDef.signatureHash) {
+      sb.push(`/// Signature hash: ${typeDef.signatureHash}`)
+    }
     sb.push("/// </summary>")
     if (sourceComment) sb.push(sourceComment)
   }
@@ -1217,6 +1223,10 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
   sb.push("/// WebView message: " + message.name)
   sb.push("/// Discriminator: " + message.discriminator.field + " = \"" + message.discriminator.value + "\"")
   sb.push("/// Source: " + message.sourceFile)
+  // Get signature hash from type definition if available
+  if (messageTypeDef?.signatureHash) {
+    sb.push("/// Signature hash: " + messageTypeDef.signatureHash)
+  }
   sb.push("/// </summary>")
   const sanitizedName = pascalCase(message.name)
   

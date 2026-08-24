@@ -38,7 +38,8 @@ export interface TypeDefinition {
   name: string
   kind: string
   properties?: PropertyDefinition[]
-  unionMembers?: string[]
+  unionMembers?: string[]  // For unions: list of member type names
+  unionMemberHashes?: string[]  // For unions: list of signature hashes of members
   discriminator?: DiscriminatorInfo
   sourceFile: string
   description?: string
@@ -46,6 +47,7 @@ export interface TypeDefinition {
   baseType?: string  // For Partial<T> & Pick<T, ...> pattern AND interface extends
   requiredFields?: string[]  // Required fields from Pick<T, ...>
   extendsBase?: string  // Explicit interface extends relationship (e.g., TextPart extends BasePart)
+  signatureHash?: string  // Hash of the type's signature (discriminator + properties) for duplicate detection
 }
 
 export interface PropertyDefinition {
