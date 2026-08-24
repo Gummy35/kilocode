@@ -1,13 +1,18 @@
+using Common;
 using EnvDTE;
+using KiloExtensionDTOs;
+using KiloExtensionDTOs.Connection;
+using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.Memory;
+using KiloExtensionDTOs.Parts;
+using KiloExtensionDTOs.Sessions;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.ApiClient.Sse;
 using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Handlers.Memory;
 using KiloVisualStudioExtension.Utils;
-using KiloExtensionDTOs;
-using KiloExtensionDTOs.ExtensionMessages;
-using KiloExtensionDTOs.Parts;
-using KiloExtensionDTOs.Sessions;
+using KiloVisualStudioExtension.Utils;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Telemetry;
 using Microsoft.VisualStudio.Text.Editor;
@@ -19,25 +24,23 @@ using System.IO.Packaging;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.UI.Design;
-using Common;
 using static KiloVisualStudioExtension.Services.MessagePageFetcher;
 using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
 using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
-using KiloVisualStudioExtension.Utils;
-using KiloExtensionDTOs.Memory;
-using KiloExtensionDTOs.Connection;
-using KiloVisualStudioExtension.Services.Handlers.Memory;
 
 namespace KiloVisualStudioExtension
 {
+  using KiloExtensionDTOs.WebviewMessages;
   using KiloVisualStudioExtension.Services;
-  using KiloVisualStudioExtension.Services.Handlers.Session;
   using KiloVisualStudioExtension.Services.Handlers.Followup;
   using KiloVisualStudioExtension.Services.Handlers.Indexing;
-  using KiloVisualStudioExtension.Services.Handlers.Sandbox;
+  using KiloVisualStudioExtension.Services.Handlers.Mcp;
   using KiloVisualStudioExtension.Services.Handlers.Network;
-  
-  public class SSEHelper: ServiceProviderServiceBase
+  using KiloVisualStudioExtension.Services.Handlers.Sandbox;
+  using KiloVisualStudioExtension.Services.Handlers.Session;
+  using System.Security.Cryptography.X509Certificates;
+
+  public class SSEHelper : ServiceProviderServiceBase
   {
     private bool _disposed;
 
@@ -65,8 +68,8 @@ namespace KiloVisualStudioExtension
     // private readonly Dictionary<string, MessageCost> _messageCosts = new Dictionary<string, MessageCost>();
     // private readonly Dictionary<string, string> _messageSessionIds = new Dictionary<string, string>();
     // private readonly Dictionary<string, string> _networkWaits = new Dictionary<string, string>();
-    private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
-    private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
+    //private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
+    //private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
     private readonly ProjectDirectoryProvider _projectDirectoryProvider;
 
     //private int _sandboxRevision = 0; // Commented out - moved to SandboxHandlerService
@@ -77,7 +80,7 @@ namespace KiloVisualStudioExtension
 
     private RemoteStatusService? _remoteService;
 
-    
+
     public string? CurrentProjectID
     {
       get => _currentProjectID;
@@ -87,24 +90,25 @@ namespace KiloVisualStudioExtension
 
     internal string ResolveDirectory(string? sessionID = null)
     {
-      return _projectDirectoryProvider.GetWorkspaceDirectory(sessionID) 
+      return _projectDirectoryProvider.GetWorkspaceDirectory(sessionID)
         ?? System.Environment.CurrentDirectory;
     }
 
     private readonly Action<string> _postMessage;
     private readonly JsonSerializer _serializer;
 
-    public SSEHelper(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null): base(serviceProvider)
+    public SSEHelper(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null) : base(serviceProvider)
     {
       _postMessage = postMessage;
       _serializer = KiloJsonSerializer.Create();
 
       if (dte != null)
       {
-        var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(dte));
+        var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(serviceProvider, dte));
         _projectDirectoryProvider = vsProvider.CreateProvider(
-            projectDirectoryOverride: null, // or specify a path like @"C:\MyProject"
-            sessionDirectories: _sessionDirectories);
+            projectDirectoryOverride: null // or specify a path like @"C:\MyProject"
+            //sessionDirectories: _sessionDirectories
+            );
         _serviceProvider.AddService(_projectDirectoryProvider);
       }
     }
@@ -127,14 +131,14 @@ namespace KiloVisualStudioExtension
       try
       {
         System.Diagnostics.Debug.WriteLine($"SSE Event received : {raw.EventType}");
-        
+
         var e = SseEventDeserializer.Deserialize(raw);
         if (e == null) return;
 
         var sessionId = ResolveEventSessionId(raw);
 
         var evt = e.Data;
-        
+
         var directory = raw.Directory;
 
         // if (event.type === "kilo-sessions.remote-status-changed") {
@@ -143,7 +147,7 @@ namespace KiloVisualStudioExtension
           _remoteService?.UpdateFromEvent(new RemoteState { Enabled = ev.Properties.Enabled, Connected = ev.Properties.Connected });
           return;
         }
-        
+
         // if (event.type === "memory.status" || event.type === "memory.updated" || event.type === "memory.error") {
         if (evt is EventMemoryStatus || evt is EventMemoryUpdated || evt is EventMemoryError)
         {
@@ -153,12 +157,12 @@ namespace KiloVisualStudioExtension
           // const active = this.currentSession?.id
           var active = Provider.GetCurrentSessionID();
           // const local =
-          
+
           //   !directory || sameDirectory(directory, this.getProjectDirectory(active) ?? this.getWorkspaceDirectory(active))
-          var local = string.IsNullOrEmpty(directory) || 
+          var local = string.IsNullOrEmpty(directory) ||
             PathUtils.SameDirectory(
-              directory, 
-              _projectDirectoryProvider.GetProjectDirectory(active) 
+              directory,
+              _projectDirectoryProvider.GetProjectDirectory(active)
                 ?? _projectDirectoryProvider.GetWorkspaceDirectory(active)
             );
           // const trackedById = Boolean(eventSessionID && this.trackedSessionIds.has(eventSessionID))
@@ -172,7 +176,7 @@ namespace KiloVisualStudioExtension
           //       .map(([sid]) => sid)
           //   : []
           var trackedByDir = !string.IsNullOrEmpty(directory)
-            ? _sessionDirectories.Where(kvp => SessionHandler.IsTrackedSession(kvp.Key) && PathUtils.SameDirectory(directory, kvp.Value)).Select(kvp => kvp.Key).ToList()
+            ? _projectDirectoryProvider.GetSessionsByDirectory(directory)
             : new List<string>();
           // const tracked = trackedById || trackedByDir.length > 0
           var tracked = trackedById || trackedByDir.Count > 0;
@@ -210,6 +214,11 @@ namespace KiloVisualStudioExtension
               var reason = raw.Payload["properties"]?["reason"]?.Value<string>() ?? null;
               if (reason != null)
               {
+                //JToken detail = props["detail"]?.Type == JTokenType.Object
+                //  ? props["detail"]
+                //  : e.EventType == "memory.error" && props["reason"]?.Type == JTokenType.String
+                //    ? new JObject { ["type"] = "error", ["message"] = props["reason"], ["reason"] = props["reason"] }
+                //    : null;
                 detail = new KiloExtensionDTOs.Memory.MemoryEventDetail
                 {
                   Type = SkippedErrorSavedRecalledEnum.Error,
@@ -219,11 +228,6 @@ namespace KiloVisualStudioExtension
               }
             }
           }
-          //JToken detail = props["detail"]?.Type == JTokenType.Object
-          //  ? props["detail"]
-          //  : e.EventType == "memory.error" && props["reason"]?.Type == JTokenType.String
-          //    ? new JObject { ["type"] = "error", ["message"] = props["reason"], ["reason"] = props["reason"] }
-          //    : null;
           // for (const sessionID of targets) {
           foreach (var target in targets)
           {
@@ -238,7 +242,7 @@ namespace KiloVisualStudioExtension
               PostMessage(new KiloExtensionDTOs.Memory.MemoryEventMessage { SessionID = target, Detail = detail });
             }
             // void this.memory.fetch(sessionID)
-            
+
             _serviceProvider.GetService<MemoryHandlerService>().Fetch(target);
           }
           // return
@@ -249,7 +253,7 @@ namespace KiloVisualStudioExtension
         // This must come first: the trackedSessionIds guard below would otherwise
         // let a foreign session through if it was accidentally tracked.
         // if (!isLegacySyncEvent(event) && isEventFromForeignProject(event, this.projectID)) return
-        
+
         if (!raw.IsLegacySyncEvent && IsEventFromForeignProject(e.Type, CurrentProjectID)) return;
         // if (
         //   this.projectID &&
@@ -265,62 +269,62 @@ namespace KiloVisualStudioExtension
           if (projectId != null && projectId != CurrentProjectID)
             return;
         }
-        
 
-        ////////// if (event.type === "mcp.browser.open.failed") {
-        ////////if (evt is EventMcpBrowserOpenFailed)
-        ////////{
-        ////////  var typedEvent = (EventMcpBrowserOpenFailed)evt;
-        ////////  // McpOAuth.openMcpOAuthUrlOnce(event.properties.url)
-        ////////  McpOAuth.OpenMcpOAuthUrlOnce(typedEvent.Properties.Url);
-        ////////  // return
-        ////////  return;
-        ////////}
 
-        ////////// if (event.type === "message.updated") {
-        ////////if (evt is EventMessageUpdated)
-        ////////{
-        ////////  var typedEvent = (EventMessageUpdated)evt;
-        ////////  // this.confirmations.confirm(event.properties.info.id)
-        ////////  _confirmations.Confirm(typedEvent.Properties.Info.Id);
-        ////////}
+        // if (event.type === "mcp.browser.open.failed") {
+        if (evt is EventMcpBrowserOpenFailed)
+        {
+          var typedEvent = (EventMcpBrowserOpenFailed)evt;
+          // McpOAuth.openMcpOAuthUrlOnce(event.properties.url)
+          _serviceProvider.GetService<McpHandlerService>().OpenMcpOAuthUrlOnce(typedEvent.Properties.Url);
+          // return
+          return;
+        }
 
-        ////////// session.status events pass the onEventFiltered pre-filter for all providers (see line 842),
-        ////////// so this runs on every KiloProvider instance — including the Settings panel which has no
-        ////////// tracked sessions. Update sessionStatusMap and forward to webview before the
-        ////////// trackedSessionIds guard so the Settings panel's allStatusMap stays current for the
-        ////////// busy-session warning on Save.
-        ////////// if (event.type === "session.status") {
-        ////////if (evt is EventSessionStatus)
-        ////////{
-        ////////  var typedEvent = (EventSessionStatus)evt;
-        ////////  // const sid = event.properties.sessionID
-        ////////  var type = typedEvent.Properties.Status.Type;
-        ////////  // const prev = this.sessionStatusMap.get(sid)
-        ////////  var prev = _sessionStatusMap.TryGetValue(sessionId, out var prevVal) ? prevVal : null;
-        ////////  // if ((prev === undefined || prev === "idle") && event.properties.status.type !== "idle") {
-        ////////  if ((prev == null || prev == "idle") && type != "idle")
-        ////////  {
-        ////////    // this.costs.rearm(sid)
-        ////////    _costs.Rearm(sessionId);
-        ////////  }
-        ////////  // this.sessionStatusMap.set(sid, event.properties.status.type)
-        ////////  _sessionStatusMap[sessionId] = type;
-        ////////  // this.aborts.observe(sid, event.properties.status.type, directory)
-        ////////  _aborts.Observe(sessionId, type, directory);
-        ////////  // const msg = mapSSEEventToWebviewMessage(event, sid)
-        ////////  var msg = MapSseEventToWebviewMessage(e, sessionId);
-        ////////  // if (msg) {
-        ////////  if (msg != null)
-        ////////  {
-        ////////    // this.streams.flush(sid)
-        ////////    _streams.Flush(sessionId);
-        ////////    // this.postMessage(msg)
-        ////////    PostMessage(msg);
-        ////////  }
-        ////////  // return
-        ////////  return;
-        ////////}
+        // if (event.type === "message.updated") {
+        if (evt is EventMessageUpdated)
+        {
+          var typedEvent = (EventMessageUpdated)evt;
+          // this.confirmations.confirm(event.properties.info.id)
+          this.Confirmations.Confirm(typedEvent.Properties.Info.Id);
+        }
+
+        // session.status events pass the onEventFiltered pre-filter for all providers (see line 842),
+        // so this runs on every KiloProvider instance — including the Settings panel which has no
+        // tracked sessions. Update sessionStatusMap and forward to webview before the
+        // trackedSessionIds guard so the Settings panel's allStatusMap stays current for the
+        // busy-session warning on Save.
+        // if (event.type === "session.status") {
+        if (evt is EventSessionStatus)
+        {
+          var typedEvent = (EventSessionStatus)evt;
+          // const sid = event.properties.sessionID
+          var type = typedEvent.Properties.Status.Type;
+          // const prev = this.sessionStatusMap.get(sid)
+          var prev = SessionHandler.GetSessionStatus(sessionId);
+          // if ((prev === undefined || prev === "idle") && event.properties.status.type !== "idle") {
+          if ((prev == null || prev == "idle") && type != "idle")
+          {
+            // this.costs.rearm(sid)
+            _serviceProvider.GetService<MaxCostNudgeService>().Rearm(sessionId);
+          }
+          // this.sessionStatusMap.set(sid, event.properties.status.type)
+          SessionHandler.SetSessionStatus(sessionId, type);
+          // this.aborts.observe(sid, event.properties.status.type, directory)
+          _aborts.Observe(sessionId, type, directory);
+          // const msg = mapSSEEventToWebviewMessage(event, sid)
+          var msg = MapSseEventToWebviewMessage(e, sessionId);
+          // if (msg) {
+          if (msg != null)
+          {
+            // this.streams.flush(sid)
+            _serviceProvider.GetService<SessionStreamScheduler>().Flush(sessionId);
+            // this.postMessage(msg)
+            PostMessage(msg);
+          }
+          // return
+          return;
+        }
 
         ////////// Extract sessionID from the event
         ////////// if (event.type === "session.created" && this.adoptPendingFollowup(event.properties.info)) {
@@ -331,7 +335,7 @@ namespace KiloVisualStudioExtension
         ////////}
 
         ////////// const sessionID = this.resolveEventSessionId(event)
-        
+
         ////////// Events without sessionID (server.connected, server.heartbeat, indexing.status) → always forward
         ////////// Events with sessionID → only forward if this webview tracks that session
         ////////// message.part.* events are always session-scoped; drop if session unknown.
@@ -593,158 +597,306 @@ namespace KiloVisualStudioExtension
       }
     }
 
+    internal WebviewMessage mapSSEEventToWebviewMessage(Event evt, string sessionID)
+    {
+      return evt is IWebviewMappable ? ((IWebviewMappable)evt).GetWebViewMessage(sessionID) : null;
+{
+          const info = event.data.info
+        return {
+    type: "messageCreated",
+          message:
+      {
+        ...info,
+            createdAt: new Date(info.time.created).toISOString(),
+          },
+        }
+    }
+      case "message.removed.1":
+        return {
+          type: "messageRemoved",
+          sessionID: event.data.sessionID,
+          messageID: event.data.messageID,
+        }
+      case "message.part.updated.1":
+      case "message.part.removed.1":
+        return mapPartEvent(event, sessionID)
+      case "session.created.1":
+        return {
+    type: "sessionCreated",
+          session: sessionToWebview(event.data.info),
+        }
+      case "session.updated.1":
+        return null
+      case "session.deleted.1":
+        return {
+          type: "sessionDeleted",
+          sessionID: event.data.sessionID,
+        }
+  }
+}
+if (event.type === "message.part.delta") return mapPartEvent(event, sessionID)
+  switch (event.type) {
+    case "session.status":
+    {
+      const info = event.properties.status
+      const status = info.type
+      const extra = statusExtra(info)
+      return {
+      type: "sessionStatus" as const,
+      sessionID: event.properties.sessionID,
+        status,
+        ...extra,
+      }
+    }
+  case "session.turn.close":
+    return {
+    type: "sessionTurnClosed",
+        sessionID: event.properties.sessionID,
+        reason: event.properties.reason,
+      }
+  case "permission.asked":
+    return {
+    type: "permissionRequest",
+        permission:
+      {
+      id: event.properties.id,
+          sessionID: event.properties.sessionID,
+          toolName: event.properties.permission,
+          patterns: event.properties.patterns ?? [],
+          always: event.properties.always ?? [],
+          args: event.properties.metadata,
+          message: `Permission required: ${event.properties.permission}`,
+          tool: event.properties.tool,
+        },
+      }
+  case "permission.replied":
+    return {
+    type: "permissionResolved",
+        permissionID: event.properties.requestID,
+      }
+  case "todo.updated":
+    return {
+    type: "todoUpdated",
+        sessionID: event.properties.sessionID,
+        items: event.properties.todos,
+      }
+  case "question.asked":
+    return {
+    type: "questionRequest",
+        question:
+      {
+      id: event.properties.id,
+          sessionID: event.properties.sessionID,
+          questions: event.properties.questions,
+          blocking: event.properties.blocking,
+          tool: event.properties.tool,
+        },
+      }
+  case "question.replied":
+  case "question.rejected":
+    return {
+    type: "questionResolved",
+        requestID: event.properties.requestID,
+      }
+  case "suggestion.shown":
+    return {
+    type: "suggestionRequest",
+        suggestion:
+      {
+      id: event.properties.id,
+          sessionID: event.properties.sessionID,
+          text: event.properties.text,
+          actions: event.properties.actions,
+          blocking: event.properties.blocking,
+          tool: event.properties.tool,
+        },
+      }
+  case "suggestion.accepted":
+  case "suggestion.dismissed":
+    return {
+    type: "suggestionResolved",
+        requestID: event.properties.requestID,
+      }
+  case "session.error":
+    {
+      return {
+      type: "sessionError",
+        sessionID: event.properties.sessionID,
+        error: event.properties.error,
+      }
+    }
+  case "sandbox.status.changed":
+    return {
+    type: "sandboxStatus",
+        sessionID: event.properties.sessionID,
+        directory: event.properties.directory,
+        enabled: event.properties.enabled,
+        available: event.properties.available,
+        reason: event.properties.reason,
+        version: event.properties.version,
+      }
+  case "indexing.status":
+    return {
+    type: "indexingStatusLoaded",
+        status: event.properties.status,
+      }
+  default:
+    return null
+  }
+}
+
     //private void HandleSyncEvent(SyncEvent syncEvent)
     //{
     //  var name = syncEvent.Name;
 
-    //  switch (name)
-    //  {
-    //    case "message.updated.1":
-    //      HandleMessageUpdatedSync((MessageUpdatedSyncEvent)syncEvent);
-    //      break;
-    //    case "message.removed.1":
-    //      HandleMessageRemovedSync(syncEvent);
-    //      break;
-    //    case "message.part.updated.1":
-    //      HandlePartUpdatedSync((MessagePartUpdatedSyncEvent)syncEvent);
-    //      break;
-    //    case "message.part.removed.1":
-    //      HandlePartRemovedSync(syncEvent);
-    //      break;
-    //    case "session.created.1":
-    //      HandleSessionCreatedSync((SessionCreatedSyncEvent)syncEvent);
-    //      break;
-    //    case "session.updated.1":
-    //      HandleSessionUpdatedSync((SessionUpdatedSyncEvent)syncEvent);
-    //      break;
-    //    case "session.deleted.1":
-    //      HandleSessionDeletedSync(syncEvent);
-    //      break;
-    //  }
-    //}
+//  switch (name)
+//  {
+//    case "message.updated.1":
+//      HandleMessageUpdatedSync((MessageUpdatedSyncEvent)syncEvent);
+//      break;
+//    case "message.removed.1":
+//      HandleMessageRemovedSync(syncEvent);
+//      break;
+//    case "message.part.updated.1":
+//      HandlePartUpdatedSync((MessagePartUpdatedSyncEvent)syncEvent);
+//      break;
+//    case "message.part.removed.1":
+//      HandlePartRemovedSync(syncEvent);
+//      break;
+//    case "session.created.1":
+//      HandleSessionCreatedSync((SessionCreatedSyncEvent)syncEvent);
+//      break;
+//    case "session.updated.1":
+//      HandleSessionUpdatedSync((SessionUpdatedSyncEvent)syncEvent);
+//      break;
+//    case "session.deleted.1":
+//      HandleSessionDeletedSync(syncEvent);
+//      break;
+//  }
+//}
 
-    //private void HandleStreamEvent(StreamEvent streamEvent)
-    //{
-    //  var type = streamEvent.EventType;
-    //  var properties = streamEvent.Properties;
-    //  var sessionID = streamEvent.SessionID;
-    //  var directory = streamEvent.Directory;
+//private void HandleStreamEvent(StreamEvent streamEvent)
+//{
+//  var type = streamEvent.EventType;
+//  var properties = streamEvent.Properties;
+//  var sessionID = streamEvent.SessionID;
+//  var directory = streamEvent.Directory;
 
-    //  switch (type)
-    //  {
-    //    case "kilo-sessions.remote-status-changed":
-    //      return;
+//  switch (type)
+//  {
+//    case "kilo-sessions.remote-status-changed":
+//      return;
 
-    //    case "memory.status":
-    //    case "memory.updated":
-    //    case "memory.error":
-    //      HandleMemoryEvent(type, properties);
-    //      return;
+//    case "memory.status":
+//    case "memory.updated":
+//    case "memory.error":
+//      HandleMemoryEvent(type, properties);
+//      return;
 
-    //    case "session.status":
-    //      HandleSessionStatus(properties, sessionID);
-    //      return;
+//    case "session.status":
+//      HandleSessionStatus(properties, sessionID);
+//      return;
 
-    //    case "message.part.delta":
-    //      HandlePartDelta(properties);
-    //      return;
+//    case "message.part.delta":
+//      HandlePartDelta(properties);
+//      return;
 
-    //    case "session.created":
-    //      //    HandleSessionCreatedStream(properties);
-    //      break;
+//    case "session.created":
+//      //    HandleSessionCreatedStream(properties);
+//      break;
 
-    //    case "session.updated":
-    //      HandleSessionUpdatedStream(properties);
-    //      break;
+//    case "session.updated":
+//      HandleSessionUpdatedStream(properties);
+//      break;
 
-    //    case "session.deleted":
-    //      //    HandleSessionDeletedStream(properties);
-    //      break;
+//    case "session.deleted":
+//      //    HandleSessionDeletedStream(properties);
+//      break;
 
-    //    case "message.updated":
-    //      HandleMessageUpdatedStream(properties);
-    //      break;
+//    case "message.updated":
+//      HandleMessageUpdatedStream(properties);
+//      break;
 
-    //    case "message.removed":
-    //      //    HandleMessageRemovedStream(properties);
-    //      break;
+//    case "message.removed":
+//      //    HandleMessageRemovedStream(properties);
+//      break;
 
-    //    case "global.disposed":
-    //      HandleGlobalDisposed();
-    //      return;
+//    case "global.disposed":
+//      HandleGlobalDisposed();
+//      return;
 
-    //    case "server.instance.disposed":
-    //      HandleServerInstanceDisposed(properties);
-    //      return;
+//    case "server.instance.disposed":
+//      HandleServerInstanceDisposed(properties);
+//      return;
 
-    //    case "global.config.updated":
-    //      HandleGlobalConfigUpdated();
-    //      return;
+//    case "global.config.updated":
+//      HandleGlobalConfigUpdated();
+//      return;
 
-    //    case "message.part.updated":
-    //      HandlePartUpdatedStream(properties);
-    //      break;
+//    case "message.part.updated":
+//      HandlePartUpdatedStream(properties);
+//      break;
 
-    //    case "indexing.status":
-    //      HandleIndexingStatus(properties);
-    //      break;
+//    case "indexing.status":
+//      HandleIndexingStatus(properties);
+//      break;
 
-    //    case "session.turn.close":
-    //      HandleSessionTurnClosed(properties);
-    //      break;
+//    case "session.turn.close":
+//      HandleSessionTurnClosed(properties);
+//      break;
 
-    //    case "session.turn.open":
-    //      HandleSessionTurnOpen(properties);
-    //      break;
+//    case "session.turn.open":
+//      HandleSessionTurnOpen(properties);
+//      break;
 
-    //    case "session.network.asked":
-    //    case "session.network.replied":
-    //    case "session.network.rejected":
-    //    case "session.network.restored":
-    //      HandleNetworkEvent(type, properties);
-    //      break;
+//    case "session.network.asked":
+//    case "session.network.replied":
+//    case "session.network.rejected":
+//    case "session.network.restored":
+//      HandleNetworkEvent(type, properties);
+//      break;
 
-    //    case "permission.asked":
-    //      HandlePermissionAsked(properties);
-    //      break;
+//    case "permission.asked":
+//      HandlePermissionAsked(properties);
+//      break;
 
-    //    case "permission.replied":
-    //      HandlePermissionReplied(properties);
-    //      break;
+//    case "permission.replied":
+//      HandlePermissionReplied(properties);
+//      break;
 
-    //    case "todo.updated":
-    //      HandleTodoUpdated(properties);
-    //      break;
+//    case "todo.updated":
+//      HandleTodoUpdated(properties);
+//      break;
 
-    //    case "question.asked":
-    //      HandleQuestionAsked(properties);
-    //      break;
+//    case "question.asked":
+//      HandleQuestionAsked(properties);
+//      break;
 
-    //    case "question.replied":
-    //    case "question.rejected":
-    //      HandleQuestionResolved(properties);
-    //      break;
+//    case "question.replied":
+//    case "question.rejected":
+//      HandleQuestionResolved(properties);
+//      break;
 
-    //    case "suggestion.shown":
-    //      HandleSuggestionShown(properties);
-    //      break;
+//    case "suggestion.shown":
+//      HandleSuggestionShown(properties);
+//      break;
 
-    //    case "suggestion.accepted":
-    //    case "suggestion.dismissed":
-    //      HandleSuggestionResolved(properties);
-    //      break;
+//    case "suggestion.accepted":
+//    case "suggestion.dismissed":
+//      HandleSuggestionResolved(properties);
+//      break;
 
-    //    case "session.error":
-    //      HandleSessionError(properties);
-    //      break;
+//    case "session.error":
+//      HandleSessionError(properties);
+//      break;
 
-    //    case "sandbox.status.changed":
-    //      HandleSandboxStatusChanged(properties);
-    //      break;
-    //  }
-    //}
+//    case "sandbox.status.changed":
+//      HandleSandboxStatusChanged(properties);
+//      break;
+//  }
+//}
 
-    private void HandleMessageUpdatedSync(MessageUpdatedSyncEvent evt)
+    private void HandleMessageUpdatedSync(EventMessageUpdated evt)
     {
       var data = (ApiClient.EventMessageUpdated)evt.Data;
       var info = data.Properties.Info;
@@ -757,7 +909,8 @@ namespace KiloVisualStudioExtension
 
       if (infoObj["cost"]?.Type == JTokenType.Float && infoObj["role"]?.Value<string>() == "assistant")
       {
-        SessionHandler.GetOrCreateMessageCost(messageID, sessionID).Cost = infoObj["cost"].Value<double>();
+        //_serviceProvider.GetService<MaxCostNudgeService>().
+        //SessionHandler.GetOrCreateMessageCost(messageID, sessionID).Cost = infoObj["cost"].Value<double>();
       }
 
       var timeObj = infoObj["time"];
@@ -1627,18 +1780,5 @@ namespace KiloVisualStudioExtension
       _disposed = true;
     }
 
-  }
-
-  public partial class SessionRevision
-  {
-    public long Id { get; set; }
-    public int Seq { get; set; }
-  }
-
-  public partial class MessageCost
-  {
-    public string SessionID { get; set; } = "";
-    public string MessageID { get; set; } = "";
-    public double Cost { get; set; }
   }
 }

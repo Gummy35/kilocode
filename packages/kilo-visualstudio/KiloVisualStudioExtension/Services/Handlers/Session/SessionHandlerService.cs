@@ -10,13 +10,6 @@ using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
 using SessionUpdateRequest = KiloVisualStudioExtension.ApiClient.Body19;
 using RevertRequest = KiloVisualStudioExtension.ApiClient.Body27;
 
-// Forward declarations for types defined in SSEHelper
-namespace KiloVisualStudioExtension
-{
-  public partial class SessionRevision { }
-  public partial class MessageCost { }
-}
-
 namespace KiloVisualStudioExtension.Services.Handlers.Session
 {
   /// <summary>
@@ -36,7 +29,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     private readonly Dictionary<string, string> _sessionStatusMap = new();
     private readonly Dictionary<string, SessionRevision> _revisions = new();
     private readonly HashSet<string> _modelUsageSessionIds = new();
-    private readonly Dictionary<string, MessageCost> _messageCosts = new();
     private readonly Dictionary<string, string> _messageSessionIds = new();
 
     /// <summary>
@@ -64,13 +56,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
       _modelUsageSessionIds.Remove(sessionID);
       _revisions.Remove(sessionID);
       _sessionStatusMap.Remove(sessionID);
-
-      // Remove all message costs for this session
-      var costsToRemove = _messageCosts.Where(kvp => kvp.Value.SessionID == sessionID).Select(kvp => kvp.Key).ToList();
-      foreach (var costId in costsToRemove)
-      {
-        _messageCosts.Remove(costId);
-      }
+      _serviceProvider.GetService<MaxCostNudgeService>().OnSessionDeleted(sessionID);
     }
 
     /// <summary>
@@ -102,7 +88,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     /// </summary>
     public string GetSessionStatus(string sessionID)
     {
-      return _sessionStatusMap.ContainsKey(sessionID) ? _sessionStatusMap[sessionID] : "";
+      return _sessionStatusMap.ContainsKey(sessionID) ? _sessionStatusMap[sessionID] : null;
     }
 
     /// <summary>
@@ -111,35 +97,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     public void SetSessionStatus(string sessionID, string status)
     {
       _sessionStatusMap[sessionID] = status;
-    }
-
-    /// <summary>
-    /// Gets or creates a message cost entry.
-    /// </summary>
-    public MessageCost GetOrCreateMessageCost(string messageID, string sessionID)
-    {
-      if (!_messageCosts.TryGetValue(messageID, out var cost))
-      {
-        cost = new MessageCost { SessionID = sessionID, MessageID = messageID };
-        _messageCosts[messageID] = cost;
-      }
-      return cost;
-    }
-
-    /// <summary>
-    /// Removes a message cost entry.
-    /// </summary>
-    public void RemoveMessageCost(string messageID)
-    {
-      _messageCosts.Remove(messageID);
-    }
-
-    /// <summary>
-    /// Gets all message costs for a session.
-    /// </summary>
-    public IEnumerable<KeyValuePair<string, MessageCost>> GetMessageCostsForSession(string sessionID)
-    {
-      return _messageCosts.Where(kvp => kvp.Value.SessionID == sessionID);
     }
 
     /// <summary>
@@ -939,5 +896,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
       _disposed = true;
     }
   }
+
+  public partial class SessionRevision
+  {
+    public long Id { get; set; }
+    public int Seq { get; set; }
+  }
+
 }
 

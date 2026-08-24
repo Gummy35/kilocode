@@ -1,6 +1,10 @@
+using EnvDTE;
 using KiloExtensionDTOs;
+using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.KiloConfig;
+using KiloExtensionDTOs.Parts;
 using KiloExtensionDTOs.Profile;
+using KiloExtensionDTOs.Sessions;
 using KiloVisualStudioExtension.ApiClient;
 using System;
 using System.Collections.Generic;
@@ -41,7 +45,8 @@ namespace KiloVisualStudioExtension.Utils
     public static OrganizationsItemType Convert(Organizations o)
     {
       if (o == null) return null;
-      return new OrganizationsItemType {
+      return new OrganizationsItemType
+      {
         Id = o.Id,
         Name = o.Name,
         Role = o.Role
@@ -74,7 +79,7 @@ namespace KiloVisualStudioExtension.Utils
         NextBillingAt = kilopass.NextBillingAt
       };
     }
-    
+
     public static SkillsConfig Convert(Skills skills)
     {
       if (skills == null) return null;
@@ -85,7 +90,7 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
-    
+
 
     public static KiloExtensionDTOs.DisabledManualAutoEnum Convert(ConfigShare c)
     {
@@ -178,7 +183,7 @@ namespace KiloVisualStudioExtension.Utils
       return new KiloExtensionDTOs.KiloConfig.IndexingConfig
       {
         Bedrock = config.Bedrock == null ? null : new BedrockType { Profile = config.Bedrock.Profile, Region = config.Bedrock.Region },
-  //      Dimension = config.Dimension,
+        //      Dimension = config.Dimension,
         EmbeddingBatchSize = config.EmbeddingBatchSize,
         Enabled = config.Enabled,
         FileExtensions = config.FileExtensions,
@@ -186,7 +191,7 @@ namespace KiloVisualStudioExtension.Utils
         Kilo = config.Kilo == null ? null : new KiloType { ApiKey = config.Kilo.ApiKey, BaseUrl = config.Kilo.BaseUrl, OrganizationId = config.Kilo.OrganizationId },
         Lancedb = config.Lancedb == null ? null : new LancedbType { Directory = config.Lancedb.Directory },
         Mistral = config.Mistral == null ? null : new MistralType { ApiKey = config.Mistral.ApiKey },
-//        Model = config.Model,
+        //        Model = config.Model,
         Ollama = config.Ollama == null ? null : new OllamaType { BaseUrl = config.Ollama.BaseUrl },
         Openai = config.Openai == null ? null : new OpenaiType { ApiKey = config.Openai.ApiKey },
         OpenaiCompatible = config.OpenaiCompatible == null ? null : new OpenaiCompatibleType { ApiKey = config.OpenaiCompatible.ApiKey, BaseUrl = config.OpenaiCompatible.BaseUrl },
@@ -198,7 +203,7 @@ namespace KiloVisualStudioExtension.Utils
         SearchMinScore = config.SearchMinScore,
         VectorStore = config.VectorStore == IndexingConfigVectorStore.Qdrant ? LancedbQdrantEnum.Qdrant : LancedbQdrantEnum.Lancedb,
         VercelAiGateway = config.VercelAiGateway == null ? null : new VercelAiGatewayType { ApiKey = config.VercelAiGateway.ApiKey },
-        Voyage = config.Voyage == null ? null : new VoyageType { ApiKey = config.Voyage.ApiKey}
+        Voyage = config.Voyage == null ? null : new VoyageType { ApiKey = config.Voyage.ApiKey }
 
       };
     }
@@ -242,5 +247,94 @@ namespace KiloVisualStudioExtension.Utils
         Permission = config.Permission
       };
     }
+    public static TimeType Convert(Time5 time)
+    {
+      return new TimeType { Created = time.Created };
+    }
+    public static TimeType Convert(Time6 time)
+    {
+      return new TimeType { Created = time.Created, Completed = time.Completed };
+    }
+
+    public static ModelType Convert(Model3 model)
+    {
+      return new ModelType { ModelID = model.ModelID, ProviderID = model.ProviderID, Variant = model.Variant };
+    }
+
+    public static CacheType Convert(Cache2 cache)
+    {
+      return new CacheType { Read = cache.Read, Write = cache.Write };
+    }
+
+    public static TokenUsage Convert(Tokens2 tokens)
+    {
+      return new TokenUsage { Cache = Convert(tokens.Cache), Input = tokens.Input, Output = tokens.Output, Reasoning = tokens.Reasoning};
+    }
+    public static ErrorType Convert(Error error)
+    {
+      return new ErrorType { Data = error.}
+    }
+
+    public static PathType Convert(Path2 path)
+    {
+      return new PathType { Cwd = path.Cwd, Root = path.Root };
+    }
+  }
+
+  public class MessageConverter
+  {
+    public KiloExtensionDTOs.Sessions.Message Convert(UserMessage message)
+    {
+      return new KiloExtensionDTOs.Sessions.Message
+      {
+        Agent = message.Agent,
+        Content = null,
+        Cost = null,
+        Error = null,
+        Finish = null,
+        Id = message.Id,
+        Mode = null,
+        Model = EntityConverter.Convert(message.Model),
+        ModelID = null,
+        ParentID = null,
+        Parts = null,
+        Path = null,
+        ProviderID = null,
+        Role = message.Role,
+        SessionID = message.SessionID,
+        Summary = message.Summary,
+        Time = EntityConverter.Convert(message.Time),
+        Tokens = null,
+        CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds((long)message.Time.Created).ToString("O"),
+      };
+    }
+
+    public KiloExtensionDTOs.Sessions.Message Convert(AssistantMessage message)
+    {
+      return new KiloExtensionDTOs.Sessions.Message
+      {
+        Agent = message.Agent,
+        Content = null,
+        Cost = message.Cost,
+        Error = EntityConverter.Convert(message.Error),
+        Finish = message.Finish,
+        Id = message.Id,
+        Mode = message.Mode,
+        Model = null,
+        ModelID = message.ModelID,
+        ParentID = message.ParentID,
+        Parts = null,
+        Path = message.Path,
+        ProviderID = message.ProviderID,
+        Role = message.Role,
+        SessionID = message.SessionID,
+        Summary = message.Summary,
+        Time = EntityConverter.Convert(message.Time),
+        Tokens = message.Tokens,
+        CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds((long)message.Time.Created).ToString("O"),
+      };
+    }
+
+
   }
 }

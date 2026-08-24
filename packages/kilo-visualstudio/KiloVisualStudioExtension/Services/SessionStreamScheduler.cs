@@ -24,7 +24,7 @@ namespace KiloVisualStudioExtension.Services
     /// - BackgroundStepMs (20ms): Per-extra-background-session backoff beyond the first 2.
     /// - BackgroundMaxMs (400ms): Ceiling for the adaptive backoff.
     /// </summary>
-    public class SessionStreamScheduler : IDisposable
+    public class SessionStreamScheduler : IServiceProviderService, IDisposable
     {
         /// <summary>
         /// Options for configuring the scheduler behavior.

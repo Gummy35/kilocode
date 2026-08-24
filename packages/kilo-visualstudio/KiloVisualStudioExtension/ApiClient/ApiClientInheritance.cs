@@ -1,3 +1,6 @@
+using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.WebviewMessages;
+using KiloVisualStudioExtension.Utils;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -10,16 +13,69 @@ namespace KiloVisualStudioExtension.ApiClient
   /// here for proper polymorphic behavior.
   /// </summary>
 
+  public interface IWebviewMappable
+  {
+    public WebviewMessage GetWebViewMessage(string sessionID);
+  }
 
   public partial class Message
   {
     public string Id { get; set; }
   }
 
- 
-  public partial class AssistantMessage : Message { }
+
+  public partial class AssistantMessage : Message {
+
+    [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))]
+    public Error Error { get; set; }
+  }
   public partial class UserMessage : Message { }
 
+  public partial class SyncEventMessageUpdated : IWebviewMappable
+  {
+    public KiloExtensionDTOs.WebviewMessages.WebviewMessage GetWebViewMessage(string sessionID)
+    {
+
+      return MessageConverter.Convert(this.SyncEvent.Data.Info);
+    //  this.SyncEvent.Data.Info.
+    //  return new MessageCreatedMessage
+    //  {
+    //    Message = 
+    //    {
+
+    //    }
+    //  }
+    //  const info = event.data.info
+    //    return {
+    //type: "messageCreated",
+    //      message:
+    //  {
+    //    ...info,
+    //        createdAt: new Date(info.time.created).toISOString(),
+    //      },
+    //    }
+    }
+  }
+
+  
+  public partial class ProviderAuthError : Error { }
+  public partial class UnknownError : Error { }
+  public partial class MessageOutputLengthError : Error { }
+  public partial class MessageAbortedError : Error { }
+  public partial class StructuredOutputError : Error { }
+  public partial class ContextOverflowError : Error { }
+  public partial class ContentFilterError : Error { }
+  public partial class APIError : Error { }
+  
+
+  public partial class SyncEventMessageUpdated : SyncEvent { }
+  public partial class SyncEventMessageRemoved : SyncEvent { }
+  public partial class SyncEventMessagePartUpdated : SyncEvent { }
+  public partial class SyncEventMessagePartRemoved : SyncEvent { }
+  public partial class SyncEventSessionCreated : SyncEvent { }
+  public partial class SyncEventSessionUpdated : SyncEvent { }
+  public partial class SyncEventSessionRemoved : SyncEvent { }
 
   // SSE Event
   public partial class EventMessageUpdated : Event { }

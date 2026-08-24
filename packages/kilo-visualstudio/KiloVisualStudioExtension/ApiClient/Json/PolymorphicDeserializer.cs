@@ -54,7 +54,36 @@ namespace KiloVisualStudioExtension.ApiClient.Json
             };
 
             return result;
-        }
+    }
+
+    public static Error DeserializeError(JToken token, JsonSerializer serializer)
+    {
+      if (token == null)
+        throw new ArgumentNullException(nameof(token));
+
+      var obj = token as JObject ?? throw new JsonSerializationException("Expected JObject for Error");
+      var nameToken = obj["name"];
+      if (nameToken == null)
+        throw new JsonSerializationException("Error JSON missing required 'name' field");
+
+      var name = nameToken.Value<string>();
+      if (string.IsNullOrEmpty(name))
+        throw new JsonSerializationException("Error 'name' field is empty");
+
+      return name switch
+      {
+        "ProviderAuthError" => obj.ToObject<ProviderAuthError>(serializer),
+        "UnknownError" => obj.ToObject<UnknownError>(serializer),
+        "MessageOutputLengthError" => obj.ToObject<MessageOutputLengthError>(serializer),
+        "MessageAbortedError" => obj.ToObject<MessageAbortedError>(serializer),
+        "StructuredOutputError" => obj.ToObject<StructuredOutputError>(serializer),
+        "ContextOverflowError" => obj.ToObject<ContextOverflowError>(serializer),
+        "ContentFilterError" => obj.ToObject<ContentFilterError>(serializer),
+        "ApiError" => obj.ToObject<APIError>(serializer),
+        _ => null
+      };
+    }
+
 
     /// <summary>
     /// Deserializes a ToolPart with proper handling of the nested State polymorphic property.
@@ -372,4 +401,24 @@ namespace KiloVisualStudioExtension.ApiClient.Json
           };
         }
   }
-}
+
+  public class ErrorConverter : JsonConverter<Error>
+  {
+    public ErrorConverter()
+    {
+    }
+
+    public override Error? ReadJson(JsonReader reader, System.Type objectType, Error? existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+      if (reader.TokenType == JsonToken.Null)
+        return null;
+
+      var token = JToken.Load(reader);
+      return PolymorphicDeserializer.DeserializeError(token, serializer);
+    }
+
+    public override void WriteJson(JsonWriter writer, Error value, JsonSerializer serializer)
+    {
+      throw new NotSupportedException("ErrorConverter is read-only and does not support serialization.");
+    }
+  }

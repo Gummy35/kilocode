@@ -1,9 +1,11 @@
 using EnvDTE;
 using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Handlers.Session;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace KiloVisualStudioExtension.Utils
 {
@@ -98,7 +100,7 @@ namespace KiloVisualStudioExtension.Utils
   /// Tracks session directories and provides directory resolution.
   /// Mirrors trackDirectory and getProjectDirectory from KiloProvider.ts
   /// </summary>
-  public class ProjectDirectoryProvider: IServiceProviderService
+  public class ProjectDirectoryProvider : ServiceProviderServiceBase
   {
     private readonly string? _projectDirectoryOverride;
     private readonly Func<string?, string?> _getWorkspaceDirectory;
@@ -107,11 +109,12 @@ namespace KiloVisualStudioExtension.Utils
     private readonly Func<string> _getRootDirectory;
 
     public ProjectDirectoryProvider(
+        ServiceProvider serviceProvider,
         string? projectDirectoryOverride,
         Func<string?, string?> getWorkspaceDirectory,
         Func<string?>? getSolutionDirectory = null,
         IDictionary<string, string>? sessionDirectories = null,
-        Func<string>? getRootDirectory = null)
+        Func<string>? getRootDirectory = null) : base(serviceProvider)
     {
       _projectDirectoryOverride = projectDirectoryOverride;
       _getWorkspaceDirectory = getWorkspaceDirectory;
@@ -204,16 +207,23 @@ namespace KiloVisualStudioExtension.Utils
     {
       return new Dictionary<string, string>(_sessionDirectories);
     }
+
+    public List<string> GetSessionsByDirectory(string directory)
+    {
+      var SessionHandler = _serviceProvider.GetService<SessionHandlerService>();
+      return _sessionDirectories.Where(kvp => SessionHandler.IsTrackedSession(kvp.Key)
+        && PathUtils.SameDirectory(directory, kvp.Value)).Select(kvp => kvp.Key).ToList();
+    }
   }
 
   /// <summary>
   /// Visual Studio-specific implementation using DTE.
   /// </summary>
-  public class VisualStudioDirectoryProvider: IServiceProviderService
+  public class VisualStudioDirectoryProvider : ServiceProviderServiceBase
   {
     private readonly DTE _dte;
 
-    public VisualStudioDirectoryProvider(DTE dte)
+    public VisualStudioDirectoryProvider(ServiceProvider serviceProvider, DTE dte) : base(serviceProvider)
     {
       _dte = dte;
     }
@@ -300,6 +310,7 @@ namespace KiloVisualStudioExtension.Utils
       var self = this;
 
       return new ProjectDirectoryProvider(
+        _serviceProvider,
           projectDirectoryOverride,
           sessionId =>
           {
