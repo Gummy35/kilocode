@@ -1,4 +1,5 @@
 using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.KiloProviderUtils;
 using KiloExtensionDTOs.WebviewMessages;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.Utils;
@@ -16,7 +17,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
   public interface IWebviewMappable
   {
-    public WebviewMessage GetWebViewMessage(string sessionID);
+    public IWebviewMessage GetWebViewMessage(string sessionID);
   }
 
   public partial class Message
@@ -31,7 +32,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
   public partial class SyncEventMessageUpdated : IWebviewMappable
   {
-    public KiloExtensionDTOs.WebviewMessages.WebviewMessage GetWebViewMessage(string sessionID)
+    public IWebviewMessage GetWebViewMessage(string sessionID)
     {
       var message = this.SyncEvent?.Data?.Info != null ? MessageConverter.Convert(this.SyncEvent.Data.Info) : null;
       return new MessageCreatedMessage
@@ -57,6 +58,51 @@ namespace KiloVisualStudioExtension.ApiClient
       //    }
     }
   }
+
+  public partial class SyncEventMessageRemoved : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //      case "message.removed.1":
+      //        return {
+      //          type: "messageRemoved",
+      //          sessionID: event.data.sessionID,
+      //          messageID: event.data.messageID,
+      //        }
+      return new MessageRemovedMessage
+      {
+        MessageID = this.Data.MessageID,
+        SessionID = this.Data.SessionID
+      };
+    }
+  }
+
+  public partial class SyncEventSessionUpdated: IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //      case "session.updated.1":
+      //        return null
+      return null;
+    }
+  }
+
+  public partial class SyncEventSessionDeleted : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //      case "session.deleted.1":
+      //        return {
+      //          type: "sessionDeleted",
+      //          sessionID: event.data.sessionID,
+      //        }
+      return new SessionDeletedMessage
+      {
+        SessionID = sessionID
+      };
+    }
+  }
+
 
   public partial class Error
   {

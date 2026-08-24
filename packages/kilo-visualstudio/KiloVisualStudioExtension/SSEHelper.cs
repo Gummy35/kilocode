@@ -31,6 +31,7 @@ using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
 
 namespace KiloVisualStudioExtension
 {
+  using KiloExtensionDTOs.KiloProviderUtils;
   using KiloExtensionDTOs.WebviewMessages;
   using KiloVisualStudioExtension.Services;
   using KiloVisualStudioExtension.Services.Handlers.Followup;
@@ -598,26 +599,11 @@ namespace KiloVisualStudioExtension
       }
     }
 
-    internal WebviewMessage MapSSEEventToWebviewMessage(Events evt, string sessionID)
+    internal IWebviewMessage MapSSEEventToWebviewMessage(Events evt, string sessionID)
     {
       return evt is IWebviewMappable ? ((IWebviewMappable)evt).GetWebViewMessage(sessionID) : null;
-      //{
-      //          const info = event.data.info
-      //        return {
-      //    type: "messageCreated",
-      //          message:
-      //      {
-      //        ...info,
-      //            createdAt: new Date(info.time.created).toISOString(),
-      //          },
-      //        }
-      //    }
-      //      case "message.removed.1":
-      //        return {
-      //          type: "messageRemoved",
-      //          sessionID: event.data.sessionID,
-      //          messageID: event.data.messageID,
-      //        }
+      
+      
       //      case "message.part.updated.1":
       //      case "message.part.removed.1":
       //        return mapPartEvent(event, sessionID)
@@ -625,13 +611,6 @@ namespace KiloVisualStudioExtension
       //        return {
       //    type: "sessionCreated",
       //          session: sessionToWebview(event.data.info),
-      //        }
-      //      case "session.updated.1":
-      //        return null
-      //      case "session.deleted.1":
-      //        return {
-      //          type: "sessionDeleted",
-      //          sessionID: event.data.sessionID,
       //        }
       //  }
       //}
@@ -969,13 +948,14 @@ namespace KiloVisualStudioExtension
         }
       }
 
-      PostMessage(new PartUpdatedMessage
-      {
-        SessionID = sessionID,
-        MessageID = messageID,
-        Part = part,
+      //PostMessage(new PartUpdate
+      //{
 
-      });
+      //  SessionID = sessionID,
+      //  MessageID = messageID,
+      //  Part = part,
+
+      //});
     }
 
     //private void HandlePartRemovedSync(SyncEvent evt)
