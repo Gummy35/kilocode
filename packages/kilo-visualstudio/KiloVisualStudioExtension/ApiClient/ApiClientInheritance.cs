@@ -2,11 +2,16 @@ using KiloExtensionDTOs;
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.KiloProviderUtils;
 using KiloExtensionDTOs.Parts;
+using KiloExtensionDTOs.Questions;
 using KiloExtensionDTOs.WebviewMessages;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.Utils;
+using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Error = KiloVisualStudioExtension.ApiClient.Error;
 
 namespace KiloVisualStudioExtension.ApiClient
 {
@@ -165,6 +170,297 @@ namespace KiloVisualStudioExtension.ApiClient
     }
   }
 
+
+  public partial class EventSessionTurnClose : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "session.turn.close":
+      //    return {
+      //    type: "sessionTurnClosed",
+      //        sessionID: event.properties.sessionID,
+      //        reason: event.properties.reason,
+      //      }
+      return new SessionTurnClosedMessage
+      {
+        SessionID = this.Properties.SessionID,
+        Reason = EntityConverter.Convert(Properties.Reason)
+      };
+    }
+  }
+
+
+  public partial class EventPermissionAsked : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "permission.asked":
+      //    return {
+      //    type: "permissionRequest",
+      //        permission:
+      //      {
+      //      id: event.properties.id,
+      //          sessionID: event.properties.sessionID,
+      //          toolName: event.properties.permission,
+      //          patterns: event.properties.patterns ?? [],
+      //          always: event.properties.always ?? [],
+      //          args: event.properties.metadata,
+      //          message: `Permission required: ${event.properties.permission}`,
+      //          tool: event.properties.tool,
+      //        },
+      //      }
+
+      return new PermissionRequestMessage
+      {
+        Permission = new KiloExtensionDTOs.Permissions.PermissionRequest
+        {
+          Id = Properties.Id,
+          SessionID = Properties.SessionID,
+          ToolName = Properties.Permission,
+          Patterns = Properties.Patterns.ToList(),
+          Always = Properties.Always.ToList(),
+          Args = Properties.Metadata,
+          Message = $"Permission required: {Properties.Permission}",
+          Tool = EntityConverter.Convert(Properties.Tool)
+        }
+      };
+    }
+  }
+
+  public partial class EventPermissionReplied : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "permission.replied":
+      //    return {
+      //    type: "permissionResolved",
+      //        permissionID: event.properties.requestID,
+      //      }
+      return new PermissionResolvedMessage
+      {
+        PermissionID = this.Properties.RequestID
+      };
+    }
+  }
+
+  public partial class EventTodoUpdated : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "todo.updated":
+      //    return {
+      //    type: "todoUpdated",
+      //        sessionID: event.properties.sessionID,
+      //        items: event.properties.todos,
+      //      }
+      return new TodoUpdatedMessage
+      {
+        SessionID = Properties.SessionID,
+        Items = EntityConverter.Convert(Properties.Todos)
+      };
+    }
+  }
+
+  public partial class EventQuestionAsked : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "question.asked":
+      //    return {
+      //    type: "questionRequest",
+      //        question:
+      //      {
+      //      id: event.properties.id,
+      //          sessionID: event.properties.sessionID,
+      //          questions: event.properties.questions,
+      //          blocking: event.properties.blocking,
+      //          tool: event.properties.tool,
+      //        },
+      //      }
+      return new QuestionRequestMessage
+      {
+        Question = new KiloExtensionDTOs.Questions.QuestionRequest
+        {
+          Id = Properties.Id,
+          SessionID = Properties.SessionID,
+          Questions = EntityConverter.Convert(Properties.Questions),
+          Blocking = Properties.Blocking,
+          Tool = EntityConverter.Convert(Properties.Tool),
+        }
+      };
+    }
+  }
+
+  public partial class EventQuestionReplied : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "question.replied":
+      //  case "question.rejected":
+      //    return {
+      //    type: "questionResolved",
+      //        requestID: event.properties.requestID,
+      //      }
+      return new QuestionResolvedMessage
+      {
+        RequestID = Properties.RequestID
+      };
+    }
+  }
+
+  public partial class EventQuestionRejected : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "question.replied":
+      //  case "question.rejected":
+      //    return {
+      //    type: "questionResolved",
+      //        requestID: event.properties.requestID,
+      //      }
+      return new QuestionResolvedMessage
+      {
+        RequestID = Properties.RequestID
+      };
+    }
+  }
+
+  public partial class EventSuggestionShown : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "suggestion.shown":
+      //    return {
+      //    type: "suggestionRequest",
+      //        suggestion:
+      //      {
+      //      id: event.properties.id,
+      //          sessionID: event.properties.sessionID,
+      //          text: event.properties.text,
+      //          actions: event.properties.actions,
+      //          blocking: event.properties.blocking,
+      //          tool: event.properties.tool,
+      //        },
+      //      }
+      return new SuggestionRequestMessage
+      {
+        Suggestion = new KiloExtensionDTOs.Questions.SuggestionRequest
+        {
+          Id = Properties.Id,
+          SessionID = Properties.SessionID,
+          Text = Properties.Text,
+          Actions = EntityConverter.Convert(Properties.Actions),
+          Blocking = Properties.Blocking,
+          Tool = EntityConverter.Convert(Properties.Tool)
+        }
+      };
+    }
+  }
+
+  public partial class EventSuggestionAccepted : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "suggestion.accepted":
+      //  case "suggestion.dismissed":
+      //    return {
+      //    type: "suggestionResolved",
+      //        requestID: event.properties.requestID,
+      //      }
+      return new SuggestionResolvedMessage
+      {
+        RequestID = Properties.RequestID
+      };
+    }
+  }
+
+  public partial class EventSuggestionDismissed : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "suggestion.accepted":
+      //  case "suggestion.dismissed":
+      //    return {
+      //    type: "suggestionResolved",
+      //        requestID: event.properties.requestID,
+      //      }
+      return new SuggestionResolvedMessage
+      {
+        RequestID = Properties.RequestID
+      };
+    }
+  }
+
+  public partial class EventSessionError : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "session.error":
+      //    {
+      //      return {
+      //      type: "sessionError",
+      //        sessionID: event.properties.sessionID,
+      //        error: event.properties.error,
+      //      }
+      //    }
+      return new SessionErrorMessage
+      {
+        SessionID = Properties.SessionID,
+        Error = new ErrorType
+        {
+          Name = Properties.Error.AdditionalProperties["name"].ToString(),
+          Data = Properties.Error.AdditionalProperties["data"]
+        }
+      };
+    }
+  }
+
+  public partial class EventSandboxStatusChanged : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      //  case "sandbox.status.changed":
+      //    return {
+      //    type: "sandboxStatus",
+      //        sessionID: event.properties.sessionID,
+      //        directory: event.properties.directory,
+      //        enabled: event.properties.enabled,
+      //        available: event.properties.available,
+      //        reason: event.properties.reason,
+      //        version: event.properties.version,
+      //      }
+      return new SandboxStatusMessage
+      {
+        SessionID = Properties.SessionID,
+        Directory = Properties.Directory,
+        Enabled = Properties.Enabled,
+        Available = Properties.Available,
+        Reason = Properties.Reason,
+        Version = Properties.Version,
+      };
+    }
+  }
+
+  public partial class EventIndexingStatus : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+
+      //  case "indexing.status":
+      //    return {
+      //    type: "indexingStatusLoaded",
+      //        status: event.properties.status,
+      //      }
+      //  default:
+      //    return null
+      //  }
+      //}    }
+      return new IndexingStatusLoadedMessage
+      {
+        Status = Properties.Status
+      };
+    }
+  }
   public partial class EventSessionStatus : IWebviewMappable
   {
     public IWebviewMessage GetWebViewMessage(string sessionID)
@@ -188,6 +484,7 @@ namespace KiloVisualStudioExtension.ApiClient
       //        ...extra,
       //      }
       //    }
+
       return Properties.Status.Type switch
       {
         "retry" => new SessionStatusMessage
@@ -214,7 +511,7 @@ namespace KiloVisualStudioExtension.ApiClient
   }
 
 
- 
+
 
   public partial class Error
   {
@@ -223,17 +520,29 @@ namespace KiloVisualStudioExtension.ApiClient
     public object Data { get; set; } = new object();
   }
 
-  public partial class ProviderAuthError : Error { }
-  public partial class UnknownError : Error { }
-  public partial class MessageOutputLengthError : Error { }
-  public partial class MessageAbortedError : Error { }
-  public partial class StructuredOutputError : Error { }
-  public partial class ContextOverflowError : Error { }
-  public partial class ContentFilterError : Error { }
-  public partial class APIError : Error { }
+  public interface IEvent
+  {
+
+  }
+
+  public interface IEventSessionErrorError
+  {
+
+  }
 
 
-  public partial class SyncEvent : Events { }
+
+  public partial class ProviderAuthError : Error, IEventSessionErrorError { }
+  public partial class UnknownError : Error, IEventSessionErrorError { }
+  public partial class MessageOutputLengthError : Error, IEventSessionErrorError { }
+  public partial class MessageAbortedError : Error, IEventSessionErrorError { }
+  public partial class StructuredOutputError : Error, IEventSessionErrorError { }
+  public partial class ContextOverflowError : Error, IEventSessionErrorError { }
+  public partial class ContentFilterError : Error, IEventSessionErrorError { }
+  public partial class APIError : Error, IEventSessionErrorError { }
+  public partial class AgentRequirementError : IEventSessionErrorError { }
+
+  public partial class SyncEvent : IEvent { }
   public partial class SyncEventMessageUpdated : SyncEvent { }
   public partial class SyncEventMessageRemoved : SyncEvent { }
   public partial class SyncEventMessagePartUpdated : SyncEvent { }
@@ -242,11 +551,53 @@ namespace KiloVisualStudioExtension.ApiClient
   public partial class SyncEventSessionUpdated : SyncEvent { }
   public partial class SyncEventSessionRemoved : SyncEvent { }
 
-  public partial class Event : Events { }
+
+  public partial class Event : IEvent { }
   // SSE Event
   public partial class EventMessageUpdated : Event { }
   public partial class EventMessageRemoved : Event { }
-  public partial class EventMessagePartUpdated : Event { }
+  public partial class EventMessagePartUpdated : Event {
+    /// <summary>
+    /// Extracts the child ID from a Part if it's a tool task part.
+    /// Returns sessionId from part.metadata.sessionId or part.state.metadata.sessionId
+    /// </summary>
+    public string? GetPartChildId()
+    {
+      if (Properties.Part == null) return null;
+
+      var additional = Properties.Part.AdditionalProperties;
+
+      // Check if type is "tool" and tool is "task"
+      if (!additional.TryGetValue("type", out var typeObj) || typeObj?.ToString() != "tool")
+        return null;
+
+      if (!additional.TryGetValue("tool", out var toolObj) || toolObj?.ToString() != "task")
+        return null;
+
+      // Try metadata.sessionId first
+      if (additional.TryGetValue("metadata", out var metadataObj) &&
+          metadataObj is IDictionary<string, object> metadataDict)
+      {
+        if (metadataDict.TryGetValue("sessionId", out var sessionIdObj))
+          return sessionIdObj?.ToString();
+      }
+
+      // Fallback to state.metadata.sessionId
+      if (additional.TryGetValue("state", out var stateObj) &&
+          stateObj is IDictionary<string, object> stateDict)
+      {
+        if (stateDict.TryGetValue("metadata", out var stateMetadataObj) &&
+            stateMetadataObj is IDictionary<string, object> stateMetadataDict)
+        {
+          if (stateMetadataDict.TryGetValue("sessionId", out var stateSessionIdObj))
+            return stateSessionIdObj?.ToString();
+        }
+      }
+
+      return null;
+    }
+
+  }
   public partial class EventMessagePartRemoved : Event { }
   public partial class EventMessagePartDelta : Event { }
   public partial class EventSessionCreated : Event { }

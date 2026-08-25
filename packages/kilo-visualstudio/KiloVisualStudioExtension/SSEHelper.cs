@@ -26,7 +26,7 @@ using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
 
 namespace KiloVisualStudioExtension
 {
- 
+
 
   public class SSEHelper : ServiceProviderServiceBase
   {
@@ -96,7 +96,7 @@ namespace KiloVisualStudioExtension
         var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(serviceProvider, dte));
         _projectDirectoryProvider = vsProvider.CreateProvider(
             projectDirectoryOverride: null // or specify a path like @"C:\MyProject"
-            //sessionDirectories: _sessionDirectories
+                                           //sessionDirectories: _sessionDirectories
             );
         _serviceProvider.AddService(_projectDirectoryProvider);
       }
@@ -127,7 +127,7 @@ namespace KiloVisualStudioExtension
 
         var sessionId = ResolveEventSessionId(raw);
 
-        var evt = e.Data;
+        var evt = (IEvent)e.Data;
 
         var directory = raw.Directory;
 
@@ -303,7 +303,7 @@ namespace KiloVisualStudioExtension
           // this.aborts.observe(sid, event.properties.status.type, directory)
           _aborts.Observe(sessionId, type, directory);
           // const msg = mapSSEEventToWebviewMessage(event, sid)
-          var msg = MapSSEEventToWebviewMessage(e, sessionId);
+          var msg = MapSSEEventToWebviewMessage((Event)e.Data, sessionId);
           // if (msg) {
           if (msg != null)
           {
@@ -318,40 +318,45 @@ namespace KiloVisualStudioExtension
 
         // Extract sessionID from the event
         // if (event.type === "session.created" && this.adoptPendingFollowup(event.properties.info)) {
-        if (evt is EventSessionCreated && 
+        if (evt is EventSessionCreated &&
           AdoptPendingFollowup((evt as EventSessionCreated).Properties.Info))
         {
           // return
           return;
         }
 
-        ////////// const sessionID = this.resolveEventSessionId(event)
+        // const sessionID = this.resolveEventSessionId(event)
+        var sessionID = ResolveEventSessionId(raw);
 
-        ////////// Events without sessionID (server.connected, server.heartbeat, indexing.status) → always forward
-        ////////// Events with sessionID → only forward if this webview tracks that session
-        ////////// message.part.* events are always session-scoped; drop if session unknown.
-        ////////// if (!sessionID && isSessionScopedPartEvent(event.type)) return
-        ////////if (string.IsNullOrEmpty(sessionId) && sessionScopedPartEvents.Contains(e.EventType)) return;
-        ////////// if (this.postModelUsageChanged(event, sessionID)) return
-        ////////if (PostModelUsageChanged(e, sessionId)) return;
-        ////////// if (
-        //////////   event.type !== "indexing.status" &&
-        //////////   event.type !== "session.deleted" &&
-        //////////   sessionID &&
-        //////////   !this.trackedSessionIds.has(sessionID)
-        ////////// )
-        ////////if (!(evt is EventIndexingStatus) && !(evt is EventSessionDeleted) && !string.IsNullOrEmpty(sessionId) && !IsSessionTracked(sessionId))
-        ////////  //   return
-        ////////  return;
+        //// Events without sessionID (server.connected, server.heartbeat, indexing.status) → always forward
+        //// Events with sessionID → only forward if this webview tracks that session
+        //// message.part.* events are always session-scoped; drop if session unknown.
+        // if (!sessionID && isSessionScopedPartEvent(event.type)) return
+        if (string.IsNullOrEmpty(sessionId) && sessionScopedPartEvents.Contains(e.Type)) return;
+        // if (this.postModelUsageChanged(event, sessionID)) return
+        if (PostModelUsageChanged(evt, sessionId)) return;
+        // if (
+        //   event.type !== "indexing.status" &&
+        //   event.type !== "session.deleted" &&
+        //   sessionID &&
+        //   !this.trackedSessionIds.has(sessionID)
+        // )
+        if (!(evt is EventIndexingStatus) 
+          && !(evt is EventSessionDeleted) 
+          && !string.IsNullOrEmpty(sessionId) 
+          && !SessionHandler.IsTrackedSession(sessionId))
+          //   return
+          return;
 
-        ////////// if (event.type === "session.updated" && typeof event.properties.info.cost === "number") {
-        ////////if (evt is EventSessionUpdated && raw.Payload["info"]?["cost"]?.Type == JTokenType.Float)
-        ////////{
-        ////////  // const cost = this.costs.setSessionCost(event.properties.sessionID, event.properties.info.cost)
-        ////////  var cost = _costs.SetSessionCost(sessionId, e.Payload["info"]?["cost"]?.Value<double>());
-        ////////  // this.requestCostAlert(event.properties.sessionID, cost)
-        ////////  RequestCostAlert(sessionId, cost);
-        ////////}
+        // if (event.type === "session.updated" && typeof event.properties.info.cost === "number") {
+        if (evt is EventSessionUpdated evt2 && !double.IsNaN(evt2.Properties.Info.Cost))
+        {
+          // const cost = this.costs.setSessionCost(event.properties.sessionID, event.properties.info.cost)
+          var cost = ServiceProvider.GetService<MaxCostNudgeService>().SetSessionCost(evt2.Properties.SessionID, evt2.Properties.Info.Cost);
+          // this.requestCostAlert(event.properties.sessionID, cost)
+          
+           RequestCostAlert(sessionId, cost);
+        }
 
         ////////// if (event.type === "session.updated") {
         ////////if (evt is EventSessionUpdated)
@@ -588,298 +593,260 @@ namespace KiloVisualStudioExtension
       }
     }
 
+
+    public bool PostModelUsageChanged(IEvent e, string sessionID)
+    {
+      //  if (!sessionID || this.trackedSessionIds.has(sessionID)) return false
+      if (string.IsNullOrEmpty(sessionID) || SessionHandler.IsTrackedSession(sessionID)) return false;
+      //  if (event.type === "session.created") {
+      if (e is EventSessionCreated evt)
+      {
+        //    const parent = event.properties.info.parentID
+        var parent = evt.Properties.Info.ParentID;
+        //    if (!parent || !this.modelUsageSessionIds.has(parent)) return false
+        if (string.IsNullOrEmpty(parent) || SessionHandler.HasModelUsage(parent)) return false;
+        //    this.modelUsageSessionIds.add(sessionID)
+        SessionHandler.TrackModelUsage(sessionID);
+        //    this.postMessage({ type: "sessionModelUsageChanged", sessionID })
+        PostMessage(new SessionModelUsageChangedMessage
+        {
+          SessionID = sessionID
+        });
+        //    return true
+        return true;
+        //  }
+      }
+
+
+      //  if (!this.modelUsageSessionIds.has(sessionID)) return false
+      if (!SessionHandler.HasModelUsage(sessionID)) return false;
+
+      //  if (event.type === "message.part.updated") {
+      if (e is EventMessagePartUpdated evt2)
+      {
+        //  const part = event.properties.part as {
+        //    type ?: string
+        //      tool ?: string
+        //      metadata ?: { sessionId ?: string }
+        //    state ?: { metadata ?: { sessionId ?: string } }
+        //  }
+        //  const child = childID(part)
+        var child = evt2.GetPartChildId();
+        //    if (child && !this.modelUsageSessionIds.has(child))
+        //  {
+        if (child != null && !SessionHandler.HasModelUsage(child))
+        {
+          //    this.modelUsageSessionIds.add(child)
+          SessionHandler.TrackModelUsage(child);
+          //      this.postMessage({ type: "sessionModelUsageChanged", sessionID: child })
+          PostMessage(new SessionModelUsageChangedMessage { SessionID = child });
+          return true;
+          //      return true
+          //    }
+        }
+        //}
+      }
+      //  const changed =
+      //    event.type === "message.removed" ||
+      //    event.type === "message.part.removed" ||
+      //    event.type === "session.deleted" ||
+      //    (event.type === "message.part.updated" && event.properties.part.type === "step-finish")
+      var changed = e is EventMessageRemoved
+        || e is EventMessagePartRemoved
+        || e is EventSessionDeleted
+        || (e is EventMessagePartUpdated evt3 && evt3.Properties.Part is StepFinishPart);
+      //  if (!changed) return false
+      if (!changed) return false;
+      //  if (event.type === "session.deleted") this.modelUsageSessionIds.delete(sessionID)
+      if (e is EventSessionDeleted) SessionHandler.RemoveModelUsage(sessionID);
+      //  this.postMessage({ type: "sessionModelUsageChanged", sessionID })
+      PostMessage(new SessionModelUsageChangedMessage { SessionID = sessionID });
+      //  return true     
+      //}
+      return true;
+    }
+
     public bool AdoptPendingFollowup(ApiClient.Session session)
     {
       var res = _serviceProvider.GetService<FollowupHandlerService>().AdoptPendingFollowup(session);
       if (res)
       {
         RegisterSession(session, true);
-     //   HandleLoadMessages(session.id)
+        //   HandleLoadMessages(session.id)
       }
       return res;
     }
 
     public void RegisterSession(ApiClient.Session session, bool activate = false)
     {
-     // this.stopCurrentSessionProcesses(session.id)
-     // this.setCurrentSession(session)
-     // this.contextSessionID = session.id
-     //this.trackedSessionIds.add(session.id)
-     // this.postMessage({
-     //   type: "sessionCreated",
-     //    session: this.sessionToWebview(session),
-     //  ...(activate? { activate: true } : {}),
-     //  })
-     // }
-     throw new NotImplementedException();
+      // this.stopCurrentSessionProcesses(session.id)
+      // this.setCurrentSession(session)
+      // this.contextSessionID = session.id
+      //this.trackedSessionIds.add(session.id)
+      // this.postMessage({
+      //   type: "sessionCreated",
+      //    session: this.sessionToWebview(session),
+      //  ...(activate? { activate: true } : {}),
+      //  })
+      // }
+      throw new NotImplementedException();
     }
 
 
-    internal IWebviewMessage MapSSEEventToWebviewMessage(Events evt, string sessionID)
+    internal IWebviewMessage MapSSEEventToWebviewMessage(Event evt, string sessionID)
     {
       return evt is IWebviewMappable ? ((IWebviewMappable)evt).GetWebViewMessage(sessionID) : null;
-      
-      
-      //  switch (event.type) {
-      //    case "session.status":
-      //    {
-      //      const info = event.properties.status
-      //      const status = info.type
-      //      const extra = statusExtra(info)
-      //      return {
-      //      type: "sessionStatus" as const,
-      //      sessionID: event.properties.sessionID,
-      //        status,
-      //        ...extra,
-      //      }
-      //    }
-      //  case "session.turn.close":
-      //    return {
-      //    type: "sessionTurnClosed",
-      //        sessionID: event.properties.sessionID,
-      //        reason: event.properties.reason,
-      //      }
-      //  case "permission.asked":
-      //    return {
-      //    type: "permissionRequest",
-      //        permission:
-      //      {
-      //      id: event.properties.id,
-      //          sessionID: event.properties.sessionID,
-      //          toolName: event.properties.permission,
-      //          patterns: event.properties.patterns ?? [],
-      //          always: event.properties.always ?? [],
-      //          args: event.properties.metadata,
-      //          message: `Permission required: ${event.properties.permission}`,
-      //          tool: event.properties.tool,
-      //        },
-      //      }
-      //  case "permission.replied":
-      //    return {
-      //    type: "permissionResolved",
-      //        permissionID: event.properties.requestID,
-      //      }
-      //  case "todo.updated":
-      //    return {
-      //    type: "todoUpdated",
-      //        sessionID: event.properties.sessionID,
-      //        items: event.properties.todos,
-      //      }
-      //  case "question.asked":
-      //    return {
-      //    type: "questionRequest",
-      //        question:
-      //      {
-      //      id: event.properties.id,
-      //          sessionID: event.properties.sessionID,
-      //          questions: event.properties.questions,
-      //          blocking: event.properties.blocking,
-      //          tool: event.properties.tool,
-      //        },
-      //      }
-      //  case "question.replied":
-      //  case "question.rejected":
-      //    return {
-      //    type: "questionResolved",
-      //        requestID: event.properties.requestID,
-      //      }
-      //  case "suggestion.shown":
-      //    return {
-      //    type: "suggestionRequest",
-      //        suggestion:
-      //      {
-      //      id: event.properties.id,
-      //          sessionID: event.properties.sessionID,
-      //          text: event.properties.text,
-      //          actions: event.properties.actions,
-      //          blocking: event.properties.blocking,
-      //          tool: event.properties.tool,
-      //        },
-      //      }
-      //  case "suggestion.accepted":
-      //  case "suggestion.dismissed":
-      //    return {
-      //    type: "suggestionResolved",
-      //        requestID: event.properties.requestID,
-      //      }
-      //  case "session.error":
-      //    {
-      //      return {
-      //      type: "sessionError",
-      //        sessionID: event.properties.sessionID,
-      //        error: event.properties.error,
-      //      }
-      //    }
-      //  case "sandbox.status.changed":
-      //    return {
-      //    type: "sandboxStatus",
-      //        sessionID: event.properties.sessionID,
-      //        directory: event.properties.directory,
-      //        enabled: event.properties.enabled,
-      //        available: event.properties.available,
-      //        reason: event.properties.reason,
-      //        version: event.properties.version,
-      //      }
-      //  case "indexing.status":
-      //    return {
-      //    type: "indexingStatusLoaded",
-      //        status: event.properties.status,
-      //      }
-      //  default:
-      //    return null
-      //  }
-      //}
     }
     //private void HandleSyncEvent(SyncEvent syncEvent)
     //{
     //  var name = syncEvent.Name;
 
-//  switch (name)
-//  {
-//    case "message.updated.1":
-//      HandleMessageUpdatedSync((MessageUpdatedSyncEvent)syncEvent);
-//      break;
-//    case "message.removed.1":
-//      HandleMessageRemovedSync(syncEvent);
-//      break;
-//    case "message.part.updated.1":
-//      HandlePartUpdatedSync((MessagePartUpdatedSyncEvent)syncEvent);
-//      break;
-//    case "message.part.removed.1":
-//      HandlePartRemovedSync(syncEvent);
-//      break;
-//    case "session.created.1":
-//      HandleSessionCreatedSync((SessionCreatedSyncEvent)syncEvent);
-//      break;
-//    case "session.updated.1":
-//      HandleSessionUpdatedSync((SessionUpdatedSyncEvent)syncEvent);
-//      break;
-//    case "session.deleted.1":
-//      HandleSessionDeletedSync(syncEvent);
-//      break;
-//  }
-//}
+    //  switch (name)
+    //  {
+    //    case "message.updated.1":
+    //      HandleMessageUpdatedSync((MessageUpdatedSyncEvent)syncEvent);
+    //      break;
+    //    case "message.removed.1":
+    //      HandleMessageRemovedSync(syncEvent);
+    //      break;
+    //    case "message.part.updated.1":
+    //      HandlePartUpdatedSync((MessagePartUpdatedSyncEvent)syncEvent);
+    //      break;
+    //    case "message.part.removed.1":
+    //      HandlePartRemovedSync(syncEvent);
+    //      break;
+    //    case "session.created.1":
+    //      HandleSessionCreatedSync((SessionCreatedSyncEvent)syncEvent);
+    //      break;
+    //    case "session.updated.1":
+    //      HandleSessionUpdatedSync((SessionUpdatedSyncEvent)syncEvent);
+    //      break;
+    //    case "session.deleted.1":
+    //      HandleSessionDeletedSync(syncEvent);
+    //      break;
+    //  }
+    //}
 
-//private void HandleStreamEvent(StreamEvent streamEvent)
-//{
-//  var type = streamEvent.EventType;
-//  var properties = streamEvent.Properties;
-//  var sessionID = streamEvent.SessionID;
-//  var directory = streamEvent.Directory;
+    //private void HandleStreamEvent(StreamEvent streamEvent)
+    //{
+    //  var type = streamEvent.EventType;
+    //  var properties = streamEvent.Properties;
+    //  var sessionID = streamEvent.SessionID;
+    //  var directory = streamEvent.Directory;
 
-//  switch (type)
-//  {
-//    case "kilo-sessions.remote-status-changed":
-//      return;
+    //  switch (type)
+    //  {
+    //    case "kilo-sessions.remote-status-changed":
+    //      return;
 
-//    case "memory.status":
-//    case "memory.updated":
-//    case "memory.error":
-//      HandleMemoryEvent(type, properties);
-//      return;
+    //    case "memory.status":
+    //    case "memory.updated":
+    //    case "memory.error":
+    //      HandleMemoryEvent(type, properties);
+    //      return;
 
-//    case "session.status":
-//      HandleSessionStatus(properties, sessionID);
-//      return;
+    //    case "session.status":
+    //      HandleSessionStatus(properties, sessionID);
+    //      return;
 
-//    case "message.part.delta":
-//      HandlePartDelta(properties);
-//      return;
+    //    case "message.part.delta":
+    //      HandlePartDelta(properties);
+    //      return;
 
-//    case "session.created":
-//      //    HandleSessionCreatedStream(properties);
-//      break;
+    //    case "session.created":
+    //      //    HandleSessionCreatedStream(properties);
+    //      break;
 
-//    case "session.updated":
-//      HandleSessionUpdatedStream(properties);
-//      break;
+    //    case "session.updated":
+    //      HandleSessionUpdatedStream(properties);
+    //      break;
 
-//    case "session.deleted":
-//      //    HandleSessionDeletedStream(properties);
-//      break;
+    //    case "session.deleted":
+    //      //    HandleSessionDeletedStream(properties);
+    //      break;
 
-//    case "message.updated":
-//      HandleMessageUpdatedStream(properties);
-//      break;
+    //    case "message.updated":
+    //      HandleMessageUpdatedStream(properties);
+    //      break;
 
-//    case "message.removed":
-//      //    HandleMessageRemovedStream(properties);
-//      break;
+    //    case "message.removed":
+    //      //    HandleMessageRemovedStream(properties);
+    //      break;
 
-//    case "global.disposed":
-//      HandleGlobalDisposed();
-//      return;
+    //    case "global.disposed":
+    //      HandleGlobalDisposed();
+    //      return;
 
-//    case "server.instance.disposed":
-//      HandleServerInstanceDisposed(properties);
-//      return;
+    //    case "server.instance.disposed":
+    //      HandleServerInstanceDisposed(properties);
+    //      return;
 
-//    case "global.config.updated":
-//      HandleGlobalConfigUpdated();
-//      return;
+    //    case "global.config.updated":
+    //      HandleGlobalConfigUpdated();
+    //      return;
 
-//    case "message.part.updated":
-//      HandlePartUpdatedStream(properties);
-//      break;
+    //    case "message.part.updated":
+    //      HandlePartUpdatedStream(properties);
+    //      break;
 
-//    case "indexing.status":
-//      HandleIndexingStatus(properties);
-//      break;
+    //    case "indexing.status":
+    //      HandleIndexingStatus(properties);
+    //      break;
 
-//    case "session.turn.close":
-//      HandleSessionTurnClosed(properties);
-//      break;
+    //    case "session.turn.close":
+    //      HandleSessionTurnClosed(properties);
+    //      break;
 
-//    case "session.turn.open":
-//      HandleSessionTurnOpen(properties);
-//      break;
+    //    case "session.turn.open":
+    //      HandleSessionTurnOpen(properties);
+    //      break;
 
-//    case "session.network.asked":
-//    case "session.network.replied":
-//    case "session.network.rejected":
-//    case "session.network.restored":
-//      HandleNetworkEvent(type, properties);
-//      break;
+    //    case "session.network.asked":
+    //    case "session.network.replied":
+    //    case "session.network.rejected":
+    //    case "session.network.restored":
+    //      HandleNetworkEvent(type, properties);
+    //      break;
 
-//    case "permission.asked":
-//      HandlePermissionAsked(properties);
-//      break;
+    //    case "permission.asked":
+    //      HandlePermissionAsked(properties);
+    //      break;
 
-//    case "permission.replied":
-//      HandlePermissionReplied(properties);
-//      break;
+    //    case "permission.replied":
+    //      HandlePermissionReplied(properties);
+    //      break;
 
-//    case "todo.updated":
-//      HandleTodoUpdated(properties);
-//      break;
+    //    case "todo.updated":
+    //      HandleTodoUpdated(properties);
+    //      break;
 
-//    case "question.asked":
-//      HandleQuestionAsked(properties);
-//      break;
+    //    case "question.asked":
+    //      HandleQuestionAsked(properties);
+    //      break;
 
-//    case "question.replied":
-//    case "question.rejected":
-//      HandleQuestionResolved(properties);
-//      break;
+    //    case "question.replied":
+    //    case "question.rejected":
+    //      HandleQuestionResolved(properties);
+    //      break;
 
-//    case "suggestion.shown":
-//      HandleSuggestionShown(properties);
-//      break;
+    //    case "suggestion.shown":
+    //      HandleSuggestionShown(properties);
+    //      break;
 
-//    case "suggestion.accepted":
-//    case "suggestion.dismissed":
-//      HandleSuggestionResolved(properties);
-//      break;
+    //    case "suggestion.accepted":
+    //    case "suggestion.dismissed":
+    //      HandleSuggestionResolved(properties);
+    //      break;
 
-//    case "session.error":
-//      HandleSessionError(properties);
-//      break;
+    //    case "session.error":
+    //      HandleSessionError(properties);
+    //      break;
 
-//    case "sandbox.status.changed":
-//      HandleSandboxStatusChanged(properties);
-//      break;
-//  }
-//}
+    //    case "sandbox.status.changed":
+    //      HandleSandboxStatusChanged(properties);
+    //      break;
+    //  }
+    //}
 
     private void HandleMessageUpdatedSync(EventMessageUpdated evt)
     {

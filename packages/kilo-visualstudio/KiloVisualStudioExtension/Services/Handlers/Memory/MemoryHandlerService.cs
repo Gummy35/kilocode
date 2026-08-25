@@ -765,7 +765,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
       {
         _input.Post(new MemoryOperationResultMessage
         {
-          Operation = message.Operation.ToEnum(MemoryResultOperation.Auto),
+          Operation = message.Operation.ToEnum(MemoryResultOperationEnum.Auto),
           SessionID = message.SessionID,
           Ok = false,
           Error = "Not connected to CLI backend",
@@ -780,7 +780,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
         {
           _input.Post(new MemoryOperationResultMessage
           {
-            Operation = message.Operation.ToEnum(MemoryResultOperation.Auto),
+            Operation = message.Operation.ToEnum(MemoryResultOperationEnum.Auto),
             SessionID = message.SessionID,
             Ok = false,
             Error = NO_PROJECT,
@@ -802,7 +802,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
         var status = refreshed;
         var result = new MemoryOperationResultMessage
         {
-          Operation = message.Operation.ToEnum(MemoryResultOperation.Status),
+          Operation = message.Operation.ToEnum(MemoryResultOperationEnum.Status),
           SessionID = message.SessionID,
           Ok = true,
           Status = status,
@@ -832,7 +832,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
         System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed memory operation: {err.Message}");
         _input.Post(new MemoryOperationResultMessage
         {
-          Operation = message.Operation.ToEnum(MemoryResultOperation.Auto),
+          Operation = message.Operation.ToEnum(MemoryResultOperationEnum.Auto),
           SessionID = message.SessionID,
           Ok = false,
           Error = "Memory operation failed",

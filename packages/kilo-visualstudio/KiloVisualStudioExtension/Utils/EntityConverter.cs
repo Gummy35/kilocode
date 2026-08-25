@@ -4,6 +4,7 @@ using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.KiloConfig;
 using KiloExtensionDTOs.Parts;
 using KiloExtensionDTOs.Profile;
+using KiloExtensionDTOs.Questions;
 using KiloExtensionDTOs.Sessions;
 using KiloVisualStudioExtension.ApiClient;
 using System;
@@ -105,7 +106,87 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
+    public static ToolType Convert(QuestionTool tool)
+    {
+      return new ToolType
+      {
+        CallID = tool.CallID,
+        MessageID = tool.MessageID
+      };
+    }
 
+    public static ToolType Convert(Tool3 tool)
+    {
+      return new ToolType
+      {
+        CallID = tool.CallID,
+        MessageID = tool.MessageID
+      };
+    }
+
+    public static ToolType Convert(Tool tool)
+    {
+      return new ToolType
+      {
+        CallID = tool.CallID,
+        MessageID = tool.MessageID
+      };
+    }
+
+    public static List<KiloExtensionDTOs.Questions.QuestionOption> Convert(ICollection<ApiClient.QuestionOption> options)
+    {
+      return options.Select(option => new KiloExtensionDTOs.Questions.QuestionOption
+      {
+        Description = option.Description,
+        DescriptionKey = option.DescriptionKey,
+        Label = option.Label,
+        LabelKey = option.LabelKey,
+        Mode = option.Mode
+      }).ToList();
+    }
+
+    public static List<SuggestionAction> Convert(ICollection<ApiClient.Actions> actions)
+    {
+      return actions.Select(action => new SuggestionAction
+      {
+        Description = action.Description,
+        Label = action.Label,
+        Prompt = action.Prompt
+      }).ToList();
+    }
+
+    public static List<KiloExtensionDTOs.Questions.QuestionInfo> Convert(ICollection<ApiClient.QuestionInfo> questions)
+    {
+      return questions.Select(question => new KiloExtensionDTOs.Questions.QuestionInfo
+      {
+        Custom = question.Custom,
+        Header = question.Header,
+        HeaderKey = question.HeaderKey,
+        Multiple = question.Multiple,
+        Options = Convert(question.Options),
+        Question = question.Question,
+        QuestionKey = question.QuestionKey
+      }).ToList();
+    }
+
+    public static List<TodoItem> Convert(ICollection<Todo> todos)
+    {
+      return todos.Select(todo => new TodoItem
+      {
+        Content = todo.Content,
+        Status = todo.Status,
+      }).ToList(); 
+    }
+
+    public static SessionCloseReasonEnum Convert(Properties15Reason reason)
+    {
+      return reason switch
+      {
+        Properties15Reason.Interrupted => SessionCloseReasonEnum.Interrupted,
+        Properties15Reason.Completed => SessionCloseReasonEnum.Completed,
+        Properties15Reason.Error => SessionCloseReasonEnum.Error
+      };
+    }
 
     public static KiloExtensionDTOs.DisabledManualAutoEnum Convert(ConfigShare c)
     {
@@ -119,6 +200,7 @@ namespace KiloVisualStudioExtension.Utils
           return KiloExtensionDTOs.DisabledManualAutoEnum.Auto;
       }
     }
+
 
     public static WatcherConfig Convert(Watcher w)
     {
