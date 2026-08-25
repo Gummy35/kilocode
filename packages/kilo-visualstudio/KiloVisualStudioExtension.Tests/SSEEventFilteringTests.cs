@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using FluentAssertions;
+using KiloVisualStudioExtension.Services.Handlers.Session;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
@@ -14,9 +15,9 @@ namespace KiloVisualStudioExtension.Tests
       // Arrange
       var postedMessages = new System.Collections.Generic.List<string>();
       var sseHelper = TestHelpers.CreateSSEHelper(message => postedMessages.Add(message));
-
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>(); 
       // Track session s1
-      sseHelper.TrackSession("s1");
+      sessionHelper.TrackSession("s1");
 
       // Receive event for different directory /other
       var eventJson = JsonSerializer.Serialize(new
@@ -45,9 +46,10 @@ namespace KiloVisualStudioExtension.Tests
       // Arrange
       var postedMessages = new System.Collections.Generic.List<string>();
       var sseHelper = TestHelpers.CreateSSEHelper(message => postedMessages.Add(message));
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
 
       // Track session s1
-      sseHelper.TrackSession("s1");
+      sessionHelper.TrackSession("s1");
 
       // Receive event for s1
       var eventJson = JsonSerializer.Serialize(new
@@ -109,9 +111,10 @@ namespace KiloVisualStudioExtension.Tests
       // Arrange
       var postedMessages = new System.Collections.Generic.List<string>();
       var sseHelper = TestHelpers.CreateSSEHelper(message => postedMessages.Add(message));
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
 
       // Track session
-      sseHelper.TrackSession("tracked-session");
+      sessionHelper.TrackSession("tracked-session");
 
       // Receive part delta event
       var eventJson = JsonSerializer.Serialize(new
@@ -142,9 +145,10 @@ namespace KiloVisualStudioExtension.Tests
       // Arrange
       var postedMessages = new System.Collections.Generic.List<string>();
       var sseHelper = TestHelpers.CreateSSEHelper(message => postedMessages.Add(message));
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
 
       // Track session
-      sseHelper.TrackSession("update-session");
+      sessionHelper.TrackSession("update-session");
 
       // Receive session updated event (sync event) - using payload format
       var eventJson = JsonSerializer.Serialize(new
@@ -178,10 +182,11 @@ namespace KiloVisualStudioExtension.Tests
       // Arrange
       var postedMessages = new System.Collections.Generic.List<string>();
       var sseHelper = TestHelpers.CreateSSEHelper(message => postedMessages.Add(message));
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
 
       // Track session
-      sseHelper.TrackSession("delete-session");
-      sseHelper.IsSessionTracked("delete-session").Should().BeTrue();
+      sessionHelper.TrackSession("delete-session");
+      sessionHelper.IsTrackedSession("delete-session").Should().BeTrue();
 
       // Receive session deleted event (stream event)
       var eventJson = JsonSerializer.Serialize(new
@@ -199,7 +204,7 @@ namespace KiloVisualStudioExtension.Tests
       sseHelper.HandleEvent(sseEvent);
 
       // Assert
-      sseHelper.IsSessionTracked("delete-session").Should().BeFalse("deleted sessions should be untracked");
+      sessionHelper.IsTrackedSession("delete-session").Should().BeFalse("deleted sessions should be untracked");
     }
 
     [Fact]
@@ -208,9 +213,10 @@ namespace KiloVisualStudioExtension.Tests
       // Arrange
       var postedMessages = new System.Collections.Generic.List<string>();
       var sseHelper = TestHelpers.CreateSSEHelper(message => postedMessages.Add(message));
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
 
       // Track session
-      sseHelper.TrackSession("message-session");
+      sessionHelper.TrackSession("message-session");
 
       // Receive message updated event (stream event)
       var eventJson = JsonSerializer.Serialize(new

@@ -3,99 +3,102 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
+using KiloVisualStudioExtension.Services.Handlers.Session;
 using Xunit;
 
 namespace KiloVisualStudioExtension.Tests
 {
-    public class SessionTrackingTests
+  public class SessionTrackingTests
+  {
+    [Fact]
+    public void TrackOpenSessions_AddsSessionsToTrackedSet()
     {
-        [Fact]
-        public void TrackOpenSessions_AddsSessionsToTrackedSet()
-        {
-            // Arrange
-            var sseHelper = TestHelpers.CreateSSEHelper();
+      // Arrange
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
 
-            // Act
-            sseHelper.TrackSession("s1");
-            sseHelper.TrackSession("s2");
+      // Act
+      sessionHelper.TrackSession("s1");
+      sessionHelper.TrackSession("s2");
 
-            // Assert
-            sseHelper.IsSessionTracked("s1").Should().BeTrue();
-            sseHelper.IsSessionTracked("s2").Should().BeTrue();
-        }
-
-        [Fact]
-        public void TrackOpenSessions_RemovesSessionsWhenUntracked()
-        {
-            // Arrange
-            var sseHelper = TestHelpers.CreateSSEHelper();
-            sseHelper.TrackSession("s1");
-            sseHelper.TrackSession("s2");
-
-            // Act
-            sseHelper.UntrackSession("s1");
-
-            // Assert
-            sseHelper.IsSessionTracked("s2").Should().BeTrue();
-            sseHelper.IsSessionTracked("s1").Should().BeFalse();
-        }
-
-        [Fact]
-        public void SetCurrentSession_AddsToTrackedSessions()
-        {
-            // Arrange
-            var sseHelper = TestHelpers.CreateSSEHelper();
-
-            // Act
-            sseHelper.SetCurrentSession("new-session");
-
-            // Assert
-            sseHelper.IsSessionTracked("new-session").Should().BeTrue();
-            sseHelper.CurrentSessionID.Should().Be("new-session");
-        }
-
-        [Fact]
-        public void CurrentSessionID_ReturnsTrackedSession()
-        {
-            // Arrange
-            var sseHelper = TestHelpers.CreateSSEHelper();
-            sseHelper.SetCurrentSession("current-session");
-
-            // Act
-            var current = sseHelper.CurrentSessionID;
-
-            // Assert
-            current.Should().Be("current-session");
-        }
-
-        [Fact]
-        public void UntrackSession_RemovesFromTrackedSet()
-        {
-            // Arrange
-            var sseHelper = TestHelpers.CreateSSEHelper();
-            sseHelper.TrackSession("session-to-remove");
-            sseHelper.IsSessionTracked("session-to-remove").Should().BeTrue();
-
-            // Act
-            sseHelper.UntrackSession("session-to-remove");
-
-            // Assert
-            sseHelper.IsSessionTracked("session-to-remove").Should().BeFalse();
-        }
-
-        [Fact]
-        public void TrackSession_DoesNotAddDuplicates()
-        {
-            // Arrange
-            var sseHelper = TestHelpers.CreateSSEHelper();
-
-            // Act
-            sseHelper.TrackSession("duplicate-session");
-            sseHelper.TrackSession("duplicate-session");
-
-            // Assert
-            var trackedCount = sseHelper.TrackedSessionIds.Count;
-            trackedCount.Should().Be(1, "tracking the same session twice should not create duplicates");
-        }
+      // Assert
+      sessionHelper.IsTrackedSession("s1").Should().BeTrue();
+      sessionHelper.IsTrackedSession("s2").Should().BeTrue();
     }
+
+    [Fact]
+    public void TrackOpenSessions_RemovesSessionsWhenUntracked()
+    {
+      // Arrange
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
+      sessionHelper.TrackSession("s1");
+      sessionHelper.TrackSession("s2");
+
+      // Act
+      sessionHelper.UntrackSession("s1");
+
+      // Assert
+      sessionHelper.IsTrackedSession("s2").Should().BeTrue();
+      sessionHelper.IsTrackedSession("s1").Should().BeFalse();
+    }
+
+    [Fact]
+    public void SetCurrentSession_AddsToTrackedSessions()
+    {
+      // Arrange
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
+
+      // Act
+      //     sessionHelper.SetCurrentSession("new-session");
+
+      // Assert
+      sessionHelper.IsTrackedSession("new-session").Should().BeTrue();
+      //     sessionHelper.CurrentSessionID.Should().Be("new-session");
+      throw new NotImplementedException();
+    }
+
+    [Fact]
+    public void CurrentSessionID_ReturnsTrackedSession()
+    {
+      // Arrange
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
+      //       sessionHelper.SetCurrentSession("current-session");
+
+      // Act
+      //       var current = sessionHelper.CurrentSessionID;
+
+      // Assert
+      //       current.Should().Be("current-session");
+      throw new NotImplementedException();
+    }
+
+    [Fact]
+    public void UntrackSession_RemovesFromTrackedSet()
+    {
+      // Arrange
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
+      sessionHelper.TrackSession("session-to-remove");
+      sessionHelper.IsTrackedSession("session-to-remove").Should().BeTrue();
+
+      // Act
+      sessionHelper.UntrackSession("session-to-remove");
+
+      // Assert
+      sessionHelper.IsTrackedSession("session-to-remove").Should().BeFalse();
+    }
+
+    [Fact]
+    public void TrackSession_DoesNotAddDuplicates()
+    {
+      // Arrange
+      var sessionHelper = TestHelpers.serviceProvider.GetService<SessionHandlerService>();
+
+      // Act
+      sessionHelper.TrackSession("duplicate-session");
+      sessionHelper.TrackSession("duplicate-session");
+
+      // Assert
+      var trackedCount = sessionHelper.GetTrackedSessionIds().Count;
+      trackedCount.Should().Be(1, "tracking the same session twice should not create duplicates");
+    }
+  }
 }

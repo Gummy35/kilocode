@@ -1,46 +1,32 @@
 using Common;
 using EnvDTE;
 using KiloExtensionDTOs;
-using KiloExtensionDTOs.Connection;
 using KiloExtensionDTOs.ExtensionMessages;
-using KiloExtensionDTOs.Memory;
-using KiloExtensionDTOs.Parts;
+using KiloExtensionDTOs.KiloProviderUtils;
 using KiloExtensionDTOs.Sessions;
 using KiloVisualStudioExtension.ApiClient;
-using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.ApiClient.Sse;
 using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Handlers.Followup;
+using KiloVisualStudioExtension.Services.Handlers.Indexing;
+using KiloVisualStudioExtension.Services.Handlers.Mcp;
 using KiloVisualStudioExtension.Services.Handlers.Memory;
+using KiloVisualStudioExtension.Services.Handlers.Network;
+using KiloVisualStudioExtension.Services.Handlers.Sandbox;
+using KiloVisualStudioExtension.Services.Handlers.Session;
 using KiloVisualStudioExtension.Utils;
-using KiloVisualStudioExtension.Utils;
-using Microsoft.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio.Telemetry;
-using Microsoft.VisualStudio.Text.Editor;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO.Packaging;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.UI.Design;
-using static KiloVisualStudioExtension.Services.MessagePageFetcher;
-using ApiMessage = KiloVisualStudioExtension.ApiClient.Message;
+using System.Diagnostics;
+using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using Events = KiloVisualStudioExtension.ApiClient.Events;
 using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
 
 namespace KiloVisualStudioExtension
 {
-  using KiloExtensionDTOs.KiloProviderUtils;
-  using KiloExtensionDTOs.WebviewMessages;
-  using KiloVisualStudioExtension.Services;
-  using KiloVisualStudioExtension.Services.Handlers.Followup;
-  using KiloVisualStudioExtension.Services.Handlers.Indexing;
-  using KiloVisualStudioExtension.Services.Handlers.Mcp;
-  using KiloVisualStudioExtension.Services.Handlers.Network;
-  using KiloVisualStudioExtension.Services.Handlers.Sandbox;
-  using KiloVisualStudioExtension.Services.Handlers.Session;
-  using System.Security.Cryptography.X509Certificates;
+ 
 
   public class SSEHelper : ServiceProviderServiceBase
   {
@@ -73,6 +59,7 @@ namespace KiloVisualStudioExtension
     //private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
     //private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
     private readonly ProjectDirectoryProvider _projectDirectoryProvider;
+    private readonly SessionAbort _aborts;
 
     //private int _sandboxRevision = 0; // Commented out - moved to SandboxHandlerService
 
@@ -113,6 +100,7 @@ namespace KiloVisualStudioExtension
             );
         _serviceProvider.AddService(_projectDirectoryProvider);
       }
+      _aborts = new SessionAbort();
     }
 
     /// <summary>
@@ -328,13 +316,14 @@ namespace KiloVisualStudioExtension
           return;
         }
 
-        ////////// Extract sessionID from the event
-        ////////// if (event.type === "session.created" && this.adoptPendingFollowup(event.properties.info)) {
-        ////////if (evt is EventSessionCreated && AdoptPendingFollowup(raw.Payload["properties"]["info"]))
-        ////////{
-        ////////  // return
-        ////////  return;
-        ////////}
+        // Extract sessionID from the event
+        // if (event.type === "session.created" && this.adoptPendingFollowup(event.properties.info)) {
+        if (evt is EventSessionCreated && 
+          AdoptPendingFollowup((evt as EventSessionCreated).Properties.Info))
+        {
+          // return
+          return;
+        }
 
         ////////// const sessionID = this.resolveEventSessionId(event)
 
@@ -599,22 +588,38 @@ namespace KiloVisualStudioExtension
       }
     }
 
+    public bool AdoptPendingFollowup(ApiClient.Session session)
+    {
+      var res = _serviceProvider.GetService<FollowupHandlerService>().AdoptPendingFollowup(session);
+      if (res)
+      {
+        RegisterSession(session, true);
+     //   HandleLoadMessages(session.id)
+      }
+      return res;
+    }
+
+    public void RegisterSession(ApiClient.Session session, bool activate = false)
+    {
+     // this.stopCurrentSessionProcesses(session.id)
+     // this.setCurrentSession(session)
+     // this.contextSessionID = session.id
+     //this.trackedSessionIds.add(session.id)
+     // this.postMessage({
+     //   type: "sessionCreated",
+     //    session: this.sessionToWebview(session),
+     //  ...(activate? { activate: true } : {}),
+     //  })
+     // }
+     throw new NotImplementedException();
+    }
+
+
     internal IWebviewMessage MapSSEEventToWebviewMessage(Events evt, string sessionID)
     {
       return evt is IWebviewMappable ? ((IWebviewMappable)evt).GetWebViewMessage(sessionID) : null;
       
       
-      //      case "message.part.updated.1":
-      //      case "message.part.removed.1":
-      //        return mapPartEvent(event, sessionID)
-      //      case "session.created.1":
-      //        return {
-      //    type: "sessionCreated",
-      //          session: sessionToWebview(event.data.info),
-      //        }
-      //  }
-      //}
-      //if (event.type === "message.part.delta") return mapPartEvent(event, sessionID)
       //  switch (event.type) {
       //    case "session.status":
       //    {

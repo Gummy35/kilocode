@@ -15,7 +15,7 @@ namespace KiloVisualStudioExtension.Tests
 
     public SseEventResolutionTests()
     {
-      _helper = new SSEHelper(msg => _postedMessages.Add(msg));
+      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => _postedMessages.Add(msg));
     }
 
     [Fact]
@@ -119,7 +119,7 @@ namespace KiloVisualStudioExtension.Tests
 
     public SseStaleEventDetectionTests()
     {
-      _helper = new SSEHelper(msg => { });
+      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => { });
     }
 
     [Fact]
@@ -189,7 +189,7 @@ namespace KiloVisualStudioExtension.Tests
 
     public SseProjectFilteringTests()
     {
-      _helper = new SSEHelper(msg => { });
+      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => { });
     }
 
     [Fact]
@@ -272,7 +272,7 @@ namespace KiloVisualStudioExtension.Tests
 
     public SseNetworkEventHandlingTests()
     {
-      _helper = new SSEHelper(msg => _postedMessages.Add(msg));
+      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => _postedMessages.Add(msg));
     }
 
     [Fact]

@@ -1,5 +1,7 @@
+using KiloExtensionDTOs;
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.KiloProviderUtils;
+using KiloExtensionDTOs.Parts;
 using KiloExtensionDTOs.WebviewMessages;
 using KiloVisualStudioExtension.ApiClient.Json;
 using KiloVisualStudioExtension.Utils;
@@ -25,8 +27,8 @@ namespace KiloVisualStudioExtension.ApiClient
     public string Id { get; set; }
   }
 
-
-  public partial class AssistantMessage : Message {
+  public partial class AssistantMessage : Message
+  {
   }
   public partial class UserMessage : Message { }
 
@@ -77,7 +79,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
   }
 
-  public partial class SyncEventSessionUpdated: IWebviewMappable
+  public partial class SyncEventSessionUpdated : IWebviewMappable
   {
     public IWebviewMessage GetWebViewMessage(string sessionID)
     {
@@ -103,6 +105,116 @@ namespace KiloVisualStudioExtension.ApiClient
     }
   }
 
+  public partial class SyncEventSessionCreated : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new SessionCreatedMessage
+      {
+        //      case "session.created.1":
+        //        return {
+        //    type: "sessionCreated",
+        //          session: sessionToWebview(event.data.info),
+        //        }
+        Session = EntityConverter.Convert(this.SyncEvent.Data.Info)
+      };
+    }
+  }
+
+  public partial class SyncEventMessagePartUpdated : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new PartUpdate
+      {
+        Part = SyncEvent.Data.Part
+      };
+    }
+  }
+
+  public partial class SyncEventMessagePartRemoved : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new PartRemove
+      {
+        SessionID = SyncEvent.Data.SessionID,
+        MessageID = SyncEvent.Data.MessageID,
+        PartID = SyncEvent.Data.PartID
+      };
+    }
+  }
+
+  public partial class EventMessagePartDelta : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      if (sessionID == null) return null;
+      return new PartUpdate
+      {
+        SessionID = Properties.SessionID,
+        MessageID = Properties.MessageID,
+        Part = new TextPart
+        {
+          Id = Properties.PartID,
+          MessageID = Properties.MessageID,
+          Text = Properties.Delta
+        },
+        Delta = new PartDelta { TextDelta = Properties.Delta }
+      };
+    }
+  }
+
+  public partial class EventSessionStatus : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+
+      //function statusExtra(info: Extract < Event, { type: "session.status" }> ["properties"]["status"]) {
+      //  if (info.type === "retry") return { attempt: info.attempt, message: info.message, next: info.next }
+      //  if (info.type === "offline") return { message: info.message }
+      //  return { }
+      //}
+
+      //    case "session.status":
+      //    {
+      //      const info = event.properties.status
+      //      const status = info.type
+      //      const extra = statusExtra(info)
+      //      return {
+      //      type: "sessionStatus" as const,
+      //      sessionID: event.properties.sessionID,
+      //        status,
+      //        ...extra,
+      //      }
+      //    }
+      return Properties.Status.Type switch
+      {
+        "retry" => new SessionStatusMessage
+        {
+          SessionID = Properties.SessionID,
+          Status = KiloExtensionDTOs.Connection.SessionStatus.Retry,
+          Attempt = Properties.Status.Attempt,
+          Message = Properties.Status.Message,
+          Next = Properties.Status.Next
+        },
+        "offline" => new SessionStatusMessage
+        {
+          SessionID = Properties.SessionID,
+          Status = KiloExtensionDTOs.Connection.SessionStatus.Retry,
+          Message = Properties.Status.Message,
+        },
+        _ => new SessionStatusMessage
+        {
+          SessionID = Properties.SessionID,
+          Status = Properties.Status.Type.ToEnum(KiloExtensionDTOs.Connection.SessionStatus.Idle),
+        }
+      };
+    }
+  }
+
+
+ 
 
   public partial class Error
   {
@@ -119,8 +231,9 @@ namespace KiloVisualStudioExtension.ApiClient
   public partial class ContextOverflowError : Error { }
   public partial class ContentFilterError : Error { }
   public partial class APIError : Error { }
-  
 
+
+  public partial class SyncEvent : Events { }
   public partial class SyncEventMessageUpdated : SyncEvent { }
   public partial class SyncEventMessageRemoved : SyncEvent { }
   public partial class SyncEventMessagePartUpdated : SyncEvent { }
@@ -129,12 +242,14 @@ namespace KiloVisualStudioExtension.ApiClient
   public partial class SyncEventSessionUpdated : SyncEvent { }
   public partial class SyncEventSessionRemoved : SyncEvent { }
 
+  public partial class Event : Events { }
   // SSE Event
   public partial class EventMessageUpdated : Event { }
   public partial class EventMessageRemoved : Event { }
   public partial class EventMessagePartUpdated : Event { }
   public partial class EventMessagePartRemoved : Event { }
-  public partial class EventSessionCreated: Event { }
+  public partial class EventMessagePartDelta : Event { }
+  public partial class EventSessionCreated : Event { }
   public partial class EventSessionUpdated : Event { }
   public partial class EventSessionDeleted : Event { }
   public partial class EventKiloSessionsRemoteStatusChanged : Event { }
@@ -163,7 +278,8 @@ namespace KiloVisualStudioExtension.ApiClient
   public partial class Response45 : IMemoryResponseBase { }
   public partial class Response46 : IMemoryResponseBase { }
   public partial class Response47 : IMemoryResponseBase { }
-  public partial class Response48 : IMemoryResponseBase {
+  public partial class Response48 : IMemoryResponseBase
+  {
     [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
     public string Root { get; set; }
   }
@@ -182,7 +298,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
 
 
- 
+
   public partial class Balance
   {
     [JsonProperty("balance", Required = Required.Always)]

@@ -16,7 +16,7 @@ namespace KiloVisualStudioExtension.Tests
         public void Tracks_confirmed_messages()
         {
             // Arrange
-            var state = new MessageConfirmation();
+            var state = new MessageConfirmation(new ServiceProvider());
 
             // Act
             state.Track("msg-1");
@@ -30,7 +30,7 @@ namespace KiloVisualStudioExtension.Tests
         public async Task Resolves_waiters_when_message_is_confirmed()
         {
             // Arrange
-            var state = new MessageConfirmation();
+            var state = new MessageConfirmation(new ServiceProvider());
             state.Track("msg-1");
             var wait = state.Wait("msg-1", 50);
 
@@ -45,7 +45,7 @@ namespace KiloVisualStudioExtension.Tests
         public async Task Returns_false_when_confirmation_does_not_arrive()
         {
             // Arrange
-            var state = new MessageConfirmation();
+            var state = new MessageConfirmation(new ServiceProvider());
             state.Track("msg-1");
 
             // Act
@@ -59,12 +59,12 @@ namespace KiloVisualStudioExtension.Tests
         public void Forgets_confirmations_after_release()
         {
             // Arrange
-            var state = new MessageConfirmation();
-            state.Track("msg-1");
+            var state = new MessageConfirmation(new ServiceProvider());
+            var release = state.Track("msg-1");
             state.Confirm("msg-1");
 
             // Act
-            state.Release("msg-1");
+            release.Invoke();
 
             // Assert
             Assert.False(state.Has("msg-1"));

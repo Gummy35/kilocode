@@ -18,6 +18,21 @@ namespace KiloVisualStudioExtension.Utils
 {
   public class EntityConverter
   {
+
+    public static SessionInfo Convert(Session session)
+    {
+      return new SessionInfo
+      {
+        Id = session.Id,
+        ParentID = string.IsNullOrWhiteSpace(session.ParentID) ? null : session.ParentID,
+        Title = session.Title,
+        CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds(session.Time.Created).ToString("O"),
+        UpdatedAt = DateTimeOffset.FromUnixTimeMilliseconds(session.Time.Updated).ToString("O"),
+        Revert = session.Revert ?? null,
+        Summary = session.Summary ?? null
+      };
+    }
+
     public static ProfileData Convert(Response23 response)
     {
       return new ProfileData
