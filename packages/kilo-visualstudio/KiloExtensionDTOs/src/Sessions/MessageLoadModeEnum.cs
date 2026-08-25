@@ -8,14 +8,22 @@
 
 namespace KiloExtensionDTOs.Sessions;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: SessionCloseReason
+/// Enum: MessageLoadModeEnum
 /// Generated from union type
-/// Source: sessions.ts
 /// </summary>
-public enum SessionCloseReason
+[JsonConverter(typeof(StringEnumConverter))]
+public enum MessageLoadModeEnum
 {
-    Error,
-    Completed,
-    Interrupted
+    [JsonProperty("replace")]
+    Replace,
+    [JsonProperty("prepend")]
+    Prepend,
+    [JsonProperty("focus")]
+    Focus,
+    [JsonProperty("reconcile")]
+    Reconcile
 }

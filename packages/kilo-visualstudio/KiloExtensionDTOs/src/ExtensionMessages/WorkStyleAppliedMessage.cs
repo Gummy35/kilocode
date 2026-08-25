@@ -27,5 +27,5 @@ public class WorkStyleAppliedMessage : IExtensionMessage
     public string Type { get; set; } = "workStyleApplied";
     [JsonProperty("style")]
     // Original TypeScript type: WorkStyle
-    public WorkStyle Style { get; set; }
+    public WorkStyleEnum Style { get; set; }
 }

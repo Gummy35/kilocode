@@ -26,7 +26,7 @@ public class RequestMigrationDataMessage
     public string Type { get; set; } = "requestMigrationData";
     [JsonProperty("source")]
     // Original TypeScript type: MigrationSource
-    public MigrationSource Source { get; set; }
+    public MigrationSourceEnum Source { get; set; }
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
 }

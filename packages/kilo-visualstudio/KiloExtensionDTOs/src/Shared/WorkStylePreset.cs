@@ -19,7 +19,7 @@ public class WorkStylePreset
 {
     [JsonProperty("style")]
     // Original TypeScript type: WorkStyle
-    public WorkStyle Style { get; set; }
+    public WorkStyleEnum Style { get; set; }
     [JsonProperty("config")]
     // Original TypeScript type: WorkStyleConfig
     public WorkStyleConfig Config { get; set; }

@@ -8,15 +8,20 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: PRState
+/// Enum: WorktreeErrorCodeEnum
 /// Generated from union type
-/// Source: agent-manager.ts
 /// </summary>
-public enum PRState
+[JsonConverter(typeof(StringEnumConverter))]
+public enum WorktreeErrorCodeEnum
 {
-    Open,
-    Draft,
-    Merged,
-    Closed
+    [JsonProperty("git_not_found")]
+    Git_not_found,
+    [JsonProperty("not_git_repo")]
+    Not_git_repo,
+    [JsonProperty("lfs_missing")]
+    Lfs_missing
 }

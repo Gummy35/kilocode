@@ -8,16 +8,26 @@
 
 namespace KiloExtensionDTOs.OrchestrationDomain;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: FailureCode
+/// Enum: FailureCodeEnum
 /// Generated from union type
 /// </summary>
-public enum FailureCode
+[JsonConverter(typeof(StringEnumConverter))]
+public enum FailureCodeEnum
 {
+    [JsonProperty("cross_workspace")]
     Cross_workspace,
+    [JsonProperty("host_error")]
     Host_error,
+    [JsonProperty("stale_session")]
     Stale_session,
+    [JsonProperty("unavailable_session")]
     Unavailable_session,
+    [JsonProperty("unknown_session")]
     Unknown_session,
+    [JsonProperty("workspace_unavailable")]
     Workspace_unavailable
 }

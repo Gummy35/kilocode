@@ -70,10 +70,10 @@ public class Config
     public bool? Remote_control { get; set; }
     [JsonProperty("terminal_command_display", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: TerminalCommandDisplay
-    public TerminalCommandDisplay? Terminal_command_display { get; set; }
+    public TerminalCommandDisplayEnum? Terminal_command_display { get; set; }
     [JsonProperty("code_edit_display", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: CodeEditDisplay
-    public CodeEditDisplay? Code_edit_display { get; set; }
+    public CodeEditDisplayEnum? Code_edit_display { get; set; }
     [JsonProperty("hide_prompt_training_models", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
     public bool? Hide_prompt_training_models { get; set; }

@@ -8,13 +8,21 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: DiffImageError
+/// Enum: ReviewDecisionEnum
 /// Generated from union type
 /// Source: agent-manager.ts
 /// </summary>
-public enum DiffImageError
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ReviewDecisionEnum
 {
-    TooLarge,
-    Unreadable
+    [JsonProperty("pending")]
+    Pending,
+    [JsonProperty("approved")]
+    Approved,
+    [JsonProperty("changes_requested")]
+    Changes_requested
 }

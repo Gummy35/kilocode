@@ -8,14 +8,18 @@
 
 namespace KiloExtensionDTOs;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: WorkStyleState
+/// Enum: WorkStyleEnum
 /// Generated from union type
 /// </summary>
-public enum WorkStyleState
+[JsonConverter(typeof(StringEnumConverter))]
+public enum WorkStyleEnum
 {
-    Skipped,
+    [JsonProperty("human-in-the-loop")]
     HumanInTheLoop,
-    Autonomous,
-    Unset
+    [JsonProperty("autonomous")]
+    Autonomous
 }

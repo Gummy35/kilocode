@@ -8,14 +8,22 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: RunState
+/// Enum: PRStateEnum
 /// Generated from union type
-/// Source: agent-manager.ts
 /// </summary>
-public enum RunState
+[JsonConverter(typeof(StringEnumConverter))]
+public enum PRStateEnum
 {
-    Idle,
-    Running,
-    Stopping
+    [JsonProperty("open")]
+    Open,
+    [JsonProperty("draft")]
+    Draft,
+    [JsonProperty("merged")]
+    Merged,
+    [JsonProperty("closed")]
+    Closed
 }

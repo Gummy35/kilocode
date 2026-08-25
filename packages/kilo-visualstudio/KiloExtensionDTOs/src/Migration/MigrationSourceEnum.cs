@@ -6,15 +6,20 @@
 
 #nullable enable
 
-namespace KiloExtensionDTOs;
+namespace KiloExtensionDTOs.Migration;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: PermissionLevel
+/// Enum: MigrationSourceEnum
 /// Generated from union type
 /// </summary>
-public enum PermissionLevel
+[JsonConverter(typeof(StringEnumConverter))]
+public enum MigrationSourceEnum
 {
-    Allow,
-    Ask,
-    Deny
+    [JsonProperty("legacy")]
+    Legacy,
+    [JsonProperty("roo")]
+    Roo
 }

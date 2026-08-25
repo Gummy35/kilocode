@@ -8,16 +8,24 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: CheckStatus
+/// Enum: CheckStatusEnum
 /// Generated from union type
-/// Source: agent-manager.ts
 /// </summary>
-public enum CheckStatus
+[JsonConverter(typeof(StringEnumConverter))]
+public enum CheckStatusEnum
 {
+    [JsonProperty("success")]
     Success,
+    [JsonProperty("failure")]
     Failure,
+    [JsonProperty("pending")]
     Pending,
+    [JsonProperty("skipped")]
     Skipped,
+    [JsonProperty("cancelled")]
     Cancelled
 }

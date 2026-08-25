@@ -8,14 +8,18 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: WorktreeErrorCode
+/// Enum: DiffImageErrorEnum
 /// Generated from union type
-/// Source: agent-manager.ts
 /// </summary>
-public enum WorktreeErrorCode
+[JsonConverter(typeof(StringEnumConverter))]
+public enum DiffImageErrorEnum
 {
-    Git_not_found,
-    Not_git_repo,
-    Lfs_missing
+    [JsonProperty("too-large")]
+    TooLarge,
+    [JsonProperty("unreadable")]
+    Unreadable
 }

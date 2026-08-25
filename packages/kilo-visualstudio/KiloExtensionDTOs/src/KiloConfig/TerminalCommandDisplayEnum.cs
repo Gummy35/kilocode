@@ -8,21 +8,19 @@
 
 namespace KiloExtensionDTOs.KiloConfig;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: IndexingProvider
+/// Enum: TerminalCommandDisplayEnum
 /// Generated from union type
 /// Source: config.ts
 /// </summary>
-public enum IndexingProvider
+[JsonConverter(typeof(StringEnumConverter))]
+public enum TerminalCommandDisplayEnum
 {
-    Kilo,
-    Openai,
-    Ollama,
-    OpenaiCompatible,
-    Gemini,
-    Mistral,
-    VercelAiGateway,
-    Bedrock,
-    Openrouter,
-    Voyage
+    [JsonProperty("expanded")]
+    Expanded,
+    [JsonProperty("collapsed")]
+    Collapsed
 }

@@ -8,17 +8,26 @@
 
 namespace KiloExtensionDTOs.Connection;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: DeviceAuthStatus
+/// Enum: DeviceAuthStatusEnum
 /// Generated from union type
-/// Source: connection.ts
 /// </summary>
-public enum DeviceAuthStatus
+[JsonConverter(typeof(StringEnumConverter))]
+public enum DeviceAuthStatusEnum
 {
+    [JsonProperty("success")]
     Success,
+    [JsonProperty("pending")]
     Pending,
+    [JsonProperty("cancelled")]
     Cancelled,
+    [JsonProperty("idle")]
     Idle,
+    [JsonProperty("error")]
     Error,
+    [JsonProperty("initiating")]
     Initiating
 }

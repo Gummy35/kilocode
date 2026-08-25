@@ -26,7 +26,7 @@ public class MemoryOperationMessage
     public string Type { get; set; } = "memoryOperation";
     [JsonProperty("operation")]
     // Original TypeScript type: MemoryOperation
-    public MemoryOperation Operation { get; set; }
+    public MemoryOperationEnum Operation { get; set; }
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }

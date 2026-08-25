@@ -26,5 +26,5 @@ public class DiffImageSide
     public string? Data { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: DiffImageError
-    public DiffImageError? Error { get; set; }
+    public DiffImageErrorEnum? Error { get; set; }
 }

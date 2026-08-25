@@ -175,21 +175,21 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
-    public static IndexingProvider Convert(IndexingConfigProvider provider)
+    public static IndexingProviderEnum Convert(IndexingConfigProvider provider)
     {
       switch (provider)
       {
-        case IndexingConfigProvider.Kilo: return IndexingProvider.Kilo;
-        case IndexingConfigProvider.Openai: return IndexingProvider.Openai;
-        case IndexingConfigProvider.Ollama: return IndexingProvider.Ollama;
-        case IndexingConfigProvider.OpenaiCompatible: return IndexingProvider.OpenaiCompatible;
-        case IndexingConfigProvider.Gemini: return IndexingProvider.Gemini;
-        case IndexingConfigProvider.Mistral: return IndexingProvider.Mistral;
-        case IndexingConfigProvider.VercelAiGateway: return IndexingProvider.VercelAiGateway;
-        case IndexingConfigProvider.Bedrock: return IndexingProvider.Bedrock;
-        case IndexingConfigProvider.Openrouter: return IndexingProvider.Openrouter;
-        case IndexingConfigProvider.Voyage: return IndexingProvider.Voyage;
-        default: return IndexingProvider.Kilo;
+        case IndexingConfigProvider.Kilo: return IndexingProviderEnum.Kilo;
+        case IndexingConfigProvider.Openai: return IndexingProviderEnum.Openai;
+        case IndexingConfigProvider.Ollama: return IndexingProviderEnum.Ollama;
+        case IndexingConfigProvider.OpenaiCompatible: return IndexingProviderEnum.OpenaiCompatible;
+        case IndexingConfigProvider.Gemini: return IndexingProviderEnum.Gemini;
+        case IndexingConfigProvider.Mistral: return IndexingProviderEnum.Mistral;
+        case IndexingConfigProvider.VercelAiGateway: return IndexingProviderEnum.VercelAiGateway;
+        case IndexingConfigProvider.Bedrock: return IndexingProviderEnum.Bedrock;
+        case IndexingConfigProvider.Openrouter: return IndexingProviderEnum.Openrouter;
+        case IndexingConfigProvider.Voyage: return IndexingProviderEnum.Voyage;
+        default: return IndexingProviderEnum.Kilo;
       }
     }
 
@@ -244,8 +244,8 @@ namespace KiloVisualStudioExtension.Utils
         Skills = Convert(config.Skills),
         Snapshot = config.Snapshot,
         Remote_control = config.Remote_control,
-        Terminal_command_display = config.Terminal_command_display == ConfigTerminal_command_display.Expanded ? TerminalCommandDisplay.Expanded : TerminalCommandDisplay.Collapsed,
-        Code_edit_display = config.Code_edit_display == ConfigCode_edit_display.Expanded ? CodeEditDisplay.Expanded : CodeEditDisplay.Collapsed,
+        Terminal_command_display = config.Terminal_command_display == ConfigTerminal_command_display.Expanded ? TerminalCommandDisplayEnum.Expanded : TerminalCommandDisplayEnum.Collapsed,
+        Code_edit_display = config.Code_edit_display == ConfigCode_edit_display.Expanded ? CodeEditDisplayEnum.Expanded : CodeEditDisplayEnum.Collapsed,
         Hide_prompt_training_models = config.Hide_prompt_training_models,
         Share = Convert(config.Share),
         Username = config.Username,

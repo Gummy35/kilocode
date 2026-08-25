@@ -8,12 +8,20 @@
 
 namespace KiloExtensionDTOs;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: WorkStyle
+/// Enum: AnacondaDesktopActionEnum
 /// Generated from union type
 /// </summary>
-public enum WorkStyle
+[JsonConverter(typeof(StringEnumConverter))]
+public enum AnacondaDesktopActionEnum
 {
-    HumanInTheLoop,
-    Autonomous
+    [JsonProperty("open")]
+    Open,
+    [JsonProperty("status")]
+    Status,
+    [JsonProperty("sync")]
+    Sync
 }

@@ -8,16 +8,24 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: AgentManagerApplyWorktreeDiffStatus
+/// Enum: AgentManagerApplyWorktreeDiffStatusEnum
 /// Generated from union type
-/// Source: agent-manager.ts
 /// </summary>
-public enum AgentManagerApplyWorktreeDiffStatus
+[JsonConverter(typeof(StringEnumConverter))]
+public enum AgentManagerApplyWorktreeDiffStatusEnum
 {
+    [JsonProperty("success")]
     Success,
+    [JsonProperty("checking")]
     Checking,
+    [JsonProperty("applying")]
     Applying,
+    [JsonProperty("conflict")]
     Conflict,
+    [JsonProperty("error")]
     Error
 }

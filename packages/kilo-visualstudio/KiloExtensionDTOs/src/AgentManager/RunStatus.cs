@@ -21,7 +21,7 @@ public class RunStatus
     public string WorktreeId { get; set; }
     [JsonProperty("state")]
     // Original TypeScript type: RunState
-    public RunState State { get; set; }
+    public RunStateEnum State { get; set; }
     [JsonProperty("exitCode", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number
     public double? ExitCode { get; set; }

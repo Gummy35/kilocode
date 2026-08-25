@@ -193,7 +193,7 @@ namespace KiloVisualStudioExtension.ApiClient
         "retry" => new SessionStatusMessage
         {
           SessionID = Properties.SessionID,
-          Status = KiloExtensionDTOs.Connection.SessionStatus.Retry,
+          Status = KiloExtensionDTOs.Connection.SessionStatusEnum.Retry,
           Attempt = Properties.Status.Attempt,
           Message = Properties.Status.Message,
           Next = Properties.Status.Next
@@ -201,13 +201,13 @@ namespace KiloVisualStudioExtension.ApiClient
         "offline" => new SessionStatusMessage
         {
           SessionID = Properties.SessionID,
-          Status = KiloExtensionDTOs.Connection.SessionStatus.Retry,
+          Status = KiloExtensionDTOs.Connection.SessionStatusEnum.Retry,
           Message = Properties.Status.Message,
         },
         _ => new SessionStatusMessage
         {
           SessionID = Properties.SessionID,
-          Status = Properties.Status.Type.ToEnum(KiloExtensionDTOs.Connection.SessionStatus.Idle),
+          Status = Properties.Status.Type.ToEnum(KiloExtensionDTOs.Connection.SessionStatusEnum.Idle),
         }
       };
     }

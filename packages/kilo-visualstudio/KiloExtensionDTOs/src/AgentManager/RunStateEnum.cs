@@ -8,14 +8,20 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: ReviewDecision
+/// Enum: RunStateEnum
 /// Generated from union type
-/// Source: agent-manager.ts
 /// </summary>
-public enum ReviewDecision
+[JsonConverter(typeof(StringEnumConverter))]
+public enum RunStateEnum
 {
-    Pending,
-    Approved,
-    Changes_requested
+    [JsonProperty("idle")]
+    Idle,
+    [JsonProperty("running")]
+    Running,
+    [JsonProperty("stopping")]
+    Stopping
 }

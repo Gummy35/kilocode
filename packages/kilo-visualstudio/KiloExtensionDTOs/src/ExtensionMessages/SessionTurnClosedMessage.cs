@@ -30,5 +30,5 @@ public class SessionTurnClosedMessage : IWebviewMessage
     public string SessionID { get; set; }
     [JsonProperty("reason")]
     // Original TypeScript type: SessionCloseReason
-    public SessionCloseReason Reason { get; set; }
+    public SessionCloseReasonEnum Reason { get; set; }
 }

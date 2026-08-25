@@ -27,7 +27,7 @@ public class MigrationSessionProgressMessage : IExtensionMessage
     public string Type { get; set; } = "migrationSessionProgress";
     [JsonProperty("source")]
     // Original TypeScript type: MigrationSource
-    public MigrationSource Source { get; set; }
+    public MigrationSourceEnum Source { get; set; }
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("session")]
@@ -39,7 +39,7 @@ public class MigrationSessionProgressMessage : IExtensionMessage
     public double Total { get; set; }
     [JsonProperty("phase")]
     // Original TypeScript type: LegacyMigrationSessionPhase
-    public LegacyMigrationSessionPhase Phase { get; set; }
+    public LegacyMigrationSessionPhaseEnum Phase { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Error { get; set; }

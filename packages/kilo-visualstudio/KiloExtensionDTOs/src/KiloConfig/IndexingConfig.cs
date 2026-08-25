@@ -22,7 +22,7 @@ public class IndexingConfig
     public bool? Enabled { get; set; }
     [JsonProperty("provider", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: IndexingProvider
-    public IndexingProvider? Provider { get; set; }
+    public IndexingProviderEnum? Provider { get; set; }
     [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | null | string
     public string? Model { get; set; }

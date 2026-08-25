@@ -27,7 +27,7 @@ public class MigrationDataMessage : IExtensionMessage
     public string Type { get; set; } = "migrationData";
     [JsonProperty("source")]
     // Original TypeScript type: MigrationSource
-    public MigrationSource Source { get; set; }
+    public MigrationSourceEnum Source { get; set; }
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("data")]

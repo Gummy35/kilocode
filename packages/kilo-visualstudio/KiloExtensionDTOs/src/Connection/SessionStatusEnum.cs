@@ -8,15 +8,22 @@
 
 namespace KiloExtensionDTOs.Connection;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: SessionStatus
+/// Enum: SessionStatusEnum
 /// Generated from union type
-/// Source: connection.ts
 /// </summary>
-public enum SessionStatus
+[JsonConverter(typeof(StringEnumConverter))]
+public enum SessionStatusEnum
 {
+    [JsonProperty("idle")]
     Idle,
+    [JsonProperty("busy")]
     Busy,
+    [JsonProperty("retry")]
     Retry,
+    [JsonProperty("offline")]
     Offline
 }

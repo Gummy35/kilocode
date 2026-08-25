@@ -8,17 +8,26 @@
 
 namespace KiloExtensionDTOs.Migration;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: LegacyMigrationSessionPhase
+/// Enum: LegacyMigrationSessionPhaseEnum
 /// Generated from union type
-/// Source: migration.ts
 /// </summary>
-public enum LegacyMigrationSessionPhase
+[JsonConverter(typeof(StringEnumConverter))]
+public enum LegacyMigrationSessionPhaseEnum
 {
+    [JsonProperty("skipped")]
     Skipped,
+    [JsonProperty("error")]
     Error,
+    [JsonProperty("done")]
     Done,
+    [JsonProperty("preparing")]
     Preparing,
+    [JsonProperty("storing")]
     Storing,
+    [JsonProperty("summary")]
     Summary
 }

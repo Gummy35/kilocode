@@ -24,5 +24,5 @@ public class PermissionRuleItem
     public string Pattern { get; set; }
     [JsonProperty("action")]
     // Original TypeScript type: PermissionLevel
-    public PermissionLevel Action { get; set; }
+    public PermissionLevelEnum Action { get; set; }
 }

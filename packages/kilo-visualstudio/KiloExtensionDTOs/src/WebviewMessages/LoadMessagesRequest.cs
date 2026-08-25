@@ -29,7 +29,7 @@ public class LoadMessagesRequest
     public string SessionID { get; set; }
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: MessageLoadMode
-    public MessageLoadMode? Mode { get; set; }
+    public MessageLoadModeEnum? Mode { get; set; }
     [JsonProperty("before", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Before { get; set; }

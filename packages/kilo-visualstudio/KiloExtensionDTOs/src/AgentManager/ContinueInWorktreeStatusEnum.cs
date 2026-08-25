@@ -8,18 +8,28 @@
 
 namespace KiloExtensionDTOs.AgentManager;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: ContinueInWorktreeStatus
+/// Enum: ContinueInWorktreeStatusEnum
 /// Generated from union type
-/// Source: agent-manager.ts
 /// </summary>
-public enum ContinueInWorktreeStatus
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ContinueInWorktreeStatusEnum
 {
+    [JsonProperty("error")]
     Error,
+    [JsonProperty("capturing")]
     Capturing,
+    [JsonProperty("creating")]
     Creating,
+    [JsonProperty("setup")]
     Setup,
+    [JsonProperty("transferring")]
     Transferring,
+    [JsonProperty("forking")]
     Forking,
+    [JsonProperty("done")]
     Done
 }

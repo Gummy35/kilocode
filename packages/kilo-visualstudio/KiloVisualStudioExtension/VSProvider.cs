@@ -537,7 +537,7 @@ namespace KiloVisualStudioExtension
       await Task.CompletedTask;
     }
 
-    internal async Task SendWorkStyleLoadedAsync(WorkStyleState style)
+    internal async Task SendWorkStyleLoadedAsync(WorkStyleStateEnum style)
     {
       PostMessage(new WorkStyleLoadedMessage { Style = style });
       await Task.CompletedTask;

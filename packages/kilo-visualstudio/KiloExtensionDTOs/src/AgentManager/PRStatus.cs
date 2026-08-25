@@ -25,7 +25,7 @@ public class PRStatus
     public string Url { get; set; }
     [JsonProperty("state")]
     // Original TypeScript type: PRState
-    public PRState State { get; set; }
+    public PRStateEnum State { get; set; }
     [JsonProperty("review", NullValueHandling = NullValueHandling.Ignore)]
     public PendingApprovedChangesrequestedEnum? Review { get; set; }
     [JsonProperty("checks")]

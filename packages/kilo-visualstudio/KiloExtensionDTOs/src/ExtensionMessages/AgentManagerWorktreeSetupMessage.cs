@@ -41,5 +41,5 @@ public class AgentManagerWorktreeSetupMessage : IExtensionMessage
     public string? WorktreeId { get; set; }
     [JsonProperty("errorCode", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: WorktreeErrorCode
-    public WorktreeErrorCode? ErrorCode { get; set; }
+    public WorktreeErrorCodeEnum? ErrorCode { get; set; }
 }

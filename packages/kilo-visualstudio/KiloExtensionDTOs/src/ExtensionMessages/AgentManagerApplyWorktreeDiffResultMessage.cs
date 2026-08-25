@@ -29,7 +29,7 @@ public class AgentManagerApplyWorktreeDiffResultMessage : IExtensionMessage
     public string WorktreeId { get; set; }
     [JsonProperty("status")]
     // Original TypeScript type: AgentManagerApplyWorktreeDiffStatus
-    public AgentManagerApplyWorktreeDiffStatus Status { get; set; }
+    public AgentManagerApplyWorktreeDiffStatusEnum Status { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }
     [JsonProperty("conflicts", NullValueHandling = NullValueHandling.Ignore)]

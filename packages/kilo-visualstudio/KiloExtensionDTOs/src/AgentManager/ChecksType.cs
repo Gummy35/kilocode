@@ -19,7 +19,7 @@ public class ChecksType
 {
     [JsonProperty("status")]
     // Original TypeScript type: AggregateCheckStatus
-    public AggregateCheckStatus Status { get; set; }
+    public AggregateCheckStatusEnum Status { get; set; }
     [JsonProperty("total")]
     public double Total { get; set; }
     [JsonProperty("passed")]

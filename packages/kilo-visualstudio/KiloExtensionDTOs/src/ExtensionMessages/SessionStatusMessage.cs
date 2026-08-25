@@ -30,7 +30,7 @@ public class SessionStatusMessage : IWebviewMessage
     public string SessionID { get; set; }
     [JsonProperty("status")]
     // Original TypeScript type: SessionStatus
-    public SessionStatus Status { get; set; }
+    public SessionStatusEnum Status { get; set; }
     [JsonProperty("attempt", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number
     public double? Attempt { get; set; }

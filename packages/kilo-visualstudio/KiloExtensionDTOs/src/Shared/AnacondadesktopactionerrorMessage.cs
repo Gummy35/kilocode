@@ -27,7 +27,7 @@ public class AnacondadesktopactionerrorMessage : IExtensionMessage
     public string RequestId { get; set; }
     [JsonProperty("action")]
     // Original TypeScript type: AnacondaDesktopAction
-    public AnacondaDesktopAction Action { get; set; }
+    public AnacondaDesktopActionEnum Action { get; set; }
     [JsonProperty("message")]
     public string Message { get; set; }
 }

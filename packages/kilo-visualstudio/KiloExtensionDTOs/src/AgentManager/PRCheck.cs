@@ -21,7 +21,7 @@ public class PRCheck
     public string Name { get; set; }
     [JsonProperty("status")]
     // Original TypeScript type: CheckStatus
-    public CheckStatus Status { get; set; }
+    public CheckStatusEnum Status { get; set; }
     [JsonProperty("url", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Url { get; set; }

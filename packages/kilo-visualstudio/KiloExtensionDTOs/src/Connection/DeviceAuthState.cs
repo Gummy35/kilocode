@@ -19,7 +19,7 @@ public class DeviceAuthState
 {
     [JsonProperty("status")]
     // Original TypeScript type: DeviceAuthStatus
-    public DeviceAuthStatus Status { get; set; }
+    public DeviceAuthStatusEnum Status { get; set; }
     [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Code { get; set; }

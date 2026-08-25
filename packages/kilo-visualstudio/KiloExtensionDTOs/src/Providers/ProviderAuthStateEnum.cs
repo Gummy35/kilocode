@@ -8,14 +8,20 @@
 
 namespace KiloExtensionDTOs.Providers;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: ProviderAuthState
+/// Enum: ProviderAuthStateEnum
 /// Generated from union type
-/// Source: providers.ts
 /// </summary>
-public enum ProviderAuthState
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ProviderAuthStateEnum
 {
+    [JsonProperty("api")]
     Api,
+    [JsonProperty("oauth")]
     Oauth,
+    [JsonProperty("wellknown")]
     Wellknown
 }

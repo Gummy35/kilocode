@@ -6,15 +6,21 @@
 
 #nullable enable
 
-namespace KiloExtensionDTOs;
+namespace KiloExtensionDTOs.KiloConfig;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: AnacondaDesktopAction
+/// Enum: CodeEditDisplayEnum
 /// Generated from union type
+/// Source: config.ts
 /// </summary>
-public enum AnacondaDesktopAction
+[JsonConverter(typeof(StringEnumConverter))]
+public enum CodeEditDisplayEnum
 {
-    Open,
-    Status,
-    Sync
+    [JsonProperty("expanded")]
+    Expanded,
+    [JsonProperty("collapsed")]
+    Collapsed
 }

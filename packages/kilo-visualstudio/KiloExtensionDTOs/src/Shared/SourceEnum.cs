@@ -8,21 +8,36 @@
 
 namespace KiloExtensionDTOs.ConfigFile;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: Source
+/// Enum: SourceEnum
 /// Generated from union type
 /// </summary>
-public enum Source
+[JsonConverter(typeof(StringEnumConverter))]
+public enum SourceEnum
 {
+    [JsonProperty("sourceXdg")]
     SourceXdg,
+    [JsonProperty("sourceHomeKilo")]
     SourceHomeKilo,
+    [JsonProperty("sourceHomeKilocode")]
     SourceHomeKilocode,
+    [JsonProperty("sourceHomeOpencode")]
     SourceHomeOpencode,
+    [JsonProperty("sourceEnvFile")]
     SourceEnvFile,
+    [JsonProperty("sourceEnvDir")]
     SourceEnvDir,
+    [JsonProperty("sourceEnvContent")]
     SourceEnvContent,
+    [JsonProperty("sourceProjectKilo")]
     SourceProjectKilo,
+    [JsonProperty("sourceProjectRoot")]
     SourceProjectRoot,
+    [JsonProperty("sourceProjectKilocode")]
     SourceProjectKilocode,
+    [JsonProperty("sourceProjectOpencode")]
     SourceProjectOpencode
 }

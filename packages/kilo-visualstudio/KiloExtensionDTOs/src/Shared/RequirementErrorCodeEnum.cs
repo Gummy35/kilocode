@@ -8,16 +8,26 @@
 
 namespace KiloExtensionDTOs.AgentRequirements;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: RequirementErrorCode
+/// Enum: RequirementErrorCodeEnum
 /// Generated from union type
 /// </summary>
-public enum RequirementErrorCode
+[JsonConverter(typeof(StringEnumConverter))]
+public enum RequirementErrorCodeEnum
 {
+    [JsonProperty("unknown_agent")]
     Unknown_agent,
+    [JsonProperty("malformed_declaration")]
     Malformed_declaration,
+    [JsonProperty("discovery_failed")]
     Discovery_failed,
+    [JsonProperty("mcp_status_failed")]
     Mcp_status_failed,
+    [JsonProperty("scope_mismatch")]
     Scope_mismatch,
+    [JsonProperty("request_failed")]
     Request_failed
 }

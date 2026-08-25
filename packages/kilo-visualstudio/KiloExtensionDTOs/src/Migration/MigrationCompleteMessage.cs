@@ -27,7 +27,7 @@ public class MigrationCompleteMessage : IExtensionMessage
     public string Type { get; set; } = "migrationComplete";
     [JsonProperty("source")]
     // Original TypeScript type: MigrationSource
-    public MigrationSource Source { get; set; }
+    public MigrationSourceEnum Source { get; set; }
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("results")]

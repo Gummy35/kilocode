@@ -27,7 +27,7 @@ public class MemoryOperationResultMessage : IExtensionMessage
     public string Type { get; set; } = "memoryOperationResult";
     [JsonProperty("operation")]
     // Original TypeScript type: MemoryResultOperation
-    public MemoryResultOperation Operation { get; set; }
+    public MemoryResultOperationEnum Operation { get; set; }
     [JsonProperty("sessionID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }

@@ -27,7 +27,7 @@ public class ConnectionStateMessage : IExtensionMessage
     public string Type { get; set; } = "connectionState";
     [JsonProperty("state")]
     // Original TypeScript type: ConnectionState
-    public ConnectionState State { get; set; }
+    public ConnectionStateEnum State { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Error { get; set; }

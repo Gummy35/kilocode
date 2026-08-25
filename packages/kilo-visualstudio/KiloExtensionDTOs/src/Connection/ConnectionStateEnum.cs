@@ -8,15 +8,22 @@
 
 namespace KiloExtensionDTOs.Connection;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: ConnectionState
+/// Enum: ConnectionStateEnum
 /// Generated from union type
-/// Source: connection.ts
 /// </summary>
-public enum ConnectionState
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ConnectionStateEnum
 {
+    [JsonProperty("error")]
     Error,
+    [JsonProperty("connecting")]
     Connecting,
+    [JsonProperty("connected")]
     Connected,
+    [JsonProperty("disconnected")]
     Disconnected
 }

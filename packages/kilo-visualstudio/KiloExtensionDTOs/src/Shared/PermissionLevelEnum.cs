@@ -6,15 +6,22 @@
 
 #nullable enable
 
-namespace KiloExtensionDTOs.KiloConfig;
+namespace KiloExtensionDTOs;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 /// <summary>
-/// Enum: TerminalCommandDisplay
+/// Enum: PermissionLevelEnum
 /// Generated from union type
-/// Source: config.ts
 /// </summary>
-public enum TerminalCommandDisplay
+[JsonConverter(typeof(StringEnumConverter))]
+public enum PermissionLevelEnum
 {
-    Expanded,
-    Collapsed
+    [JsonProperty("allow")]
+    Allow,
+    [JsonProperty("ask")]
+    Ask,
+    [JsonProperty("deny")]
+    Deny
 }

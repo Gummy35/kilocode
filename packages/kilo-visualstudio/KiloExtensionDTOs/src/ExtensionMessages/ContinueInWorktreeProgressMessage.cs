@@ -27,7 +27,7 @@ public class ContinueInWorktreeProgressMessage : IExtensionMessage
     public string Type { get; set; } = "continueInWorktreeProgress";
     [JsonProperty("status")]
     // Original TypeScript type: ContinueInWorktreeStatus
-    public ContinueInWorktreeStatus Status { get; set; }
+    public ContinueInWorktreeStatusEnum Status { get; set; }
     [JsonProperty("detail", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Detail { get; set; }

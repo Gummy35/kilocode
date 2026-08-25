@@ -8,21 +8,34 @@
 
 namespace KiloExtensionDTOs.Memory;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 /// <summary>
-/// Enum: MemoryResultOperation
+/// Enum: MemoryResultOperationEnum
 /// Generated from union type
-/// Source: memory.ts
 /// </summary>
-public enum MemoryResultOperation
+[JsonConverter(typeof(StringEnumConverter))]
+public enum MemoryResultOperationEnum
 {
+    [JsonProperty("auto")]
     Auto,
+    [JsonProperty("status")]
     Status,
+    [JsonProperty("enable")]
     Enable,
+    [JsonProperty("inspect")]
     Inspect,
+    [JsonProperty("disable")]
     Disable,
+    [JsonProperty("rebuild")]
     Rebuild,
+    [JsonProperty("remember")]
     Remember,
+    [JsonProperty("correct")]
     Correct,
+    [JsonProperty("forget")]
     Forget,
+    [JsonProperty("purge")]
     Purge
 }

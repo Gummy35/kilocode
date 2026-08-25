@@ -27,5 +27,5 @@ public class SetWorkStyleMessage
     public string Type { get; set; } = "setWorkStyle";
     [JsonProperty("style")]
     // Original TypeScript type: WorkStyleState
-    public WorkStyleState Style { get; set; }
+    public WorkStyleStateEnum Style { get; set; }
 }
