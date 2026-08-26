@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -45,6 +46,8 @@ namespace KiloVisualStudioExtension.Services
     /// Check if a key exists in cache.
     /// </summary>
     bool Contains(string key);
+
+    Task ClearAsync();
   }
 
   /// <summary>
@@ -141,6 +144,22 @@ namespace KiloVisualStudioExtension.Services
     public bool Contains(string key)
     {
       return _cache.ContainsKey(key) || _storage.ContainsKey(key);
+    }
+
+    public async Task ClearAsync()
+    {
+      var keys = _cache.Keys.ToList();
+      foreach (var key in keys)
+      {
+        Remove(key);
+        await _onSave(key, null);
+      }
+      keys = _storage.Keys.ToList();
+      foreach (var key in keys)
+      {
+        Remove(key);
+        await _onSave(key, null);
+      }
     }
   }
 }

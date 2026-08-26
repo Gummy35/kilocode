@@ -9,14 +9,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
     /// Handles provider action operations like connect, disconnect, and OAuth authorization.
     /// Matches the VS Code pattern in provider-actions.ts.
     /// </summary>
-    public class ProviderActionService : ServiceProviderServiceBase
+    public class ProviderService : ServiceProviderServiceBase
     {
         private bool _disposed;
 
         private VSProvider Provider => _serviceProvider.GetService<VSProvider>() 
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
 
-        public ProviderActionService(ServiceProvider serviceProvider):base(serviceProvider)
+        public ProviderService(ServiceProvider serviceProvider):base(serviceProvider)
         {
         }
 
@@ -52,7 +52,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
 
                 await nswagClient.Auth_setAsync(providerID, authBody);
                 await Provider.DisposeGlobal();
-                await Provider.FetchAndSendProviders();
+                await Provider.FetchAndSendProvidersAsync();
                 
                 Provider.PostMessage(JsonSerializer.Serialize(new 
                 { 
@@ -101,7 +101,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                 }
 
                 await Provider.DisposeGlobal();
-                await Provider.FetchAndSendProviders();
+                await Provider.FetchAndSendProvidersAsync();
 
                 Provider.PostMessage(JsonSerializer.Serialize(new 
                 { 
@@ -196,7 +196,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                 });
 
                 await Provider.DisposeGlobal();
-                await Provider.FetchAndSendProviders();
+                await Provider.FetchAndSendProvidersAsync();
 
                 Provider.PostMessage(JsonSerializer.Serialize(new 
                 { 
@@ -258,7 +258,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                 }
 
                 await Provider.DisposeGlobal();
-                await Provider.FetchAndSendProviders();
+                await Provider.FetchAndSendProvidersAsync();
 
                 Provider.PostMessage(JsonSerializer.Serialize(new 
                 { 

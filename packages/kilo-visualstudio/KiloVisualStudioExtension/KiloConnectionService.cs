@@ -101,7 +101,7 @@ namespace KiloVisualStudioExtension
   /// The service uses lazy startup - the backend only starts when ConnectAsync()
   /// is first called, reducing extension startup time.
   /// </summary>
-  public class KiloConnectionService : IDisposable
+  public class KiloConnectionService : IDisposable, IServiceProviderService
   {
     /// <summary>
     /// Manages the CLI backend process.

@@ -1,9 +1,13 @@
+using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.KiloConfig;
+using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Utils;
+using Microsoft.Build.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using KiloVisualStudioExtension.ApiClient;
-using KiloVisualStudioExtension.Utils;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Config
 {
@@ -15,6 +19,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
   public class ConfigHandlerService : ServiceProviderServiceBase
   {
     private bool _disposed;
+    private int _updateConfigPending = 0;
+
 
 
     private VSProvider Provider => _serviceProvider.GetService<VSProvider>()
@@ -25,55 +31,55 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
     {
     }
 
-    /// <summary>
-    /// Handles the requestConfig message from the webview.
-    /// Fetches and sends the current configuration to the webview.
-    /// 
-    /// VS Code workflow: Matches the pattern in kilo-provider/handlers/config.ts
-    /// where requestConfig fetches /config and sends configLoaded to webview.
-    /// 
-    /// Workflow steps:
-    /// 1. Get HTTP client from provider
-    /// 2. If no client, send empty config with SendConfigLoadedAsync
-    /// 3. Fetch configuration from /config endpoint
-    /// 4. Extract config and features properties from response
-    /// 5. Send configLoaded message with both config and features
-    /// 
-    /// Messages sent to webview:
-    /// - configLoaded: { config: {...}, features: {...} }
-    /// </summary>
-    /// <param name="payload">The message payload (unused for requestConfig).</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task HandleRequestConfigAsync(JsonElement? payload)
-    {
-      try
-      {
-        var nswagClient = Provider.GetNswagClient();
-        if (nswagClient == null)
-        {
-          await Provider.SendConfigLoadedAsync(new KiloExtensionDTOs.KiloConfig.Config(), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
-          return;
-        }
+    ///// <summary>
+    ///// Handles the requestConfig message from the webview.
+    ///// Fetches and sends the current configuration to the webview.
+    ///// 
+    ///// VS Code workflow: Matches the pattern in kilo-provider/handlers/config.ts
+    ///// where requestConfig fetches /config and sends configLoaded to webview.
+    ///// 
+    ///// Workflow steps:
+    ///// 1. Get HTTP client from provider
+    ///// 2. If no client, send empty config with SendConfigLoadedAsync
+    ///// 3. Fetch configuration from /config endpoint
+    ///// 4. Extract config and features properties from response
+    ///// 5. Send configLoaded message with both config and features
+    ///// 
+    ///// Messages sent to webview:
+    ///// - configLoaded: { config: {...}, features: {...} }
+    ///// </summary>
+    ///// <param name="payload">The message payload (unused for requestConfig).</param>
+    ///// <returns>A task representing the asynchronous operation.</returns>
+    //public async Task HandleRequestConfigAsync(JsonElement? payload)
+    //{
+    //  try
+    //  {
+    //    var nswagClient = Provider.GetNswagClient();
+    //    if (nswagClient == null)
+    //    {
+    //      await Provider.SendConfigLoadedAsync(new KiloExtensionDTOs.KiloConfig.Config(), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
+    //      return;
+    //    }
 
-        var configResponse = await nswagClient.Global_config_getAsync();
-        //var config = JsonDocument.Parse("{}").RootElement;
-        //var features = JsonDocument.Parse("{}").RootElement;
+    //    var configResponse = await nswagClient.Global_config_getAsync();
+    //    //var config = JsonDocument.Parse("{}").RootElement;
+    //    //var features = JsonDocument.Parse("{}").RootElement;
 
-        //if (configResponse != null)
-        //{
-        //    config = JsonSerializer.SerializeToElement(configResponse);
-        //    // Features is not a property of Config in the generated model
-        //    features = JsonDocument.Parse("{}").RootElement;
-        //}
+    //    //if (configResponse != null)
+    //    //{
+    //    //    config = JsonSerializer.SerializeToElement(configResponse);
+    //    //    // Features is not a property of Config in the generated model
+    //    //    features = JsonDocument.Parse("{}").RootElement;
+    //    //}
 
-        await Provider.SendConfigLoadedAsync(EntityConverter.Convert(configResponse), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] ConfigHandler: Error fetching config: {ex.Message}");
-        await Provider.SendConfigLoadedAsync(new KiloExtensionDTOs.KiloConfig.Config(), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
-      }
-    }
+    //    await Provider.SendConfigLoadedAsync(EntityConverter.Convert(configResponse), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
+    //  }
+    //  catch (Exception ex)
+    //  {
+    //    System.Diagnostics.Debug.WriteLine($"[Kilo] ConfigHandler: Error fetching config: {ex.Message}");
+    //    await Provider.SendConfigLoadedAsync(new KiloExtensionDTOs.KiloConfig.Config(), new KiloExtensionDTOs.KiloConfig.FeatureFlags());
+    //  }
+    //}
 
     /// <summary>
     /// Handles the updateSetting message from the webview.
@@ -224,6 +230,146 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         System.Diagnostics.Debug.WriteLine($"[Kilo] ConfigHandler: error opening config file: {ex.Message}");
       }
     }
+
+    public static string CommitMessageLanguageSetting()
+    {
+      return VSExtensionSettings.Get<string>("kilo-code.new.languageCommitMessage", "sync");
+    }
+
+    public static FeatureFlags GetConfigFeatures(ApiClient.Config? config)
+    {
+      return new FeatureFlags
+      {
+        Indexing = Utils.IndexingPluginDetector.HasIndexingPlugin(config?.Plugin),
+        SandboxControls = false //process.platform !== "win32"
+      };
+    }
+
+
+
+    /// <summary>
+    /// Fetches configuration from the backend and sends it to the webview.
+    /// Matches the VS Code pattern in KiloProvider.ts:fetchAndSendConfig.
+    /// 
+    /// Workflow:
+    /// 1. If not connected and cached config exists, send cached config and return
+    /// 2. If handleUpdateConfig is in flight (pending > 0), return to avoid race
+    /// 3. Fetch config, global config, and overlay in parallel
+    /// 4. Build configLoaded message with settings and features
+    /// 5. Cache the message and send to webview
+    /// 6. Handle errors gracefully with debug logging
+    /// </summary>
+    internal async Task HandleRequestConfigAsync()
+    {
+      var _connectionService = _serviceProvider.GetService<KiloConnectionService>();
+      var _cacheService = _serviceProvider.GetService<ICacheService>();
+      var client = _connectionService.GetNswagClient();
+      var connectionState = _connectionService.State;
+
+      // If not connected and cached config exists, send cached config
+      if (client == null || connectionState != ConnectionState.Connected)
+      {
+        if (_cacheService.Contains("configMessage"))
+          Provider.PostMessage(_cacheService.Get<ConfigLoadedMessage>("configMessage"));
+        return;
+      }
+
+      // Skip if handleUpdateConfig is in flight — sending a configLoaded now
+      // would race with the write and potentially overwrite optimistic webview state.
+      if (_updateConfigPending > 0)
+      {
+        return;
+      }
+
+      try
+      {
+        //  try {
+        //    const workspaceDir = this.getWorkspaceDirectory()
+        var workspaceDir = _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
+
+        //    const [{ data: config }, { data: global }, { data: overlay }] = await Promise.all([
+        //      retry(() => this.client!.config.get({ directory: workspaceDir }, { throwOnError: true })),
+        //      this.client.global.config.get({ throwOnError: true }),
+        //      this.client.config.overlay({ directory: workspaceDir, scope: "project" }, { throwOnError: true }),
+        //    ])
+
+        // Fetch all three configs in parallel
+        var configTask = client.Config_getAsync(workspaceDir, "");
+        var globalTask = client.Global_config_getAsync();
+        var overlayTask = client.Config_overlayAsync(workspaceDir, "", Scope2.Project);
+
+        await Task.WhenAll(configTask, globalTask, overlayTask);
+        var config = EntityConverter.Convert(configTask.Result);
+        var global = EntityConverter.Convert(globalTask.Result);
+        var overlay = EntityConverter.Convert(overlayTask.Result?.Project);
+
+
+        //    this.cachedGlobalConfig = global ?? null
+
+        var _cachedGlobalConfig = global;
+        var message = new ConfigLoadedMessage
+        {
+          Config = config,
+          GlobalConfig = global,
+          ProjectConfig = overlay,
+          Settings = new ExtensionSettingsOverride
+          {
+            MaxCost = ServiceProvider.GetService<CostService>().MaxCostSetting(),
+            AdditionalProperties = {
+              { "languageCommitMessage", CommitMessageLanguageSetting() }
+            }
+          },
+          Features = GetConfigFeatures(configTask.Result)
+        };
+        _cacheService.UpdateAsync("configMessage", message);
+        Provider.PostMessage(message);
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: Failed to fetch config: {ex.Message}");
+      }
+    }
+
+
+    // TypeScript: case "requestGlobalConfig":
+    //   this.fetchAndSendGlobalConfig().catch((e) => console.error("[Kilo New] fetchAndSendGlobalConfig failed:", e))
+    //   break
+    // private async fetchAndSendGlobalConfig(): Promise<void> {
+    //   if (!this.client || this.connectionState !== "connected") return
+    //   try {
+    //     const { data: config } = await this.client.global.config.get({ throwOnError: true })
+    //     this.cachedGlobalConfig = config ?? null
+    //     this.postMessage({ type: "globalConfigLoaded", config })
+    //   } catch (error) {
+    //     console.error("[Kilo New] KiloProvider: Failed to fetch global config:", error)
+    //   }
+    // }
+    public async Task HandleRequestGlobalConfigAsync(JsonElement? payload)
+    {
+      var nswagClient = Provider.GetNswagClient();
+      if (nswagClient == null || Provider.GetConnectionState() != "connected")
+      {
+        return;
+      }
+
+      try
+      {
+        var config = await nswagClient.Global_config_getAsync();
+        if (config == null) config = new ApiClient.Config();
+        await  _serviceProvider.GetService<ICacheService>().UpdateAsync("globalConfig", config);
+        var message = new GlobalConfigLoadedMessage
+        {
+          Config = EntityConverter.Convert(config)
+        };
+        Provider.PostMessage(message);
+      }
+      catch (Exception error)
+      {
+        System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed to fetch global config: {error}");
+      }
+    }
+
+
 
     public void Dispose()
     {

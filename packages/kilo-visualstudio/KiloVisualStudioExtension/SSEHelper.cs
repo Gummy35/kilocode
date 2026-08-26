@@ -296,7 +296,7 @@ namespace KiloVisualStudioExtension
           if ((prev == null || prev == "idle") && type != "idle")
           {
             // this.costs.rearm(sid)
-            _serviceProvider.GetService<MaxCostNudgeService>().Rearm(sessionId);
+            _serviceProvider.GetService<CostService>().Rearm(sessionId);
           }
           // this.sessionStatusMap.set(sid, event.properties.status.type)
           SessionHandler.SetSessionStatus(sessionId, type);
@@ -352,38 +352,27 @@ namespace KiloVisualStudioExtension
         if (evt is EventSessionUpdated evt2 && !double.IsNaN(evt2.Properties.Info.Cost))
         {
           // const cost = this.costs.setSessionCost(event.properties.sessionID, event.properties.info.cost)
-          var cost = ServiceProvider.GetService<MaxCostNudgeService>().SetSessionCost(evt2.Properties.SessionID, evt2.Properties.Info.Cost);
+          var cost = ServiceProvider.GetService<CostService>().SetSessionCost(evt2.Properties.SessionID, evt2.Properties.Info.Cost);
           // this.requestCostAlert(event.properties.sessionID, cost)
-          
-           RequestCostAlert(sessionId, cost);
+          Provider.RequestCostAlert(sessionId, cost);
+        }
+        // if (event.type === "session.updated") {
+        if (evt is EventSessionUpdated)
+        {
+          if (!raw.IsLegacySyncEvent) return;
+          var typedEvent = (EventSessionUpdated)evt;
+          if (!SessionHandler.UpdateSessionRevision(typedEvent.Properties.SessionID, typedEvent.Id, e.Seq)) return;
         }
 
-        ////////// if (event.type === "session.updated") {
-        ////////if (evt is EventSessionUpdated)
-        ////////{
-        ////////  // Full bus snapshots duplicate sync patches with the same event ID but no sequence metadata.
-        ////////  // if (!isLegacySyncEvent(event)) return
-        ////////  if (!raw.IsLegacySyncEvent) return;
-        ////////  // const sid = event.properties.sessionID
-        ////////  // const revision = this.revisions.get(sid)
-        ////////  var revision = _revisions.TryGetValue(sessionId, out var revVal) ? revVal : null;
-        ////////  // const versioned = event.seq > 0 || (revision?.seq ?? 0) > 0
-        ////////  var versioned = e.Seq > 0 || (revision?.Seq ?? 0) > 0;
-        ////////  // if (revision && (versioned ? event.seq <= revision.seq : event.id <= revision.id)) return
-        ////////  if (revision != null && (versioned ? e.Seq <= revision.Seq : e.Payload["id"]?.Value<string>() <= revision.Id)) return;
-        ////////  // this.revisions.set(sid, { id: event.id, seq: event.seq })
-        ////////  _revisions[sessionId] = new { Id = e.Payload["id"]?.Value<string>(), Seq = e.Seq};
-        ////////}
-
-        ////////// Refresh provider and agent lists when the server signals a state disposal
-        ////////// if (event.type === "global.disposed") {
-        ////////if (evt is EventGlobalDisposed)
-        ////////{
-        ////////  // void this.reloadAfterAuthChange()
-        ////////  ReloadAfterAuthChange();
-        ////////  // return
-        ////////  return;
-        ////////}
+        // Refresh provider and agent lists when the server signals a state disposal
+        // if (event.type === "global.disposed") {
+        if (evt is EventGlobalDisposed)
+        {
+          // void this.reloadAfterAuthChange()
+          ReloadAfterAuthChange();
+          // return
+          return;
+        }
 
         ////////// if (event.type === "server.instance.disposed") {
         ////////if (evt is EventServerInstanceDisposed)
@@ -989,7 +978,11 @@ namespace KiloVisualStudioExtension
           System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Dropping stale session.updated event for {sessionID}");
           return;
         }
-        UpdateRevision(sessionID, evt.Id, evt.Seq);
+        SessionHandler.TrackRevision(sessionID, new SessionRevision
+        {
+          Id = evt.Id,
+          Seq = evt.Seq
+        });
       }
 
       if (Provider.GetCurrentSessionID() == sessionID)
@@ -1588,16 +1581,7 @@ namespace KiloVisualStudioExtension
         return seq <= revision.Seq;
       }
 
-      return long.Parse(eventId) <= revision.Id;
-    }
-
-    public void UpdateRevision(string sessionID, string eventId, int seq)
-    {
-      SessionHandler.TrackRevision(sessionID, new SessionRevision
-      {
-        Id = long.Parse(eventId),
-        Seq = seq
-      });
+      return eventId.CompareTo(revision.Id) <= 0;
     }
 
     public bool IsEventFromForeignProject(string eventName, string? projectID)

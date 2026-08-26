@@ -1,14 +1,16 @@
+using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Services;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using KiloVisualStudioExtension.ApiClient;
-using KiloVisualStudioExtension.Services;
+using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
+using RevertRequest = KiloVisualStudioExtension.ApiClient.Body27;
 using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
 using SessionUpdateRequest = KiloVisualStudioExtension.ApiClient.Body19;
-using RevertRequest = KiloVisualStudioExtension.ApiClient.Body27;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Session
 {
@@ -39,6 +41,21 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     {
     }
 
+    public bool UpdateSessionRevision(string sessionID, string eventID, long eventSeq)
+    {
+      // Full bus snapshots duplicate sync patches with the same event ID but no sequence metadata.
+      // const sid = event.properties.sessionID
+      // const revision = this.revisions.get(sid)
+      var revision = GetRevision(sessionID);
+      // const versioned = event.seq > 0 || (revision?.seq ?? 0) > 0
+      var versioned = eventSeq > 0 || (revision?.Seq ?? 0) > 0;
+      // if (revision && (versioned ? event.seq <= revision.seq : event.id <= revision.id)) return
+      if (revision != null && (versioned ? eventSeq <= revision.Seq : eventID.CompareTo(revision.Id) <= 0)) return false;
+      // this.revisions.set(sid, { id: event.id, seq: event.seq })
+      TrackRevision(sessionID, new SessionRevision { Id = eventID, Seq = eventSeq});
+      return true;
+    }
+
     /// <summary>
     /// Tracks a session as active.
     /// </summary>
@@ -56,7 +73,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
       _modelUsageSessionIds.Remove(sessionID);
       _revisions.Remove(sessionID);
       _sessionStatusMap.Remove(sessionID);
-      _serviceProvider.GetService<MaxCostNudgeService>().OnSessionDeleted(sessionID);
+      _serviceProvider.GetService<CostService>().OnSessionDeleted(sessionID);
     }
 
     /// <summary>
@@ -899,8 +916,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
 
   public partial class SessionRevision
   {
-    public long Id { get; set; }
-    public int Seq { get; set; }
+    public string Id { get; set; }
+    public long Seq { get; set; }
   }
 
 }

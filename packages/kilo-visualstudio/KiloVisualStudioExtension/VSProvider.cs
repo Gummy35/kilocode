@@ -223,6 +223,10 @@ namespace KiloVisualStudioExtension
     private readonly AuthHandlerService _authHandler;
     private readonly ConfigHandlerService _configHandler;
     private readonly ProviderRequestService _providerRequestHandler;
+    private readonly FollowupHandlerService _followupHandler;
+    private readonly IndexingHandlerService _indexingHandler;
+    private readonly SandboxHandlerService _sandboxHandler;
+    private readonly NetworkHandlerService _networkHandler;
     private readonly AgentRequestService _agentRequestHandler;
     private readonly StateManagementService _stateManagementHandler;
     private readonly McpHandlerService _mcpHandler;
@@ -234,7 +238,7 @@ namespace KiloVisualStudioExtension
     private readonly SessionControlHandlerService _sessionControlHandler;
     private readonly UiHandlerService _uiHandler;
     private readonly MemoryHandlerService _memoryHandler;
-    private readonly ProviderActionService _providerActionService;
+    private readonly ProviderService _providerActionService;
     private readonly RemoteStatusService _remoteService;
 
     private bool _isWebviewReady = false;
@@ -249,24 +253,28 @@ namespace KiloVisualStudioExtension
     private JsonElement? _cachedStats = null;
     private bool _cachedGitRepo = false;
     private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
+    private readonly Dictionary<string, double> _activeAlerts = new Dictionary<string, double>();
+    private object? _cachedConfigMessage = null;
+    private KiloExtensionDTOs.KiloConfig.Config? _cachedGlobalConfig = null;
+    private int _pending = 0;
 
     /// <summary>
     /// Constructor for factory creation (webView may be null initially).
     /// Initializes all handler services using dependency injection.
     /// </summary>
-    public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService, KiloProviderOptions? opts = null):base(new ServiceProvider())
+    public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService, KiloProviderOptions? opts = null) : base(new ServiceProvider())
     {
       _webView = webView!;
       _connectionService = connectionService;
       _opts = opts ?? new KiloProviderOptions();
-      
+
       _serviceProvider.AddService(this);
       _serviceProvider.AddService(connectionService);
       _serviceProvider.AddService(webView ?? throw new ArgumentNullException(nameof(webView)));
 
       // Register MessageConfirmation as a per-instance service for SSEHelper access
       var confirmations = _serviceProvider.GetService<MessageConfirmation>();
-      
+
       _sseHelper = _serviceProvider.AddService(new SSEHelper(_serviceProvider, PostMessage));
       _connectionService.SetSSEHelper(_sseHelper);
       _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler((sessionID, key, update) =>
@@ -288,12 +296,12 @@ namespace KiloVisualStudioExtension
       _authHandler = _serviceProvider.GetService<AuthHandlerService>();
       _configHandler = _serviceProvider.GetService<ConfigHandlerService>();
       _providerRequestHandler = _serviceProvider.GetService<ProviderRequestService>();
-      
+
       // Register new handler services for state that was previously in SSEHelper
-      var followupHandler = _serviceProvider.GetService<FollowupHandlerService>();
-      var indexingHandler = _serviceProvider.GetService<IndexingHandlerService>();
-      var sandboxHandler = _serviceProvider.GetService<SandboxHandlerService>();
-      var networkHandler = _serviceProvider.GetService<NetworkHandlerService>();
+      _followupHandler = _serviceProvider.GetService<FollowupHandlerService>();
+      _indexingHandler = _serviceProvider.GetService<IndexingHandlerService>();
+      _sandboxHandler = _serviceProvider.GetService<SandboxHandlerService>();
+      _networkHandler = _serviceProvider.GetService<NetworkHandlerService>();
       _agentRequestHandler = _serviceProvider.GetService<AgentRequestService>();
       _stateManagementHandler = _serviceProvider.GetService<StateManagementService>();
       _mcpHandler = _serviceProvider.GetService<McpHandlerService>();
@@ -306,7 +314,7 @@ namespace KiloVisualStudioExtension
       _uiHandler = _serviceProvider.GetService<UiHandlerService>();
 
       _memoryHandler = _serviceProvider.GetService<MemoryHandlerService>();
-      _providerActionService = _serviceProvider.GetService<ProviderActionService>();
+      _providerActionService = _serviceProvider.GetService<ProviderService>();
 
       _remoteService = _serviceProvider.GetService<RemoteStatusService>();
 
@@ -322,7 +330,7 @@ namespace KiloVisualStudioExtension
 
     #region Internal Helper Methods for Handler Services
 
-   
+
     internal void PostMessage(string message)
     {
       _webView.PostMessage(message);
@@ -367,11 +375,11 @@ namespace KiloVisualStudioExtension
       {
         return JsonSerializer.SerializeToElement(new List<object>());
       }
-      
+
       var array = raw.Value.EnumerateArray();
       var validItems = new List<object>();
       int count = 0;
-      
+
       foreach (var item in array)
       {
         if (IsModelSelection(item) && count < 5)
@@ -382,7 +390,7 @@ namespace KiloVisualStudioExtension
           count++;
         }
       }
-      
+
       return JsonSerializer.SerializeToElement(validItems);
     }
 
@@ -392,10 +400,10 @@ namespace KiloVisualStudioExtension
       {
         return JsonSerializer.SerializeToElement(new List<object>());
       }
-      
+
       var array = raw.Value.EnumerateArray();
       var validItems = new List<object>();
-      
+
       foreach (var item in array)
       {
         if (IsModelSelection(item))
@@ -405,7 +413,7 @@ namespace KiloVisualStudioExtension
           validItems.Add(new { providerID = pid, modelID = mid });
         }
       }
-      
+
       return JsonSerializer.SerializeToElement(validItems);
     }
 
@@ -424,6 +432,25 @@ namespace KiloVisualStudioExtension
       var nswagClient = _connectionService.GetNswagClient();
       return nswagClient != null;
     }
+
+    internal void RequestCostAlert(string sessionID, double cost)
+    {
+      var costSvc = ServiceProvider.GetService<CostService>();
+      var limit = costSvc.Limit;
+      if (limit == null || limit == 0.0 || double.IsNaN(limit.Value) || double.IsInfinity(limit.Value) || cost < limit) return;
+      
+      costSvc.SetSessionCost(sessionID, cost);
+      var alert = costSvc.Check(sessionID);
+      if (alert == null) return;
+      _activeAlerts[sessionID] = alert.Limit;
+      PostMessage(new SessionCostAlertMessage
+      {
+        SessionID = sessionID,
+        Limit = alert.Limit,
+        Cost = CostService.FormatCost(alert.Cost)
+      });
+    }
+
 
     internal async Task SendErrorAsync(string title, string message)
     {
@@ -465,7 +492,8 @@ namespace KiloVisualStudioExtension
 
     internal async Task SendImageModelsAsync(List<ApiImageModel> models)
     {
-      PostMessage(new ImageModelsLoadedMessage {
+      PostMessage(new ImageModelsLoadedMessage
+      {
         Models = models.Select(m => new ModelsItemType
         {
           Id = m.Id,
@@ -489,25 +517,41 @@ namespace KiloVisualStudioExtension
 
     internal async Task DisposeGlobal()
     {
-      var cache = _serviceProvider.GetService<ICacheService>();
-      if (cache != null)
-      {
-        // Clear all cache entries - iterate through a copy of keys
-        var keys = new List<string>();
-        // Note: CacheService doesn't expose a clear method, so we just dispose the service
-        // In a full implementation, we would add a Clear() method to ICacheService
-      }
+      await _serviceProvider.GetService<ICacheService>().ClearAsync();
       await Task.CompletedTask;
     }
 
-    internal async Task FetchAndSendProviders()
+    internal async Task FetchAndSendProvidersAsync()
     {
       await _providerRequestHandler.HandleRequestProvidersAsync();
     }
 
-    internal async Task FetchAndSendAgents()
+    internal async Task FetchAndSendAgentsAsync()
     {
       await _agentRequestHandler.HandleRequestAgentsAsync();
+    }
+    internal async Task FetchAndSendConfigAsync()
+    {
+      await _configHandler.HandleRequestConfigAsync();
+    }
+
+    internal async Task FetchAndSendSkillsAsync()
+    {
+      await _miscRequestHandler.HandleRequestSkillsAsync();
+    }
+
+    internal async Task FetchAndSendCommandsAsync()
+    {
+      await _miscRequestHandler.HandleRequestCommandsAsync();
+    }
+    internal async Task FetchAndSendIndexingStatusAsync()
+    {
+      await _indexingHandler.HandleRequestIndexingStatusAsync();
+    }
+
+    internal async Task FetchAndSendNotificationsAsync()
+    {
+      await _notificationHandler.HandleRequestNotificationsAsync();
     }
 
     //internal IReadOnlyDictionary<string, string> GetSessionDirectories()
@@ -774,12 +818,32 @@ namespace KiloVisualStudioExtension
     #endregion
 
     private string? _currentSessionID;
-    
+
     private void HandleMessageReceived(object? sender, WebViewMessageEventArgs e)
     {
       System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: received message type={e.Type}");
       _ = ProcessMessageAsync(e.Type, e.Payload);
     }
+
+
+    /// <summary>
+    /// Re-fetch all server-side state after an auth change.
+    /// Matches TypeScript's reloadAfterAuthChange pattern.
+    /// </summary>
+    private async Task ReloadAfterAuthChangeAsync()
+    {
+    //   _requirements.Clear(); AgentsRequirementController => Future plan
+      await FetchAndSendConfigAsync();
+      await Task.WhenAll(
+        FetchAndSendProvidersAsync(),
+        FetchAndSendAgentsAsync(),
+        FetchAndSendSkillsAsync(),
+        FetchAndSendCommandsAsync(),
+        FetchAndSendIndexingStatusAsync(),
+        FetchAndSendNotificationsAsync()
+      );
+    }
+
 
     /// <summary>
     /// Deserializes a WebView message from JsonElement to a strongly-typed DTO using WebViewMessageFactory.
@@ -825,7 +889,7 @@ namespace KiloVisualStudioExtension
             break;
 
           case "requestConfig":
-            await _configHandler.HandleRequestConfigAsync(payload);
+      //      await _configHandler.HandleRequestConfigAsync(payload);
             break;
 
           case "requestMcpStatus":
@@ -1024,15 +1088,15 @@ namespace KiloVisualStudioExtension
             break;
 
           case "requestSkills":
-            await _miscRequestHandler.HandleRequestSkillsAsync(payload);
+            await _miscRequestHandler.HandleRequestSkillsAsync();
             break;
 
           case "requestCommands":
-            await _miscRequestHandler.HandleRequestCommandsAsync(payload);
+            await _miscRequestHandler.HandleRequestCommandsAsync();
             break;
 
           case "requestGlobalConfig":
-            await _miscRequestHandler.HandleRequestGlobalConfigAsync(payload);
+        //    await _configHandler.HandleRequestGlobalConfigAsync();
             break;
 
           case "requestIndexingStatus":

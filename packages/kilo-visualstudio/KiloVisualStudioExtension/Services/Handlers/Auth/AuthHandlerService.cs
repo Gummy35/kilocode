@@ -82,7 +82,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         await Provider.SendProfileDataAsync(profile != null ? EntityConverter.Convert(profile) : null);
         Provider.PostMessage(new DeviceAuthCompleteMessage());
 
-        await Provider.FetchAndSendProviders();
+        await Provider.FetchAndSendProvidersAsync();
       }
       catch (OperationCanceledException)
       {
@@ -159,7 +159,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         await nswagClient.Auth_removeAsync("kilo");
         await Provider.DisposeGlobal();
         Provider.PostMessage(new ProfileDataMessage { Data = null });
-        await Provider.FetchAndSendProviders();
+        await Provider.FetchAndSendProvidersAsync();
       }
       catch (Exception ex)
       {
@@ -213,7 +213,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
       }
       try
       {
-        await Provider.FetchAndSendProviders();
+        await Provider.FetchAndSendProvidersAsync();
       }
       catch (Exception ex)
       {
@@ -221,7 +221,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
       }
       try
       {
-        await Provider.FetchAndSendAgents();
+        await Provider.FetchAndSendAgentsAsync();
       }
       catch (Exception ex)
       {
