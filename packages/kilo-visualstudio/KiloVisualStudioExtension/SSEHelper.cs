@@ -369,8 +369,7 @@ namespace KiloVisualStudioExtension
         if (evt is EventGlobalDisposed)
         {
           // void this.reloadAfterAuthChange()
-          ReloadAfterAuthChange();
-          // return
+          _ = Provider.ReloadAfterAuthChangeAsync();
           return;
         }
 

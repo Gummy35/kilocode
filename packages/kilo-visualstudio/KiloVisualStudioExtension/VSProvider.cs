@@ -523,35 +523,35 @@ namespace KiloVisualStudioExtension
 
     internal async Task FetchAndSendProvidersAsync()
     {
-      await _providerRequestHandler.HandleRequestProvidersAsync();
+      await _providerRequestHandler.FetchAndSendProvidersAsync();
     }
 
     internal async Task FetchAndSendAgentsAsync()
     {
-      await _agentRequestHandler.HandleRequestAgentsAsync();
+      await _agentRequestHandler.FetchAndSendAgentsAsync();
     }
     internal async Task FetchAndSendConfigAsync()
     {
-      await _configHandler.HandleRequestConfigAsync();
+      await _configHandler.FetchAndSendConfigAsync();
     }
 
     internal async Task FetchAndSendSkillsAsync()
     {
-      await _miscRequestHandler.HandleRequestSkillsAsync();
+      await _miscRequestHandler.FetchAndSendSkillsAsync();
     }
 
     internal async Task FetchAndSendCommandsAsync()
     {
-      await _miscRequestHandler.HandleRequestCommandsAsync();
+      await _miscRequestHandler.FetchAndSendCommandsAsync();
     }
     internal async Task FetchAndSendIndexingStatusAsync()
     {
-      await _indexingHandler.HandleRequestIndexingStatusAsync();
+      await _indexingHandler.FetchAndSendIndexingStatusAsync();
     }
 
     internal async Task FetchAndSendNotificationsAsync()
     {
-      await _notificationHandler.HandleRequestNotificationsAsync();
+      await _notificationHandler.FetchAndSendNotificationsAsync();
     }
 
     //internal IReadOnlyDictionary<string, string> GetSessionDirectories()
@@ -830,7 +830,7 @@ namespace KiloVisualStudioExtension
     /// Re-fetch all server-side state after an auth change.
     /// Matches TypeScript's reloadAfterAuthChange pattern.
     /// </summary>
-    private async Task ReloadAfterAuthChangeAsync()
+    internal async Task ReloadAfterAuthChangeAsync()
     {
     //   _requirements.Clear(); AgentsRequirementController => Future plan
       await FetchAndSendConfigAsync();
@@ -881,11 +881,11 @@ namespace KiloVisualStudioExtension
             break;
 
           case "requestProviders":
-            await _providerRequestHandler.HandleRequestProvidersAsync();
+            await _providerRequestHandler.FetchAndSendProvidersAsync();
             break;
 
           case "requestAgents":
-            await _agentRequestHandler.HandleRequestAgentsAsync();
+            await _agentRequestHandler.FetchAndSendAgentsAsync();
             break;
 
           case "requestConfig":
@@ -909,7 +909,7 @@ namespace KiloVisualStudioExtension
             break;
 
           case "requestNotifications":
-            await _notificationHandler.HandleRequestNotificationsAsync(payload);
+            await _notificationHandler.FetchAndSendNotificationsAsync();
             break;
 
           case "requestModelSelections":
@@ -1088,11 +1088,11 @@ namespace KiloVisualStudioExtension
             break;
 
           case "requestSkills":
-            await _miscRequestHandler.HandleRequestSkillsAsync();
+            await _miscRequestHandler.FetchAndSendSkillsAsync();
             break;
 
           case "requestCommands":
-            await _miscRequestHandler.HandleRequestCommandsAsync();
+            await _miscRequestHandler.FetchAndSendCommandsAsync();
             break;
 
           case "requestGlobalConfig":

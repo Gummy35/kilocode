@@ -57,7 +57,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Indexing
     //     console.error("[Kilo New] KiloProvider: Failed to fetch indexing status:", error)
     //   }
     // }
-    public async Task HandleRequestIndexingStatusAsync()
+    public async Task FetchAndSendIndexingStatusAsync()
     {
       var cache = _serviceProvider.GetService<CacheService>();
       var nswagClient = Provider.GetNswagClient();

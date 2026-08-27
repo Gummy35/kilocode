@@ -5,16 +5,6 @@ using System.Linq;
 namespace KiloVisualStudioExtension.Services
 {
     /// <summary>
-    /// Agent information model for filtering and selection.
-    /// </summary>
-    public class Agent
-    {
-        public string Name { get; set; } = "";
-        public string Mode { get; set; } = "";
-        public bool Hidden { get; set; }
-    }
-
-    /// <summary>
     /// Utility methods for agent filtering and selection.
     /// </summary>
     public static class AgentFiltering

@@ -5,6 +5,15 @@ using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Provider
 {
+    public class StoredProviderKey
+  {
+    [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Key { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("baseURL", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string BaseURL { get; set; }
+  }
+
     /// <summary>
     /// Handles provider action operations like connect, disconnect, and OAuth authorization.
     /// Matches the VS Code pattern in provider-actions.ts.

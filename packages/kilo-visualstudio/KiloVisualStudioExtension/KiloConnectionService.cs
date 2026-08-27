@@ -238,6 +238,12 @@ namespace KiloVisualStudioExtension
     public event EventHandler<SseEventReceivedEventArgs>? OnSseEvent;
 
     /// <summary>
+    /// Event raised when a notification is dismissed.
+    /// </summary>
+    public event EventHandler<string>? NotificationDismissed;
+
+    
+    /// <summary>
     /// Gets the current connection state.
     /// </summary>
     public ConnectionState State => _state;
@@ -550,6 +556,15 @@ namespace KiloVisualStudioExtension
       _state = newState;
       System.Diagnostics.Debug.WriteLine($"[Kilo] ConnectionService: state changed to {newState}");
       OnStateChange?.Invoke(this, new ConnectionStateEventArgs(newState, errorMessage));
+    }
+
+    /// <summary>
+    /// Raises the NotificationDismissed event.
+    /// </summary>
+    /// <param name="notificationId">The ID of the dismissed notification.</param>
+    public void NotifyNotificationDismissed(string notificationId)
+    {
+      NotificationDismissed?.Invoke(this, notificationId);
     }
 
     /// <summary>

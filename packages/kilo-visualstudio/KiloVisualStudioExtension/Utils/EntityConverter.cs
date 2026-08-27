@@ -1,5 +1,6 @@
 using EnvDTE;
 using KiloExtensionDTOs;
+using KiloExtensionDTOs.Agents;
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.KiloConfig;
 using KiloExtensionDTOs.Parts;
@@ -20,6 +21,59 @@ namespace KiloVisualStudioExtension.Utils
   public class EntityConverter
   {
 
+    public static KilocodeNotificationAction Convert(ApiClient.Action action)
+    {
+      return new KilocodeNotificationAction
+      {
+        ActionText = action.ActionText,
+        ActionURL = action.ActionURL
+      };
+    }
+
+    public static KilocodeNotification Convert(Anonymous11 notification)
+    {
+      return new KilocodeNotification
+      {
+        Action = Convert(notification.Action),
+        Id = notification.Id,
+        Message = notification.Message,
+        ShowIn = notification.ShowIn,
+        SuggestModelId = notification.SuggestModelId,
+        Title = notification.Title,
+      };
+    }
+
+    public static SkillInfo Convert(Anonymous3 skill)
+    {
+      return new SkillInfo
+      {
+        Description = skill.Description,
+        Location = skill.Location,
+        Name = skill.Name
+      };
+    }
+
+    public static McpSkillCommandEnum Convert(CommandSource source)
+    {
+      return source switch
+      {
+        CommandSource.Command => McpSkillCommandEnum.Command,
+        CommandSource.Mcp => McpSkillCommandEnum.Mcp,
+        CommandSource.Skill => McpSkillCommandEnum.Skill
+      };
+    }
+
+    public static SlashCommandInfo Convert(ApiClient.Command command)
+    {
+      return new SlashCommandInfo
+      {
+        Description= command.Description,
+        Hints = command.Hints.ToList(),
+        Name = command.Name,
+        Source = Convert(command.Source)
+      };
+    }
+
     public static SessionInfo Convert(Session session)
     {
       return new SessionInfo
@@ -31,6 +85,22 @@ namespace KiloVisualStudioExtension.Utils
         UpdatedAt = DateTimeOffset.FromUnixTimeMilliseconds(session.Time.Updated).ToString("O"),
         Revert = session.Revert ?? null,
         Summary = session.Summary ?? null
+      };
+    }
+
+    public static AgentInfo Convert(Agent agent)
+    {
+      return new AgentInfo
+      {
+        Color = agent.Color,
+        Deprecated = agent.Deprecated,
+        Description = agent.Description,
+        DisplayName = agent.DisplayName,
+        Hidden = agent.Hidden,
+        Mode = agent.Mode,
+        Name = agent.Name,
+        Native = agent.Native,
+        Permission = agent.Permission
       };
     }
 

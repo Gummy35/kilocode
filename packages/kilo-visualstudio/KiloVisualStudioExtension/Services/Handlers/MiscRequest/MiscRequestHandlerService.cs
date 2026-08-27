@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SkillInfo = KiloVisualStudioExtension.ApiClient.Anonymous3;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
@@ -172,7 +173,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     //     console.error("[Kilo New] KiloProvider: Failed to fetch skills:", error)
     //   }
     // }
-    public async Task HandleRequestSkillsAsync()
+    public async Task FetchAndSendSkillsAsync()
     {
       var nswagClient = Provider.GetNswagClient();
       if (nswagClient == null)
@@ -188,12 +189,13 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
       try
       {
         var workspaceDir = Provider.GetWorkspaceDirectory();
-        var skills = await nswagClient.App_skillsAsync(workspaceDir, "");
-        var skillsData = skills != null ? JsonSerializer.SerializeToElement(skills) : JsonSerializer.SerializeToElement(new List<Anonymous3>());
-        var message = new { type = "skillsLoaded", skills = skillsData };
-        var messageJson = JsonSerializer.SerializeToElement(message);
-        _ = Cache.UpdateAsync("skillsLoadedMessage", messageJson);
-        Provider.PostMessage(messageJson);
+        var skills = await nswagClient.App_skillsAsync(workspaceDir, "") ?? new List<SkillInfo>();
+        var message = new SkillsLoadedMessage
+        {
+          Skills = skills.Select(EntityConverter.Convert).ToList()
+        };
+        _ = Cache.UpdateAsync("skillsLoadedMessage", message);
+        Provider.PostMessage(message);
       }
       catch (Exception error)
       {
@@ -220,15 +222,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     //     console.error("[Kilo New] KiloProvider: Failed to fetch commands:", error)
     //   }
     // }
-    public async Task HandleRequestCommandsAsync()
+    public async Task FetchAndSendCommandsAsync()
     {
       var nswagClient = Provider.GetNswagClient();
       if (nswagClient == null)
       {
-        var cachedMessage = Cache.GetJson("commandsLoadedMessage");
-        if (cachedMessage.HasValue)
+        var cachedMessage = Cache.Get<CommandsLoadedMessage>("commandsLoadedMessage");
+        if (cachedMessage != null)
         {
-          Provider.PostMessage(cachedMessage.Value);
+          Provider.PostMessage(cachedMessage);
         }
         return;
       }
@@ -236,12 +238,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
       try
       {
         var dir = Provider.GetWorkspaceDirectory();
-        var commands = await nswagClient.Command_listAsync(dir, "");
-        var commandsData = commands != null ? JsonSerializer.SerializeToElement(commands) : JsonSerializer.SerializeToElement(new List<Command>());
-        var message = new { type = "commandsLoaded", commands = commandsData };
-        var messageJson = JsonSerializer.SerializeToElement(message);
-        _ = Cache.UpdateAsync("commandsLoadedMessage", messageJson);
-        Provider.PostMessage(messageJson);
+        var commands = await nswagClient.Command_listAsync(dir, "") ?? new List<Command>();
+
+        var message = new CommandsLoadedMessage
+        {
+          Commands = commands.Select(EntityConverter.Convert).ToList()
+        };
+
+        _ = Cache.UpdateAsync("commandsLoadedMessage", message);
+        Provider.PostMessage(message);
       }
       catch (Exception error)
       {

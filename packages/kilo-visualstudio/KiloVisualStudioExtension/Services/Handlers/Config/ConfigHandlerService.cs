@@ -259,7 +259,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
     /// 5. Cache the message and send to webview
     /// 6. Handle errors gracefully with debug logging
     /// </summary>
-    internal async Task HandleRequestConfigAsync()
+    internal async Task FetchAndSendConfigAsync()
     {
       var _connectionService = _serviceProvider.GetService<KiloConnectionService>();
       var _cacheService = _serviceProvider.GetService<ICacheService>();

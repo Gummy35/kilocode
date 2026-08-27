@@ -118,12 +118,6 @@ namespace KiloVisualStudioExtension
         public string label { get; set; } = "";
     }
 
-    public class ModelSelection
-    {
-        public string providerID { get; set; } = "";
-        public string modelID { get; set; } = "";
-    }
-
     public class Notification
     {
         public string id { get; set; } = "";

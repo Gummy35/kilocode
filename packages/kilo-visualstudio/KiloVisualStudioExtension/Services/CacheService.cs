@@ -55,6 +55,9 @@ namespace KiloVisualStudioExtension.Services
   /// </summary>
   public class CacheService : ServiceProviderServiceBase, ICacheService
   {
+    public static CacheService GlobalState { get; } = new CacheService(null, null);
+    public static CacheService WorkspaceState { get; } = new CacheService(null, null);
+
     private readonly Dictionary<string, object?> _cache = new Dictionary<string, object?>();
     private readonly Dictionary<string, JsonElement> _storage = new Dictionary<string, JsonElement>();
     private readonly Func<string, JsonElement?, Task> _onSave = (key, value) => Task.CompletedTask;
