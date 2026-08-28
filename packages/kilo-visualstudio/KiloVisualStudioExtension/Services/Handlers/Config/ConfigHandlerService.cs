@@ -245,6 +245,71 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
       };
     }
 
+    /// <summary>
+    /// Fetch the latest merged config and push it as configUpdated.
+    /// Called when global.config.updated SSE fires (config changed without a full dispose).
+    /// </summary>
+    internal async Task FetchAndSendConfigUpdatedAsync()
+    {
+      var _connectionService = _serviceProvider.GetService<KiloConnectionService>();
+      var _cacheService = _serviceProvider.GetService<ICacheService>();
+      var client = _connectionService.GetNswagClient();
+      var connectionState = _connectionService.State;
+
+      if (client == null || connectionState != ConnectionState.Connected) return;
+
+      try
+      {
+        var workspaceDir = _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
+
+        // Fetch all three configs in parallel
+        var configTask = Retry.RetryAsync(() => client.Config_getAsync(workspaceDir, ""));
+        var globalTask = client.Global_config_getAsync();
+        var overlayTask = client.Config_overlayAsync(workspaceDir, "", Scope2.Project);
+
+        await Task.WhenAll(configTask, globalTask, overlayTask);
+        var config = EntityConverter.Convert(configTask.Result);
+        var global = EntityConverter.Convert(globalTask.Result);
+        var overlay = EntityConverter.Convert(overlayTask.Result?.Project);
+
+
+        //    this.cachedGlobalConfig = global ?? null
+        _cacheService.UpdateAsync("globalConfig", global);
+
+        var settings = new ExtensionSettingsOverride
+        {
+          MaxCost = ServiceProvider.GetService<CostService>().MaxCostSetting(),
+          AdditionalProperties = {
+              { "languageCommitMessage", CommitMessageLanguageSetting() }
+            }
+        };
+
+        var features = GetConfigFeatures(configTask.Result);
+
+        var configLoadedMessage = new ConfigLoadedMessage
+        {
+          Config = config,
+          GlobalConfig = global,
+          ProjectConfig = overlay,
+          Settings = settings,
+          Features = features
+        };
+        _cacheService.UpdateAsync("configLoadedMessage", configLoadedMessage);
+
+        Provider.PostMessage(new ConfigUpdatedMessage
+        {
+          Config = config,
+          GlobalConfig = global,
+          ProjectConfig = overlay,
+          Settings = settings,
+          Features = features
+        });
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: Failed to fetch config: {ex.Message}");
+      }
+    }
 
 
     /// <summary>
@@ -294,7 +359,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         //    ])
 
         // Fetch all three configs in parallel
-        var configTask = client.Config_getAsync(workspaceDir, "");
+        var configTask = Retry.RetryAsync(() => client.Config_getAsync(workspaceDir, ""));
         var globalTask = client.Global_config_getAsync();
         var overlayTask = client.Config_overlayAsync(workspaceDir, "", Scope2.Project);
 
@@ -306,7 +371,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
 
         //    this.cachedGlobalConfig = global ?? null
 
-        var _cachedGlobalConfig = global;
+        _cacheService.UpdateAsync("globalConfig", global);
+        
         var message = new ConfigLoadedMessage
         {
           Config = config,
@@ -321,7 +387,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
           },
           Features = GetConfigFeatures(configTask.Result)
         };
-        _cacheService.UpdateAsync("configMessage", message);
+        _cacheService.UpdateAsync("configLoadedMessage", message);
         Provider.PostMessage(message);
       }
       catch (Exception ex)

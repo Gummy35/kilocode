@@ -255,7 +255,7 @@ namespace KiloVisualStudioExtension
     private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
     private readonly Dictionary<string, double> _activeAlerts = new Dictionary<string, double>();
     private object? _cachedConfigMessage = null;
-    private KiloExtensionDTOs.KiloConfig.Config? _cachedGlobalConfig = null;
+    // private KiloExtensionDTOs.KiloConfig.Config? _cachedGlobalConfig = null;
     private int _pending = 0;
 
     /// <summary>
@@ -524,6 +524,11 @@ namespace KiloVisualStudioExtension
     internal async Task FetchAndSendProvidersAsync()
     {
       await _providerRequestHandler.FetchAndSendProvidersAsync();
+    }
+
+    internal async Task FetchAndSendConfigUpdatedAsync()
+    {
+      await _configHandler.FetchAndSendConfigUpdatedAsync();
     }
 
     internal async Task FetchAndSendAgentsAsync()

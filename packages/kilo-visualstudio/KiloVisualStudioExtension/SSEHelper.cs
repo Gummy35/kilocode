@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using Events = KiloVisualStudioExtension.ApiClient.Events;
 using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
@@ -373,38 +374,35 @@ namespace KiloVisualStudioExtension
           return;
         }
 
-        ////////// if (event.type === "server.instance.disposed") {
-        ////////if (evt is EventServerInstanceDisposed)
-        ////////{
-        ////////  // const props = event.properties as Record<string, unknown> | null
-        ////////  var props = e.Payload;
-        ////////  // const dir = typeof props?.directory === "string" ? props.directory : undefined
-        ////////  var dir = props?["directory"]?.Type == JTokenType.String ? props["directory"]?.Value<string>() : null;
-        ////////  // if (dir) for (const sid of this.aborts.dispose(dir)) this.sessionStatusMap.set(sid, "idle")
-        ////////  if (!string.IsNullOrEmpty(dir))
-        ////////    foreach (var sid in _aborts.Dispose(dir))
-        ////////      _sessionStatusMap[sid] = "idle";
-        ////////  // if (dir && !sameDirectory(dir, this.getWorkspaceDirectory())) return
-        ////////  if (!string.IsNullOrEmpty(dir) && !PathUtils.SameDirectory(dir, GetWorkspaceDirectory())) return;
-        ////////  // void this.reloadAfterAuthChange()
-        ////////  ReloadAfterAuthChange();
-        ////////  // return
-        ////////  return;
-        ////////}
+        // if (event.type === "server.instance.disposed") {
+        if (evt is EventServerInstanceDisposed)
+        {
+          var typedEvent = (EventServerInstanceDisposed)evt;
+          var dir = typedEvent.Properties.Directory;
+          if (!string.IsNullOrEmpty(dir))
+            foreach (var sid in _aborts.Dispose(dir))
+              _serviceProvider.GetService<SessionHandlerService>().SetSessionStatus(sid, "idle");
+          if (!string.IsNullOrEmpty(dir) 
+            && !PathUtils.SameDirectory(dir, _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory())) 
+            return;
 
-        ////////// Config was updated without a full dispose (e.g. permission-only save).
-        ////////// Fetch and push the updated config + refresh agents and providers so the
-        ////////// Settings panel and mode/model pickers reflect the change.
-        ////////// if (event.type === "global.config.updated") {
-        ////////if (evt is EventGlobalConfigUpdated)
-        ////////{
-        ////////  // this.requirements.clear()
-        ////////  _requirements.Clear();
-        ////////  // void Promise.all([this.fetchAndSendConfigUpdated(), this.fetchAndSendAgents(), this.fetchAndSendProviders()])
-        ////////  _ = Task.WhenAll(FetchAndSendConfigUpdated(), FetchAndSendAgents(), FetchAndSendProviders());
-        ////////  // return
-        ////////  return;
-        ////////}
+          _ = Provider.ReloadAfterAuthChangeAsync();
+          return;
+        }
+
+        // Config was updated without a full dispose (e.g. permission-only save).
+        // Fetch and push the updated config + refresh agents and providers so the
+        // Settings panel and mode/model pickers reflect the change.
+        // if (event.type === "global.config.updated") {
+        if (evt is EventGlobalConfigUpdated)
+        {
+          // this.requirements.clear()
+       //   _requirements.Clear(); // TODO : Future impl
+          // void Promise.all([this.fetchAndSendConfigUpdated(), this.fetchAndSendAgents(), this.fetchAndSendProviders()])
+          _ = Task.WhenAll(Provider.FetchAndSendConfigUpdated(), Provider.FetchAndSendAgentsAsync(), Provider.FetchAndSendProvidersAsync());
+          // return
+          return;
+        }
 
         ////////// Forward relevant events to webview
         ////////// Side effects that must happen before the webview message is sent
