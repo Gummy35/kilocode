@@ -84,11 +84,11 @@ namespace KiloVisualStudioExtension
     }
 
 
-    internal string ResolveDirectory(string? sessionID = null)
-    {
-      return _projectDirectoryProvider.GetWorkspaceDirectory(sessionID)
-        ?? System.Environment.CurrentDirectory;
-    }
+    //internal string ResolveDirectory(string? sessionID = null)
+    //{
+    //  return _projectDirectoryProvider.GetWorkspaceDirectory(sessionID)
+    //    ?? System.Environment.CurrentDirectory;
+    //}
 
     private readonly Action<string> _postMessage;
     private readonly JsonSerializer _serializer;
@@ -494,45 +494,45 @@ namespace KiloVisualStudioExtension
           }
         }
 
-        ////////// Drop the per-session caches for deleted sessions so a late
-        ////////// handleLoadMessages response (or any other guarded read) can't resurrect
-        ////////// transcript state for a session the webview just cleaned up. The
-        ////////// prefilter lets session.deleted through without re-tracking, and the
-        ////////// handleEvent guard does the same — this is the matching prune.
-        ////////// if (event.type === "session.deleted" && sessionID) {
-        ////////if (evt is EventSessionDeleted && !string.IsNullOrEmpty(sessionId))
-        ////////{
-        ////////  // this.pruneDeletedSession(sessionID)
-        ////////  PruneDeletedSession(sessionId);
-        ////////}
+        // Drop the per-session caches for deleted sessions so a late
+        // handleLoadMessages response (or any other guarded read) can't resurrect
+        // transcript state for a session the webview just cleaned up. The
+        // prefilter lets session.deleted through without re-tracking, and the
+        // handleEvent guard does the same — this is the matching prune.
+        // if (event.type === "session.deleted" && sessionID) {
+        if (evt is EventSessionDeleted && !string.IsNullOrEmpty(sessionId))
+        {
+          // this.pruneDeletedSession(sessionID)
+          Provider.PruneDeletedSession(sessionId);
+        }
 
-        ////////// if (!isLegacySyncEvent(event)) {
-        ////////if (!raw.IsLegacySyncEvent)
-        ////////{
-        ////////  // const props = event.properties
-        ////////  var props = e.Payload;
-        ////////  // handleNetworkEvent(
-        ////////  //   event.type,
-        ////////  //   {
-        ////////  //     id: "id" in props && typeof props.id === "string" ? props.id : undefined,
-        ////////  //     sessionID: "sessionID" in props && typeof props.sessionID === "string" ? props.sessionID : undefined,
-        ////////  //     requestID: "requestID" in props && typeof props.requestID === "string" ? props.requestID : undefined,
-        ////////  //   },
-        ////////  //   this.client,
-        ////////  //   (s) => this.getWorkspaceDirectory(s),
-        ////////  // )
-        ////////  HandleNetworkEvent(
-        ////////    e.EventType,
-        ////////    new
-        ////////    {
-        ////////      Id = props["id"]?.Type == JTokenType.String ? props["id"]?.Value<string>() : null,
-        ////////      SessionID = sessionId,
-        ////////      RequestID = props["requestID"]?.Type == JTokenType.String ? props["requestID"]?.Value<string>() : null
-        ////////    },
-        ////////    Client,
-        ////////    (s) => GetWorkspaceDirectory(s)
-        ////////  );
-        ////////}
+        // if (!isLegacySyncEvent(event)) {
+        if (!raw.IsLegacySyncEvent)
+        {
+          // const props = event.properties
+          var props = e.Payload;
+          // handleNetworkEvent(
+          //   event.type,
+          //   {
+          //     id: "id" in props && typeof props.id === "string" ? props.id : undefined,
+          //     sessionID: "sessionID" in props && typeof props.sessionID === "string" ? props.sessionID : undefined,
+          //     requestID: "requestID" in props && typeof props.requestID === "string" ? props.requestID : undefined,
+          //   },
+          //   this.client,
+          //   (s) => this.getWorkspaceDirectory(s),
+          // )
+          HandleNetworkEvent(
+            e.EventType,
+            new
+            {
+              Id = props["id"]?.Type == JTokenType.String ? props["id"]?.Value<string>() : null,
+              SessionID = sessionId,
+              RequestID = props["requestID"]?.Type == JTokenType.String ? props["requestID"]?.Value<string>() : null
+            },
+            Client,
+            (s) => GetWorkspaceDirectory(s)
+          );
+        }
 
         ////////// if (event.type === "indexing.status" && directory) {
         ////////if (evt is EventIndexingStatus && !string.IsNullOrEmpty(directory))
@@ -589,38 +589,6 @@ namespace KiloVisualStudioExtension
     }
 
 
-
-    //   /// Handle syncing a child session (e.g. spawned by the task tool).
-    //   ///Tracks the session for SSE events and fetches its messages.
-
-
-
-
-    //    try {
-
-
-
-
-
-
-    //      // Snapshot supersedes any queued deltas (see handleLoadMessages for the
-    //      // snapshot-freshness assumption that governs drop() here).
-    //      this.streams.drop(sessionID)
-    //      this.postMessage({
-    //      type: "messagesLoaded",
-    //        sessionID,
-    //        messages,
-    //        mode: "replace",
-    //        hasMore: false,
-    //      })
-
-    //      // Recover any prompts emitted by the child before we started tracking it.
-    //      this.recoverPendingPrompts()
-    //    } catch (err) {
-    //      this.syncedChildSessions.delete(sessionID)
-    //      console.error("[Kilo New] KiloProvider: Failed to sync child session:", err)
-    //    }
-    //}
     /// <summary>
     /// Handles syncSession message - syncs a child session (e.g., spawned by task tool).
     /// Tracks the session for SSE events and fetches its messages.
@@ -713,7 +681,8 @@ namespace KiloVisualStudioExtension
         _serviceProvider.GetService<CostService>().ResetMessageCosts(sessionID, messages);
 
         // Drop any queued deltas for this session
-        Streams.Drop(sessionID);
+
+        _serviceProvider.GetService<SessionStreamScheduler>().Drop(sessionID);
 
         // Post messages loaded message
         var messagesLoaded = new MessagesLoadedMessage
@@ -726,11 +695,11 @@ namespace KiloVisualStudioExtension
         Provider.PostMessage(messagesLoaded);
 
         // Recover any prompts emitted by the child before we started tracking it
-        RecoverPendingPrompts();
+        Provider.RecoverPendingPrompts();
       }
       catch (Exception ex)
       {
-        _syncedChildSessions.Remove(sessionID);
+        sessionService.RemoveSyncedChildSession(sessionID);
         System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed to sync child session: {ex.Message}");
       }
     }

@@ -234,6 +234,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     }
 
 
+
   /// <summary>
   /// Handles the createSession message from the webview.
   /// Creates a new session in the backend and notifies the webview.

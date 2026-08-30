@@ -150,7 +150,6 @@ namespace KiloVisualStudioExtension
     //  private lastReconciledAt = new Map<string, number>() // Per-session focus-mode reconcile timestamp.
     //  private pendingSessionRefresh = false // Refresh requested before the client is ready.
     //  private readonly streams = new SessionStreamScheduler((msg) => this.postMessage(msg))
-    //  private readonly visibleTaskStreams = new VisibleTaskStreams((id, visible) => this.streams.setVisible(id, visible))
     //  private readonly confirmations = new MessageConfirmation()
     //  private readonly costs = new MaxCostNudge()
     //  private readonly activeAlerts = new Map<string, number>() // sid -> limit currently shown in UI
@@ -241,6 +240,7 @@ namespace KiloVisualStudioExtension
     private readonly MemorService _memoryService;
     private readonly ProviderService _providerActionService;
     private readonly RemoteStatusService _remoteService;
+    private readonly VisibleTaskStreams _visibleTaskStreams;
 
     private bool _isWebviewReady = false;
     private bool _disposed;
@@ -290,6 +290,8 @@ namespace KiloVisualStudioExtension
         };
         PostMessage(message);
       }));
+
+      _visibleTaskStreams = new VisibleTaskStreams((id, visible) => _streamScheduler.SetVisible(id, visible));
 
       // Initialize CacheService - it manages its own internal storage
       var cacheService = _serviceProvider.GetService<CacheService>();
@@ -578,10 +580,10 @@ namespace KiloVisualStudioExtension
     //  return _sseHelper.IsTrackedSession(sessionID);
     //}
 
-    internal SSEHandlerService GetSSEHelper()
-    {
-      return _sseHelper;
-    }
+    //internal SSEHandlerService GetSSEHelper()
+    //{
+    //  return _sseHelper;
+    //}
 
     internal async Task SendGlobalConfigAsync(KiloExtensionDTOs.KiloConfig.Config config)
     {
@@ -680,23 +682,21 @@ namespace KiloVisualStudioExtension
       }
 
       _streamScheduler.Drop(sessionID);
+      _visibleTaskStreams.Delete(sessionID);
+      SessionHandler.RemoveSyncedChildSession(sessionID);
+      _projectDirectoryService.ClearSessionDirectory(sessionID);
+      _aborts.Delete(sessionID);
+      this.lastReconciledAt.delete(sessionID)
+      this.checkpoints.delete(sessionID)
+      _refreshes.Remove(sessionID);
+      if (_activeAlerts.ContainsKey(sessionID))
+      {
+        var limit = _activeAlerts[sessionID];
+        _activeAlerts.Remove(sessionID);
+        PostMessage(new SessionCostAlertResolvedMessage { Limit = limit, SessionID = sessionID });
+      }
+      SessionHandler.PruneSession(sessionID);
 
-      //this.visibleTaskStreams.delete(sessionID)
-      //  this.syncedChildSessions.delete(sessionID)    
-      //  this.sessionDirectories.delete(sessionID)   
-      //this.aborts.delete(sessionID)
-      //this.lastReconciledAt.delete(sessionID)
-      //this.checkpoints.delete(sessionID)
-      //this.revisions.delete(sessionID)
-      //this.refreshes.delete(sessionID)
-      //this.sessionStatusMap.delete(sessionID)
-      //this.costs.onSessionDeleted(sessionID)
-      //const deletedAlertLimit = this.activeAlerts.get(sessionID)
-      //if (deletedAlertLimit !== undefined) {
-      //  this.activeAlerts.delete(sessionID)
-      //  this.postMessage({ type: "sessionCostAlertResolved", sessionID: sessionID, limit: deletedAlertLimit })
-      //}
-      _connectionService.PruneSession(sessionID);
       if (GetCurrentSessionID() == sessionID)
       {
         SetContextSessionID(null);
@@ -1251,6 +1251,7 @@ namespace KiloVisualStudioExtension
     {
       System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
       _isWebviewReady = true;
+      _visibleTaskStreams.Clear();
       FlushPendingKiloModel();
       await SyncWebviewStateAsync("webviewReady");
       FlushPendingReviewComments();
@@ -2092,7 +2093,7 @@ namespace KiloVisualStudioExtension
       _connectionService.OnStateChange -= HandleStateChange;
       _connectionService.UnregisterSSEEventHandler(this.instanceId);
       _streamScheduler?.Dispose();
-
+      _visibleTaskStreams.Clear();
       _sessionService?.Dispose();
       _authService?.Dispose();
       _configService?.Dispose();
