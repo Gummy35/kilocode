@@ -119,10 +119,10 @@ namespace KiloVisualStudioExtension.Tests
     public static class TestHelpers
     {
         public static ServiceProvider serviceProvider = new ServiceProvider();
-        public static SSEHelper CreateSSEHelper(Action<string>? postMessage = null)
+        public static SSEHandlerService CreateSSEHelper(Action<string>? postMessage = null)
         {
             var action = postMessage ?? (message => { });
-            return serviceProvider.AddService(new SSEHelper(serviceProvider, action));
+            return serviceProvider.AddService(new SSEHandlerService(serviceProvider, action));
         }
 
         public static JsonElement CreateMessage(string id, string role, long time)

@@ -120,7 +120,7 @@ namespace KiloVisualStudioExtension
     /// <summary>
     /// SSE Helper for managing messages and sessions.
     /// </summary>
-    private Dictionary<string, SSEHelper> _sseHelpers = new Dictionary<string, SSEHelper>();
+    private Dictionary<string, SSEHandlerService> _sseHelpers = new Dictionary<string, SSEHandlerService>();
 
 
     ///// <summary>
@@ -475,10 +475,10 @@ namespace KiloVisualStudioExtension
     private void StartCheckinTimer()
     {
       StopCheckinTimer();
-      _checkinTimer = new Timer(async _ =>
+      _checkinTimer = new Timer(_ =>
       {
         if (_state != ConnectionState.Connected) return;
-        await FlushViewedAsync();
+        FlushViewed();
       }, null, 60000, 60000);
     }
 
@@ -529,7 +529,7 @@ namespace KiloVisualStudioExtension
       SetState(ConnectionState.Error, ex.Message);
     }
 
-    public void RegisterSSEHelper(string providerUid, SSEHelper helper)
+    public void RegisterSSEHelper(string providerUid, SSEHandlerService helper)
     {
       _sseHelpers.Add(providerUid, helper);
     }
@@ -646,7 +646,7 @@ namespace KiloVisualStudioExtension
         foreach (var id in IdsToRemove)
           _visibleSessions.Remove(id);
 
-        FlushViewedAsync();
+        FlushViewed();
       }
     }
 
@@ -663,7 +663,7 @@ namespace KiloVisualStudioExtension
         {
           lock (_debounceLock) { _debounceTimer = null; }
           _ = SendViewedAsync();
-        }, null, 150, Timeout.Infinite);
+        }, null, 150, System.Threading.Timeout.Infinite);
       }
     }
 
@@ -714,10 +714,7 @@ namespace KiloVisualStudioExtension
       _viewedDirty = false;
 
       try
-      {
-        var workspaceDir = _serviceProvider.GetService<ProjectDirectoryProvider>()
-            .GetWorkspaceDirectory();
-
+      {       
         var body = new ViewedRequest
         {
           Visible = visibleList,
@@ -729,7 +726,7 @@ namespace KiloVisualStudioExtension
           }
         };
 
-        await _nswagClient.Session_viewedAsync(workspaceDir, "", body)
+        await _nswagClient.Session_viewedAsync("", "", body)
             .ConfigureAwait(false);
       }
       catch (Exception ex)

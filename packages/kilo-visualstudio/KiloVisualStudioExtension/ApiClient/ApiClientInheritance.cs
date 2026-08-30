@@ -30,6 +30,9 @@ namespace KiloVisualStudioExtension.ApiClient
   public partial class Message
   {
     public string Id { get; set; }
+    public string SessionID { get; set; }
+    public string Agent { get; set; }
+
   }
 
   public partial class AssistantMessage : Message

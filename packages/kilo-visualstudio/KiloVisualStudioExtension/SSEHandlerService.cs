@@ -1,5 +1,6 @@
 using Common;
 using EnvDTE;
+using Extensibility;
 using KiloExtensionDTOs;
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.KiloProviderUtils;
@@ -16,14 +17,17 @@ using KiloVisualStudioExtension.Services.Handlers.Network;
 using KiloVisualStudioExtension.Services.Handlers.Sandbox;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using KiloVisualStudioExtension.Utils;
+using Microsoft.VisualStudio.Debugger.Interop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
+using static System.Net.Mime.MediaTypeNames;
 using Events = KiloVisualStudioExtension.ApiClient.Events;
 using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
 
@@ -31,7 +35,7 @@ namespace KiloVisualStudioExtension
 {
 
 
-  public class SSEHelper : ServiceProviderServiceBase
+  public class SSEHandlerService : ServiceProviderServiceBase
   {
     private bool _disposed;
 
@@ -89,7 +93,7 @@ namespace KiloVisualStudioExtension
     private readonly Action<string> _postMessage;
     private readonly JsonSerializer _serializer;
 
-    public SSEHelper(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null) : base(serviceProvider)
+    public SSEHandlerService(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null) : base(serviceProvider)
     {
       _postMessage = postMessage;
       _serializer = KiloJsonSerializer.Create();
@@ -342,9 +346,9 @@ namespace KiloVisualStudioExtension
         //   sessionID &&
         //   !this.trackedSessionIds.has(sessionID)
         // )
-        if (!(evt is EventIndexingStatus) 
-          && !(evt is EventSessionDeleted) 
-          && !string.IsNullOrEmpty(sessionId) 
+        if (!(evt is EventIndexingStatus)
+          && !(evt is EventSessionDeleted)
+          && !string.IsNullOrEmpty(sessionId)
           && !SessionHandler.IsTrackedSession(sessionId))
           //   return
           return;
@@ -382,8 +386,8 @@ namespace KiloVisualStudioExtension
           if (!string.IsNullOrEmpty(dir))
             foreach (var sid in _aborts.Dispose(dir))
               _sessionService.SetSessionStatus(sid, "idle");
-          if (!string.IsNullOrEmpty(dir) 
-            && !PathUtils.SameDirectory(dir, _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory())) 
+          if (!string.IsNullOrEmpty(dir)
+            && !PathUtils.SameDirectory(dir, _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory()))
             return;
 
           _ = Provider.ReloadAfterAuthChangeAsync();
@@ -397,7 +401,7 @@ namespace KiloVisualStudioExtension
         if (evt is EventGlobalConfigUpdated)
         {
           // this.requirements.clear()
-       //   _requirements.Clear(); // TODO : Future impl
+          //   _requirements.Clear(); // TODO : Future impl
           // void Promise.all([this.fetchAndSendConfigUpdated(), this.fetchAndSendAgents(), this.fetchAndSendProviders()])
           _ = Task.WhenAll(Provider.FetchAndSendConfigUpdatedAsync(), Provider.FetchAndSendAgentsAsync(), Provider.FetchAndSendProvidersAsync());
           // return
@@ -462,32 +466,33 @@ namespace KiloVisualStudioExtension
           _serviceProvider.GetService<CostService>().OnSessionDeleted(sessionId);
         }
 
-        ////////// Auto-adopt child sessions as soon as the task tool part reveals their ID.
-        ////////// This means the child's permission/question events are tracked immediately —
-        ////////// before the webview renderer has a chance to call syncSession — eliminating
-        ////////// the race where the child blocks on a prompt that the UI never sees.
-        ////////// if (event.type === "message.part.updated") {
-        ////////if (evt is EventMessagePartUpdated)
-        ////////{
-        ////////  // const part = event.properties.part as {
-        ////////  //   type?: string
-        ////////  //   tool?: string
-        ////////  //   metadata?: { sessionId?: string }
-        ////////  //   state?: { metadata?: { sessionId?: string } }
-        ////////  //   sessionID?: string
-        ////////  // }
-        ////////  var part = e.Payload["part"];
-        ////////  // const childId = childID(part)
-        ////////  var childId = ChildId(part);
-        ////////  // if (childId && !this.trackedSessionIds.has(childId)) {
-        ////////  if (!string.IsNullOrEmpty(childId) && !_trackedSessionIds.Contains(childId))
-        ////////  {
-        ////////    // console.log("[Kilo New] KiloProvider: 🔗 Auto-adopting child session from task tool", { childId })
-        ////////    Console.WriteLine($"[Kilo New] KiloProvider: 🔗 Auto-adopting child session from task tool {{ childId: {childId} }}");
-        ////////    // void this.handleSyncSession(childId, part.sessionID ?? sessionID)
-        ////////    _ = HandleSyncSession(childId, part?["sessionID"]?.Value<string>() ?? sessionId);
-        ////////  }
-        ////////}
+        // Auto-adopt child sessions as soon as the task tool part reveals their ID.
+        // This means the child's permission/question events are tracked immediately —
+        // before the webview renderer has a chance to call syncSession — eliminating
+        // the race where the child blocks on a prompt that the UI never sees.
+        // if (event.type === "message.part.updated") {
+        if (evt is EventMessagePartUpdated)
+        {
+          // const part = event.properties.part as {
+          //   type?: string
+          //   tool?: string
+          //   metadata?: { sessionId?: string }
+          //   state?: { metadata?: { sessionId?: string } }
+          //   sessionID?: string
+          // }
+          var typedEvt = (EventMessagePartUpdated)evt;
+          var part = typedEvt.Properties.Part;
+          // const childId = childID(part)
+          var childId = typedEvt.GetPartChildId();
+          // if (childId && !this.trackedSessionIds.has(childId)) {
+          if (!string.IsNullOrEmpty(childId) && !_sessionService.IsTrackedSession(childId))
+          {
+            // console.log("[Kilo New] KiloProvider: 🔗 Auto-adopting child session from task tool", { childId })
+            System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: 🔗 Auto-adopting child session from task tool {childId}");
+            // void this.handleSyncSession(childId, part.sessionID ?? sessionID)
+            _ = HandleSyncSessionAsync(childId, part.AdditionalProperties?["sessionID"]?.ToString() ?? sessionId);
+          }
+        }
 
         ////////// Drop the per-session caches for deleted sessions so a late
         ////////// handleLoadMessages response (or any other guarded read) can't resurrect
@@ -583,6 +588,153 @@ namespace KiloVisualStudioExtension
       }
     }
 
+
+
+    //   /// Handle syncing a child session (e.g. spawned by the task tool).
+    //   ///Tracks the session for SSE events and fetches its messages.
+
+
+
+
+    //    try {
+
+
+
+
+
+
+    //      // Snapshot supersedes any queued deltas (see handleLoadMessages for the
+    //      // snapshot-freshness assumption that governs drop() here).
+    //      this.streams.drop(sessionID)
+    //      this.postMessage({
+    //      type: "messagesLoaded",
+    //        sessionID,
+    //        messages,
+    //        mode: "replace",
+    //        hasMore: false,
+    //      })
+
+    //      // Recover any prompts emitted by the child before we started tracking it.
+    //      this.recoverPendingPrompts()
+    //    } catch (err) {
+    //      this.syncedChildSessions.delete(sessionID)
+    //      console.error("[Kilo New] KiloProvider: Failed to sync child session:", err)
+    //    }
+    //}
+    /// <summary>
+    /// Handles syncSession message - syncs a child session (e.g., spawned by task tool).
+    /// Tracks the session for SSE events and fetches its messages.
+    /// Matches VS Code's handleSyncSession pattern.
+    /// </summary>
+    public async Task HandleSyncSessionAsync(string sessionID, string? parentSessionID = null)
+    {
+      //    if (!this.client) return
+      var nswagClient = Provider.GetNswagClient();
+      if (nswagClient == null)
+      {
+        Provider.PostMessage(
+          new ErrorMessage { Message = "Not connected to CLI backend" }
+            );
+        return;
+      }
+
+
+      //    if (this.syncedChildSessions.has(sessionID)) return
+      if (string.IsNullOrEmpty(sessionID)) return;
+      var sessionService = ServiceProvider.GetService<SessionHandlerService>();
+      // Check if already synced
+      if (sessionService.HasSyncedChildSession(sessionID)) return;
+      //    this.syncedChildSessions.add(sessionID)
+      sessionService.AddSyncedChildSession(sessionID);
+      //    this.trackedSessionIds.add(sessionID)
+      sessionService.TrackSession(sessionID);
+
+      // Inherit the parent's worktree directory so permission responses use
+      // the correct backend Instance. Without this, child sessions in Agent
+      // Manager worktrees fall back to workspace root and fail to find the
+      // pending permission request.
+      if (!string.IsNullOrEmpty(parentSessionID))
+      {
+        var _sessionDirectories = _projectDirectoryProvider.GetSessionDirectories();
+        var dir = _sessionDirectories[parentSessionID];
+        if (dir != null && !_sessionDirectories.ContainsKey(sessionID))
+        {
+          _projectDirectoryProvider.SetSessionDirectory(sessionID, dir);
+        }
+      }
+
+
+      try
+      {
+        //      const workspaceDir = this.getWorkspaceDirectory(sessionID)
+        var workspaceDir = _projectDirectoryProvider.GetWorkspaceDirectory(sessionID);
+
+        //      const [info, history] = await Promise.all([
+        //        retry(() => this.client!.session.get({ sessionID, directory: workspaceDir }, { throwOnError: true })),
+        //        retry(() => this.client!.session.messages({ sessionID, directory: workspaceDir }, { throwOnError: true })),
+        //      ])
+        // Fetch session info and messages in parallel
+        var sessionTask = Retry.RetryAsync(() => nswagClient.Session_getAsync(sessionID, workspaceDir, ""));
+        var messagesTask = Retry.RetryAsync(() => nswagClient.Session_messagesAsync(sessionID, workspaceDir, "", null, null));
+
+        await Task.WhenAll(sessionTask, messagesTask);
+
+        var session = sessionTask.Result;
+        var messagesResponse = messagesTask.Result;
+
+        //      this.postMessage({ type: "sessionUpdated", session: this.sessionToWebview(info.data) })
+        // Post session updated message
+        var sessionUpdated = new SessionUpdatedMessage
+        {
+          Session = EntityConverter.Convert(session)
+        };
+        Provider.PostMessage(sessionUpdated);
+
+        //      const messages = history.data.map((m) => ({
+        //        ...this.slimInfo(m.info),
+        //        parts: this.slimParts(m.parts),
+        //        createdAt: new Date(m.info.time.created).toISOString(),
+        //      }))
+
+        // Process messages
+        var messages = messagesResponse.Select(Utils.SlimUtils.SlimMessage);
+        //      for (const message of messages) {
+        //        this.connectionService.recordMessageSessionId(message.id, message.sessionID)
+        //      }
+        //      this.resetMessageCosts(sessionID, messages)
+        // Record message session IDs
+        var _connectionService = _serviceProvider.GetService<KiloConnectionService>();
+        foreach (var message in messages)
+        {
+          sessionService.MapMessageToSession(message.Id, message.SessionID);
+        }
+
+        // Reset message costs for this session
+        _serviceProvider.GetService<CostService>().ResetMessageCosts(sessionID, messages);
+
+        // Drop any queued deltas for this session
+        Streams.Drop(sessionID);
+
+        // Post messages loaded message
+        var messagesLoaded = new MessagesLoadedMessage
+        {
+          SessionID = sessionID,
+          Messages = messages.ToList(),
+          Mode = ReplacePrependReconcileEnum.Replace,
+          HasMore = false
+        };
+        Provider.PostMessage(messagesLoaded);
+
+        // Recover any prompts emitted by the child before we started tracking it
+        RecoverPendingPrompts();
+      }
+      catch (Exception ex)
+      {
+        _syncedChildSessions.Remove(sessionID);
+        System.Diagnostics.Debug.WriteLine($"[Kilo New] KiloProvider: Failed to sync child session: {ex.Message}");
+      }
+    }
+
     public bool PostModelUsageChanged(IEvent e, string sessionID)
     {
       //  if (!sessionID || this.trackedSessionIds.has(sessionID)) return false
@@ -654,6 +806,10 @@ namespace KiloVisualStudioExtension
       //}
       return true;
     }
+
+
+
+
 
     public bool AdoptPendingFollowup(ApiClient.Session session)
     {
@@ -898,13 +1054,15 @@ namespace KiloVisualStudioExtension
       var partObj = JObject.Parse(partJson);
       var messageID = partObj["messageID"]?.Value<string>();
 
-      // Extract child session ID from metadata (top-level or state.metadata)
-      // Matches TypeScript pattern: part.metadata?.sessionId ?? part.state?.metadata?.sessionId
-      var childId = ExtractChildSessionId(partObj);
-      if (!string.IsNullOrEmpty(childId) && !SessionHandler.IsTrackedSession(childId))
+      var metadata = partObj["metadata"];
+      if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
       {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
-        SessionHandler.TrackSession(childId);
+        var childId = metadataObj["sessionId"].Value<string>();
+        if (!string.IsNullOrEmpty(childId) && !SessionHandler.IsTrackedSession(childId))
+        {
+          System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
+          SessionHandler.TrackSession(childId);
+        }
       }
 
       //PostMessage(new PartUpdate
@@ -915,33 +1073,6 @@ namespace KiloVisualStudioExtension
       //  Part = part,
 
       //});
-    }
-
-    /// <summary>
-    /// Extract child session ID from part metadata, checking both top-level metadata
-    /// and state.metadata as fallback. Matches TypeScript childID() function.
-    /// </summary>
-    private static string ExtractChildSessionId(JObject partObj)
-    {
-      // Check top-level metadata.sessionId first
-      var metadata = partObj["metadata"];
-      if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
-      {
-        return metadataObj["sessionId"].Value<string>();
-      }
-
-      // Fallback to state.metadata.sessionId
-      var state = partObj["state"];
-      if (state != null && state is JObject stateObj)
-      {
-        var stateMetadata = stateObj["metadata"];
-        if (stateMetadata != null && stateMetadata is JObject stateMetadataObj && stateMetadataObj["sessionId"] != null)
-        {
-          return stateMetadataObj["sessionId"].Value<string>();
-        }
-      }
-
-      return null;
     }
 
     //private void HandlePartRemovedSync(SyncEvent evt)

@@ -208,6 +208,11 @@ namespace KiloVisualStudioExtension.Utils
       return new Dictionary<string, string>(_sessionDirectories);
     }
 
+    public string GetSessionDirectory(string sessionId)
+    {
+      return _sessionDirectories[sessionId];
+    }
+
     public List<string> GetSessionsByDirectory(string directory)
     {
       var SessionHandler = _serviceProvider.GetService<SessionHandlerService>();

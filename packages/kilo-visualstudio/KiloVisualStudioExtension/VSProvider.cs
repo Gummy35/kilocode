@@ -217,7 +217,7 @@ namespace KiloVisualStudioExtension
     protected readonly KiloWebViewControl _webView;
     protected readonly KiloConnectionService _connectionService;
     private readonly KiloProviderOptions _opts;
-    protected readonly SSEHelper _sseHelper;
+    protected readonly SSEHandlerService _sseHelper;
     private readonly SessionStreamScheduler _streamScheduler;
     private readonly SessionHandlerService _sessionService;
     private readonly ProjectDirectoryProvider _projectDirectoryService;
@@ -276,11 +276,8 @@ namespace KiloVisualStudioExtension
       _serviceProvider.AddService(this);
       _serviceProvider.AddService(connectionService);
       _serviceProvider.AddService(webView ?? throw new ArgumentNullException(nameof(webView)));
-
-      // Register MessageConfirmation as a per-instance service for SSEHelper access
-      var confirmations = _serviceProvider.GetService<MessageConfirmation>();
-
-      _sseHelper = _serviceProvider.AddService(new SSEHelper(_serviceProvider, PostMessage));
+     
+      _sseHelper = _serviceProvider.AddService(new SSEHandlerService(_serviceProvider, PostMessage));
       _connectionService.RegisterSSEHelper(instanceId, _sseHelper);
       _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler((sessionID, key, update) =>
       {
@@ -334,7 +331,9 @@ namespace KiloVisualStudioExtension
       }
       _connectionService.RegisterDirectoryProvider(() =>
       {
-        var res = new List<string>[]
+        var res = new List<string> { _projectDirectoryService.GetWorkspaceDirectory() };
+        res.AddRange(_projectDirectoryService.GetSessionDirectories().Values);
+        return res.ToArray();
       });
     }
 
@@ -579,7 +578,7 @@ namespace KiloVisualStudioExtension
     //  return _sseHelper.IsTrackedSession(sessionID);
     //}
 
-    internal SSEHelper GetSSEHelper()
+    internal SSEHandlerService GetSSEHelper()
     {
       return _sseHelper;
     }
@@ -652,7 +651,7 @@ namespace KiloVisualStudioExtension
     //  SessionHandler.UntrackSession(sessionID);
     //}
 
-    private SessionHandlerService SessionHandler => ServiceProviderExtensions.GetService<SessionHandlerService>(_serviceProvider);
+    private SessionHandlerService SessionHandler => _sessionService;
 
     internal void FocusSession(string? sessionID)
     {
@@ -1679,11 +1678,10 @@ namespace KiloVisualStudioExtension
 
       if (e.State == ConnectionState.Connected)
       {
-        var interactionHandler = _serviceProvider.GetService<InteractionService>();
-        if (interactionHandler != null)
+        if (_interactionService != null)
         {
-          _ = interactionHandler.FetchAndSendPendingPermissionsAsync();
-          _ = interactionHandler.FetchAndSendPendingQuestionsAsync();
+          _ = _interactionService.FetchAndSendPendingPermissionsAsync();
+          _ = _interactionService.FetchAndSendPendingQuestionsAsync();
         }
       }
     }

@@ -1,3 +1,4 @@
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -138,6 +139,32 @@ namespace KiloVisualStudioExtension.Services
       //     return this.sessionCost(sid)
       return SessionCost(sid);
     }
+
+    public double ResetMessageCosts(string sid, IEnumerable<KiloExtensionDTOs.Sessions.Message> messages)
+    {
+      //     this.#dropMessages(sid)
+      DropMessages(sid);
+      //     let total = 0
+      double total = 0;
+      //     for (const msg of messages) {
+      foreach (var msg in messages)
+      {
+        //       if (msg.sessionID !== sid || msg.role !== "assistant" || !Number.isFinite(msg.cost)) continue
+        if (msg.SessionID != sid || msg.Role != "assistant" || double.IsNaN(msg.Cost ?? 0) || double.IsInfinity(msg.Cost ?? 0)) continue;
+        //       const cost = msg.cost ?? 0
+        double cost = msg.Cost ?? 0;
+        //       this.#msgs.set(msg.id, { sid, cost })
+        _msgs[msg.Id] = new MsgEntry { Sid = sid, Cost = cost };
+        //       total += cost
+        total += cost;
+      }
+      //     this.#totals.set(sid, total)
+      _totals[sid] = total;
+      //     return this.sessionCost(sid)
+      return SessionCost(sid);
+    }
+
+
 
     //   // Floor the session total with a direct cost signal (e.g. session.cost). Monotonic.
     //   setSessionCost(sid: string, value: number): number {

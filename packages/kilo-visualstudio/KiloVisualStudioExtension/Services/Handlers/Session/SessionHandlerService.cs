@@ -31,10 +31,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     private readonly Dictionary<string, string> _sessionStatusMap = new();
     private readonly Dictionary<string, SessionRevision> _revisions = new();
     private readonly HashSet<string> _modelUsageSessionIds = new();
-    // key = message
     private readonly Dictionary<string, string> _messageSessionIds = new();
-    // key = sessionid
-    //private readonly Dictionary<string, string> _messageSessionMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _syncedChildSessions = new();
 
     /// <summary>
     /// Creates a new SessionHandlerService instance.
@@ -149,6 +147,21 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     public void TrackModelUsage(string sessionID)
     {
       _modelUsageSessionIds.Add(sessionID);
+    }
+
+    public bool HasSyncedChildSession(string sessionID)
+    {
+      return _syncedChildSessions.Contains(sessionID);
+    }
+
+    public void AddSyncedChildSession(string sessionID)
+    {
+      _syncedChildSessions.Add(sessionID);
+    }
+
+    public void RemoveSyncedChildSession(string sessionID)
+    {
+      _syncedChildSessions.Remove(sessionID);
     }
 
     /// <summary>

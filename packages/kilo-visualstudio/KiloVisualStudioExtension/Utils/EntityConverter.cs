@@ -14,7 +14,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
+using Message = KiloVisualStudioExtension.ApiClient.Message;
 using Notification = KiloVisualStudioExtension.ApiClient.Anonymous11;
+using WebviewMessage = KiloExtensionDTOs.Sessions.Message;
+
 
 namespace KiloVisualStudioExtension.Utils
 {
@@ -28,6 +31,50 @@ namespace KiloVisualStudioExtension.Utils
         ActionText = action.ActionText,
         ActionURL = action.ActionURL
       };
+    }
+
+    public static WebviewMessage Convert(UserMessage message)
+    {
+      return new WebviewMessage
+      {
+        Agent = message.Agent,
+        Id = message.Id,
+        Model = Convert(message.Model),
+        Role = message.Role,
+        SessionID = message.SessionID,
+        Summary = message.Summary,
+        Time = Convert(message.Time),
+      };
+    }
+
+    public static WebviewMessage Convert(AssistantMessage message)
+    {
+      return new WebviewMessage
+      {
+        Agent = message.Agent,
+        Cost = message.Cost,
+        Error = Convert(message.Error),
+        Finish = message.Finish,
+        Id = message.Id,
+        Mode = message.Mode,
+        ModelID = message.ModelID,
+        ParentID = message.ParentID,
+        Path = Convert(message.Path),
+        ProviderID = message.ProviderID,
+        Role = message.Role,
+        SessionID = message.SessionID,
+        Summary = message.Summary,
+        Time = Convert(message.Time),
+        Tokens = Convert(message.Tokens),
+      };
+    }
+
+
+    public static WebviewMessage Convert(Message message)
+    {
+      if (message is UserMessage userMessage) return Convert(userMessage);
+      if (message is AssistantMessage assistantMessage) return Convert(assistantMessage);
+      return null;
     }
 
     public static KilocodeNotification Convert(Anonymous11 notification)
@@ -77,6 +124,20 @@ namespace KiloVisualStudioExtension.Utils
     public static SessionInfo Convert(Session session)
     {
       return new SessionInfo
+      {
+        Id = session.Id,
+        ParentID = string.IsNullOrWhiteSpace(session.ParentID) ? null : session.ParentID,
+        Title = session.Title,
+        CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds(session.Time.Created).ToString("O"),
+        UpdatedAt = DateTimeOffset.FromUnixTimeMilliseconds(session.Time.Updated).ToString("O"),
+        Revert = session.Revert ?? null,
+        Summary = session.Summary ?? null
+      };
+    }
+
+    public static SessionUpdate Convert(Session2 session)
+    {
+      return new SessionUpdate
       {
         Id = session.Id,
         ParentID = string.IsNullOrWhiteSpace(session.ParentID) ? null : session.ParentID,

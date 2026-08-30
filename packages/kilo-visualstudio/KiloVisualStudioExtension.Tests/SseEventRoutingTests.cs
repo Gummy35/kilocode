@@ -25,7 +25,7 @@ namespace KiloVisualStudioExtension.Tests
     private CliLauncher? _cliLauncher;
     private SseClient? _sseClient;
 
-    private SSEHelper? _sseHelper;
+    private SSEHandlerService? _sseHelper;
     private KiloApiClient? _apiClient;
     private KiloConnectionService? _connectionService;
     private readonly System.Collections.Generic.List<Events> _receivedEvents;
@@ -57,7 +57,7 @@ namespace KiloVisualStudioExtension.Tests
 
       _apiClient = new KiloApiClient(_cliLauncher.BaseUrl, _cliLauncher.Password);
 
-      _sseHelper = new SSEHelper(TestHelpers.serviceProvider, msg => { });
+      _sseHelper = new SSEHandlerService(TestHelpers.serviceProvider, msg => { });
 
       // Connect SSE client to the real backend
       _sseClient = new SseClient(_cliLauncher.BaseUrl!, _cliLauncher.Password!);

@@ -11,11 +11,11 @@ namespace KiloVisualStudioExtension.Tests
   public class SseEventResolutionTests
   {
     private readonly List<string> _postedMessages = new();
-    private readonly SSEHelper _helper;
+    private readonly SSEHandlerService _helper;
 
     public SseEventResolutionTests()
     {
-      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => _postedMessages.Add(msg));
+      _helper = new SSEHandlerService(TestHelpers.serviceProvider, msg => _postedMessages.Add(msg));
     }
 
     [Fact]
@@ -115,11 +115,11 @@ namespace KiloVisualStudioExtension.Tests
 
   public class SseStaleEventDetectionTests
   {
-    private readonly SSEHelper _helper;
+    private readonly SSEHandlerService _helper;
 
     public SseStaleEventDetectionTests()
     {
-      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => { });
+      _helper = new SSEHandlerService(TestHelpers.serviceProvider, msg => { });
     }
 
     [Fact]
@@ -185,11 +185,11 @@ namespace KiloVisualStudioExtension.Tests
 
   public class SseProjectFilteringTests
   {
-    private readonly SSEHelper _helper;
+    private readonly SSEHandlerService _helper;
 
     public SseProjectFilteringTests()
     {
-      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => { });
+      _helper = new SSEHandlerService(TestHelpers.serviceProvider, msg => { });
     }
 
     [Fact]
@@ -268,11 +268,11 @@ namespace KiloVisualStudioExtension.Tests
   public class SseNetworkEventHandlingTests
   {
     private readonly List<string> _postedMessages = new();
-    private readonly SSEHelper _helper;
+    private readonly SSEHandlerService _helper;
 
     public SseNetworkEventHandlingTests()
     {
-      _helper = new SSEHelper(TestHelpers.serviceProvider, msg => _postedMessages.Add(msg));
+      _helper = new SSEHandlerService(TestHelpers.serviceProvider, msg => _postedMessages.Add(msg));
     }
 
     [Fact]
@@ -307,7 +307,7 @@ namespace KiloVisualStudioExtension.Tests
     private void TestNetworkEvent(string type, Newtonsoft.Json.Linq.JToken properties)
     {
       // Use reflection to call the private method for testing
-      var method = typeof(SSEHelper).GetMethod("HandleNetworkEvent",
+      var method = typeof(SSEHandlerService).GetMethod("HandleNetworkEvent",
           System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
       method?.Invoke(_helper, new object[] { type, properties });
     }
