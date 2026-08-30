@@ -7,7 +7,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Sandbox
     /// <summary>
     /// Handles sandbox revision state.
     /// </summary>
-    public class SandboxHandlerService : ServiceProviderServiceBase
+    public class SandboxService : ServiceProviderServiceBase
   {
         private bool _disposed;
 
@@ -20,7 +20,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Sandbox
         /// <summary>
         /// Creates a new SandboxHandlerService instance.
         /// </summary>
-        public SandboxHandlerService(ServiceProvider serviceProvider): base(serviceProvider)
+        public SandboxService(ServiceProvider serviceProvider): base(serviceProvider)
         {
         }
 

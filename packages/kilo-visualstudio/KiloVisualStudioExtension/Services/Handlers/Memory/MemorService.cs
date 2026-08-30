@@ -180,7 +180,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
   }
 
   // export class KiloProviderMemory {
-  public class MemoryHandlerService : ServiceProviderServiceBase
+  public class MemorService : ServiceProviderServiceBase
   {
     private bool _disposed;
 
@@ -204,7 +204,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
 
     //   constructor(private readonly input: KiloProviderMemoryInput) {}
 
-    public MemoryHandlerService(ServiceProvider serviceProvider, IKiloProviderMemoryInput input = null): base(serviceProvider)
+    public MemorService(ServiceProvider serviceProvider, IKiloProviderMemoryInput input = null): base(serviceProvider)
     {  
       _input = input ?? new MemoryInput(serviceProvider.GetService<VSProvider>());
     }

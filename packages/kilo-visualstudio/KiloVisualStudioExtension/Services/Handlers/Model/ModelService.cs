@@ -13,7 +13,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
   /// This matches the VS Code pattern where model selection handling is extracted into
   /// kilo-provider/model-state.ts.
   /// </summary>
-  public class ModelHandlerService : ServiceProviderServiceBase
+  public class ModelService : ServiceProviderServiceBase
   {
     private bool _disposed;
 
@@ -24,7 +24,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Model
     /// Creates a new ModelHandlerService instance.
     /// </summary>
     /// <param name="serviceProvider">The service provider for dependency injection.</param>
-    public ModelHandlerService(ServiceProvider serviceProvider) : base(serviceProvider)
+    public ModelService(ServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
 

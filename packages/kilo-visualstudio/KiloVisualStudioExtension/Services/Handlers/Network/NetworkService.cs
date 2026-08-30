@@ -8,7 +8,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Network
     /// <summary>
     /// Handles network wait tracking state.
     /// </summary>
-    public class NetworkHandlerService : ServiceProviderServiceBase
+    public class NetworkService : ServiceProviderServiceBase
   {
         private bool _disposed;
 
@@ -21,7 +21,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Network
         /// <summary>
         /// Creates a new NetworkHandlerService instance.
         /// </summary>
-        public NetworkHandlerService(ServiceProvider serviceProvider): base(serviceProvider)
+        public NetworkService(ServiceProvider serviceProvider): base(serviceProvider)
         {
         }
 

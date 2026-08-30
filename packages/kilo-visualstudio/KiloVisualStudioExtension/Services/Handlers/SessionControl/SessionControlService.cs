@@ -9,7 +9,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
     /// Handles session control operations like abort, send message, fork session, compact, enhance prompt.
     /// This matches the VS Code pattern where session control is extracted into separate handler modules.
     /// </summary>
-    public class SessionControlHandlerService : ServiceProviderServiceBase
+    public class SessionControlService : ServiceProviderServiceBase
   {
         private bool _disposed;
 
@@ -20,7 +20,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
         /// Creates a new SessionControlHandlerService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public SessionControlHandlerService(ServiceProvider serviceProvider): base(serviceProvider)
+        public SessionControlService(ServiceProvider serviceProvider): base(serviceProvider)
         {
         }
 

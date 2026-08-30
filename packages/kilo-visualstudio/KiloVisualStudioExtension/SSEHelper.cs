@@ -11,6 +11,7 @@ using KiloVisualStudioExtension.Services.Handlers.Followup;
 using KiloVisualStudioExtension.Services.Handlers.Indexing;
 using KiloVisualStudioExtension.Services.Handlers.Mcp;
 using KiloVisualStudioExtension.Services.Handlers.Memory;
+using KiloVisualStudioExtension.Services.Handlers.Model;
 using KiloVisualStudioExtension.Services.Handlers.Network;
 using KiloVisualStudioExtension.Services.Handlers.Sandbox;
 using KiloVisualStudioExtension.Services.Handlers.Session;
@@ -20,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using Events = KiloVisualStudioExtension.ApiClient.Events;
@@ -40,13 +42,13 @@ namespace KiloVisualStudioExtension
 
     private SessionHandlerService SessionHandler => ServiceProviderExtensions.GetService<SessionHandlerService>(_serviceProvider);
 
-    private FollowupHandlerService FollowupHandler => ServiceProviderExtensions.GetService<FollowupHandlerService>(_serviceProvider);
+    private FollowupService FollowupHandler => ServiceProviderExtensions.GetService<FollowupService>(_serviceProvider);
 
-    private IndexingHandlerService IndexingHandler => ServiceProviderExtensions.GetService<IndexingHandlerService>(_serviceProvider);
+    private IndexingService IndexingHandler => ServiceProviderExtensions.GetService<IndexingService>(_serviceProvider);
 
-    private SandboxHandlerService SandboxHandler => ServiceProviderExtensions.GetService<SandboxHandlerService>(_serviceProvider);
+    private SandboxService SandboxHandler => ServiceProviderExtensions.GetService<SandboxService>(_serviceProvider);
 
-    private NetworkHandlerService NetworkHandler => ServiceProviderExtensions.GetService<NetworkHandlerService>(_serviceProvider);
+    private NetworkService NetworkHandler => ServiceProviderExtensions.GetService<NetworkService>(_serviceProvider);
 
     // Session state moved to SessionHandlerService - commented out to preserve for potential future use
     // private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
@@ -121,6 +123,7 @@ namespace KiloVisualStudioExtension
     {
       try
       {
+        var _sessionService = _serviceProvider.GetService<SessionHandlerService>();
         System.Diagnostics.Debug.WriteLine($"SSE Event received : {raw.EventType}");
 
         var e = SseEventDeserializer.Deserialize(raw);
@@ -234,7 +237,7 @@ namespace KiloVisualStudioExtension
             }
             // void this.memory.fetch(sessionID)
 
-            _serviceProvider.GetService<MemoryHandlerService>().Fetch(target);
+            _serviceProvider.GetService<MemorService>().Fetch(target);
           }
           // return
           return;
@@ -326,9 +329,6 @@ namespace KiloVisualStudioExtension
           return;
         }
 
-        // const sessionID = this.resolveEventSessionId(event)
-        var sessionID = ResolveEventSessionId(raw);
-
         //// Events without sessionID (server.connected, server.heartbeat, indexing.status) → always forward
         //// Events with sessionID → only forward if this webview tracks that session
         //// message.part.* events are always session-scoped; drop if session unknown.
@@ -381,7 +381,7 @@ namespace KiloVisualStudioExtension
           var dir = typedEvent.Properties.Directory;
           if (!string.IsNullOrEmpty(dir))
             foreach (var sid in _aborts.Dispose(dir))
-              _serviceProvider.GetService<SessionHandlerService>().SetSessionStatus(sid, "idle");
+              _sessionService.SetSessionStatus(sid, "idle");
           if (!string.IsNullOrEmpty(dir) 
             && !PathUtils.SameDirectory(dir, _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory())) 
             return;
@@ -399,64 +399,68 @@ namespace KiloVisualStudioExtension
           // this.requirements.clear()
        //   _requirements.Clear(); // TODO : Future impl
           // void Promise.all([this.fetchAndSendConfigUpdated(), this.fetchAndSendAgents(), this.fetchAndSendProviders()])
-          _ = Task.WhenAll(Provider.FetchAndSendConfigUpdated(), Provider.FetchAndSendAgentsAsync(), Provider.FetchAndSendProvidersAsync());
+          _ = Task.WhenAll(Provider.FetchAndSendConfigUpdatedAsync(), Provider.FetchAndSendAgentsAsync(), Provider.FetchAndSendProvidersAsync());
           // return
           return;
         }
 
-        ////////// Forward relevant events to webview
-        ////////// Side effects that must happen before the webview message is sent
-        ////////// if (event.type === "message.updated") {
-        ////////if (evt is EventMessageUpdated)
-        ////////{
-        ////////  // const info = event.properties.info
-        ////////  var info = e.Payload["info"];
-        ////////  // const value = info.role === "assistant" ? info.cost : undefined
-        ////////  var value = info?["role"]?.Value<string>() == "assistant" ? info?["cost"]?.Value<double>() : (double?)null;
-        ////////  // const cost = this.updateMessageCost(event.properties.sessionID, info.id, info.role, value)
-        ////////  var cost = UpdateMessageCost(sessionId, info?["id"]?.Value<string>(), info?["role"]?.Value<string>(), value);
-        ////////  // if (cost !== undefined) this.requestCostAlert(event.properties.sessionID, cost)
-        ////////  if (cost != null) RequestCostAlert(sessionId, cost);
-        ////////}
-        ////////// if (event.type === "message.removed") {
-        ////////if (evt is EventMessageRemoved)
-        ////////{
-        ////////  // this.removeMessageCost(event.properties.messageID)
-        ////////  RemoveMessageCost(e.Payload["messageID"]?.Value<string>());
-        ////////}
-        ////////// if (event.type === "session.created" && !this.currentSession) {
-        ////////if (evt is EventSessionCreated && _currentSession == null)
-        ////////{
-        ////////  // this.setCurrentSession(event.properties.info)
-        ////////  SetCurrentSession(e.Payload["info"]);
-        ////////  // this.contextSessionID = event.properties.info.id
-        ////////  _contextSessionID = e.Payload["info"]?["id"]?.Value<string>();
-        ////////  // this.trackedSessionIds.add(event.properties.info.id)
-        ////////  _trackedSessionIds.Add(e.Payload["info"]?["id"]?.Value<string>());
-        ////////}
-        ////////// if (event.type === "session.updated" && this.currentSession?.id === event.properties.sessionID) {
-        ////////if (evt is EventSessionUpdated && _currentSession?.Id == sessionId)
-        ////////{
-        ////////  // this.setCurrentSession(event.properties.info)
-        ////////  SetCurrentSession(e.Payload["info"]);
-        ////////  // this.contextSessionID = event.properties.sessionID
-        ////////  _contextSessionID = sessionId;
-        ////////}
-        ////////// if (event.type === "session.deleted") {
-        ////////if (evt is EventSessionDeleted)
-        ////////{
-        ////////  // const sid = event.properties.sessionID
-        ////////  // this.trackedSessionIds.delete(sid)
-        ////////  _trackedSessionIds.Remove(sessionId);
-        ////////  // this.modelUsageSessionIds.delete(sid)
-        ////////  _modelUsageSessionIds.Remove(sessionId);
-        ////////  // this.sessionDirectories.delete(sid)
-        ////////  _sessionDirectories.Remove(sessionId);
-        ////////  // this.connectionService.pruneSession(sid)
-        ////////  _connectionService.PruneSession(sessionId);
-        ////////  // this.costs.onSessionDeleted(sid)
-        ////////  _costs.OnSessionDeleted(sessionId);
-        ////////}
+        // Forward relevant events to webview
+        // Side effects that must happen before the webview message is sent
+        // if (event.type === "message.updated") {
+        if (evt is EventMessageUpdated)
+        {
+          var typedEvent = (EventMessageUpdated)evt;
+          // const info = event.properties.info
+          // const value = info.role === "assistant" ? info.cost : undefined
+          double? value = typedEvent.Properties.Info is AssistantMessage assistantMessage ? assistantMessage.Cost : null;
+          // const cost = this.updateMessageCost(event.properties.sessionID, info.id, info.role, value)
+          var _costService = _serviceProvider.GetService<CostService>();
+          var cost = _costService.UpdateMessageCost(sessionId, typedEvent.Properties.Info.Id, typedEvent.Properties.Info is AssistantMessage ? "assistant" : "user", value);
+          // if (cost !== undefined) this.requestCostAlert(event.properties.sessionID, cost)
+          if (cost != null) Provider.RequestCostAlert(sessionId, cost.Value);
+        }
+        // if (event.type === "message.removed") {
+        if (evt is EventMessageRemoved)
+        {
+          var typedEvent = evt as EventMessageRemoved;
+          var _costService = _serviceProvider.GetService<CostService>();
+          _costService.RemoveMessageCost(typedEvent.Properties.MessageID);
+        }
+        // if (event.type === "session.created" && !this.currentsession) {
+        if (evt is EventSessionCreated && Provider.GetCurrentSession() == null)
+        {
+          var typedEvt = (EventSessionCreated)evt;
+          // this.setcurrentsession(event.properties.info)
+          Provider.SetCurrentSession(typedEvt.Properties.Info);
+          // this.contextsessionid = event.properties.info.id
+          Provider.SetContextSessionID(typedEvt.Properties.Info.Id);
+          // this.trackedsessionids.add(event.properties.info.id)
+          _sessionService.TrackSession(typedEvt.Properties.Info.Id);
+        }
+        // if (event.type === "session.updated" && this.currentSession?.id === event.properties.sessionID) {
+        if (evt is EventSessionUpdated && Provider.GetCurrentSessionID() == sessionId)
+        {
+          var typedEvt = (EventSessionUpdated)evt;
+          // this.setCurrentSession(event.properties.info)
+          Provider.SetCurrentSession(typedEvt.Properties.Info);
+          // this.contextSessionID = event.properties.sessionID
+          Provider.SetContextSessionID(sessionId);
+        }
+        // if (event.type === "session.deleted") {
+        if (evt is EventSessionDeleted)
+        {
+          // const sid = event.properties.sessionID
+          // this.trackedSessionIds.delete(sid)
+          _sessionService.UntrackSession(sessionId);
+          // this.modelUsageSessionIds.delete(sid)
+          _sessionService.RemoveModelUsage(sessionId);
+          // this.sessionDirectories.delete(sid)
+          _projectDirectoryProvider.ClearSessionDirectory(sessionId);
+          // this.connectionService.pruneSession(sid)
+          _serviceProvider.GetService<KiloConnectionService>().PruneSession(sessionId);
+          // this.costs.onSessionDeleted(sid)
+          _serviceProvider.GetService<CostService>().OnSessionDeleted(sessionId);
+        }
 
         ////////// Auto-adopt child sessions as soon as the task tool part reveals their ID.
         ////////// This means the child's permission/question events are tracked immediately —
@@ -579,7 +583,6 @@ namespace KiloVisualStudioExtension
       }
     }
 
-
     public bool PostModelUsageChanged(IEvent e, string sessionID)
     {
       //  if (!sessionID || this.trackedSessionIds.has(sessionID)) return false
@@ -654,7 +657,7 @@ namespace KiloVisualStudioExtension
 
     public bool AdoptPendingFollowup(ApiClient.Session session)
     {
-      var res = _serviceProvider.GetService<FollowupHandlerService>().AdoptPendingFollowup(session);
+      var res = _serviceProvider.GetService<FollowupService>().AdoptPendingFollowup(session);
       if (res)
       {
         RegisterSession(session, true);
@@ -895,15 +898,13 @@ namespace KiloVisualStudioExtension
       var partObj = JObject.Parse(partJson);
       var messageID = partObj["messageID"]?.Value<string>();
 
-      var metadata = partObj["metadata"];
-      if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
+      // Extract child session ID from metadata (top-level or state.metadata)
+      // Matches TypeScript pattern: part.metadata?.sessionId ?? part.state?.metadata?.sessionId
+      var childId = ExtractChildSessionId(partObj);
+      if (!string.IsNullOrEmpty(childId) && !SessionHandler.IsTrackedSession(childId))
       {
-        var childId = metadataObj["sessionId"].Value<string>();
-        if (!string.IsNullOrEmpty(childId) && !SessionHandler.IsTrackedSession(childId))
-        {
-          System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
-          SessionHandler.TrackSession(childId);
-        }
+        System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
+        SessionHandler.TrackSession(childId);
       }
 
       //PostMessage(new PartUpdate
@@ -914,6 +915,33 @@ namespace KiloVisualStudioExtension
       //  Part = part,
 
       //});
+    }
+
+    /// <summary>
+    /// Extract child session ID from part metadata, checking both top-level metadata
+    /// and state.metadata as fallback. Matches TypeScript childID() function.
+    /// </summary>
+    private static string ExtractChildSessionId(JObject partObj)
+    {
+      // Check top-level metadata.sessionId first
+      var metadata = partObj["metadata"];
+      if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
+      {
+        return metadataObj["sessionId"].Value<string>();
+      }
+
+      // Fallback to state.metadata.sessionId
+      var state = partObj["state"];
+      if (state != null && state is JObject stateObj)
+      {
+        var stateMetadata = stateObj["metadata"];
+        if (stateMetadata != null && stateMetadata is JObject stateMetadataObj && stateMetadataObj["sessionId"] != null)
+        {
+          return stateMetadataObj["sessionId"].Value<string>();
+        }
+      }
+
+      return null;
     }
 
     //private void HandlePartRemovedSync(SyncEvent evt)

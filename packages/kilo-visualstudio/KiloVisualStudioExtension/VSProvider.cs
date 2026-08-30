@@ -219,25 +219,26 @@ namespace KiloVisualStudioExtension
     private readonly KiloProviderOptions _opts;
     protected readonly SSEHelper _sseHelper;
     private readonly SessionStreamScheduler _streamScheduler;
-    private readonly SessionHandlerService _sessionHandler;
-    private readonly AuthHandlerService _authHandler;
-    private readonly ConfigHandlerService _configHandler;
-    private readonly ProviderRequestService _providerRequestHandler;
-    private readonly FollowupHandlerService _followupHandler;
-    private readonly IndexingHandlerService _indexingHandler;
-    private readonly SandboxHandlerService _sandboxHandler;
-    private readonly NetworkHandlerService _networkHandler;
-    private readonly AgentRequestService _agentRequestHandler;
-    private readonly StateManagementService _stateManagementHandler;
-    private readonly McpHandlerService _mcpHandler;
-    private readonly NotificationHandlerService _notificationHandler;
-    private readonly ModelHandlerService _modelHandler;
-    private readonly SettingsHandlerService _settingsHandler;
-    private readonly MiscRequestHandlerService _miscRequestHandler;
-    private readonly InteractionHandlerService _interactionHandler;
-    private readonly SessionControlHandlerService _sessionControlHandler;
-    private readonly UiHandlerService _uiHandler;
-    private readonly MemoryHandlerService _memoryHandler;
+    private readonly SessionHandlerService _sessionService;
+    private readonly ProjectDirectoryProvider _projectDirectoryService;
+    private readonly AuthHandlerService _authService;
+    private readonly ConfigHandlerService _configService;
+    private readonly ProviderRequestService _providerRequestService;
+    private readonly FollowupService _followupService;
+    private readonly IndexingService _indexingService;
+    private readonly SandboxService _sandboxService;
+    private readonly NetworkService _networkService;
+    private readonly AgentRequestService _agentRequestService;
+    private readonly StateManagementService _stateManagementService;
+    private readonly McpHandlerService _mcpHandlerService;
+    private readonly NotificationService _notificationService;
+    private readonly ModelService _modelService;
+    private readonly SettingsService _settingsService;
+    private readonly MiscRequestService _miscRequestService;
+    private readonly InteractionService _interactionService;
+    private readonly SessionControlService _sessionControlService;
+    private readonly UiService _uiService;
+    private readonly MemorService _memoryService;
     private readonly ProviderService _providerActionService;
     private readonly RemoteStatusService _remoteService;
 
@@ -245,6 +246,9 @@ namespace KiloVisualStudioExtension
     private bool _disposed;
     private JsonElement? _webviewState;
     private string? _contextSessionID;
+
+    private ApiClient.Session? _currentSession;
+
     private readonly List<System.Action> _readyResolvers = new List<System.Action>();
     private List<JsonElement>? _pendingReviewComments = null;
     private bool _promptRecoveryQueued = false;
@@ -254,6 +258,7 @@ namespace KiloVisualStudioExtension
     private bool _cachedGitRepo = false;
     private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
     private readonly Dictionary<string, double> _activeAlerts = new Dictionary<string, double>();
+    private readonly Dictionary<string, int> _refreshes = new Dictionary<string, int>();
     private object? _cachedConfigMessage = null;
     // private KiloExtensionDTOs.KiloConfig.Config? _cachedGlobalConfig = null;
     private int _pending = 0;
@@ -276,7 +281,7 @@ namespace KiloVisualStudioExtension
       var confirmations = _serviceProvider.GetService<MessageConfirmation>();
 
       _sseHelper = _serviceProvider.AddService(new SSEHelper(_serviceProvider, PostMessage));
-      _connectionService.SetSSEHelper(_sseHelper);
+      _connectionService.RegisterSSEHelper(instanceId, _sseHelper);
       _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler((sessionID, key, update) =>
       {
         var message = new KiloExtensionDTOs.PartUpdate
@@ -292,28 +297,29 @@ namespace KiloVisualStudioExtension
       // Initialize CacheService - it manages its own internal storage
       var cacheService = _serviceProvider.GetService<CacheService>();
 
-      _sessionHandler = _serviceProvider.GetService<SessionHandlerService>();
-      _authHandler = _serviceProvider.GetService<AuthHandlerService>();
-      _configHandler = _serviceProvider.GetService<ConfigHandlerService>();
-      _providerRequestHandler = _serviceProvider.GetService<ProviderRequestService>();
+      _sessionService = _serviceProvider.GetService<SessionHandlerService>();
+      _projectDirectoryService = _serviceProvider.GetService<ProjectDirectoryProvider>();
+      _authService = _serviceProvider.GetService<AuthHandlerService>();
+      _configService = _serviceProvider.GetService<ConfigHandlerService>();
+      _providerRequestService = _serviceProvider.GetService<ProviderRequestService>();
 
       // Register new handler services for state that was previously in SSEHelper
-      _followupHandler = _serviceProvider.GetService<FollowupHandlerService>();
-      _indexingHandler = _serviceProvider.GetService<IndexingHandlerService>();
-      _sandboxHandler = _serviceProvider.GetService<SandboxHandlerService>();
-      _networkHandler = _serviceProvider.GetService<NetworkHandlerService>();
-      _agentRequestHandler = _serviceProvider.GetService<AgentRequestService>();
-      _stateManagementHandler = _serviceProvider.GetService<StateManagementService>();
-      _mcpHandler = _serviceProvider.GetService<McpHandlerService>();
-      _notificationHandler = _serviceProvider.GetService<NotificationHandlerService>();
-      _modelHandler = _serviceProvider.GetService<ModelHandlerService>();
-      _settingsHandler = _serviceProvider.GetService<SettingsHandlerService>();
-      _miscRequestHandler = _serviceProvider.GetService<MiscRequestHandlerService>();
-      _interactionHandler = _serviceProvider.GetService<InteractionHandlerService>();
-      _sessionControlHandler = _serviceProvider.GetService<SessionControlHandlerService>();
-      _uiHandler = _serviceProvider.GetService<UiHandlerService>();
+      _followupService = _serviceProvider.GetService<FollowupService>();
+      _indexingService = _serviceProvider.GetService<IndexingService>();
+      _sandboxService = _serviceProvider.GetService<SandboxService>();
+      _networkService = _serviceProvider.GetService<NetworkService>();
+      _agentRequestService = _serviceProvider.GetService<AgentRequestService>();
+      _stateManagementService = _serviceProvider.GetService<StateManagementService>();
+      _mcpHandlerService = _serviceProvider.GetService<McpHandlerService>();
+      _notificationService = _serviceProvider.GetService<NotificationService>();
+      _modelService = _serviceProvider.GetService<ModelService>();
+      _settingsService = _serviceProvider.GetService<SettingsService>();
+      _miscRequestService = _serviceProvider.GetService<MiscRequestService>();
+      _interactionService = _serviceProvider.GetService<InteractionService>();
+      _sessionControlService = _serviceProvider.GetService<SessionControlService>();
+      _uiService = _serviceProvider.GetService<UiService>();
 
-      _memoryHandler = _serviceProvider.GetService<MemoryHandlerService>();
+      _memoryService = _serviceProvider.GetService<MemorService>();
       _providerActionService = _serviceProvider.GetService<ProviderService>();
 
       _remoteService = _serviceProvider.GetService<RemoteStatusService>();
@@ -324,8 +330,12 @@ namespace KiloVisualStudioExtension
       {
         webView.OnMessageReceived += HandleMessageReceived;
         _connectionService.OnStateChange += HandleStateChange;
-        _connectionService.OnSseEvent += HandleSseEvent;
+        _connectionService.RegisterSSEEventHandler(instanceId, HandleSseEvent);
       }
+      _connectionService.RegisterDirectoryProvider(() =>
+      {
+        var res = new List<string>[]
+      });
     }
 
     #region Internal Helper Methods for Handler Services
@@ -523,40 +533,40 @@ namespace KiloVisualStudioExtension
 
     internal async Task FetchAndSendProvidersAsync()
     {
-      await _providerRequestHandler.FetchAndSendProvidersAsync();
+      await _providerRequestService.FetchAndSendProvidersAsync();
     }
 
     internal async Task FetchAndSendConfigUpdatedAsync()
     {
-      await _configHandler.FetchAndSendConfigUpdatedAsync();
+      await _configService.FetchAndSendConfigUpdatedAsync();
     }
 
     internal async Task FetchAndSendAgentsAsync()
     {
-      await _agentRequestHandler.FetchAndSendAgentsAsync();
+      await _agentRequestService.FetchAndSendAgentsAsync();
     }
     internal async Task FetchAndSendConfigAsync()
     {
-      await _configHandler.FetchAndSendConfigAsync();
+      await _configService.FetchAndSendConfigAsync();
     }
 
     internal async Task FetchAndSendSkillsAsync()
     {
-      await _miscRequestHandler.FetchAndSendSkillsAsync();
+      await _miscRequestService.FetchAndSendSkillsAsync();
     }
 
     internal async Task FetchAndSendCommandsAsync()
     {
-      await _miscRequestHandler.FetchAndSendCommandsAsync();
+      await _miscRequestService.FetchAndSendCommandsAsync();
     }
     internal async Task FetchAndSendIndexingStatusAsync()
     {
-      await _indexingHandler.FetchAndSendIndexingStatusAsync();
+      await _indexingService.FetchAndSendIndexingStatusAsync();
     }
 
     internal async Task FetchAndSendNotificationsAsync()
     {
-      await _notificationHandler.FetchAndSendNotificationsAsync();
+      await _notificationService.FetchAndSendNotificationsAsync();
     }
 
     //internal IReadOnlyDictionary<string, string> GetSessionDirectories()
@@ -618,8 +628,8 @@ namespace KiloVisualStudioExtension
 
     internal void ClearCurrentSession()
     {
-      _currentSessionID = null;
-      _contextSessionID = null;
+      _currentSession = null;
+//      _contextSessionID = null;
     }
 
     //internal void RemoveTrackedSession(string sessionID)
@@ -691,7 +701,7 @@ namespace KiloVisualStudioExtension
       if (GetCurrentSessionID() == sessionID)
       {
         SetContextSessionID(null);
-        SetCurrentSessionID(sessionID);
+        SetCurrentSession(null);
       }
       if (_streamScheduler.Focused == sessionID) FocusSession(null);
     }
@@ -737,7 +747,7 @@ namespace KiloVisualStudioExtension
 
     internal void StopCurrentSessionProcesses(string? next)
     {
-      var sid = _contextSessionID ?? _currentSessionID;
+      var sid = _contextSessionID ?? GetCurrentSessionID();
       if (string.IsNullOrEmpty(sid) || sid == next) return;
       System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: stopping processes for session {sid}");
     }
@@ -774,14 +784,24 @@ namespace KiloVisualStudioExtension
 
     public string? GetCurrentSessionID()
     {
-      return _currentSessionID;
+      return _currentSession?.Id ?? null;
     }
 
-    public void SetCurrentSessionID(string? sessionID)
+    public ApiClient.Session GetCurrentSession()
     {
-      _currentSessionID = sessionID;
-      if (!string.IsNullOrEmpty(sessionID))
-        SessionHandler.TrackSession(sessionID);
+      return _currentSession;
+    }
+
+    public void SetCurrentSession(ApiClient.Session? session)
+    {
+      var ids = new HashSet<string> { _currentSession?.Id, session?.Id };
+      foreach (var id in ids)
+        if (id != null) _refreshes[id] = (_refreshes.ContainsKey(id) ? _refreshes[id] : 0) + 1;
+
+      _currentSession = session;
+      _opts.TabTitle?.Invoke(NativeTabTitle.GetTitle(session));
+      //if (!string.IsNullOrEmpty(sessionID))
+      //  SessionHandler.TrackSession(sessionID);
     }
 
     public void SetContextSessionID(string? sessionID)
@@ -807,7 +827,7 @@ namespace KiloVisualStudioExtension
 
     internal async Task HandlePromptAsync(JsonElement? payload)
     {
-      await _interactionHandler.HandlePromptAsync(payload);
+      await _interactionService.HandlePromptAsync(payload);
     }
 
     /// <summary>
@@ -817,12 +837,10 @@ namespace KiloVisualStudioExtension
     /// <returns>A task representing the asynchronous operation.</returns>
     internal async Task LoadMessagesAsync(string sessionID)
     {
-      await _sessionHandler.HandleLoadMessagesAsync(JsonSerializer.SerializeToElement(new { sessionID, mode = "replace", limit = 80 }));
+      await _sessionService.HandleLoadMessagesAsync(JsonSerializer.SerializeToElement(new { sessionID, mode = "replace", limit = 80 }));
     }
 
     #endregion
-
-    private string? _currentSessionID;
 
     private void HandleMessageReceived(object? sender, WebViewMessageEventArgs e)
     {
@@ -879,344 +897,344 @@ namespace KiloVisualStudioExtension
       {
         switch (type)
         {
-          case "webviewReady":
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
-            _isWebviewReady = true;
-            await HandleWebviewReadyAsync();
-            break;
-
-          case "requestProviders":
-            await _providerRequestHandler.FetchAndSendProvidersAsync();
-            break;
-
-          case "requestAgents":
-            await _agentRequestHandler.FetchAndSendAgentsAsync();
-            break;
-
-          case "requestConfig":
-      //      await _configHandler.HandleRequestConfigAsync(payload);
-            break;
-
-          case "requestMcpStatus":
-            await _mcpHandler.HandleRequestMcpStatusAsync(payload);
-            break;
-
-          case "requestRecents":
-            _miscRequestHandler.HandleRequestRecents(payload);
-            break;
-
-          case "requestFavorites":
-            _miscRequestHandler.HandleRequestFavorites(payload);
-            break;
-
-          case "requestVariants":
-            _miscRequestHandler.HandleRequestVariants(payload);
-            break;
-
-          case "requestNotifications":
-            await _notificationHandler.FetchAndSendNotificationsAsync();
-            break;
-
-          case "requestModelSelections":
-            _modelHandler.HandleRequestModelSelections(payload);
-            break;
-
-          case "requestIndexingSettings":
-            _settingsHandler.HandleRequestIndexingSettings(payload);
-            break;
-
-          case "requestChatSettings":
-            _settingsHandler.HandleRequestChatSettings(payload);
-            break;
-
-          case "requestThroughputSetting":
-            _settingsHandler.HandleRequestThroughputSetting(payload);
-            break;
-
-          case "requestAutocompleteSettings":
-            _settingsHandler.HandleRequestAutocompleteSettings(payload);
-            break;
-
-          case "requestWorkStyle":
-            await _settingsHandler.HandleRequestWorkStyleAsync(payload);
-            break;
-
-          case "retryConnection":
-            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: retryConnection requested");
-            await _connectionService.ConnectAsync();
-            break;
-
-          case "prompt":
-            await _interactionHandler.HandlePromptAsync(payload);
-            break;
-
-          case "permission/reply":
-            await _interactionHandler.HandlePermissionReplyAsync(payload);
-            break;
-
-          case "permissionResponse":
-            await _interactionHandler.HandlePermissionResponseAsync(payload);
-            break;
-
-          case "question/reply":
-            await _interactionHandler.HandleQuestionReplyAsync(payload);
-            break;
-
-          case "questionReject":
-            await _interactionHandler.HandleQuestionRejectAsync(payload);
-            break;
-
-          case "questionReply":
-            await _interactionHandler.HandleQuestionReplyAsync(payload);
-            break;
-
-          case "cancelLogin":
-            _loginAttempt++;
-            PostMessage(JsonSerializer.Serialize(new { type = "deviceAuthCancelled" }));
-            break;
-
-          case "connectProvider":
-            await _providerActionService.HandleConnectProviderAsync(payload);
-            break;
-
-          case "disconnectProvider":
-            await _providerActionService.HandleDisconnectProviderAsync(payload);
-            break;
-
-          case "authorizeProviderOAuth":
-            await _providerActionService.HandleAuthorizeProviderOAuthAsync(payload);
-            break;
-
-          case "completeProviderOAuth":
-            await _providerActionService.HandleCompleteProviderOAuthAsync(payload);
-            break;
-
-          case "saveCustomProvider":
-            await _providerActionService.HandleSaveCustomProviderAsync(payload);
-            break;
-
-          case "createSession":
-            await _sessionHandler.HandleCreateSessionAsync(payload);
-            break;
-
-          case "clearSession":
-            _sessionHandler.HandleClearSession(payload);
-            break;
-
-          case "setState":
-            await _stateManagementHandler.HandleSetStateAsync(payload);
-            break;
-
-          case "getState":
-            await _stateManagementHandler.HandleGetStateAsync();
-            break;
-
-          case "loadMessages":
-            await _sessionHandler.HandleLoadMessagesAsync(payload);
-            break;
-
-          case "deleteMessage":
-            await _sessionHandler.HandleDeleteMessageAsync(payload);
-            break;
-
-          case "deleteSession":
-            await _sessionHandler.HandleDeleteSessionAsync(payload);
-            break;
-
-          case "renameSession":
-            await _sessionHandler.HandleRenameSessionAsync(payload);
-            break;
-
-          case "loadSessions":
-            await _sessionHandler.HandleLoadSessionsAsync(payload);
-            break;
-
-          case "syncSession":
-            await _sessionHandler.HandleSyncSessionAsync(payload);
-            break;
-
-          case "requestSessionModelUsage":
-            await _sessionHandler.HandleRequestSessionModelUsageAsync(payload);
-            break;
-
-          case "revertSession":
-            await _sessionHandler.HandleRevertSessionAsync(payload);
-            break;
-
-          case "unrevertSession":
-            await _sessionHandler.HandleUnrevertSessionAsync(payload);
-            break;
-
-          case "compact":
-            await _sessionHandler.HandleCompactAsync(payload);
-            break;
-
-          case "abort":
-            await _sessionControlHandler.HandleAbortAsync(payload);
-            break;
-
-          case "sendMessage":
-            await _sessionControlHandler.HandleSendMessageAsync(payload);
-            break;
-
-          case "login":
-            _loginAttempt++;
-            await _authHandler.HandleLoginAsync(payload);
-            break;
-
-          case "refreshProfile":
-            await _authHandler.HandleRefreshProfileAsync(payload);
-            break;
-
-          case "logout":
-            await _authHandler.HandleLogoutAsync(payload);
-            break;
-
-          case "setOrganization":
-            await _authHandler.HandleSetOrganizationAsync(payload);
-            break;
-
-          case "openSettingsPanel":
-            await _uiHandler.HandleOpenSettingsPanelAsync(payload);
-            break;
-
-          case "openConfigFile":
-            await _configHandler.HandleOpenConfigFileAsync(payload);
-            break;
-
-          case "updateSetting":
-            await _configHandler.HandleUpdateSettingAsync(payload);
-            break;
-
-          case "updateConfig":
-            await _configHandler.HandleUpdateConfigAsync(payload);
-            break;
-
-          case "requestSkills":
-            await _miscRequestHandler.FetchAndSendSkillsAsync();
-            break;
-
-          case "requestCommands":
-            await _miscRequestHandler.FetchAndSendCommandsAsync();
-            break;
-
-          case "requestGlobalConfig":
-        //    await _configHandler.HandleRequestGlobalConfigAsync();
-            break;
-
-          case "requestIndexingStatus":
-            await _settingsHandler.HandleRequestIndexingStatusAsync(payload);
-            break;
-
-          case "requestKiloEmbeddingModels":
-            await _modelHandler.HandleRequestKiloEmbeddingModelsAsync(payload);
-            break;
-
-          case "requestImageModels":
-            await _modelHandler.HandleRequestImageModelsAsync(payload);
-            break;
-
-          case "settingsTabChanged":
-            _uiHandler.HandleSettingsTabChanged(payload);
-            break;
-
-          case "forkSession":
-            await _sessionControlHandler.HandleForkSessionAsync(payload);
-            break;
-
-          case "reload":
-            await _uiHandler.HandleReloadAsync(payload);
-            break;
-
-          case "saveImage":
-            await _uiHandler.HandleSaveImageAsync(payload);
-            break;
-
-          case "openExternal":
-            await HandleOpenExternalAsync(payload);
-            break;
-
-          case "cycleAgentMode":
-            // Fire-and-forget: broadcast to all providers without awaiting
-            HandleCycleAgentModeAsync(payload);
-            break;
-
-          case "toggleMemory":
-            await HandleToggleMemoryAsync(payload);
-            break;
-
-          case "showMemory":
-            await HandleShowMemoryAsync(payload);
-            break;
-
-          case "fetchCustomProviderModels":
-            await HandleFetchCustomProviderModelsAsync(payload);
-            break;
-
-          case "removeSkill":
-            await HandleRemoveSkillAsync(payload);
-            break;
-
-          case "removeAgent":
-            await HandleRemoveAgentAsync(payload);
-            break;
-
-          case "openSubAgentViewer":
-            await _uiHandler.HandleOpenSubAgentViewerAsync(payload);
-            break;
-
-          case "openMarketplacePanel":
-            // Fire-and-forget: execute marketplace command without awaiting
-            HandleOpenMarketplacePanelAsync(payload);
-            break;
-
-          case "agentManager.createWorktree":
-            await HandleCreateWorktreeAsync(payload);
-            break;
-
-          case "agentManager.deleteWorktree":
-            await HandleDeleteWorktreeAsync(payload);
-            break;
-
-          case "agentManager.promoteSession":
-            await HandlePromoteSessionAsync(payload);
-            break;
-
-          case "agentManager.forkSession":
-            await HandleForkSessionToWorktreeAsync(payload);
-            break;
-
-          case "agentManager.openLocally":
-            await HandleOpenWorktreeLocallyAsync(payload);
-            break;
-
-          case "agentManager.requestState":
-            await HandleRequestAgentManagerStateAsync(payload);
-            break;
-
-          case "agentManager.setTabOrder":
-            await HandleSetTabOrderAsync(payload);
-            break;
-
-          case "agentManager.showTerminal":
-            await HandleShowTerminalAsync(payload);
-            break;
-
-          case "agentManager.requestWorktreeDiff":
-            await HandleRequestWorktreeDiffAsync(payload);
-            break;
-
-          case "agentManager.applyWorktreeDiff":
-            await HandleApplyWorktreeDiffAsync(payload);
-            break;
-
-          case "agentManager.startDiffWatch":
-            await HandleStartDiffWatchAsync(payload);
-            break;
-
-          case "agentManager.openFile":
-            await HandleOpenFileAsync(payload);
-            break;
+      //    case "webviewReady":
+      //      System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
+      //      _isWebviewReady = true;
+      //      await HandleWebviewReadyAsync();
+      //      break;
+
+      //    case "requestProviders":
+      //      await _providerRequestHandler.FetchAndSendProvidersAsync();
+      //      break;
+
+      //    case "requestAgents":
+      //      await _agentRequestHandler.FetchAndSendAgentsAsync();
+      //      break;
+
+      //    case "requestConfig":
+      ////      await _configHandler.HandleRequestConfigAsync(payload);
+      //      break;
+
+      //    case "requestMcpStatus":
+      //      await _mcpHandler.HandleRequestMcpStatusAsync(payload);
+      //      break;
+
+      //    case "requestRecents":
+      //      _miscRequestHandler.HandleRequestRecents(payload);
+      //      break;
+
+      //    case "requestFavorites":
+      //      _miscRequestHandler.HandleRequestFavorites(payload);
+      //      break;
+
+      //    case "requestVariants":
+      //      _miscRequestHandler.HandleRequestVariants(payload);
+      //      break;
+
+      //    case "requestNotifications":
+      //      await _notificationHandler.FetchAndSendNotificationsAsync();
+      //      break;
+
+      //    case "requestModelSelections":
+      //      _modelHandler.HandleRequestModelSelections(payload);
+      //      break;
+
+      //    case "requestIndexingSettings":
+      //      _settingsHandler.HandleRequestIndexingSettings(payload);
+      //      break;
+
+      //    case "requestChatSettings":
+      //      _settingsHandler.HandleRequestChatSettings(payload);
+      //      break;
+
+      //    case "requestThroughputSetting":
+      //      _settingsHandler.HandleRequestThroughputSetting(payload);
+      //      break;
+
+      //    case "requestAutocompleteSettings":
+      //      _settingsHandler.HandleRequestAutocompleteSettings(payload);
+      //      break;
+
+      //    case "requestWorkStyle":
+      //      await _settingsHandler.HandleRequestWorkStyleAsync(payload);
+      //      break;
+
+      //    case "retryConnection":
+      //      System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: retryConnection requested");
+      //      await _connectionService.ConnectAsync();
+      //      break;
+
+      //    case "prompt":
+      //      await _interactionHandler.HandlePromptAsync(payload);
+      //      break;
+
+      //    case "permission/reply":
+      //      await _interactionHandler.HandlePermissionReplyAsync(payload);
+      //      break;
+
+      //    case "permissionResponse":
+      //      await _interactionHandler.HandlePermissionResponseAsync(payload);
+      //      break;
+
+      //    case "question/reply":
+      //      await _interactionHandler.HandleQuestionReplyAsync(payload);
+      //      break;
+
+      //    case "questionReject":
+      //      await _interactionHandler.HandleQuestionRejectAsync(payload);
+      //      break;
+
+      //    case "questionReply":
+      //      await _interactionHandler.HandleQuestionReplyAsync(payload);
+      //      break;
+
+      //    case "cancelLogin":
+      //      _loginAttempt++;
+      //      PostMessage(JsonSerializer.Serialize(new { type = "deviceAuthCancelled" }));
+      //      break;
+
+      //    case "connectProvider":
+      //      await _providerActionService.HandleConnectProviderAsync(payload);
+      //      break;
+
+      //    case "disconnectProvider":
+      //      await _providerActionService.HandleDisconnectProviderAsync(payload);
+      //      break;
+
+      //    case "authorizeProviderOAuth":
+      //      await _providerActionService.HandleAuthorizeProviderOAuthAsync(payload);
+      //      break;
+
+      //    case "completeProviderOAuth":
+      //      await _providerActionService.HandleCompleteProviderOAuthAsync(payload);
+      //      break;
+
+      //    case "saveCustomProvider":
+      //      await _providerActionService.HandleSaveCustomProviderAsync(payload);
+      //      break;
+
+      //    case "createSession":
+      //      await _sessionHandler.HandleCreateSessionAsync(payload);
+      //      break;
+
+      //    case "clearSession":
+      //      _sessionHandler.HandleClearSession(payload);
+      //      break;
+
+      //    case "setState":
+      //      await _stateManagementHandler.HandleSetStateAsync(payload);
+      //      break;
+
+      //    case "getState":
+      //      await _stateManagementHandler.HandleGetStateAsync();
+      //      break;
+
+      //    case "loadMessages":
+      //      await _sessionHandler.HandleLoadMessagesAsync(payload);
+      //      break;
+
+      //    case "deleteMessage":
+      //      await _sessionHandler.HandleDeleteMessageAsync(payload);
+      //      break;
+
+      //    case "deleteSession":
+      //      await _sessionHandler.HandleDeleteSessionAsync(payload);
+      //      break;
+
+      //    case "renameSession":
+      //      await _sessionHandler.HandleRenameSessionAsync(payload);
+      //      break;
+
+      //    case "loadSessions":
+      //      await _sessionHandler.HandleLoadSessionsAsync(payload);
+      //      break;
+
+      //    case "syncSession":
+      //      await _sessionHandler.HandleSyncSessionAsync(payload);
+      //      break;
+
+      //    case "requestSessionModelUsage":
+      //      await _sessionHandler.HandleRequestSessionModelUsageAsync(payload);
+      //      break;
+
+      //    case "revertSession":
+      //      await _sessionHandler.HandleRevertSessionAsync(payload);
+      //      break;
+
+      //    case "unrevertSession":
+      //      await _sessionHandler.HandleUnrevertSessionAsync(payload);
+      //      break;
+
+      //    case "compact":
+      //      await _sessionHandler.HandleCompactAsync(payload);
+      //      break;
+
+      //    case "abort":
+      //      await _sessionControlHandler.HandleAbortAsync(payload);
+      //      break;
+
+      //    case "sendMessage":
+      //      await _sessionControlHandler.HandleSendMessageAsync(payload);
+      //      break;
+
+      //    case "login":
+      //      _loginAttempt++;
+      //      await _authHandler.HandleLoginAsync(payload);
+      //      break;
+
+      //    case "refreshProfile":
+      //      await _authHandler.HandleRefreshProfileAsync(payload);
+      //      break;
+
+      //    case "logout":
+      //      await _authHandler.HandleLogoutAsync(payload);
+      //      break;
+
+      //    case "setOrganization":
+      //      await _authHandler.HandleSetOrganizationAsync(payload);
+      //      break;
+
+      //    case "openSettingsPanel":
+      //      await _uiHandler.HandleOpenSettingsPanelAsync(payload);
+      //      break;
+
+      //    case "openConfigFile":
+      //      await _configHandler.HandleOpenConfigFileAsync(payload);
+      //      break;
+
+      //    case "updateSetting":
+      //      await _configHandler.HandleUpdateSettingAsync(payload);
+      //      break;
+
+      //    case "updateConfig":
+      //      await _configHandler.HandleUpdateConfigAsync(payload);
+      //      break;
+
+      //    case "requestSkills":
+      //      await _miscRequestHandler.FetchAndSendSkillsAsync();
+      //      break;
+
+      //    case "requestCommands":
+      //      await _miscRequestHandler.FetchAndSendCommandsAsync();
+      //      break;
+
+      //    case "requestGlobalConfig":
+      //  //    await _configHandler.HandleRequestGlobalConfigAsync();
+      //      break;
+
+      //    case "requestIndexingStatus":
+      //      await _settingsHandler.HandleRequestIndexingStatusAsync(payload);
+      //      break;
+
+      //    case "requestKiloEmbeddingModels":
+      //      await _modelHandler.HandleRequestKiloEmbeddingModelsAsync(payload);
+      //      break;
+
+      //    case "requestImageModels":
+      //      await _modelHandler.HandleRequestImageModelsAsync(payload);
+      //      break;
+
+      //    case "settingsTabChanged":
+      //      _uiHandler.HandleSettingsTabChanged(payload);
+      //      break;
+
+      //    case "forkSession":
+      //      await _sessionControlHandler.HandleForkSessionAsync(payload);
+      //      break;
+
+      //    case "reload":
+      //      await _uiHandler.HandleReloadAsync(payload);
+      //      break;
+
+      //    case "saveImage":
+      //      await _uiHandler.HandleSaveImageAsync(payload);
+      //      break;
+
+      //    case "openExternal":
+      //      await HandleOpenExternalAsync(payload);
+      //      break;
+
+      //    case "cycleAgentMode":
+      //      // Fire-and-forget: broadcast to all providers without awaiting
+      //      HandleCycleAgentModeAsync(payload);
+      //      break;
+
+      //    case "toggleMemory":
+      //      await HandleToggleMemoryAsync(payload);
+      //      break;
+
+      //    case "showMemory":
+      //      await HandleShowMemoryAsync(payload);
+      //      break;
+
+      //    case "fetchCustomProviderModels":
+      //      await HandleFetchCustomProviderModelsAsync(payload);
+      //      break;
+
+      //    case "removeSkill":
+      //      await HandleRemoveSkillAsync(payload);
+      //      break;
+
+      //    case "removeAgent":
+      //      await HandleRemoveAgentAsync(payload);
+      //      break;
+
+      //    case "openSubAgentViewer":
+      //      await _uiHandler.HandleOpenSubAgentViewerAsync(payload);
+      //      break;
+
+      //    case "openMarketplacePanel":
+      //      // Fire-and-forget: execute marketplace command without awaiting
+      //      HandleOpenMarketplacePanelAsync(payload);
+      //      break;
+
+      //    case "agentManager.createWorktree":
+      //      await HandleCreateWorktreeAsync(payload);
+      //      break;
+
+      //    case "agentManager.deleteWorktree":
+      //      await HandleDeleteWorktreeAsync(payload);
+      //      break;
+
+      //    case "agentManager.promoteSession":
+      //      await HandlePromoteSessionAsync(payload);
+      //      break;
+
+      //    case "agentManager.forkSession":
+      //      await HandleForkSessionToWorktreeAsync(payload);
+      //      break;
+
+      //    case "agentManager.openLocally":
+      //      await HandleOpenWorktreeLocallyAsync(payload);
+      //      break;
+
+      //    case "agentManager.requestState":
+      //      await HandleRequestAgentManagerStateAsync(payload);
+      //      break;
+
+      //    case "agentManager.setTabOrder":
+      //      await HandleSetTabOrderAsync(payload);
+      //      break;
+
+      //    case "agentManager.showTerminal":
+      //      await HandleShowTerminalAsync(payload);
+      //      break;
+
+      //    case "agentManager.requestWorktreeDiff":
+      //      await HandleRequestWorktreeDiffAsync(payload);
+      //      break;
+
+      //    case "agentManager.applyWorktreeDiff":
+      //      await HandleApplyWorktreeDiffAsync(payload);
+      //      break;
+
+      //    case "agentManager.startDiffWatch":
+      //      await HandleStartDiffWatchAsync(payload);
+      //      break;
+
+      //    case "agentManager.openFile":
+      //      await HandleOpenFileAsync(payload);
+      //      break;
 
           default:
             System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: unhandled message type={type}");
@@ -1342,7 +1360,8 @@ namespace KiloVisualStudioExtension
 
     private async Task RefreshSessionDetailsAsync()
     {
-      if (string.IsNullOrEmpty(_currentSessionID)) return;
+      var _currentSessionId = GetCurrentSessionID();
+      if (string.IsNullOrEmpty(_currentSessionId)) return;
 
       var nswagClient = _connectionService.GetNswagClient();
       if (nswagClient == null) return;
@@ -1352,7 +1371,7 @@ namespace KiloVisualStudioExtension
         var sessions = await nswagClient.Session_listAsync(System.Environment.CurrentDirectory, "", null, "", null, null, null, null);
         if (sessions != null)
         {
-          var session = sessions.FirstOrDefault(s => s.Id == _currentSessionID);
+          var session = sessions.FirstOrDefault(s => s.Id == _currentSessionId);
           if (session != null)
           {
             var updatedMessage = new { type = "sessionUpdated", session = JsonSerializer.SerializeToElement(session) };
@@ -1598,7 +1617,7 @@ namespace KiloVisualStudioExtension
           var sessionID = response.Id;
           System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: session created: {sessionID}");
 
-          _currentSessionID = sessionID;
+          //_currentSessionID = sessionID;
           _contextSessionID = sessionID;
 
           var now = DateTimeOffset.UtcNow;
@@ -1660,7 +1679,7 @@ namespace KiloVisualStudioExtension
 
       if (e.State == ConnectionState.Connected)
       {
-        var interactionHandler = _serviceProvider.GetService<InteractionHandlerService>();
+        var interactionHandler = _serviceProvider.GetService<InteractionService>();
         if (interactionHandler != null)
         {
           _ = interactionHandler.FetchAndSendPendingPermissionsAsync();
@@ -1721,22 +1740,22 @@ namespace KiloVisualStudioExtension
     /// </summary>
     private async Task HandleToggleMemoryAsync(JsonElement? payload)
     {
-      var sessionID = payload != null && payload.Value.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString())
-          ? sid.GetString()
-          : _currentSessionID;
+      //var sessionID = payload != null && payload.Value.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString())
+      //    ? sid.GetString()
+      //    : _currentSessionID;
 
-      try
-      {
-        // TODO: Implement memory service toggle with proper user feedback
-        // For now, send placeholder response matching VS Code's postMessage pattern
-        System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: toggleMemory requested for session {sessionID}");
-        PostMessage(JsonSerializer.Serialize(new { type = "memoryToggled", sessionID }));
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error toggling memory: {ex.Message}");
-        // Match VS Code: show error message but don't throw
-      }
+      //try
+      //{
+      //  // TODO: Implement memory service toggle with proper user feedback
+      //  // For now, send placeholder response matching VS Code's postMessage pattern
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: toggleMemory requested for session {sessionID}");
+      //  PostMessage(JsonSerializer.Serialize(new { type = "memoryToggled", sessionID }));
+      //}
+      //catch (Exception ex)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: error toggling memory: {ex.Message}");
+      //  // Match VS Code: show error message but don't throw
+      //}
     }
 
     /// <summary>
@@ -1745,13 +1764,13 @@ namespace KiloVisualStudioExtension
     /// </summary>
     private async Task HandleShowMemoryAsync(JsonElement? payload)
     {
-      var sessionID = payload != null && payload.Value.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString())
-          ? sid.GetString()
-          : _currentSessionID;
+      //var sessionID = payload != null && payload.Value.TryGetProperty("sessionID", out var sid) && !string.IsNullOrEmpty(sid.GetString())
+      //    ? sid.GetString()
+      //    : _currentSessionID;
 
-      System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: showMemory requested for session {sessionID}");
-      // TODO: Implement memory service show with proper panel
-      PostMessage(JsonSerializer.Serialize(new { type = "memoryShown", sessionID }));
+      //System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: showMemory requested for session {sessionID}");
+      //// TODO: Implement memory service show with proper panel
+      //PostMessage(JsonSerializer.Serialize(new { type = "memoryShown", sessionID }));
     }
 
     /// <summary>
@@ -2073,23 +2092,23 @@ namespace KiloVisualStudioExtension
       _disposed = true;
       _webView.OnMessageReceived -= HandleMessageReceived;
       _connectionService.OnStateChange -= HandleStateChange;
-      _connectionService.OnSseEvent -= HandleSseEvent;
+      _connectionService.UnregisterSSEEventHandler(this.instanceId);
       _streamScheduler?.Dispose();
 
-      _sessionHandler?.Dispose();
-      _authHandler?.Dispose();
-      _configHandler?.Dispose();
-      _providerRequestHandler?.Dispose();
-      _agentRequestHandler?.Dispose();
-      _stateManagementHandler?.Dispose();
-      _mcpHandler?.Dispose();
-      _notificationHandler?.Dispose();
-      _modelHandler?.Dispose();
-      _settingsHandler?.Dispose();
-      _miscRequestHandler?.Dispose();
-      _interactionHandler?.Dispose();
-      _sessionControlHandler?.Dispose();
-      _uiHandler?.Dispose();
+      _sessionService?.Dispose();
+      _authService?.Dispose();
+      _configService?.Dispose();
+      _providerRequestService?.Dispose();
+      _agentRequestService?.Dispose();
+      _stateManagementService?.Dispose();
+      _mcpHandlerService?.Dispose();
+      _notificationService?.Dispose();
+      _modelService?.Dispose();
+      _settingsService?.Dispose();
+      _miscRequestService?.Dispose();
+      _interactionService?.Dispose();
+      _sessionControlService?.Dispose();
+      _uiService?.Dispose();
     }
 
     #endregion

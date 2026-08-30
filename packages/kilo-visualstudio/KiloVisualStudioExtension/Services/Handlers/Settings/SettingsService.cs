@@ -9,7 +9,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
   /// Handles settings-related operations like indexing settings, chat settings, throughput settings, autocomplete settings.
   /// This matches the VS Code pattern where settings handling is extracted into separate handler modules.
   /// </summary>
-  public class SettingsHandlerService : ServiceProviderServiceBase
+  public class SettingsService : ServiceProviderServiceBase
   {
     private bool _disposed;
 
@@ -20,7 +20,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// Creates a new SettingsHandlerService instance.
     /// </summary>
     /// <param name="serviceProvider">The service provider for dependency injection.</param>
-    public SettingsHandlerService(ServiceProvider serviceProvider) : base(serviceProvider)
+    public SettingsService(ServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
 

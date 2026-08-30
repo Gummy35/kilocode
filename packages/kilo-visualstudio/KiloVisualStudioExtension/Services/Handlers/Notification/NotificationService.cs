@@ -19,7 +19,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
   /// This matches the VS Code pattern where notification handling is extracted into
   /// kilo-provider/notifications.ts.
   /// </summary>
-  public class NotificationHandlerService : ServiceProviderServiceBase
+  public class NotificationService : ServiceProviderServiceBase
   {
 
     private bool _disposed;
@@ -36,7 +36,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Notification
     /// Creates a new NotificationHandlerService instance.
     /// </summary>
     /// <param name="serviceProvider">The service provider for dependency injection.</param>
-    public NotificationHandlerService(ServiceProvider serviceProvider) : base(serviceProvider)
+    public NotificationService(ServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
 

@@ -31,7 +31,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     private readonly Dictionary<string, string> _sessionStatusMap = new();
     private readonly Dictionary<string, SessionRevision> _revisions = new();
     private readonly HashSet<string> _modelUsageSessionIds = new();
+    // key = message
     private readonly Dictionary<string, string> _messageSessionIds = new();
+    // key = sessionid
+    //private readonly Dictionary<string, string> _messageSessionMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Creates a new SessionHandlerService instance.
@@ -189,26 +192,56 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     }
 
     /// <summary>
-    /// Handles the createSession message from the webview.
-    /// Creates a new session in the backend and notifies the webview.
-    /// 
-    /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
-    /// where createSession creates a session and triggers loadMessages.
-    /// 
-    /// Workflow steps:
-    /// 1. Get current directory for session context
-    /// 2. Call CreateSessionInternalAsync to create session
-    /// 3. On success, check if session ID exists
-    /// 4. If session ID exists, call HandleLoadMessagesAsync to load messages
-    /// 5. On failure, send error message to webview
-    /// 
-    /// Messages sent to webview:
-    /// - sessionCreated: { session: { id, directory, title, updated, status } }
-    /// - error: { message: "Failed to create session" }
+    /// Remove all messageID → sessionID entries for a given session.
+    /// Called when a session is deleted or otherwise pruned so the map
+    /// does not grow unbounded over the extension lifetime.
+    ///
+    /// Also drops the session from any provider's focused or opened set
+    /// so the server's `viewed` notification stops advertising a deleted
+    /// id after external (CLI/TUI/cascade) deletes arrive via SSE.
     /// </summary>
-    /// <param name="payload">The message payload (unused for createSession).</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task HandleCreateSessionAsync(JsonElement? payload)
+    /// <param name="sessionId">The session ID to prune.</param>
+    public void PruneSession(string sessionId)
+    {
+        var MessagesToRemove = new List<string>();
+        foreach (var kvp in _messageSessionIds)
+        {
+          if (kvp.Value == sessionId)
+          {
+            MessagesToRemove.Add(kvp.Key);
+          }
+        }
+        foreach (var key in MessagesToRemove)
+        {
+          _messageSessionIds.Remove(key);
+        }
+
+        _serviceProvider.GetService<KiloConnectionService>().PruneSession(sessionId);
+      }
+    }
+
+
+  /// <summary>
+  /// Handles the createSession message from the webview.
+  /// Creates a new session in the backend and notifies the webview.
+  /// 
+  /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+  /// where createSession creates a session and triggers loadMessages.
+  /// 
+  /// Workflow steps:
+  /// 1. Get current directory for session context
+  /// 2. Call CreateSessionInternalAsync to create session
+  /// 3. On success, check if session ID exists
+  /// 4. If session ID exists, call HandleLoadMessagesAsync to load messages
+  /// 5. On failure, send error message to webview
+  /// 
+  /// Messages sent to webview:
+  /// - sessionCreated: { session: { id, directory, title, updated, status } }
+  /// - error: { message: "Failed to create session" }
+  /// </summary>
+  /// <param name="payload">The message payload (unused for createSession).</param>
+  /// <returns>A task representing the asynchronous operation.</returns>
+  public async Task HandleCreateSessionAsync(JsonElement? payload)
     {
       var dir = System.Environment.CurrentDirectory;
       var success = await CreateSessionInternalAsync(dir);

@@ -25,7 +25,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
   /// Handles miscellaneous request operations like recents, favorites, variants, skills, commands.
   /// These are simple request handlers that return static or cached data.
   /// </summary>
-  public class MiscRequestHandlerService : ServiceProviderServiceBase
+  public class MiscRequestService : ServiceProviderServiceBase
   {
     private readonly ServiceProvider _serviceProvider;
     private bool _disposed;
@@ -43,7 +43,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     /// Creates a new MiscRequestHandlerService instance.
     /// </summary>
     /// <param name="serviceProvider">The service provider for dependency injection.</param>
-    public MiscRequestHandlerService(ServiceProvider serviceProvider) : base(serviceProvider)
+    public MiscRequestService(ServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
 

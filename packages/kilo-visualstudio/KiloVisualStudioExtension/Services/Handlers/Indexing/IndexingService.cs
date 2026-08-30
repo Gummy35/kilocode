@@ -11,7 +11,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Indexing
     /// <summary>
     /// Handles indexing status state.
     /// </summary>
-    public class IndexingHandlerService : ServiceProviderServiceBase
+    public class IndexingService : ServiceProviderServiceBase
   {
         private bool _disposed;
 
@@ -21,7 +21,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Indexing
         /// <summary>
         /// Creates a new IndexingHandlerService instance.
         /// </summary>
-        public IndexingHandlerService(ServiceProvider serviceProvider): base (serviceProvider) 
+        public IndexingService(ServiceProvider serviceProvider): base (serviceProvider) 
         { }
         
 

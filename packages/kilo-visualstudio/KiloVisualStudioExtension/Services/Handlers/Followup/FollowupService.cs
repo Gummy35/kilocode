@@ -14,7 +14,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Followup
   /// Handles followup session logic - tracks pending followups and matches them to new sessions.
   /// Matches the VS Code followup-session.ts pattern.
   /// </summary>
-  public class FollowupHandlerService : ServiceProviderServiceBase, IDisposable
+  public class FollowupService : ServiceProviderServiceBase, IDisposable
   {
     private bool _disposed;
 
@@ -28,7 +28,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Followup
     /// <summary>
     /// Creates a new FollowupHandlerService instance.
     /// </summary>
-    public FollowupHandlerService(ServiceProvider serviceProvider) : base(serviceProvider)
+    public FollowupService(ServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
 

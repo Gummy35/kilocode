@@ -1,5 +1,8 @@
+using EnvDTE;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Utils;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
@@ -10,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VSLangProj80;
+using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using ViewedRequest = KiloVisualStudioExtension.ApiClient.Body29;
 using ViewerModel = KiloVisualStudioExtension.ApiClient.Viewer;
 
@@ -116,7 +120,13 @@ namespace KiloVisualStudioExtension
     /// <summary>
     /// SSE Helper for managing messages and sessions.
     /// </summary>
-    private SSEHelper? _sseHelper;
+    private Dictionary<string, SSEHelper> _sseHelpers = new Dictionary<string, SSEHelper>();
+
+
+    ///// <summary>
+    ///// Event raised when an SSE event is received from the backend.
+    ///// </summary>
+    public Dictionary<string, Action<object?, SseEventReceivedEventArgs>> OnSseEvent = new Dictionary<string, Action<object?, SseEventReceivedEventArgs>>();
 
     /// <summary>
     /// Generated NSwag API client for REST API calls (alternative to Kiota).
@@ -190,12 +200,7 @@ namespace KiloVisualStudioExtension
     /// </summary>
     private readonly HashSet<string> _questionDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>
-    /// Message session ID mapping - maps message IDs to session IDs.
-    /// Matches VS Code's recordMessageSessionId functionality.
-    /// </summary>
-    private readonly Dictionary<string, string> _messageSessionMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
+    
     /// <summary>
     /// Lock object for session visibility tracking.
     /// </summary>
@@ -232,10 +237,6 @@ namespace KiloVisualStudioExtension
     /// </summary>
     public event EventHandler<ConnectionStateEventArgs>? OnStateChange;
 
-    /// <summary>
-    /// Event raised when an SSE event is received from the backend.
-    /// </summary>
-    public event EventHandler<SseEventReceivedEventArgs>? OnSseEvent;
 
     /// <summary>
     /// Event raised when a notification is dismissed.
@@ -528,9 +529,9 @@ namespace KiloVisualStudioExtension
       SetState(ConnectionState.Error, ex.Message);
     }
 
-    public void SetSSEHelper(SSEHelper helper)
+    public void RegisterSSEHelper(string providerUid, SSEHelper helper)
     {
-      _sseHelper = helper;
+      _sseHelpers.Add(providerUid, helper);
     }
 
     /// <summary>
@@ -538,10 +539,12 @@ namespace KiloVisualStudioExtension
     /// </summary>
     private void SseClient_OnEvent(object? sender, SseEventArgs e)
     {
-      if (_sseHelper == null) throw new NullReferenceException("Connection service SSEHelper must be set");
       var sseEvent = new SseEventReceivedEventArgs(e.EventType, e.Data);
-      if (_sseHelper.FilterSSEEvent(sseEvent))
-        OnSseEvent?.Invoke(this, sseEvent);
+      foreach (var kvp in _sseHelpers)
+      {
+        if (OnSseEvent.ContainsKey(kvp.Key) && kvp.Value.FilterSSEEvent(sseEvent))
+          OnSseEvent[kvp.Key].Invoke(this, sseEvent);
+      }
     }
 
     /// <summary>
@@ -610,12 +613,68 @@ namespace KiloVisualStudioExtension
     }
 
     /// <summary>
-    /// Flushes viewed session data to the backend.
-    /// Matches VS Code's flushViewed functionality.
-    /// Uses the NSwag client to call session.viewed endpoint.
+    /// This method should be called only by SessionService
     /// </summary>
-    public async Task FlushViewedAsync()
+    /// <param name="sessionId"></param>
+    public void PruneSession(string sessionId)
     {
+      lock (_visibilityLock)
+      {
+        var IdsToRemove = new List<string>();
+        foreach (var kvp in _attachedSessions)
+        {
+          if (kvp.Value.Contains(sessionId))
+          {
+            kvp.Value.Remove(sessionId);
+            if (kvp.Value.Count == 0)
+              IdsToRemove.Add(kvp.Key);
+          }
+        }
+        foreach (var id in IdsToRemove)
+          _attachedSessions.Remove(id);
+        IdsToRemove.Clear();
+
+        foreach (var kvp in _visibleSessions)
+        {
+          if (kvp.Value.Contains(sessionId))
+          {
+            kvp.Value.Remove(sessionId);
+            if (kvp.Value.Count == 0)
+              IdsToRemove.Add(kvp.Key);
+          }
+        }
+        foreach (var id in IdsToRemove)
+          _visibleSessions.Remove(id);
+
+        FlushViewedAsync();
+      }
+    }
+
+    private System.Threading.Timer? _debounceTimer;
+    private bool _viewedSending = false;
+    private bool _viewedDirty = false;
+    private readonly object _debounceLock = new object();
+    public void FlushViewed()
+    {
+      lock (_debounceLock)
+      {
+        _debounceTimer?.Dispose();
+        _debounceTimer = new System.Threading.Timer(_ =>
+        {
+          lock (_debounceLock) { _debounceTimer = null; }
+          _ = SendViewedAsync();
+        }, null, 150, Timeout.Infinite);
+      }
+    }
+
+    private async Task SendViewedAsync()
+    {
+      if (_viewedSending)
+      {
+        _viewedDirty = true;
+        return;
+      }
+
       if (_state != ConnectionState.Connected || _nswagClient == null)
         return;
 
@@ -651,28 +710,41 @@ namespace KiloVisualStudioExtension
         attachedList = attachedSessions.ToList();
       }
 
-      var body = new ViewedRequest
-      {
-        Visible = visibleList,
-        Attached = attachedList,
-        Viewer = new ViewerModel
-        {
-          Id = _viewerId,
-          Active = _active
-        }
-      };
+      _viewedSending = true;
+      _viewedDirty = false;
 
       try
       {
-        await _nswagClient.Session_viewedAsync(System.Environment.CurrentDirectory, "", body).ConfigureAwait(false);
-        System.Diagnostics.Debug.WriteLine($"[Kilo] FlushViewed: sent visible={visibleList.Count}, attached={attachedList.Count}");
+        var workspaceDir = _serviceProvider.GetService<ProjectDirectoryProvider>()
+            .GetWorkspaceDirectory();
+
+        var body = new ViewedRequest
+        {
+          Visible = visibleList,
+          Attached = attachedList,
+          Viewer = new ViewerModel
+          {
+            Id = _viewerId,
+            Active = _active
+          }
+        };
+
+        await _nswagClient.Session_viewedAsync(workspaceDir, "", body)
+            .ConfigureAwait(false);
       }
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine($"[Kilo] FlushViewed failed: {ex.Message}");
       }
+      finally
+      {
+        _viewedSending = false;
+        if (_viewedDirty)
+        {
+          _ = SendViewedAsync(); // Retry
+        }
+      }
     }
-
     /// <summary>
     /// Tracks a directory for session management.
     /// Matches VS Code's trackDirectory functionality.
@@ -833,49 +905,12 @@ namespace KiloVisualStudioExtension
       }
     }
 
-    /// <summary>
-    /// Records the session ID for a message.
-    /// Matches VS Code's recordMessageSessionId functionality.
-    /// </summary>
-    /// <param name="messageId">The message ID.</param>
-    /// <param name="sessionId">The session ID.</param>
-    public void RecordMessageSessionId(string messageId, string sessionId)
-    {
-      lock (_visibilityLock)
-      {
-        _messageSessionMap[messageId] = sessionId;
-      }
-    }
-
-    /// <summary>
-    /// Prunes all message-session mappings for a given session.
-    /// Matches VS Code's pruneSession functionality.
-    /// </summary>
-    /// <param name="sessionId">The session ID to prune.</param>
-    public void PruneSession(string sessionId)
-    {
-      lock (_visibilityLock)
-      {
-        var keysToRemove = new List<string>();
-        foreach (var kvp in _messageSessionMap)
-        {
-          if (kvp.Value == sessionId)
-          {
-            keysToRemove.Add(kvp.Key);
-          }
-        }
-        foreach (var key in keysToRemove)
-        {
-          _messageSessionMap.Remove(key);
-        }
-      }
-    }
-
-    /// <summary>
-    /// Disconnects from the backend and cleans up all resources.
-    /// Stops health polling, disconnects SSE, and cleans up NSwag client.
-    /// </summary>
-    public void Disconnect()
+    
+  /// <summary>
+  /// Disconnects from the backend and cleans up all resources.
+  /// Stops health polling, disconnects SSE, and cleans up NSwag client.
+  /// </summary>
+  public void Disconnect()
     {
       StopHealthPoll();
       StopCheckinTimer();
@@ -902,6 +937,16 @@ namespace KiloVisualStudioExtension
       {
         _singletonInstance = null;
       }
+    }
+
+    internal void RegisterSSEEventHandler(string instanceId, Action<object?, SseEventReceivedEventArgs> handleSseEvent)
+    {
+      OnSseEvent[instanceId] = handleSseEvent;
+    }
+
+    internal void UnregisterSSEEventHandler(string instanceId)
+    {
+      OnSseEvent.Remove(instanceId);
     }
   }
 }

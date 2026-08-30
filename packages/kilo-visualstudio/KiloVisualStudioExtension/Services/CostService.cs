@@ -161,7 +161,7 @@ namespace KiloVisualStudioExtension.Services
     /// <summary>
     /// Record an assistant message cost (message.updated). Returns the session total.
     /// </summary>
-    public double UpdateMessageCost(string sid, string id, string? role, double? value)
+    public double? UpdateMessageCost(string sid, string id, string? role, double? value)
     {
       //     if (role === "assistant") {
       if (role == "assistant")

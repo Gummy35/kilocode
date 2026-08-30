@@ -15,7 +15,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
     /// Handles user interaction operations like permission replies, question replies, and prompt handling.
     /// This matches the VS Code pattern where interaction handling is extracted into separate handler modules.
     /// </summary>
-    public class InteractionHandlerService : ServiceProviderServiceBase
+    public class InteractionService : ServiceProviderServiceBase
   {
         private bool _disposed;
 
@@ -92,7 +92,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         /// Creates a new InteractionHandlerService instance.
         /// </summary>
         /// <param name="serviceProvider">The service provider for dependency injection.</param>
-        public InteractionHandlerService(ServiceProvider serviceProvider): base(serviceProvider)
+        public InteractionService(ServiceProvider serviceProvider): base(serviceProvider)
         {
         }
 
