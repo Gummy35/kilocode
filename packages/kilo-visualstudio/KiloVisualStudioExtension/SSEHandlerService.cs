@@ -74,7 +74,7 @@ namespace KiloVisualStudioExtension
     // private readonly Dictionary<string, string> _networkWaits = new Dictionary<string, string>();
     //private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
     //private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
-    private readonly ProjectDirectoryProvider _projectDirectoryProvider;
+    private ProjectDirectoryProvider _projectDirectoryProvider => ServiceProviderExtensions.GetService<ProjectDirectoryProvider>(_serviceProvider);
 
     //private int _sandboxRevision = 0; // Commented out - moved to SandboxHandlerService
 
@@ -101,20 +101,20 @@ namespace KiloVisualStudioExtension
     private readonly Action<object> _postMessage;
     private readonly JsonSerializer _serializer;
 
-    public SSEHandlerService(ServiceProvider serviceProvider, Action<object> postMessage, DTE dte = null) : base(serviceProvider)
+    public SSEHandlerService(ServiceProvider serviceProvider, Action<object> postMessage/*, DTE dte = null*/) : base(serviceProvider)
     {
       _postMessage = postMessage;
       _serializer = KiloJsonSerializer.Create();
 
-      if (dte != null)
-      {
-        var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(serviceProvider, dte));
-        _projectDirectoryProvider = vsProvider.CreateProvider(
-            projectDirectoryOverride: null // or specify a path like @"C:\MyProject"
-                                           //sessionDirectories: _sessionDirectories
-            );
-        _serviceProvider.AddService(_projectDirectoryProvider);
-      }
+      //if (dte != null)
+      //{
+      //  var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(serviceProvider, dte));
+      //  _projectDirectoryProvider = vsProvider.CreateProvider(
+      //      projectDirectoryOverride: null // or specify a path like @"C:\MyProject"
+      //                                     //sessionDirectories: _sessionDirectories
+      //      );
+      //  _serviceProvider.AddService(_projectDirectoryProvider);
+      //}
     }
 
     /// <summary>
@@ -604,7 +604,7 @@ namespace KiloVisualStudioExtension
         {
           // this.cachedIndexingStatusMessage = next
 
-          _serviceProvider.GetService<CacheService>().UpdateAsync("indexingStatusLoadedMessage", next);
+          _serviceProvider.GetService<ICacheService>().UpdateAsync("indexingStatusLoadedMessage", next);
         }
         // this.streams.flush(sessionID)
         _serviceProvider.GetService<SessionStreamScheduler>().Flush(sessionId);

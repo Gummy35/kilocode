@@ -264,6 +264,16 @@ namespace KiloVisualStudioExtension
     // private KiloExtensionDTOs.KiloConfig.Config? _cachedGlobalConfig = null;
     private int _pending = 0;
 
+
+    private EnvDTE.DTE? GetDTE()
+    {
+      return ThreadHelper.JoinableTaskFactory.Run(async () =>
+      {
+        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        return (EnvDTE.DTE?)await KiloProvider.Package.GetServiceAsync(typeof(EnvDTE.DTE));
+      });
+    }
+
     /// <summary>
     /// Constructor for factory creation (webView may be null initially).
     /// Initializes all handler services using dependency injection.
@@ -285,10 +295,22 @@ namespace KiloVisualStudioExtension
       _visibleTaskStreams = new VisibleTaskStreams((id, visible) => _streamScheduler.SetVisible(id, visible));
 
       // Initialize CacheService - it manages its own internal storage
-      var cacheService = _serviceProvider.GetService<CacheService>();
+      var cacheService = _serviceProvider.AddService<ICacheService>(new CacheService(_serviceProvider));
+      
 
       _sessionService = _serviceProvider.GetService<SessionHandlerService>();
-      _projectDirectoryService = _serviceProvider.GetService<ProjectDirectoryProvider>();
+
+      var dte = GetDTE();
+      if (dte != null)
+      {
+        var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(_serviceProvider, dte));
+        _projectDirectoryService = vsProvider.CreateProvider(
+            projectDirectoryOverride: null // or specify a path like @"C:\MyProject"
+                                           //sessionDirectories: _sessionDirectories
+            );
+        _serviceProvider.AddService(_projectDirectoryService);
+      }
+//      _projectDirectoryService = _serviceProvider.GetService<ProjectDirectoryProvider>();
       _authService = _serviceProvider.GetService<AuthHandlerService>();
       _configService = _serviceProvider.GetService<ConfigHandlerService>();
       _providerRequestService = _serviceProvider.GetService<ProviderRequestService>();

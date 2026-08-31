@@ -59,7 +59,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Indexing
     // }
     public async Task FetchAndSendIndexingStatusAsync()
     {
-      var cache = _serviceProvider.GetService<CacheService>();
+      var cache = _serviceProvider.GetService<ICacheService>();
       var nswagClient = Provider.GetNswagClient();
       if (nswagClient == null)
       {

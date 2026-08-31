@@ -204,7 +204,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Memory
 
     //   constructor(private readonly input: KiloProviderMemoryInput) {}
 
-    public MemoryService(ServiceProvider serviceProvider, IKiloProviderMemoryInput input = null): base(serviceProvider)
+    public MemoryService(ServiceProvider serviceProvider): this(serviceProvider, null)
+    {
+
+    }
+    public MemoryService(ServiceProvider serviceProvider, IKiloProviderMemoryInput input): base(serviceProvider)
     {  
       _input = input ?? new MemoryInput(serviceProvider.GetService<VSProvider>());
     }

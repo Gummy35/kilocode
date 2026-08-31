@@ -62,12 +62,14 @@ namespace KiloVisualStudioExtension.Services
     /// </summary>
     public event EventHandler<RemoteState>? StateChanged;
 
+    public RemoteStatusService(ServiceProvider serviceProvider):this(serviceProvider, null)
+    { }
     /// <summary>
     /// Creates a new RemoteStatusService instance.
     /// </summary>
     /// <param name="postMessageToWebView">Optional action to post messages to the webview. 
     /// If provided, state changes will be pushed to the webview as "remoteStatus" messages.</param>
-    public RemoteStatusService(ServiceProvider serviceProvider, Action<object>? postMessageToWebView = null): base(serviceProvider)
+    public RemoteStatusService(ServiceProvider serviceProvider, Action<object>? postMessageToWebView): base(serviceProvider)
     {
       _postMessageToWebView = postMessageToWebView;
 
