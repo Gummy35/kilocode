@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using static KiloVisualStudioExtension.Services.MessagePageFetcher;
 using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using static System.Net.Mime.MediaTypeNames;
 using Events = KiloVisualStudioExtension.ApiClient.Events;
@@ -34,6 +35,11 @@ using WebViewMessage = KiloExtensionDTOs.Sessions.Message;
 namespace KiloVisualStudioExtension
 {
 
+  internal record NetworkWait
+  {
+    internal string Sid;
+    internal long Refs;
+  }
 
   public class SSEHandlerService : ServiceProviderServiceBase
   {
@@ -53,6 +59,9 @@ namespace KiloVisualStudioExtension
     private SandboxService SandboxHandler => ServiceProviderExtensions.GetService<SandboxService>(_serviceProvider);
 
     private NetworkService NetworkHandler => ServiceProviderExtensions.GetService<NetworkService>(_serviceProvider);
+    private readonly HashSet<string> memoryEvents = ["memory.status", "memory.updated", "memory.error"];
+    private readonly HashSet<string> sessionScopedPartEvents = ["message.part.updated", "message.part.delta", "message.part.removed"];
+    private readonly Dictionary<string, NetworkWait> _networkWaits = new();
 
     // Session state moved to SessionHandlerService - commented out to preserve for potential future use
     // private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
@@ -66,7 +75,6 @@ namespace KiloVisualStudioExtension
     //private readonly HashSet<string> _trackedSessionIds = new HashSet<string>();
     //private readonly Dictionary<string, string> _sessionDirectories = new Dictionary<string, string>();
     private readonly ProjectDirectoryProvider _projectDirectoryProvider;
-    private readonly SessionAbort _aborts;
 
     //private int _sandboxRevision = 0; // Commented out - moved to SandboxHandlerService
 
@@ -90,10 +98,10 @@ namespace KiloVisualStudioExtension
     //    ?? System.Environment.CurrentDirectory;
     //}
 
-    private readonly Action<string> _postMessage;
+    private readonly Action<object> _postMessage;
     private readonly JsonSerializer _serializer;
 
-    public SSEHandlerService(ServiceProvider serviceProvider, Action<string> postMessage, DTE dte = null) : base(serviceProvider)
+    public SSEHandlerService(ServiceProvider serviceProvider, Action<object> postMessage, DTE dte = null) : base(serviceProvider)
     {
       _postMessage = postMessage;
       _serializer = KiloJsonSerializer.Create();
@@ -107,7 +115,6 @@ namespace KiloVisualStudioExtension
             );
         _serviceProvider.AddService(_projectDirectoryProvider);
       }
-      _aborts = new SessionAbort();
     }
 
     /// <summary>
@@ -120,7 +127,7 @@ namespace KiloVisualStudioExtension
 
     public void PostMessage(object message)
     {
-      _postMessage(JsonConvert.SerializeObject(message));
+      _postMessage(message);
     }
 
     public void HandleEvent(SseEventReceivedEventArgs raw)
@@ -241,7 +248,7 @@ namespace KiloVisualStudioExtension
             }
             // void this.memory.fetch(sessionID)
 
-            _serviceProvider.GetService<MemorService>().Fetch(target);
+            _serviceProvider.GetService<MemoryService>().Fetch(target);
           }
           // return
           return;
@@ -309,7 +316,7 @@ namespace KiloVisualStudioExtension
           // this.sessionStatusMap.set(sid, event.properties.status.type)
           SessionHandler.SetSessionStatus(sessionId, type);
           // this.aborts.observe(sid, event.properties.status.type, directory)
-          _aborts.Observe(sessionId, type, directory);
+          SessionHandler.Aborts.Observe(sessionId, type, directory);
           // const msg = mapSSEEventToWebviewMessage(event, sid)
           var msg = MapSSEEventToWebviewMessage((Event)e.Data, sessionId);
           // if (msg) {
@@ -327,7 +334,7 @@ namespace KiloVisualStudioExtension
         // Extract sessionID from the event
         // if (event.type === "session.created" && this.adoptPendingFollowup(event.properties.info)) {
         if (evt is EventSessionCreated &&
-          AdoptPendingFollowup((evt as EventSessionCreated).Properties.Info))
+          _serviceProvider.GetService<FollowupService>().AdoptPendingFollowup((evt as EventSessionCreated).Properties.Info))
         {
           // return
           return;
@@ -384,7 +391,7 @@ namespace KiloVisualStudioExtension
           var typedEvent = (EventServerInstanceDisposed)evt;
           var dir = typedEvent.Properties.Directory;
           if (!string.IsNullOrEmpty(dir))
-            foreach (var sid in _aborts.Dispose(dir))
+            foreach (var sid in SessionHandler.Aborts.Dispose(dir))
               _sessionService.SetSessionStatus(sid, "idle");
           if (!string.IsNullOrEmpty(dir)
             && !PathUtils.SameDirectory(dir, _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory()))
@@ -509,82 +516,139 @@ namespace KiloVisualStudioExtension
         // if (!isLegacySyncEvent(event)) {
         if (!raw.IsLegacySyncEvent)
         {
-          // const props = event.properties
-          var props = e.Payload;
-          // handleNetworkEvent(
-          //   event.type,
-          //   {
-          //     id: "id" in props && typeof props.id === "string" ? props.id : undefined,
-          //     sessionID: "sessionID" in props && typeof props.sessionID === "string" ? props.sessionID : undefined,
-          //     requestID: "requestID" in props && typeof props.requestID === "string" ? props.requestID : undefined,
-          //   },
-          //   this.client,
-          //   (s) => this.getWorkspaceDirectory(s),
-          // )
-          HandleNetworkEvent(
-            e.EventType,
-            new
-            {
-              Id = props["id"]?.Type == JTokenType.String ? props["id"]?.Value<string>() : null,
-              SessionID = sessionId,
-              RequestID = props["requestID"]?.Type == JTokenType.String ? props["requestID"]?.Value<string>() : null
-            },
-            Client,
-            (s) => GetWorkspaceDirectory(s)
-          );
+          //// const props = event.properties
+          //var props = e.Payload;
+          //// handleNetworkEvent(
+          ////   event.type,
+          ////   {
+          ////     id: "id" in props && typeof props.id === "string" ? props.id : undefined,
+          ////     sessionID: "sessionID" in props && typeof props.sessionID === "string" ? props.sessionID : undefined,
+          ////     requestID: "requestID" in props && typeof props.requestID === "string" ? props.requestID : undefined,
+          ////   },
+          ////   this.client,
+          ////   (s) => this.getWorkspaceDirectory(s),
+          //// )
+          _ = HandleNetworkEvent(evt);         
         }
 
-        ////////// if (event.type === "indexing.status" && directory) {
-        ////////if (evt is EventIndexingStatus && !string.IsNullOrEmpty(directory))
-        ////////{
-        ////////  // if (!sameDirectory(directory, this.getWorkspaceDirectory(this.currentSession?.id))) return
-        ////////  if (!PathUtils.SameDirectory(directory, GetWorkspaceDirectory(_currentSession?.Id))) return;
-        ////////}
+        // if (event.type === "indexing.status" && directory) {
+        if (evt is EventIndexingStatus && !string.IsNullOrEmpty(directory))
+        {
+          // if (!samedirectory(directory, this.getworkspacedirectory(this.currentsession?.id))) return
+          if (!PathUtils.SameDirectory(directory, _projectDirectoryProvider.GetWorkspaceDirectory(Provider.GetCurrentSessionID()))) return;
+        }
 
-        ////////// const msg = isLegacySyncEvent(event)
-        //////////   ? this.mapSyncEventToWebviewMessage(event)
-        //////////   : mapSSEEventToWebviewMessage(event, sessionID)
-        ////////var msg = raw.IsLegacySyncEvent
-        ////////  ? MapSyncEventToWebviewMessage(e)
-        ////////  : MapSseEventToWebviewMessage(e, sessionId);
-        ////////// if (!msg) return
-        ////////if (msg == null) return;
-        ////////// if (msg.type === "partUpdated") {
-        ////////if (msg.type == "partUpdated")
-        ////////{
-        ////////  // this.streams.push({ ...msg, part: this.slimPart(msg.part) })
-        ////////  _streams.Push(new { msg.type, part = SlimPart(msg.part) });
-        ////////  // return
-        ////////  return;
-        ////////}
-        ////////// const next = msg.type === "messageCreated" ? { ...msg, message: this.slimInfo(msg.message) } : msg
-        ////////var next = msg.type == "messageCreated" ? new { msg.type, message = SlimInfo(msg.message) } : msg;
-        ////////// if (next.type === "sandboxStatus") {
-        ////////if (next.type == "sandboxStatus")
-        ////////{
-        ////////  // if (!sameDirectory(next.directory, this.getWorkspaceDirectory(next.sessionID))) return
-        ////////  if (!PathUtils.SameDirectory(next.directory, GetWorkspaceDirectory(next.sessionID))) return;
-        ////////  // this.postMessage({ ...next, revision: ++this.sandboxRevision })
-        ////////  PostMessage(new { next.type, next.sessionID, next.directory, revision = ++_sandboxRevision });
-        ////////  // return
-        ////////  return;
-        ////////}
-        ////////// if (next.type === "indexingStatusLoaded") {
-        ////////if (next.type == "indexingStatusLoaded")
-        ////////{
-        ////////  // this.cachedIndexingStatusMessage = next
-        ////////  _cachedIndexingStatusMessage = next;
-        ////////}
-        ////////// this.streams.flush(sessionID)
-        ////////_streams.Flush(sessionId);
-        ////////// this.postMessage(next)
-        ////////PostMessage(next);
+        // const msg = isLegacySyncEvent(event)
+        //   ? this.mapSyncEventToWebviewMessage(event)
+        //   : mapSSEEventToWebviewMessage(event, sessionID)
 
+        if (evt is EventMessagePartUpdated)
+        {
+          var typedEvt = (EventMessagePartUpdated)evt;
+          typedEvt.Properties.Part = SlimUtils.SlimPart(typedEvt.Properties.Part);
+        } 
+        if (evt is SyncEventMessagePartUpdated)
+        {
+          var typedEvt = (SyncEventMessagePartUpdated)evt;
+          typedEvt.SyncEvent.Data.Part = SlimUtils.SlimPart(typedEvt.SyncEvent.Data.Part);
+        }
 
+        // const next = msg.type === "messageCreated" ? { ...msg, message: this.slimInfo(msg.message) } : msg
+        if (evt is EventMessageUpdated)
+        {
+          var typedEvt = (EventMessageUpdated)evt;
+          typedEvt.Properties.Info = SlimUtils.SlimInfo(typedEvt.Properties.Info);
+        }
+        if (evt is SyncEventMessageUpdated)
+        {
+          var typedEvt = (SyncEventMessageUpdated)evt;
+          typedEvt.SyncEvent.Data.Info = SlimUtils.SlimInfo(typedEvt.SyncEvent.Data.Info);
+        }
+
+        var next = MapSSEEventToWebviewMessage((Event)e.Data, sessionId);
+        // if (!msg) return
+        if (next == null) return;
+        // if (msg.type === "partUpdated") {
+        if (next is KiloExtensionDTOs.PartUpdate)
+        {
+          var typedEvt = (KiloExtensionDTOs.PartUpdate)next;
+          // this.streams.push({ ...msg, part: this.slimPart(msg.part) })        
+          _serviceProvider.GetService<SessionStreamScheduler>().Push(typedEvt);
+          // return
+          return;
+        }
+        
+        
+        // if (next.type === "sandboxStatus") {
+        if (next is SandboxStatusMessage)
+        {
+          var typedEvt = (SandboxStatusMessage)next;
+          // if (!sameDirectory(next.directory, this.getWorkspaceDirectory(next.sessionID))) return
+          if (!PathUtils.SameDirectory(typedEvt.Directory, _projectDirectoryProvider.GetWorkspaceDirectory(typedEvt.SessionID))) return;
+          // this.postMessage({ ...next, revision: ++this.sandboxRevision })
+          PostMessage(
+            new SandboxStatusMessage
+            {
+              Available = typedEvt.Available,
+              Directory = typedEvt.Directory,
+              Enabled = typedEvt.Enabled,
+              Reason = typedEvt.Reason,
+              RequestID = typedEvt.RequestID,
+              Revision = _serviceProvider.GetService<SandboxService>().IncrementSandboxRevision(),
+              SessionID = typedEvt.SessionID,           
+            });
+          return;
+        }
+        // if (next.type === "indexingStatusLoaded") {
+        if (next is IndexingStatusLoadedMessage)
+        {
+          // this.cachedIndexingStatusMessage = next
+
+          _serviceProvider.GetService<CacheService>().UpdateAsync("indexingStatusLoadedMessage", next);
+        }
+        // this.streams.flush(sessionID)
+        _serviceProvider.GetService<SessionStreamScheduler>().Flush(sessionId);
+        // this.postMessage(next)
+        PostMessage(next);
       }
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: error handling SSE event: {ex.Message}");
+      }
+    }
+
+    private async Task HandleNetworkEvent(IEvent evt)
+    {
+      if (evt is EventSessionNetworkAsked)
+      {
+        var typedEvt = (EventSessionNetworkAsked)evt;
+        if (string.IsNullOrEmpty(typedEvt.Properties.Id) || string.IsNullOrEmpty(typedEvt.Properties.SessionID)) return;
+        var existing = _networkWaits.ContainsKey(typedEvt.Properties.Id) ? _networkWaits[typedEvt.Properties.Id] : null;
+        if (existing != null)
+          existing.Refs++;
+        else
+          _networkWaits[typedEvt.Properties.Id] = new NetworkWait { Sid = typedEvt.Properties.SessionID, Refs = 1 };
+      }
+      else if (evt is EventSessionNetworkRestored)
+      {
+        var typedEvt = (EventSessionNetworkRestored)evt;
+        if (string.IsNullOrEmpty(typedEvt.Properties.RequestID)) return;
+        var entry = _networkWaits.ContainsKey(typedEvt.Properties.RequestID) ? _networkWaits[typedEvt.Properties.RequestID] : null;
+        if (entry == null) return;
+        System.Diagnostics.Debug.WriteLine($"[Kilo New] network: auto-replying to restore {typedEvt.Properties.RequestID}");
+        var nswagClient = Provider.GetNswagClient();
+        await nswagClient.Network_replyAsync(typedEvt.Properties.RequestID, _projectDirectoryProvider.GetWorkspaceDirectory(entry.Sid), "");
+        _networkWaits.Remove(typedEvt.Properties.RequestID);
+      }
+      else if (evt is EventSessionNetworkReplied)
+      {
+        var typedEvt = (EventSessionNetworkReplied)evt;
+        _networkWaits.Remove(typedEvt.Properties.RequestID);
+      }
+      else if (evt is EventSessionNetworkRejected)
+      {
+        var typedEvt = (EventSessionNetworkRejected)evt;
+        _networkWaits.Remove(typedEvt.Properties.RequestID);
       }
     }
 
@@ -600,7 +664,7 @@ namespace KiloVisualStudioExtension
       var nswagClient = Provider.GetNswagClient();
       if (nswagClient == null)
       {
-        Provider.PostMessage(
+        PostMessage(
           new ErrorMessage { Message = "Not connected to CLI backend" }
             );
         return;
@@ -656,7 +720,7 @@ namespace KiloVisualStudioExtension
         {
           Session = EntityConverter.Convert(session)
         };
-        Provider.PostMessage(sessionUpdated);
+        PostMessage(sessionUpdated);
 
         //      const messages = history.data.map((m) => ({
         //        ...this.slimInfo(m.info),
@@ -692,7 +756,7 @@ namespace KiloVisualStudioExtension
           Mode = ReplacePrependReconcileEnum.Replace,
           HasMore = false
         };
-        Provider.PostMessage(messagesLoaded);
+        PostMessage(messagesLoaded);
 
         // Recover any prompts emitted by the child before we started tracking it
         Provider.RecoverPendingPrompts();
@@ -777,272 +841,298 @@ namespace KiloVisualStudioExtension
     }
 
 
-
-
-
-    public bool AdoptPendingFollowup(ApiClient.Session session)
-    {
-      var res = _serviceProvider.GetService<FollowupService>().AdoptPendingFollowup(session);
-      if (res)
-      {
-        RegisterSession(session, true);
-        //   HandleLoadMessages(session.id)
-      }
-      return res;
-    }
-
-    public void RegisterSession(ApiClient.Session session, bool activate = false)
-    {
-      // this.stopCurrentSessionProcesses(session.id)
-      // this.setCurrentSession(session)
-      // this.contextSessionID = session.id
-      //this.trackedSessionIds.add(session.id)
-      // this.postMessage({
-      //   type: "sessionCreated",
-      //    session: this.sessionToWebview(session),
-      //  ...(activate? { activate: true } : {}),
-      //  })
-      // }
-      throw new NotImplementedException();
-    }
-
-
     internal IWebviewMessage MapSSEEventToWebviewMessage(Event evt, string sessionID)
     {
       return evt is IWebviewMappable ? ((IWebviewMappable)evt).GetWebViewMessage(sessionID) : null;
     }
-    //private void HandleSyncEvent(SyncEvent syncEvent)
-    //{
-    //  var name = syncEvent.Name;
+    
 
-    //  switch (name)
-    //  {
-    //    case "message.updated.1":
-    //      HandleMessageUpdatedSync((MessageUpdatedSyncEvent)syncEvent);
-    //      break;
-    //    case "message.removed.1":
-    //      HandleMessageRemovedSync(syncEvent);
-    //      break;
-    //    case "message.part.updated.1":
-    //      HandlePartUpdatedSync((MessagePartUpdatedSyncEvent)syncEvent);
-    //      break;
-    //    case "message.part.removed.1":
-    //      HandlePartRemovedSync(syncEvent);
-    //      break;
-    //    case "session.created.1":
-    //      HandleSessionCreatedSync((SessionCreatedSyncEvent)syncEvent);
-    //      break;
-    //    case "session.updated.1":
-    //      HandleSessionUpdatedSync((SessionUpdatedSyncEvent)syncEvent);
-    //      break;
-    //    case "session.deleted.1":
-    //      HandleSessionDeletedSync(syncEvent);
-    //      break;
-    //  }
-    //}
 
-    //private void HandleStreamEvent(StreamEvent streamEvent)
-    //{
-    //  var type = streamEvent.EventType;
-    //  var properties = streamEvent.Properties;
-    //  var sessionID = streamEvent.SessionID;
-    //  var directory = streamEvent.Directory;
-
-    //  switch (type)
-    //  {
-    //    case "kilo-sessions.remote-status-changed":
-    //      return;
-
-    //    case "memory.status":
-    //    case "memory.updated":
-    //    case "memory.error":
-    //      HandleMemoryEvent(type, properties);
-    //      return;
-
-    //    case "session.status":
-    //      HandleSessionStatus(properties, sessionID);
-    //      return;
-
-    //    case "message.part.delta":
-    //      HandlePartDelta(properties);
-    //      return;
-
-    //    case "session.created":
-    //      //    HandleSessionCreatedStream(properties);
-    //      break;
-
-    //    case "session.updated":
-    //      HandleSessionUpdatedStream(properties);
-    //      break;
-
-    //    case "session.deleted":
-    //      //    HandleSessionDeletedStream(properties);
-    //      break;
-
-    //    case "message.updated":
-    //      HandleMessageUpdatedStream(properties);
-    //      break;
-
-    //    case "message.removed":
-    //      //    HandleMessageRemovedStream(properties);
-    //      break;
-
-    //    case "global.disposed":
-    //      HandleGlobalDisposed();
-    //      return;
-
-    //    case "server.instance.disposed":
-    //      HandleServerInstanceDisposed(properties);
-    //      return;
-
-    //    case "global.config.updated":
-    //      HandleGlobalConfigUpdated();
-    //      return;
-
-    //    case "message.part.updated":
-    //      HandlePartUpdatedStream(properties);
-    //      break;
-
-    //    case "indexing.status":
-    //      HandleIndexingStatus(properties);
-    //      break;
-
-    //    case "session.turn.close":
-    //      HandleSessionTurnClosed(properties);
-    //      break;
-
-    //    case "session.turn.open":
-    //      HandleSessionTurnOpen(properties);
-    //      break;
-
-    //    case "session.network.asked":
-    //    case "session.network.replied":
-    //    case "session.network.rejected":
-    //    case "session.network.restored":
-    //      HandleNetworkEvent(type, properties);
-    //      break;
-
-    //    case "permission.asked":
-    //      HandlePermissionAsked(properties);
-    //      break;
-
-    //    case "permission.replied":
-    //      HandlePermissionReplied(properties);
-    //      break;
-
-    //    case "todo.updated":
-    //      HandleTodoUpdated(properties);
-    //      break;
-
-    //    case "question.asked":
-    //      HandleQuestionAsked(properties);
-    //      break;
-
-    //    case "question.replied":
-    //    case "question.rejected":
-    //      HandleQuestionResolved(properties);
-    //      break;
-
-    //    case "suggestion.shown":
-    //      HandleSuggestionShown(properties);
-    //      break;
-
-    //    case "suggestion.accepted":
-    //    case "suggestion.dismissed":
-    //      HandleSuggestionResolved(properties);
-    //      break;
-
-    //    case "session.error":
-    //      HandleSessionError(properties);
-    //      break;
-
-    //    case "sandbox.status.changed":
-    //      HandleSandboxStatusChanged(properties);
-    //      break;
-    //  }
-    //}
-
-    private void HandleMessageUpdatedSync(EventMessageUpdated evt)
+    private static string? ResolveSyncSessionId(JToken payload, Action<string, string>? onMessageUpdated = null)
     {
-      var info = evt.Properties.Info;
-      var infoJson = info.ToJson();
-      var infoObj = JObject.Parse(infoJson);
-      var messageID = infoObj["id"]?.Value<string>();
-      var sessionID = evt.Properties.SessionID;
-
-      RecordMessageSessionId(messageID, sessionID);
-
-      if (infoObj["cost"]?.Type == JTokenType.Float && infoObj["role"]?.Value<string>() == "assistant")
+      var id = payload["data"]?["info"]?["id"]?.Value<string>() ?? "";
+      var sessionId = payload["data"]?["sessionID"]?.Value<string>() ?? "";
+      if ((payload["type"]?.Value<string>() ?? "") == "message.updated.1")
       {
-        //_serviceProvider.GetService<MaxCostNudgeService>().
-        //SessionHandler.GetOrCreateMessageCost(messageID, sessionID).Cost = infoObj["cost"].Value<double>();
+        onMessageUpdated?.Invoke(id, sessionId);
       }
-
-      var timeObj = infoObj["time"];
-      var createdAt = timeObj != null && timeObj["created"]?.Type == JTokenType.Integer
-          ? DateTimeOffset.FromUnixTimeMilliseconds((long)timeObj["created"].Value<long>()).ToUniversalTime().ToString("o")
-          : DateTime.UtcNow.ToString("o");
-
-      var message = new WebViewMessage
-      {
-        Id = messageID,
-        SessionID = sessionID,
-        Role = infoObj["role"]?.Value<string>(),
-        Content = infoObj["content"]?.ToString(),
-        Parts = infoObj["parts"],
-        CreatedAt = createdAt,
-        Time = timeObj != null ? new TimeType { Created = (double)timeObj["created"]?.Value<long>(), Completed = timeObj["updated"]?.Value<long>() } : null,
-        Agent = infoObj["agent"]?.ToString(),
-        //Model = new ModelType { ModelID = } // infoObj["model"]?.ToString(),
-        ProviderID = infoObj["providerID"]?.Value<string>(),
-        ModelID = infoObj["modelID"]?.Value<string>()
-      };
-
-      PostMessage(new MessageCreatedMessage { Message = message });
+      return sessionId;
     }
 
-    //private void HandleMessageRemovedSync(SyncEvent evt)
+    private static string? ResolveTransientSessionId(JToken payload)
+    {
+      var evType = payload["type"]?.Value<string>() ?? "";
+      switch (evType)
+      {
+        case "session.status":
+        case "session.turn.open":
+        case "session.turn.close":
+        case "session.idle":
+        case "session.error":
+        case "todo.updated":
+        case "message.part.delta":
+        case "permission.asked":
+        case "permission.replied":
+        case "question.asked":
+        case "question.replied":
+        case "question.rejected":
+        case "suggestion.shown":
+        case "suggestion.accepted":
+        case "suggestion.dismissed":
+        case "session.network.asked":
+        case "session.network.replied":
+        case "session.network.rejected":
+        case "session.network.restored":
+          return payload["properties"]?["sessionID"]?.Value<string>() ?? "";
+        default:
+          return null;
+      }
+    }
+
+    public void RecordMessageSessionId(string messageID, string sessionID)
+    {
+      SessionHandler.MapMessageToSession(messageID, sessionID);
+    }
+
+    public string? LookupMessageSessionId(string messageID)
+    {
+      return SessionHandler.GetSessionIdForMessage(messageID);
+    }
+
+    //public bool IsStaleEvent(string sessionID, string eventId, int seq)
     //{
-    //  var data = (KiloVisualStudioExtension.ApiClient.EventMessageRemoved)evt.Data;
-
-    //  _messageCosts.Remove(data.Properties.MessageID);
-
-    //  PostMessage(new MessageRemovedMessage
+    //  var revision = SessionHandler.GetRevision(sessionID);
+    //  if (revision == null)
     //  {
-    //    SessionID = data.Properties.SessionID,
-    //    MessageID = data.Properties.MessageID
-    //  });
+    //    return false;
+    //  }
+
+    //  var versioned = seq > 0 || revision.Seq > 0;
+    //  if (versioned)
+    //  {
+    //    return seq <= revision.Seq;
+    //  }
+
+    //  return eventId.CompareTo(revision.Id) <= 0;
     //}
 
-    private void HandlePartUpdatedSync(MessagePartUpdatedSyncEvent evt)
+    public bool IsEventFromForeignProject(string eventName, string? projectID)
     {
-      var data = (KiloVisualStudioExtension.ApiClient.EventMessagePartUpdated)evt.Data;
-      var part = data.Properties.Part;
-      var sessionID = data.Properties.SessionID;
-      var partJson = part.ToJson();
-      var partObj = JObject.Parse(partJson);
-      var messageID = partObj["messageID"]?.Value<string>();
-
-      var metadata = partObj["metadata"];
-      if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
+      if (string.IsNullOrEmpty(_currentProjectID) || string.IsNullOrEmpty(projectID))
       {
-        var childId = metadataObj["sessionId"].Value<string>();
-        if (!string.IsNullOrEmpty(childId) && !SessionHandler.IsTrackedSession(childId))
-        {
-          System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
-          SessionHandler.TrackSession(childId);
-        }
+        return false;
       }
 
-      //PostMessage(new PartUpdate
-      //{
+      if (eventName == "session.created.1" || eventName == "session.deleted.1")
+      {
+        return projectID != _currentProjectID;
+      }
 
-      //  SessionID = sessionID,
-      //  MessageID = messageID,
-      //  Part = part,
+      if (eventName == "session.updated.1")
+      {
+        return projectID != _currentProjectID;
+      }
 
-      //});
+      return false;
     }
+
+    //public void SetProjectID(string? projectID)
+    //{
+    //  _currentProjectID = projectID;
+    //}
+
+    private static string? ResolveEventSessionIdPure(
+      JToken payload,
+      Func<string, string?> lookupMessageSessionId,
+      Action<string, string>? onMessageUpdated = null)
+    {
+      var evType = payload["type"]?.Value<string>() ?? "";
+      var properties = payload["properties"];
+
+      if (evType == "sync")
+      {
+        return ResolveSyncSessionId(payload, onMessageUpdated);
+      }
+
+      // No need for "void" trick - C# doesn't warn about unused parameters by default
+      // Or use underscore prefix to indicate intentional non-use:
+      _ = lookupMessageSessionId;
+
+      if (evType == "sandbox.status.changed")
+        return properties["sessionID"]?.Value<string>() ?? "";
+
+      return ResolveTransientSessionId(payload);
+    }
+
+    public string ResolveEventSessionId(SseEventReceivedEventArgs ev)
+    {
+      return ResolveEventSessionId(ev.Payload);
+    }
+
+    public string ResolveEventSessionId(JToken ev)
+    {
+      var evType = ev["type"]?.Value<string>() ?? "";
+      var properties = ev["properties"];
+      var sessionID = properties?["sessionID"]?.Value<string>() ?? "";
+      switch (evType)
+      {
+        case "session.created":
+        case "session.updated":
+        case "session.deleted":
+        case "message.removed":
+        case "message.part.updated":
+        case "message.part.removed":
+          return sessionID;
+        case "message.updated":
+          RecordMessageSessionId(properties["info"]?["id"]?.Value<string>() ?? "", sessionID);
+          return sessionID;
+        default:
+          return ResolveEventSessionIdPure(
+            ev,
+            (messageId) => LookupMessageSessionId(messageId),
+            (messageId, sessionId) => RecordMessageSessionId(messageId, sessionId)
+          );
+      }
+    }
+
+    private bool MatchesPendingFollowup(ApiClient.Session session)
+    {
+      return FollowupHandler.MatchesPendingFollowup(session.Directory, DateTimeOffset.Now.ToUnixTimeMilliseconds(), session.ParentID);
+    }
+
+
+    public bool FilterSSEEvent(SseEventReceivedEventArgs e)
+    {
+
+      JObject ev = e.UnwrapSyncEvent();
+      if (ev == null) return false;
+
+      var evType = ev["type"]?.Value<string>() ?? "";
+
+      // Remote status events are global and should always pass through
+      if (evType == "kilo-sessions.remote-status-changed") return true;
+      if (memoryEvents.Contains(evType))
+        return true;
+
+      var sessionId = ResolveEventSessionId(ev);
+      // message.part.* events are always session-scoped; drop if session unknown.
+      if (string.IsNullOrEmpty(sessionId)) return !sessionScopedPartEvents.Contains(evType);
+      if (evType == "session.created" && MatchesPendingFollowup((SseEventDeserializer.Deserialize(ev).Data as EventSessionCreated).Properties.Info))
+        return true;
+
+
+      // session.status must always pass through — even for sessions not tracked by this
+      // KiloProvider instance. The Settings panel is a separate provider with no tracked
+      // sessions, but it needs session.status to populate sessionStatusMap and allStatusMap
+      // for the busy-session warning on Save.
+      if (evType == "session.status") return true;
+
+      // session.deleted must always pass through so the webview can run its cleanup
+      // (messages, parts, stash, todos, permissions, drafts, etc.) — including for
+      // sessions that were never explicitly tracked here (e.g. child sessions
+      // cascade-deleted with the parent, or external CLI deletions). We deliberately
+      // do NOT re-track the deleted id: handleLoadMessages intentionally drops late
+      // responses for sessions that have been pruned, and re-tracking would let an
+      // in-flight messagesLoaded response resurrect transcript state for a session
+      // the webview just cleaned up.
+      if (evType == "session.deleted") return true;
+
+      return SessionHandler.IsTrackedSession(sessionId);
+    }
+
+    public void Dispose()
+    {
+      if (_disposed) return;
+      _disposed = true;
+    }
+
+
+    #region deprecated
+
+
+
+
+    //private void HandleMessageUpdatedSync(EventMessageUpdated evt)
+    //{
+    //  var info = evt.Properties.Info;
+    //  var infoJson = info.ToJson();
+    //  var infoObj = JObject.Parse(infoJson);
+    //  var messageID = infoObj["id"]?.Value<string>();
+    //  var sessionID = evt.Properties.SessionID;
+
+    //  RecordMessageSessionId(messageID, sessionID);
+
+    //  if (infoObj["cost"]?.Type == JTokenType.Float && infoObj["role"]?.Value<string>() == "assistant")
+    //  {
+    //    //_serviceProvider.GetService<MaxCostNudgeService>().
+    //    //SessionHandler.GetOrCreateMessageCost(messageID, sessionID).Cost = infoObj["cost"].Value<double>();
+    //  }
+
+    //  var timeObj = infoObj["time"];
+    //  var createdAt = timeObj != null && timeObj["created"]?.Type == JTokenType.Integer
+    //      ? DateTimeOffset.FromUnixTimeMilliseconds((long)timeObj["created"].Value<long>()).ToUniversalTime().ToString("o")
+    //      : DateTime.UtcNow.ToString("o");
+
+    //  var message = new WebViewMessage
+    //  {
+    //    Id = messageID,
+    //    SessionID = sessionID,
+    //    Role = infoObj["role"]?.Value<string>(),
+    //    Content = infoObj["content"]?.ToString(),
+    //    Parts = infoObj["parts"],
+    //    CreatedAt = createdAt,
+    //    Time = timeObj != null ? new TimeType { Created = (double)timeObj["created"]?.Value<long>(), Completed = timeObj["updated"]?.Value<long>() } : null,
+    //    Agent = infoObj["agent"]?.ToString(),
+    //    //Model = new ModelType { ModelID = } // infoObj["model"]?.ToString(),
+    //    ProviderID = infoObj["providerID"]?.Value<string>(),
+    //    ModelID = infoObj["modelID"]?.Value<string>()
+    //  };
+
+    //  PostMessage(new MessageCreatedMessage { Message = message });
+    //}
+
+    ////private void HandleMessageRemovedSync(SyncEvent evt)
+    ////{
+    ////  var data = (KiloVisualStudioExtension.ApiClient.EventMessageRemoved)evt.Data;
+
+    ////  _messageCosts.Remove(data.Properties.MessageID);
+
+    ////  PostMessage(new MessageRemovedMessage
+    ////  {
+    ////    SessionID = data.Properties.SessionID,
+    ////    MessageID = data.Properties.MessageID
+    ////  });
+    ////}
+
+    //private void HandlePartUpdatedSync(MessagePartUpdatedSyncEvent evt)
+    //{
+    //  var data = (KiloVisualStudioExtension.ApiClient.EventMessagePartUpdated)evt.Data;
+    //  var part = data.Properties.Part;
+    //  var sessionID = data.Properties.SessionID;
+    //  var partJson = part.ToJson();
+    //  var partObj = JObject.Parse(partJson);
+    //  var messageID = partObj["messageID"]?.Value<string>();
+
+    //  var metadata = partObj["metadata"];
+    //  if (metadata != null && metadata is JObject metadataObj && metadataObj["sessionId"] != null)
+    //  {
+    //    var childId = metadataObj["sessionId"].Value<string>();
+    //    if (!string.IsNullOrEmpty(childId) && !SessionHandler.IsTrackedSession(childId))
+    //    {
+    //      System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Auto-adopting child session: {childId}");
+    //      SessionHandler.TrackSession(childId);
+    //    }
+    //  }
+
+    //  //PostMessage(new PartUpdate
+    //  //{
+
+    //  //  SessionID = sessionID,
+    //  //  MessageID = messageID,
+    //  //  Part = part,
+
+    //  //});
+    //}
 
     //private void HandlePartRemovedSync(SyncEvent evt)
     //{
@@ -1056,86 +1146,86 @@ namespace KiloVisualStudioExtension
     //  });
     //}
 
-    private void HandleSessionCreatedSync(SessionCreatedSyncEvent evt)
-    {
-      var data = (KiloVisualStudioExtension.ApiClient.EventSessionCreated)evt.Data;
-      var info = data.Properties.Info;
-      var sessionID = info.Id;
+    //private void HandleSessionCreatedSync(SessionCreatedSyncEvent evt)
+    //{
+    //  var data = (KiloVisualStudioExtension.ApiClient.EventSessionCreated)evt.Data;
+    //  var info = data.Properties.Info;
+    //  var sessionID = info.Id;
 
-      if (string.IsNullOrEmpty(Provider.GetCurrentSessionID()))
-      {
-        Provider.SetCurrentSessionID(sessionID);
-        SessionHandler.TrackSession(sessionID);
-      }
+    //  if (string.IsNullOrEmpty(Provider.GetCurrentSessionID()))
+    //  {
+    //    Provider.SetCurrentSessionID(sessionID);
+    //    SessionHandler.TrackSession(sessionID);
+    //  }
 
-      var createdAt = info.Time != null
-          ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Created).ToUniversalTime().ToString("o")
-          : DateTime.UtcNow.ToString("o");
-      var updatedAt = info.Time != null
-          ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Updated).ToUniversalTime().ToString("o")
-          : DateTime.UtcNow.ToString("o");
+    //  var createdAt = info.Time != null
+    //      ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Created).ToUniversalTime().ToString("o")
+    //      : DateTime.UtcNow.ToString("o");
+    //  var updatedAt = info.Time != null
+    //      ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Updated).ToUniversalTime().ToString("o")
+    //      : DateTime.UtcNow.ToString("o");
 
-      PostMessage(new SessionCreatedMessage
-      {
-        Session = new KiloExtensionDTOs.Sessions.SessionInfo
-        {
-          Id = sessionID,
-          ParentID = info.ParentID,
-          Title = info.Title,
-          CreatedAt = createdAt,
-          UpdatedAt = updatedAt,
-          Revert = info.Revert,
-          Summary = info.Summary
-        }
-      });
-    }
+    //  PostMessage(new SessionCreatedMessage
+    //  {
+    //    Session = new KiloExtensionDTOs.Sessions.SessionInfo
+    //    {
+    //      Id = sessionID,
+    //      ParentID = info.ParentID,
+    //      Title = info.Title,
+    //      CreatedAt = createdAt,
+    //      UpdatedAt = updatedAt,
+    //      Revert = info.Revert,
+    //      Summary = info.Summary
+    //    }
+    //  });
+    //}
 
-    private void HandleSessionUpdatedSync(SessionUpdatedSyncEvent evt)
-    {
-      var data = (ApiClient.EventSessionUpdated)evt.Data;
-      var info = data.Properties.Info;
-      var sessionID = data.Properties.SessionID;
+    //private void HandleSessionUpdatedSync(SessionUpdatedSyncEvent evt)
+    //{
+    //  var data = (ApiClient.EventSessionUpdated)evt.Data;
+    //  var info = data.Properties.Info;
+    //  var sessionID = data.Properties.SessionID;
 
-      if (!string.IsNullOrEmpty(evt.Id) && evt.Seq > 0)
-      {
-        if (IsStaleEvent(sessionID, evt.Id, evt.Seq))
-        {
-          System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Dropping stale session.updated event for {sessionID}");
-          return;
-        }
-        SessionHandler.TrackRevision(sessionID, new SessionRevision
-        {
-          Id = evt.Id,
-          Seq = evt.Seq
-        });
-      }
+    //  if (!string.IsNullOrEmpty(evt.Id) && evt.Seq > 0)
+    //  {
+    //    if (IsStaleEvent(sessionID, evt.Id, evt.Seq))
+    //    {
+    //      System.Diagnostics.Debug.WriteLine($"[Kilo] SSEHelper: Dropping stale session.updated event for {sessionID}");
+    //      return;
+    //    }
+    //    SessionHandler.TrackRevision(sessionID, new SessionRevision
+    //    {
+    //      Id = evt.Id,
+    //      Seq = evt.Seq
+    //    });
+    //  }
 
-      if (Provider.GetCurrentSessionID() == sessionID)
-      {
-        Provider.SetCurrentSessionID(sessionID);
-      }
+    //  if (Provider.GetCurrentSessionID() == sessionID)
+    //  {
+    //    Provider.SetCurrentSessionID(sessionID);
+    //  }
 
-      var createdAt = info.Time != null
-          ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Created).ToUniversalTime().ToString("o")
-          : DateTime.UtcNow.ToString("o");
-      var updatedAt = info.Time != null
-          ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Updated).ToUniversalTime().ToString("o")
-          : DateTime.UtcNow.ToString("o");
+    //  var createdAt = info.Time != null
+    //      ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Created).ToUniversalTime().ToString("o")
+    //      : DateTime.UtcNow.ToString("o");
+    //  var updatedAt = info.Time != null
+    //      ? DateTimeOffset.FromUnixTimeMilliseconds((long)info.Time.Updated).ToUniversalTime().ToString("o")
+    //      : DateTime.UtcNow.ToString("o");
 
-      PostMessage(new SessionUpdatedMessage
-      {
-        Session = new SessionUpdate
-        {
-          Id = sessionID,
-          ParentID = info.ParentID,
-          Title = info.Title,
-          CreatedAt = createdAt,
-          UpdatedAt = updatedAt,
-          Revert = info.Revert,
-          Summary = info.Summary
-        }
-      });
-    }
+    //  PostMessage(new SessionUpdatedMessage
+    //  {
+    //    Session = new SessionUpdate
+    //    {
+    //      Id = sessionID,
+    //      ParentID = info.ParentID,
+    //      Title = info.Title,
+    //      CreatedAt = createdAt,
+    //      UpdatedAt = updatedAt,
+    //      Revert = info.Revert,
+    //      Summary = info.Summary
+    //    }
+    //  });
+    //}
 
     //private void HandleSessionDeletedSync(SyncEvent evt)
     //{
@@ -1640,206 +1730,8 @@ namespace KiloVisualStudioExtension
     //    _trackedSessionIds.Add(sessionID);
     //  }
     //}
+    #endregion
 
-    private static string? ResolveSyncSessionId(JToken payload, Action<string, string>? onMessageUpdated = null)
-    {
-      var id = payload["data"]?["info"]?["id"]?.Value<string>() ?? "";
-      var sessionId = payload["data"]?["sessionID"]?.Value<string>() ?? "";
-      if ((payload["type"]?.Value<string>() ?? "") == "message.updated.1")
-      {
-        onMessageUpdated?.Invoke(id, sessionId);
-      }
-      return sessionId;
-    }
-
-    private static string? ResolveTransientSessionId(JToken payload)
-    {
-      var evType = payload["type"]?.Value<string>() ?? "";
-      switch (evType)
-      {
-        case "session.status":
-        case "session.turn.open":
-        case "session.turn.close":
-        case "session.idle":
-        case "session.error":
-        case "todo.updated":
-        case "message.part.delta":
-        case "permission.asked":
-        case "permission.replied":
-        case "question.asked":
-        case "question.replied":
-        case "question.rejected":
-        case "suggestion.shown":
-        case "suggestion.accepted":
-        case "suggestion.dismissed":
-        case "session.network.asked":
-        case "session.network.replied":
-        case "session.network.rejected":
-        case "session.network.restored":
-          return payload["properties"]?["sessionID"]?.Value<string>() ?? "";
-        default:
-          return null;
-      }
-    }
-
-    public void RecordMessageSessionId(string messageID, string sessionID)
-    {
-      SessionHandler.MapMessageToSession(messageID, sessionID);
-    }
-
-    public string? LookupMessageSessionId(string messageID)
-    {
-      return SessionHandler.GetSessionIdForMessage(messageID);
-    }
-
-    public bool IsStaleEvent(string sessionID, string eventId, int seq)
-    {
-      var revision = SessionHandler.GetRevision(sessionID);
-      if (revision == null)
-      {
-        return false;
-      }
-
-      var versioned = seq > 0 || revision.Seq > 0;
-      if (versioned)
-      {
-        return seq <= revision.Seq;
-      }
-
-      return eventId.CompareTo(revision.Id) <= 0;
-    }
-
-    public bool IsEventFromForeignProject(string eventName, string? projectID)
-    {
-      if (string.IsNullOrEmpty(_currentProjectID) || string.IsNullOrEmpty(projectID))
-      {
-        return false;
-      }
-
-      if (eventName == "session.created.1" || eventName == "session.deleted.1")
-      {
-        return projectID != _currentProjectID;
-      }
-
-      if (eventName == "session.updated.1")
-      {
-        return projectID != _currentProjectID;
-      }
-
-      return false;
-    }
-
-    public void SetProjectID(string? projectID)
-    {
-      _currentProjectID = projectID;
-    }
-
-    private static string? ResolveEventSessionIdPure(
-      JToken payload,
-      Func<string, string?> lookupMessageSessionId,
-      Action<string, string>? onMessageUpdated = null)
-    {
-      var evType = payload["type"]?.Value<string>() ?? "";
-      var properties = payload["properties"];
-
-      if (evType == "sync")
-      {
-        return ResolveSyncSessionId(payload, onMessageUpdated);
-      }
-
-      // No need for "void" trick - C# doesn't warn about unused parameters by default
-      // Or use underscore prefix to indicate intentional non-use:
-      _ = lookupMessageSessionId;
-
-      if (evType == "sandbox.status.changed")
-        return properties["sessionID"]?.Value<string>() ?? "";
-
-      return ResolveTransientSessionId(payload);
-    }
-
-    public string ResolveEventSessionId(SseEventReceivedEventArgs ev)
-    {
-      return ResolveEventSessionId(ev.Payload);
-    }
-
-    public string ResolveEventSessionId(JToken ev)
-    {
-      var evType = ev["type"]?.Value<string>() ?? "";
-      var properties = ev["properties"];
-      var sessionID = properties?["sessionID"]?.Value<string>() ?? "";
-      switch (evType)
-      {
-        case "session.created":
-        case "session.updated":
-        case "session.deleted":
-        case "message.removed":
-        case "message.part.updated":
-        case "message.part.removed":
-          return sessionID;
-        case "message.updated":
-          RecordMessageSessionId(properties["info"]?["id"]?.Value<string>() ?? "", sessionID);
-          return sessionID;
-        default:
-          return ResolveEventSessionIdPure(
-            ev,
-            (messageId) => LookupMessageSessionId(messageId),
-            (messageId, sessionId) => RecordMessageSessionId(messageId, sessionId)
-          );
-      }
-    }
-
-    private bool MatchesPendingFollowup(ApiClient.Session session)
-    {
-      return FollowupHandler.MatchesPendingFollowup(session.Directory, DateTimeOffset.Now.ToUnixTimeMilliseconds(), session.ParentID);
-    }
-
-    private readonly HashSet<string> memoryEvents = ["memory.status", "memory.updated", "memory.error"];
-    private readonly HashSet<string> sessionScopedPartEvents = ["message.part.updated", "message.part.delta", "message.part.removed"];
-
-    public bool FilterSSEEvent(SseEventReceivedEventArgs e)
-    {
-
-      JObject ev = e.UnwrapSyncEvent();
-      if (ev == null) return false;
-
-      var evType = ev["type"]?.Value<string>() ?? "";
-
-      // Remote status events are global and should always pass through
-      if (evType == "kilo-sessions.remote-status-changed") return true;
-      if (memoryEvents.Contains(evType))
-        return true;
-
-      var sessionId = ResolveEventSessionId(ev);
-      // message.part.* events are always session-scoped; drop if session unknown.
-      if (string.IsNullOrEmpty(sessionId)) return !sessionScopedPartEvents.Contains(evType);
-      if (evType == "session.created" && MatchesPendingFollowup((SseEventDeserializer.Deserialize(ev).Data as EventSessionCreated).Properties.Info))
-        return true;
-
-
-      // session.status must always pass through — even for sessions not tracked by this
-      // KiloProvider instance. The Settings panel is a separate provider with no tracked
-      // sessions, but it needs session.status to populate sessionStatusMap and allStatusMap
-      // for the busy-session warning on Save.
-      if (evType == "session.status") return true;
-
-      // session.deleted must always pass through so the webview can run its cleanup
-      // (messages, parts, stash, todos, permissions, drafts, etc.) — including for
-      // sessions that were never explicitly tracked here (e.g. child sessions
-      // cascade-deleted with the parent, or external CLI deletions). We deliberately
-      // do NOT re-track the deleted id: handleLoadMessages intentionally drops late
-      // responses for sessions that have been pruned, and re-tracking would let an
-      // in-flight messagesLoaded response resurrect transcript state for a session
-      // the webview just cleaned up.
-      if (evType == "session.deleted") return true;
-
-      return SessionHandler.IsTrackedSession(sessionId);
-    }
-
-    public void Dispose()
-    {
-      if (_disposed) return;
-      _disposed = true;
-    }
 
   }
 }

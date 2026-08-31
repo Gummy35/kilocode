@@ -135,6 +135,20 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
+    public static SessionUpdate ConvertUpdate(Session session)
+    {
+      return new SessionUpdate
+      {
+        Id = session.Id,
+        ParentID = string.IsNullOrWhiteSpace(session.ParentID) ? null : session.ParentID,
+        Title = session.Title,
+        CreatedAt = DateTimeOffset.FromUnixTimeMilliseconds(session.Time.Created).ToString("O"),
+        UpdatedAt = DateTimeOffset.FromUnixTimeMilliseconds(session.Time.Updated).ToString("O"),
+        Revert = session.Revert ?? null,
+        Summary = session.Summary ?? null
+      };
+    }
+
     public static SessionUpdate Convert(Session2 session)
     {
       return new SessionUpdate

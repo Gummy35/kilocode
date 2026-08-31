@@ -152,7 +152,7 @@ namespace KiloVisualStudioExtension.Utils
     /// <summary>
     /// Strips heavy metadata from a single part.
     /// </summary>
-    private static ApiClient.Part SlimPart(ApiClient.Part part)
+    public static ApiClient.Part SlimPart(ApiClient.Part part)
     {
       if (part == null)
         return null;

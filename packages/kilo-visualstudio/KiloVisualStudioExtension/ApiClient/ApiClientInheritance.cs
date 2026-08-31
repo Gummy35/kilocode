@@ -40,6 +40,18 @@ namespace KiloVisualStudioExtension.ApiClient
   }
   public partial class UserMessage : Message { }
 
+  public partial class EventMessageUpdated : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      var message = this.Properties?.Info != null ? MessageConverter.Convert(this.Properties.Info) : null;
+      return new MessageCreatedMessage
+      {
+        Message = message
+      };
+    }
+  }
+
   public partial class SyncEventMessageUpdated : IWebviewMappable
   {
     public IWebviewMessage GetWebViewMessage(string sessionID)
@@ -69,6 +81,19 @@ namespace KiloVisualStudioExtension.ApiClient
     }
   }
 
+
+  public partial class EventMessageRemoved : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new MessageRemovedMessage
+      {
+        MessageID = this.Properties.MessageID,
+        SessionID = this.Properties.SessionID
+      };
+    }
+  }
+
   public partial class SyncEventMessageRemoved : IWebviewMappable
   {
     public IWebviewMessage GetWebViewMessage(string sessionID)
@@ -87,13 +112,37 @@ namespace KiloVisualStudioExtension.ApiClient
     }
   }
 
+
+  public partial class EventSessionUpdated : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new SessionUpdatedMessage
+      {
+        Session = EntityConverter.ConvertUpdate(this.Properties.Info)
+      };
+    }
+  }
+
   public partial class SyncEventSessionUpdated : IWebviewMappable
   {
     public IWebviewMessage GetWebViewMessage(string sessionID)
     {
       //      case "session.updated.1":
       //        return null
+// why ???
       return null;
+    }
+  }
+
+  public partial class EventSessionDeleted : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new SessionDeletedMessage
+      {
+        SessionID = this.Properties.SessionID
+      };
     }
   }
 
@@ -108,7 +157,18 @@ namespace KiloVisualStudioExtension.ApiClient
       //        }
       return new SessionDeletedMessage
       {
-        SessionID = sessionID
+        SessionID = this.SyncEvent.Data.SessionID
+      };
+    }
+  }
+
+  public partial class EventSessionCreated : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new SessionCreatedMessage
+      {
+        Session = EntityConverter.Convert(Properties.Info)
       };
     }
   }
@@ -129,13 +189,41 @@ namespace KiloVisualStudioExtension.ApiClient
     }
   }
 
+  public partial class EventMessagePartUpdated : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new PartUpdate
+      {
+        SessionID = Properties.SessionID,
+        //MessageID
+        Part = Properties.Part
+      };
+    }
+  }
+
   public partial class SyncEventMessagePartUpdated : IWebviewMappable
   {
     public IWebviewMessage GetWebViewMessage(string sessionID)
     {
       return new PartUpdate
       {
+        SessionID = SyncEvent.Data.SessionID,
+        //MessageID
         Part = SyncEvent.Data.Part
+      };
+    }
+  }
+
+  public partial class EventMessagePartRemoved : IWebviewMappable
+  {
+    public IWebviewMessage GetWebViewMessage(string sessionID)
+    {
+      return new PartRemove
+      {
+        SessionID = Properties.SessionID,
+        MessageID = Properties.MessageID,
+        PartID = Properties.PartID
       };
     }
   }
@@ -559,7 +647,8 @@ namespace KiloVisualStudioExtension.ApiClient
   // SSE Event
   public partial class EventMessageUpdated : Event { }
   public partial class EventMessageRemoved : Event { }
-  public partial class EventMessagePartUpdated : Event {
+  public partial class EventMessagePartUpdated : Event
+  {
     /// <summary>
     /// Extracts the child ID from a Part if it's a tool task part.
     /// Returns sessionId from part.metadata.sessionId or part.state.metadata.sessionId

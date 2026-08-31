@@ -34,6 +34,8 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     private readonly Dictionary<string, string> _messageSessionIds = new();
     private readonly HashSet<string> _syncedChildSessions = new();
 
+    public SessionAbort Aborts { get; } = new();
+
     /// <summary>
     /// Creates a new SessionHandlerService instance.
     /// </summary>
@@ -53,7 +55,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
       // if (revision && (versioned ? event.seq <= revision.seq : event.id <= revision.id)) return
       if (revision != null && (versioned ? eventSeq <= revision.Seq : eventID.CompareTo(revision.Id) <= 0)) return false;
       // this.revisions.set(sid, { id: event.id, seq: event.seq })
-      TrackRevision(sessionID, new SessionRevision { Id = eventID, Seq = eventSeq});
+      TrackRevision(sessionID, new SessionRevision { Id = eventID, Seq = eventSeq });
       return true;
     }
 
@@ -216,46 +218,46 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     /// <param name="sessionId">The session ID to prune.</param>
     public void PruneSession(string sessionId)
     {
-        var MessagesToRemove = new List<string>();
-        foreach (var kvp in _messageSessionIds)
+      var MessagesToRemove = new List<string>();
+      foreach (var kvp in _messageSessionIds)
+      {
+        if (kvp.Value == sessionId)
         {
-          if (kvp.Value == sessionId)
-          {
-            MessagesToRemove.Add(kvp.Key);
-          }
+          MessagesToRemove.Add(kvp.Key);
         }
-        foreach (var key in MessagesToRemove)
-        {
-          _messageSessionIds.Remove(key);
-        }
-
-        _serviceProvider.GetService<KiloConnectionService>().PruneSession(sessionId);
       }
+      foreach (var key in MessagesToRemove)
+      {
+        _messageSessionIds.Remove(key);
+      }
+
+      _serviceProvider.GetService<KiloConnectionService>().PruneSession(sessionId);
+
     }
 
 
 
-  /// <summary>
-  /// Handles the createSession message from the webview.
-  /// Creates a new session in the backend and notifies the webview.
-  /// 
-  /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
-  /// where createSession creates a session and triggers loadMessages.
-  /// 
-  /// Workflow steps:
-  /// 1. Get current directory for session context
-  /// 2. Call CreateSessionInternalAsync to create session
-  /// 3. On success, check if session ID exists
-  /// 4. If session ID exists, call HandleLoadMessagesAsync to load messages
-  /// 5. On failure, send error message to webview
-  /// 
-  /// Messages sent to webview:
-  /// - sessionCreated: { session: { id, directory, title, updated, status } }
-  /// - error: { message: "Failed to create session" }
-  /// </summary>
-  /// <param name="payload">The message payload (unused for createSession).</param>
-  /// <returns>A task representing the asynchronous operation.</returns>
-  public async Task HandleCreateSessionAsync(JsonElement? payload)
+    /// <summary>
+    /// Handles the createSession message from the webview.
+    /// Creates a new session in the backend and notifies the webview.
+    /// 
+    /// VS Code workflow: Matches the pattern in kilo-provider/handlers/session.ts
+    /// where createSession creates a session and triggers loadMessages.
+    /// 
+    /// Workflow steps:
+    /// 1. Get current directory for session context
+    /// 2. Call CreateSessionInternalAsync to create session
+    /// 3. On success, check if session ID exists
+    /// 4. If session ID exists, call HandleLoadMessagesAsync to load messages
+    /// 5. On failure, send error message to webview
+    /// 
+    /// Messages sent to webview:
+    /// - sessionCreated: { session: { id, directory, title, updated, status } }
+    /// - error: { message: "Failed to create session" }
+    /// </summary>
+    /// <param name="payload">The message payload (unused for createSession).</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task HandleCreateSessionAsync(JsonElement? payload)
     {
       var dir = System.Environment.CurrentDirectory;
       var success = await CreateSessionInternalAsync(dir);
@@ -315,7 +317,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
           var sessionID = response.Id;
           System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session created: {sessionID}");
 
-          Provider.SetCurrentSessionID(sessionID);
+        //  Provider.SetCurrentSessionID(sessionID);
           Provider.SetContextSessionID(sessionID);
 
           var now = DateTimeOffset.UtcNow;
@@ -401,14 +403,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
       }
       try
       {
-        var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
-        await nswagClient.Session_deleteAsync(sessionID, directory, "");
+      //  var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+      //  await nswagClient.Session_deleteAsync(sessionID, directory, "");
         System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session deleted");
 
         if (Provider.GetCurrentSessionID() == sessionID)
         {
-          Provider.SetContextSessionID(null);
-          Provider.SetCurrentSessionID(null);
+    //      Provider.SetContextSessionID(null);
+    //      Provider.SetCurrentSessionID(null);
           UntrackSession(sessionID);
         }
 
@@ -455,26 +457,26 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
       }
       try
       {
-        var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
-        var updateBody = new SessionUpdateRequest { Title = title };
-        await nswagClient.Session_updateAsync(sessionID, directory, "", updateBody);
-        System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session renamed");
+        //var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+        //var updateBody = new SessionUpdateRequest { Title = title };
+        //await nswagClient.Session_updateAsync(sessionID, directory, "", updateBody);
+        //System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: session renamed");
 
-        if (Provider.GetCurrentSessionID() == sessionID)
-        {
-          var sessionUpdated = new
-          {
-            type = "sessionUpdated",
-            session = new
-            {
-              id = sessionID,
-              title = title,
-              updated = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-              status = "idle"
-            }
-          };
-          Provider.PostMessage(JsonSerializer.Serialize(sessionUpdated));
-        }
+        //if (Provider.GetCurrentSessionID() == sessionID)
+        //{
+        //  var sessionUpdated = new
+        //  {
+        //    type = "sessionUpdated",
+        //    session = new
+        //    {
+        //      id = sessionID,
+        //      title = title,
+        //      updated = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+        //      status = "idle"
+        //    }
+        //  };
+        //  Provider.PostMessage(JsonSerializer.Serialize(sessionUpdated));
+        //}
       }
       catch (Exception ex)
       {
@@ -513,104 +515,104 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task HandleLoadMessagesAsync(JsonElement? payload)
     {
-      if (payload == null) return;
+      //if (payload == null) return;
 
-      var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
-      if (string.IsNullOrEmpty(sessionID)) return;
+      //var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+      //if (string.IsNullOrEmpty(sessionID)) return;
 
-      var mode = "replace";
-      if (payload.Value.TryGetProperty("mode", out var modeProp) && !string.IsNullOrEmpty(modeProp.GetString()))
-      {
-        mode = modeProp.GetString()!;
-      }
+      //var mode = "replace";
+      //if (payload.Value.TryGetProperty("mode", out var modeProp) && !string.IsNullOrEmpty(modeProp.GetString()))
+      //{
+      //  mode = modeProp.GetString()!;
+      //}
 
-      var before = payload.Value.TryGetProperty("before", out var beforeProp) ? beforeProp.GetString() : null;
-      var limit = payload.Value.TryGetProperty("limit", out var limitProp) && limitProp.TryGetInt32(out var l) ? l : 80;
+      //var before = payload.Value.TryGetProperty("before", out var beforeProp) ? beforeProp.GetString() : null;
+      //var limit = payload.Value.TryGetProperty("limit", out var limitProp) && limitProp.TryGetInt32(out var l) ? l : 80;
 
-      if (mode == "replace" || mode == "focus")
-      {
-        Provider.StopCurrentSessionProcesses(sessionID);
-        TrackSession(sessionID);
-        Provider.FocusSession(sessionID);
-        Provider.SetCurrentSessionID(sessionID);
-        Provider.SetContextSessionID(sessionID);
-      }
+      //if (mode == "replace" || mode == "focus")
+      //{
+      //  Provider.StopCurrentSessionProcesses(sessionID);
+      //  TrackSession(sessionID);
+      //  Provider.FocusSession(sessionID);
+      //  Provider.SetCurrentSessionID(sessionID);
+      //  Provider.SetContextSessionID(sessionID);
+      //}
 
-      var nswagClient = Provider.GetNswagClient();
-      if (nswagClient == null)
-      {
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
-        return;
-      }
+      //var nswagClient = Provider.GetNswagClient();
+      //if (nswagClient == null)
+      //{
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend", sessionID }));
+      //  return;
+      //}
 
-      if (mode == "replace")
-      {
-        _loadMessagesCts?.Cancel();
-        _loadMessagesCts = new CancellationTokenSource();
-      }
+      //if (mode == "replace")
+      //{
+      //  _loadMessagesCts?.Cancel();
+      //  _loadMessagesCts = new CancellationTokenSource();
+      //}
 
-      var cancellationToken = mode == "replace" ? _loadMessagesCts?.Token : default;
+      //var cancellationToken = mode == "replace" ? _loadMessagesCts?.Token : default;
 
-      try
-      {
-        var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
-        var messages = await nswagClient.Session_messagesAsync(sessionID, directory, "", limit, before);
+      //try
+      //{
+      //  var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+      //  var messages = await nswagClient.Session_messagesAsync(sessionID, directory, "", limit, before);
 
-        if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) return;
+      //  if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) return;
 
-        if (!IsTrackedSession(sessionID)) return;
+      //  if (!IsTrackedSession(sessionID)) return;
 
-        if (messages == null) return;
+      //  if (messages == null) return;
 
-        var items = new System.Collections.Generic.List<object>();
+      //  var items = new System.Collections.Generic.List<object>();
 
-        foreach (var msgWrapper in messages)
-        {
-          // Serialize the entire message wrapper to preserve all backend fields
-          var messageJson = JsonSerializer.Serialize(msgWrapper);
-          var deserialized = JsonSerializer.Deserialize<JsonElement>(messageJson);
-          items.Add(deserialized);
-        }
+      //  foreach (var msgWrapper in messages)
+      //  {
+      //    // Serialize the entire message wrapper to preserve all backend fields
+      //    var messageJson = JsonSerializer.Serialize(msgWrapper);
+      //    var deserialized = JsonSerializer.Deserialize<JsonElement>(messageJson);
+      //    items.Add(deserialized);
+      //  }
 
-        var hasMore = false;
+      //  var hasMore = false;
 
-        if (mode == "replace" || mode == "reconcile")
-        {
-          Provider.DropSessionStream(sessionID);
-        }
+      //  if (mode == "replace" || mode == "reconcile")
+      //  {
+      //    Provider.DropSessionStream(sessionID);
+      //  }
 
-        var message = new
-        {
-          type = "messagesLoaded",
-          sessionID = sessionID,
-          messages = items.ToArray(),
-          mode = mode,
-          hasMore = hasMore,
-          since = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-        };
+      //  var message = new
+      //  {
+      //    type = "messagesLoaded",
+      //    sessionID = sessionID,
+      //    messages = items.ToArray(),
+      //    mode = mode,
+      //    hasMore = hasMore,
+      //    since = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+      //  };
 
-        Provider.PostMessage(JsonSerializer.Serialize(message));
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: loaded {items.Count} messages for session {sessionID}");
+      //  Provider.PostMessage(JsonSerializer.Serialize(message));
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: loaded {items.Count} messages for session {sessionID}");
 
-        if (payload.Value.TryGetProperty("preserveStream", out var preserveProp) && preserveProp.GetBoolean())
-        {
-          Provider.FlushSessionStream(sessionID);
-        }
+      //  if (payload.Value.TryGetProperty("preserveStream", out var preserveProp) && preserveProp.GetBoolean())
+      //  {
+      //    Provider.FlushSessionStream(sessionID);
+      //  }
 
-        Provider.RecoverPendingPrompts();
+      //  Provider.RecoverPendingPrompts();
 
-        _ = LoadMemoryAsync(sessionID);
-      }
-      catch (OperationCanceledException)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: load cancelled for session {sessionID}");
-        return;
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error loading messages: {ex.Message}");
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = ex.Message, sessionID }));
-      }
+      //  _ = LoadMemoryAsync(sessionID);
+      //}
+      //catch (OperationCanceledException)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: load cancelled for session {sessionID}");
+      //  return;
+      //}
+      //catch (Exception ex)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error loading messages: {ex.Message}");
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = ex.Message, sessionID }));
+      //}
     }
 
     /// <summary>
@@ -633,22 +635,22 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task HandleDeleteMessageAsync(JsonElement? payload)
     {
-      if (payload == null) return;
-      var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
-      var messageID = payload.Value.TryGetProperty("messageID", out var mid) ? mid.GetString() : "";
-      if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
-      var nswagClient = Provider.GetNswagClient();
-      if (nswagClient == null) return;
-      try
-      {
-        var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
-        await nswagClient.Session_deleteMessageAsync(sessionID, messageID, directory, "");
-        System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: message deleted");
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error deleting message: {ex.Message}");
-      }
+      //if (payload == null) return;
+      //var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+      //var messageID = payload.Value.TryGetProperty("messageID", out var mid) ? mid.GetString() : "";
+      //if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
+      //var nswagClient = Provider.GetNswagClient();
+      //if (nswagClient == null) return;
+      //try
+      //{
+      //  var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+      //  await nswagClient.Session_deleteMessageAsync(sessionID, messageID, directory, "");
+      //  System.Diagnostics.Debug.WriteLine("[Kilo] SessionHandler: message deleted");
+      //}
+      //catch (Exception ex)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error deleting message: {ex.Message}");
+      //}
     }
 
     /// <summary>
@@ -772,33 +774,33 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     /// </summary>
     public async Task HandleSyncSessionAsync(JsonElement? payload)
     {
-      if (payload == null) return;
+      //if (payload == null) return;
 
-      var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
-      if (string.IsNullOrEmpty(sessionID)) return;
+      //var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+      //if (string.IsNullOrEmpty(sessionID)) return;
 
-      var nswagClient = Provider.GetNswagClient();
-      if (nswagClient == null)
-      {
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
-        return;
-      }
+      //var nswagClient = Provider.GetNswagClient();
+      //if (nswagClient == null)
+      //{
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+      //  return;
+      //}
 
-      try
-      {
-        var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
-        var session = await nswagClient.Session_getAsync(sessionID, directory, "");
-        if (session != null)
-        {
-          var message = new { type = "sessionSynced", session = JsonSerializer.SerializeToElement(session) };
-          Provider.PostMessage(JsonSerializer.Serialize(message));
-        }
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error syncing session: {ex.Message}");
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to sync session: {ex.Message}" }));
-      }
+      //try
+      //{
+      //  var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+      //  var session = await nswagClient.Session_getAsync(sessionID, directory, "");
+      //  if (session != null)
+      //  {
+      //    var message = new { type = "sessionSynced", session = JsonSerializer.SerializeToElement(session) };
+      //    Provider.PostMessage(JsonSerializer.Serialize(message));
+      //  }
+      //}
+      //catch (Exception ex)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error syncing session: {ex.Message}");
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to sync session: {ex.Message}" }));
+      //}
     }
 
     /// <summary>
@@ -852,35 +854,35 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     /// </summary>
     public async Task HandleRevertSessionAsync(JsonElement? payload)
     {
-      if (payload == null) return;
+      //if (payload == null) return;
 
-      var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
-      var messageID = payload.Value.TryGetProperty("messageID", out var mid) ? mid.GetString() : "";
+      //var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+      //var messageID = payload.Value.TryGetProperty("messageID", out var mid) ? mid.GetString() : "";
 
-      if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
+      //if (string.IsNullOrEmpty(sessionID) || string.IsNullOrEmpty(messageID)) return;
 
-      var nswagClient = Provider.GetNswagClient();
-      if (nswagClient == null)
-      {
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
-        return;
-      }
+      //var nswagClient = Provider.GetNswagClient();
+      //if (nswagClient == null)
+      //{
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+      //  return;
+      //}
 
-      try
-      {
-        var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
-        var revertBody = new RevertRequest { MessageID = messageID, PartID = null };
-        await nswagClient.Session_revertAsync(sessionID, directory, "", revertBody);
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session reverted: {sessionID}");
+      //try
+      //{
+      //  var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+      //  var revertBody = new RevertRequest { MessageID = messageID, PartID = null };
+      //  await nswagClient.Session_revertAsync(sessionID, directory, "", revertBody);
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session reverted: {sessionID}");
 
-        var message = new { type = "sessionReverted", sessionID, messageID };
-        Provider.PostMessage(JsonSerializer.Serialize(message));
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error reverting session: {ex.Message}");
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to revert session: {ex.Message}" }));
-      }
+      //  var message = new { type = "sessionReverted", sessionID, messageID };
+      //  Provider.PostMessage(JsonSerializer.Serialize(message));
+      //}
+      //catch (Exception ex)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error reverting session: {ex.Message}");
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to revert session: {ex.Message}" }));
+      //}
     }
 
     /// <summary>
@@ -889,33 +891,33 @@ namespace KiloVisualStudioExtension.Services.Handlers.Session
     /// </summary>
     public async Task HandleUnrevertSessionAsync(JsonElement? payload)
     {
-      if (payload == null) return;
+      //if (payload == null) return;
 
-      var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
+      //var sessionID = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
 
-      if (string.IsNullOrEmpty(sessionID)) return;
+      //if (string.IsNullOrEmpty(sessionID)) return;
 
-      var nswagClient = Provider.GetNswagClient();
-      if (nswagClient == null)
-      {
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
-        return;
-      }
+      //var nswagClient = Provider.GetNswagClient();
+      //if (nswagClient == null)
+      //{
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = "Not connected to CLI backend" }));
+      //  return;
+      //}
 
-      try
-      {
-        var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
-        await nswagClient.Session_unrevertAsync(sessionID, directory, "");
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session unreverted: {sessionID}");
+      //try
+      //{
+      //  var directory = Provider.GetSSEHelper().ResolveDirectory(sessionID);
+      //  await nswagClient.Session_unrevertAsync(sessionID, directory, "");
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: session unreverted: {sessionID}");
 
-        var message = new { type = "sessionUnreverted", sessionID };
-        Provider.PostMessage(JsonSerializer.Serialize(message));
-      }
-      catch (Exception ex)
-      {
-        System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error unreverting session: {ex.Message}");
-        Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to unrevert session: {ex.Message}" }));
-      }
+      //  var message = new { type = "sessionUnreverted", sessionID };
+      //  Provider.PostMessage(JsonSerializer.Serialize(message));
+      //}
+      //catch (Exception ex)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] SessionHandler: error unreverting session: {ex.Message}");
+      //  Provider.PostMessage(JsonSerializer.Serialize(new { type = "error", message = $"Failed to unrevert session: {ex.Message}" }));
+      //}
     }
 
     /// <summary>

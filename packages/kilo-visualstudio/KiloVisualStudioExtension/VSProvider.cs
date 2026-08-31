@@ -147,7 +147,6 @@ namespace KiloVisualStudioExtension
     //  private readonly aborts = new SessionAbort()
     //  private projectID: string | undefined // Current workspace project ID used to filter sessions.
     //  private loadMessagesAbort: AbortController | null = null // Current load request cancellation.
-    //  private lastReconciledAt = new Map<string, number>() // Per-session focus-mode reconcile timestamp.
     //  private pendingSessionRefresh = false // Refresh requested before the client is ready.
     //  private readonly streams = new SessionStreamScheduler((msg) => this.postMessage(msg))
     //  private readonly confirmations = new MessageConfirmation()
@@ -237,7 +236,7 @@ namespace KiloVisualStudioExtension
     private readonly InteractionService _interactionService;
     private readonly SessionControlService _sessionControlService;
     private readonly UiService _uiService;
-    private readonly MemorService _memoryService;
+    private readonly MemoryService _memoryService;
     private readonly ProviderService _providerActionService;
     private readonly RemoteStatusService _remoteService;
     private readonly VisibleTaskStreams _visibleTaskStreams;
@@ -259,6 +258,8 @@ namespace KiloVisualStudioExtension
     private readonly Dictionary<string, string> _sessionStatusMap = new Dictionary<string, string>();
     private readonly Dictionary<string, double> _activeAlerts = new Dictionary<string, double>();
     private readonly Dictionary<string, int> _refreshes = new Dictionary<string, int>();
+    private readonly Dictionary<string, DateTimeOffset> _lastReconciledAt = new();  // Per-session focus-mode reconcile timestamp.
+    private readonly Dictionary<string, Task> _checkpoints = new();
     private object? _cachedConfigMessage = null;
     // private KiloExtensionDTOs.KiloConfig.Config? _cachedGlobalConfig = null;
     private int _pending = 0;
@@ -279,17 +280,7 @@ namespace KiloVisualStudioExtension
      
       _sseHelper = _serviceProvider.AddService(new SSEHandlerService(_serviceProvider, PostMessage));
       _connectionService.RegisterSSEHelper(instanceId, _sseHelper);
-      _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler((sessionID, key, update) =>
-      {
-        var message = new KiloExtensionDTOs.PartUpdate
-        {
-          SessionID = sessionID,
-          MessageID = key.Split(':')[1],
-          Part = update.Part,
-          Delta = update.TextDelta != null ? new PartTextDelta { TextDelta = update.TextDelta } : null,
-        };
-        PostMessage(message);
-      }));
+      _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler(PostMessage));
 
       _visibleTaskStreams = new VisibleTaskStreams((id, visible) => _streamScheduler.SetVisible(id, visible));
 
@@ -318,7 +309,7 @@ namespace KiloVisualStudioExtension
       _sessionControlService = _serviceProvider.GetService<SessionControlService>();
       _uiService = _serviceProvider.GetService<UiService>();
 
-      _memoryService = _serviceProvider.GetService<MemorService>();
+      _memoryService = _serviceProvider.GetService<MemoryService>();
       _providerActionService = _serviceProvider.GetService<ProviderService>();
 
       _remoteService = _serviceProvider.GetService<RemoteStatusService>();
@@ -369,6 +360,56 @@ namespace KiloVisualStudioExtension
     internal string GetConnectionState()
     {
       return _connectionService.State.ToString().ToLowerInvariant();
+    }
+
+
+    /// <summary>
+    /// Queues an operation for a session, ensuring sequential execution.
+    /// Matches VS Code's checkpoint pattern for serializing async operations per session.
+    /// </summary>
+    private async Task Checkpoint(string sid, Func<Task> run)
+    {
+      // Get prior task or completed task if none exists
+      var prior = _checkpoints.TryGetValue(sid, out var existing) ? existing : Task.CompletedTask;
+
+      // Chain the new operation after the prior one
+      var pending = prior.ContinueWith(async _ =>
+      {
+        await run();
+      }, TaskContinuationOptions.ExecuteSynchronously).Unwrap();
+
+      // Cleanup: remove from dictionary if still the current task
+      void Cleanup()
+      {
+        if (_checkpoints.TryGetValue(sid, out var current) && current == pending)
+        {
+          _checkpoints.Remove(sid);
+        }
+      }
+
+      // Register the new task
+      _checkpoints[sid] = pending;
+
+      // Fire-and-forget completion handler
+      _ = pending.ContinueWith(t =>
+      {
+        if (t.IsFaulted && t.Exception != null)
+        {
+          System.Diagnostics.Debug.WriteLine($"[Kilo New] checkpoint mutation failed: {t.Exception.GetBaseException().Message}");
+        }
+        Cleanup();
+      }, TaskContinuationOptions.ExecuteSynchronously);
+    }
+
+    /// <summary>
+    /// Waits for any pending checkpoint operation for a session.
+    /// </summary>
+    private async Task WaitForCheckpoint(string sid)
+    {
+      if (_checkpoints.TryGetValue(sid, out var task))
+      {
+        await task;
+      }
     }
 
     // Validation functions (matching provider-actions.ts in TypeScript)
@@ -685,9 +726,9 @@ namespace KiloVisualStudioExtension
       _visibleTaskStreams.Delete(sessionID);
       SessionHandler.RemoveSyncedChildSession(sessionID);
       _projectDirectoryService.ClearSessionDirectory(sessionID);
-      _aborts.Delete(sessionID);
-      this.lastReconciledAt.delete(sessionID)
-      this.checkpoints.delete(sessionID)
+      SessionHandler.Aborts.Delete(sessionID);
+      _lastReconciledAt.Remove(sessionID);
+      _checkpoints.Remove(sessionID);
       _refreshes.Remove(sessionID);
       if (_activeAlerts.ContainsKey(sessionID))
       {

@@ -12,7 +12,7 @@ using Message = KiloExtensionDTOs.Sessions.Message;
 
 namespace KiloVisualStudioExtension
 {
-  internal class VisibleTaskStreams
+  internal class VisibleTaskStreams:IDisposable
   {
     private readonly Dictionary<string, long> refs = new();
     private bool _active = true;
@@ -60,6 +60,7 @@ namespace KiloVisualStudioExtension
         SetActive(false);
         focus.Invoke();
       };
+      return this;
     }
 
     internal bool Handle(StreamSessionVisibleMessage message)
@@ -78,6 +79,11 @@ namespace KiloVisualStudioExtension
         refs[message.SessionID] = next;
       Set(message.SessionID, _active && (next > 0));
       return true;
+    }
+
+    public void Dispose()
+    {
+     
     }
   }
 }

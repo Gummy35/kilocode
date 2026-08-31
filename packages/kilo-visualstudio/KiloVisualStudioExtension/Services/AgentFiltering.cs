@@ -15,11 +15,11 @@ namespace KiloVisualStudioExtension.Services
         /// </summary>
         /// <param name="agents">List of agents to filter</param>
         /// <returns>Tuple of visible agents list and default agent name</returns>
-        public static (List<Agent> Visible, string DefaultAgent) FilterVisibleAgents(List<Agent> agents)
-        {
-            var visible = agents.Where(a => a.Mode != "subagent" && !a.Hidden).ToList();
-            var defaultAgent = visible.Count > 0 ? visible[0].Name : "code";
-            return (visible, defaultAgent);
-        }
+        //public static (List<Agent> Visible, string DefaultAgent) FilterVisibleAgents(List<Agent> agents)
+        //{
+        //    var visible = agents.Where(a => a.Mode != "subagent" && !a.Hidden).ToList();
+        //    var defaultAgent = visible.Count > 0 ? visible[0].Name : "code";
+        //    return (visible, defaultAgent);
+        //}
     }
 }
