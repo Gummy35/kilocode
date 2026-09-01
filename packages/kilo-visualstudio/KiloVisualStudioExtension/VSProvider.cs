@@ -367,7 +367,8 @@ namespace KiloVisualStudioExtension
       try
       {
         if (message == null) return;
-        var s = (message is string) ? (string)message : JsonSerializer.Serialize(message);
+        var s = (message is string) ? (string)message :
+          Newtonsoft.Json.JsonConvert.SerializeObject(message, new Newtonsoft.Json.JsonSerializerSettings());
         _webView.PostMessage(s);
       }
       catch

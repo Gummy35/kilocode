@@ -135,10 +135,11 @@ namespace KiloVisualStudioExtension
       try
       {
         var _sessionService = _serviceProvider.GetService<SessionHandlerService>();
-        System.Diagnostics.Debug.WriteLine($"SSE Event received : {raw.EventType}");
+//        System.Diagnostics.Debug.WriteLine($"SSE Event received : {raw.EventType}");
 
         var e = SseEventDeserializer.Deserialize(raw);
         if (e == null) return;
+        System.Diagnostics.Debug.WriteLine($"SSE Event received : {e.Type}");
 
         var sessionId = ResolveEventSessionId(raw);
 

@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs.Types.gen;
+//using KiloExtensionDTOs.Types.gen;
 
 /// <summary>
 /// Type: MemoryOperationResponseStateType
