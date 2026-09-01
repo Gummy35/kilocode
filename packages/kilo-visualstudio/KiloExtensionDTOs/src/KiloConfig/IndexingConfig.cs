@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: IndexingConfig
 /// Source: config.ts
 /// </summary>
-public class IndexingConfig
+public partial class IndexingConfig
 {
     [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true
@@ -32,41 +32,41 @@ public class IndexingConfig
     [JsonProperty("vectorStore", NullValueHandling = NullValueHandling.Ignore)]
     public LancedbQdrantEnum? VectorStore { get; set; }
     [JsonProperty("kilo", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: kiloType
-    public KiloType? Kilo { get; set; }
+    // Original TypeScript type: IndexingConfigKiloType
+    public IndexingConfigKiloType? Kilo { get; set; }
     [JsonProperty("openai", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: openaiType
-    public OpenaiType? Openai { get; set; }
+    // Original TypeScript type: IndexingConfigOpenaiType
+    public IndexingConfigOpenaiType? Openai { get; set; }
     [JsonProperty("ollama", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: ollamaType
-    public OllamaType? Ollama { get; set; }
+    // Original TypeScript type: IndexingConfigOllamaType
+    public IndexingConfigOllamaType? Ollama { get; set; }
     [JsonProperty("openai-compatible", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: openai-compatibleType
-    public OpenaiCompatibleType? OpenaiCompatible { get; set; }
+    // Original TypeScript type: IndexingConfigOpenaiCompatibleType
+    public IndexingConfigOpenaiCompatibleType? OpenaiCompatible { get; set; }
     [JsonProperty("gemini", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: geminiType
-    public GeminiType? Gemini { get; set; }
+    // Original TypeScript type: IndexingConfigGeminiType
+    public object? Gemini { get; set; }
     [JsonProperty("mistral", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: mistralType
-    public MistralType? Mistral { get; set; }
+    // Original TypeScript type: IndexingConfigMistralType
+    public object? Mistral { get; set; }
     [JsonProperty("vercel-ai-gateway", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: vercel-ai-gatewayType
-    public VercelAiGatewayType? VercelAiGateway { get; set; }
+    // Original TypeScript type: IndexingConfigVercelAiGatewayType
+    public object? VercelAiGateway { get; set; }
     [JsonProperty("bedrock", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: bedrockType
-    public BedrockType? Bedrock { get; set; }
+    // Original TypeScript type: IndexingConfigBedrockType
+    public IndexingConfigBedrockType? Bedrock { get; set; }
     [JsonProperty("openrouter", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: openrouterType
-    public OpenrouterType? Openrouter { get; set; }
+    // Original TypeScript type: IndexingConfigOpenrouterType
+    public IndexingConfigOpenrouterType? Openrouter { get; set; }
     [JsonProperty("voyage", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: voyageType
-    public VoyageType? Voyage { get; set; }
+    // Original TypeScript type: IndexingConfigVoyageType
+    public object? Voyage { get; set; }
     [JsonProperty("qdrant", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: qdrantType
-    public QdrantType? Qdrant { get; set; }
+    // Original TypeScript type: IndexingConfigQdrantType
+    public IndexingConfigQdrantType? Qdrant { get; set; }
     [JsonProperty("lancedb", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: lancedbType
-    public LancedbType? Lancedb { get; set; }
+    // Original TypeScript type: IndexingConfigLancedbType
+    public IndexingConfigLancedbType? Lancedb { get; set; }
     [JsonProperty("searchMinScore", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number
     public double? SearchMinScore { get; set; }

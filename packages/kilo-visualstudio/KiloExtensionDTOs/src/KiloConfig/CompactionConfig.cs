@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: CompactionConfig
 /// Source: config.ts
 /// </summary>
-public class CompactionConfig
+public partial class CompactionConfig
 {
     [JsonProperty("auto", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

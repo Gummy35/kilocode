@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: WorktreeFileDiff
 /// Source: agent-manager.ts
 /// </summary>
-public class WorktreeFileDiff
+public partial class WorktreeFileDiff
 {
     [JsonProperty("file")]
     public string File { get; set; }

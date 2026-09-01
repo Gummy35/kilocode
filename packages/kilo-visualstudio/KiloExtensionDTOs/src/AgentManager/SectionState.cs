@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SectionState
 /// Source: agent-manager.ts
 /// </summary>
-public class SectionState
+public partial class SectionState
 {
     [JsonProperty("id")]
     public string Id { get; set; }

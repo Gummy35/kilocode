@@ -1087,15 +1087,15 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
   // Build class declaration with inheritance and interfaces
   if (baseClassName) {
     if (implementedInterfaces.length > 0) {
-      sb.push(`public class ${className} : ${pascalCase(baseClassName)}, ${implementedInterfaces.join(', ')}`)
+      sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}, ${implementedInterfaces.join(', ')}`)
     } else {
-      sb.push(`public class ${className} : ${pascalCase(baseClassName)}`)
+      sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}`)
     }
   } else {
     if (implementedInterfaces.length > 0) {
-      sb.push(`public class ${className} : ${implementedInterfaces.join(', ')}`)
+      sb.push(`public partial class ${className} : ${implementedInterfaces.join(', ')}`)
     } else {
-      sb.push(`public class ${className}`)
+      sb.push(`public partial class ${className}`)
     }
   }
   sb.push("{")
@@ -1168,7 +1168,7 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
     sb.push("    /// <summary>")
     sb.push(`    /// Nested type: ${nestedType.name}`)
     sb.push("    /// </summary>")
-    sb.push("    public class " + nestedClassName)
+    sb.push("    public partial class " + nestedClassName)
     sb.push("    {")
     
     if (nestedType.properties) {
@@ -1377,15 +1377,15 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
   const baseClassName = messageTypeDef?.extendsBase || messageTypeDef?.baseType
   if (baseClassName) {
     if (implementedInterfaces.length > 0) {
-      sb.push("public class " + sanitizedName + " : " + pascalCase(baseClassName) + ", " + implementedInterfaces.join(', '))
+      sb.push("public partial class " + sanitizedName + " : " + pascalCase(baseClassName) + ", " + implementedInterfaces.join(', '))
     } else {
-      sb.push("public class " + sanitizedName + " : " + pascalCase(baseClassName))
+      sb.push("public partial class " + sanitizedName + " : " + pascalCase(baseClassName))
     }
   } else {
     if (implementedInterfaces.length > 0) {
-      sb.push("public class " + sanitizedName + " : " + implementedInterfaces.join(', '))
+      sb.push("public partial class " + sanitizedName + " : " + implementedInterfaces.join(', '))
     } else {
-      sb.push("public class " + sanitizedName)
+      sb.push("public partial class " + sanitizedName)
     }
   }
   sb.push("{")
@@ -2335,7 +2335,7 @@ ${usingStatements}/// <summary>
 /// Type: ${typeName} (alias for ${referencedTypeName})
 /// Source: ${typeDef.sourceFile}
 /// </summary>
-public class ${pascalCase(typeName)} : ${baseTypeName} { }
+public partial class ${pascalCase(typeName)} : ${baseTypeName} { }
 `
       const typeTargetDir = getDirectoryForFolder(typeFolder)
       const filePath = path.join(typeTargetDir, `${pascalCase(typeName)}.cs`)
@@ -2362,7 +2362,7 @@ namespace ${namespace};
 /// Type: ${typeName} (placeholder for ${typeDef.kind})
 /// Source: ${typeDef.sourceFile}
 /// </summary>
-public class ${pascalCase(typeName)} { }
+public partial class ${pascalCase(typeName)} { }
 `
     const typeTargetDir = getDirectoryForFolder(typeFolder)
     const filePath = path.join(typeTargetDir, `${pascalCase(typeName)}.cs`)

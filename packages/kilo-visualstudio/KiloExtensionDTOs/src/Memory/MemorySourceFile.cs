@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.Memory;
 /// Type: MemorySourceFile (placeholder for union)
 /// Source: memory.ts
 /// </summary>
-public class MemorySourceFile { }
+public partial class MemorySourceFile { }

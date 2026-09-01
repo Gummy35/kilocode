@@ -17,9 +17,9 @@ using Newtonsoft.Json;
 /// WebView message: OpenConfigFileRequest
 /// Discriminator: type = "openConfigFile"
 /// Source: webview-messages.ts
-/// Signature hash: 40e6544653040e781fd1af4498173ac9eb6abb7efea473adecc4c40ac072b897
+/// Signature hash: 6b79eb8edbfc8aace5ab1a08ac3c29db8204703bfb59700920ef84cfc1e70060
 /// </summary>
-public class OpenConfigFileRequest
+public partial class OpenConfigFileRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -28,6 +28,6 @@ public class OpenConfigFileRequest
     // Original TypeScript type: global | local
     public object? Scope { get; set; }
     [JsonProperty("labels")]
-    // Original TypeScript type: labelsType
-    public LabelsType Labels { get; set; }
+    // Original TypeScript type: OpenConfigFileRequestLabelsType
+    public OpenConfigFileRequestLabelsType Labels { get; set; }
 }

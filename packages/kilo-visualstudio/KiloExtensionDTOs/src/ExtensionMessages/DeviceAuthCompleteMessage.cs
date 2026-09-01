@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: c0e8f0e2c9a36b59331189c6238ef1942a5f27e606c041c443382c04e2522f04
 /// </summary>
-public class DeviceAuthCompleteMessage : IExtensionMessage
+public partial class DeviceAuthCompleteMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

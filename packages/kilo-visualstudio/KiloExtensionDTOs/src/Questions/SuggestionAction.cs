@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SuggestionAction
 /// Source: questions.ts
 /// </summary>
-public class SuggestionAction
+public partial class SuggestionAction
 {
     [JsonProperty("label")]
     public string Label { get; set; }

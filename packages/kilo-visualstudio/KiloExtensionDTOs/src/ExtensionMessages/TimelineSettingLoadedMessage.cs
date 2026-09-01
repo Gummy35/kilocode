@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 36b428441e0aaf16355231543bf0dda0fab9168f0c26a5c61afe762773516ed5
 /// </summary>
-public class TimelineSettingLoadedMessage : IExtensionMessage
+public partial class TimelineSettingLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

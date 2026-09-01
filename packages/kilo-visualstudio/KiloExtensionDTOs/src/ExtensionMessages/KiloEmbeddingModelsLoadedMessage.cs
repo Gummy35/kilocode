@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd
 /// </summary>
-public class KiloEmbeddingModelsLoadedMessage : IExtensionMessage
+public partial class KiloEmbeddingModelsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

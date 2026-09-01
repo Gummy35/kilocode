@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: cc3a18f6099879a9f65ebf33f05a4ee950dfdfe305f59023bac7d55075f5b7ab
 /// </summary>
-public class StreamSessionVisibleMessage
+public partial class StreamSessionVisibleMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

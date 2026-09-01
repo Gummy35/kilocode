@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 00e0998301bc26b74d107df6bbc8b9d1449596439fd8a19cf6f2f7679cc4d895
 /// </summary>
-public class ChatCompletionResultMessage : IExtensionMessage
+public partial class ChatCompletionResultMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

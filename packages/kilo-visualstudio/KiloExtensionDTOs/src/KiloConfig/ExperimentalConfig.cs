@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ExperimentalConfig
 /// Source: config.ts
 /// </summary>
-public class ExperimentalConfig
+public partial class ExperimentalConfig
 {
     [JsonProperty("batch_tool", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

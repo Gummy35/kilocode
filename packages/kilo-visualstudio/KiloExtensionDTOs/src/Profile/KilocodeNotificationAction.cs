@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: KilocodeNotificationAction
 /// Source: profile.ts
 /// </summary>
-public class KilocodeNotificationAction
+public partial class KilocodeNotificationAction
 {
     [JsonProperty("actionText")]
     public string ActionText { get; set; }

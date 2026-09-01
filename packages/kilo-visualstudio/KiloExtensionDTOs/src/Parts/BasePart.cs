@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: BasePart
 /// Source: parts.ts
 /// </summary>
-public class BasePart
+public partial class BasePart
 {
     [JsonProperty("id")]
     public string Id { get; set; }

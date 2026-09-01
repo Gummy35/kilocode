@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: BrowserSettings
 /// Source: config.ts
 /// </summary>
-public class BrowserSettings
+public partial class BrowserSettings
 {
     [JsonProperty("enabled")]
     public bool Enabled { get; set; }

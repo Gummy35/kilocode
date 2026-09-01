@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: TokenUsage
 /// Source: parts.ts
 /// </summary>
-public class TokenUsage
+public partial class TokenUsage
 {
     [JsonProperty("input")]
     public double Input { get; set; }
@@ -25,6 +25,6 @@ public class TokenUsage
     // Original TypeScript type: undefined | number
     public double? Reasoning { get; set; }
     [JsonProperty("cache", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: cacheType
-    public CacheType? Cache { get; set; }
+    // Original TypeScript type: TokenUsageCacheType
+    public object? Cache { get; set; }
 }

@@ -14,8 +14,9 @@ using Newtonsoft.Json;
 /// <summary>
 /// Type: limitsType
 /// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
+/// Signature hash: f86f14193f00c50a761a750f276aa1f13813aee58c91f63960d0001c273251a1
 /// </summary>
-public class LimitsType
+public partial class LimitsType
 {
     [JsonProperty("maxProjectIndexBytes")]
     public double MaxProjectIndexBytes { get; set; }

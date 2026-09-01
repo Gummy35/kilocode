@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: WatcherConfig
 /// Source: config.ts
 /// </summary>
-public class WatcherConfig
+public partial class WatcherConfig
 {
     [JsonProperty("ignore", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array

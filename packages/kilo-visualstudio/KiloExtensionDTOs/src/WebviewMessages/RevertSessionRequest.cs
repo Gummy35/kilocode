@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 082407fede623d0c99e0f25d439908825d4a0c79e8420f89e4bc3c9a18757446
 /// </summary>
-public class RevertSessionRequest
+public partial class RevertSessionRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: f2acb96c7c999df68c29c7c5117b15d04cf36d9e8d71b020a787be1dce7f2814
 /// </summary>
-public class ThroughputSettingLoadedMessage : IExtensionMessage
+public partial class ThroughputSettingLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

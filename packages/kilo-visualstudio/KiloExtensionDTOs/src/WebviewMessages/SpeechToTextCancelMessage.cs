@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 1ba928e837dc48a90f48e0befe767923887125f9dbe387aca7380d14a5367ead
 /// </summary>
-public class SpeechToTextCancelMessage
+public partial class SpeechToTextCancelMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

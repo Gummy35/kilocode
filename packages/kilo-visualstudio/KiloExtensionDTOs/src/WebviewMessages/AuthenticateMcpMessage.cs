@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 25892c2c4fdd4580b91807d4d822bb7379625ba5bfe5b6e7c6b658d63f8afd58
 /// </summary>
-public class AuthenticateMcpMessage
+public partial class AuthenticateMcpMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 694d47e8c66c8fc8d08b9a8ad28654afb4cad624cac05f9fb4ca5a7575475aaf
 /// </summary>
-public class SetReviewMarkdownRenderRequest
+public partial class SetReviewMarkdownRenderRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

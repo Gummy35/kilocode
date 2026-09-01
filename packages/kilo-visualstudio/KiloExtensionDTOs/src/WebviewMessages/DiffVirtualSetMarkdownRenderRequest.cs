@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: c608bd98de7c069683c8e18ba592bb3389c21c181848f687067937a1b4a33e38
 /// </summary>
-public class DiffVirtualSetMarkdownRenderRequest
+public partial class DiffVirtualSetMarkdownRenderRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\src\shared\stream-messages.ts
 /// Signature hash: b218e21169df7fb69342a21f7041e6860563f8539040470fb5704869013a6fbb
 /// </summary>
-public class PartTextDelta
+public partial class PartTextDelta
 {
     [JsonProperty("type")]
     // Original TypeScript type: stringLiteral

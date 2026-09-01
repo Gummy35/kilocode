@@ -20,7 +20,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// Source: extension-messages.ts
 /// Signature hash: 60a0a622c068a0a0f775ee48ccb0704fe6b8c49ca63330939a89d75f5222d97d
 /// </summary>
-public class SessionDeletedMessage : IWebviewMessage
+public partial class SessionDeletedMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

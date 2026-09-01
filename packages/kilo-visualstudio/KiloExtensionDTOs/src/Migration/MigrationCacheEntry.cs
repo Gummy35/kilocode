@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.Migration;
 /// Type: MigrationCacheEntry (placeholder for union)
 /// Source: kilo-provider\handlers\migration.ts
 /// </summary>
-public class MigrationCacheEntry { }
+public partial class MigrationCacheEntry { }

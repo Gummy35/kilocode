@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Providers;
 /// Source: extension-messages.ts
 /// Signature hash: d9a0e5926de8d2192d5974628f62390d2bf94c8cdb1f6e62be6f18e27d07c20d
 /// </summary>
-public class ProvidersLoadedMessage : IExtensionMessage
+public partial class ProvidersLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

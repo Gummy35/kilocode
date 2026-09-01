@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationAutoApprovalSelections
 /// Source: migration.ts
 /// </summary>
-public class MigrationAutoApprovalSelections
+public partial class MigrationAutoApprovalSelections
 {
     [JsonProperty("commandRules")]
     public bool CommandRules { get; set; }

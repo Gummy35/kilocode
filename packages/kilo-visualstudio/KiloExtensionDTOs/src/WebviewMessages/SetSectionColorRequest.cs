@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 4eb8efb3d799a045aa45d7217225eae9512585a358b2f0e2ac2bdb2cbc18a3c9
 /// </summary>
-public class SetSectionColorRequest
+public partial class SetSectionColorRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -12,20 +12,19 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs.Sessions;
 
 /// <summary>
 /// WebView message: StepStartPart
 /// Discriminator: type = "step-start"
 /// Source: parts.ts
-/// Signature hash: 8a8068eb1bdd608866b3466a61a44103f453bdc23e5d96bf862f1dcb159a7192
+/// Signature hash: 1596f921bcef6b679cd7dec085b42e1da012db2878c0066dd4cc905aa08d81ff
 /// </summary>
-public class StepStartPart : BasePart, IPart
+public partial class StepStartPart : BasePart, IPart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "step-start";
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: timeType
-    public TimeType? Time { get; set; }
+    // Original TypeScript type: StepStartPartTimeType
+    public StepStartPartTimeType? Time { get; set; }
 }

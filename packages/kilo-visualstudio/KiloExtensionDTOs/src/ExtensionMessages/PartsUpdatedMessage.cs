@@ -18,11 +18,11 @@ using KiloExtensionDTOs;
 /// Source: extension-messages.ts
 /// Signature hash: fafa457b200c456c2a61504d34516ade1639c34ed60f704100f1eae996167c25
 /// </summary>
-public class PartsupdatedMessage : IExtensionMessage
+public partial class PartsupdatedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "partsUpdated";
     [JsonProperty("updates")]
-    public List<UpdatesItemType> Updates { get; set; }
+    public List<ExtensionMessageUpdatesItemType> Updates { get; set; }
 }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SlashCommandInfo
 /// Source: agents.ts
 /// </summary>
-public class SlashCommandInfo
+public partial class SlashCommandInfo
 {
     [JsonProperty("name")]
     public string Name { get; set; }

@@ -10,13 +10,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs.ExtensionMessages;
 
 /// <summary>
 /// Type: AgentRequirementResult
 /// Source: agents.ts
 /// </summary>
-public class AgentRequirementResult
+public partial class AgentRequirementResult
 {
     [JsonProperty("agent")]
     public string Agent { get; set; }
@@ -34,6 +33,6 @@ public class AgentRequirementResult
     [JsonProperty("vscode_extensions")]
     public List<AgentRequirementVSCodeExtension> Vscode_extensions { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: errorType
-    public ErrorType? Error { get; set; }
+    // Original TypeScript type: AgentRequirementResultErrorType
+    public AgentRequirementResultErrorType? Error { get; set; }
 }

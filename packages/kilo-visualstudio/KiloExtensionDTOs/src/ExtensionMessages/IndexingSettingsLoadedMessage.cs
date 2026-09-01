@@ -17,14 +17,14 @@ using Newtonsoft.Json;
 /// WebView message: IndexingSettingsLoadedMessage
 /// Discriminator: type = "indexingSettingsLoaded"
 /// Source: extension-messages.ts
-/// Signature hash: 16807cf2ae530d01a4a0124dea15f94387228ee3865117ebb30d9ac31258a0c3
+/// Signature hash: b5c15049936b78b7a6b94e3ee7d3f91da3e17023894c14accdaf38fe379c7040
 /// </summary>
-public class IndexingSettingsLoadedMessage : IExtensionMessage
+public partial class IndexingSettingsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "indexingSettingsLoaded";
     [JsonProperty("settings")]
-    // Original TypeScript type: settingsType
-    public SettingsType Settings { get; set; }
+    // Original TypeScript type: IndexingSettingsLoadedMessageSettingsType
+    public IndexingSettingsLoadedMessageSettingsType Settings { get; set; }
 }

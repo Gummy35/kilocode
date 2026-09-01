@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentRequirementVSCodeExtension
 /// Source: agents.ts
 /// </summary>
-public class AgentRequirementVSCodeExtension
+public partial class AgentRequirementVSCodeExtension
 {
     [JsonProperty("name")]
     public string Name { get; set; }

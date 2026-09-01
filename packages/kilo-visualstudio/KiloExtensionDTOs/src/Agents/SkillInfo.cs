@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SkillInfo
 /// Source: agents.ts
 /// </summary>
-public class SkillInfo
+public partial class SkillInfo
 {
     [JsonProperty("name")]
     public string Name { get; set; }

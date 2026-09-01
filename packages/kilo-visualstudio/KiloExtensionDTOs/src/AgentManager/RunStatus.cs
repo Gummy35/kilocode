@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: RunStatus
 /// Source: agent-manager.ts
 /// </summary>
-public class RunStatus
+public partial class RunStatus
 {
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }

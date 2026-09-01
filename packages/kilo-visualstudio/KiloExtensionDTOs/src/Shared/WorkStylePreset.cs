@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: WorkStylePreset
 /// Source: ..\..\..\..\src\shared\work-style-presets.ts
 /// </summary>
-public class WorkStylePreset
+public partial class WorkStylePreset
 {
     [JsonProperty("style")]
     // Original TypeScript type: WorkStyle

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentRequirements
 /// Source: agents.ts
 /// </summary>
-public class AgentRequirements
+public partial class AgentRequirements
 {
     [JsonProperty("skills", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array
@@ -24,5 +24,5 @@ public class AgentRequirements
     // Original TypeScript type: undefined | Array
     public object? Mcps { get; set; }
     [JsonProperty("vscode_extensions", NullValueHandling = NullValueHandling.Ignore)]
-    public List<Vscode_extensionsItemType>? Vscode_extensions { get; set; }
+    public List<object>? Vscode_extensions { get; set; }
 }

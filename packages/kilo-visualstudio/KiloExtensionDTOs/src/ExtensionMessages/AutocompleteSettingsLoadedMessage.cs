@@ -17,14 +17,14 @@ using Newtonsoft.Json;
 /// WebView message: AutocompleteSettingsLoadedMessage
 /// Discriminator: type = "autocompleteSettingsLoaded"
 /// Source: extension-messages.ts
-/// Signature hash: 14ddba67bbe6a2c3bdfedb08bc28bcc5de20f14fd0c1f043728856844c08b3e1
+/// Signature hash: b8fc6a9c8d47be83c5b642b77e21a7cabf0c8e74bb789998fb23ef0e90df0b39
 /// </summary>
-public class AutocompleteSettingsLoadedMessage : IExtensionMessage
+public partial class AutocompleteSettingsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "autocompleteSettingsLoaded";
     [JsonProperty("settings")]
-    // Original TypeScript type: settingsType
-    public SettingsType Settings { get; set; }
+    // Original TypeScript type: AutocompleteSettingsLoadedMessageSettingsType
+    public AutocompleteSettingsLoadedMessageSettingsType Settings { get; set; }
 }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PRCheck
 /// Source: agent-manager.ts
 /// </summary>
-public class PRCheck
+public partial class PRCheck
 {
     [JsonProperty("name")]
     public string Name { get; set; }

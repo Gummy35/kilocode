@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: QuestionOption
 /// Source: questions.ts
 /// </summary>
-public class QuestionOption
+public partial class QuestionOption
 {
     [JsonProperty("label")]
     public string Label { get; set; }

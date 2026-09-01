@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: b02d75f915b71cdee458445aae6f87c51e53e9936cfd09dd69e80ec6a74b86e5
 /// </summary>
-public class AgentManagerRevertWorktreeFileResultMessage : IExtensionMessage
+public partial class AgentManagerRevertWorktreeFileResultMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

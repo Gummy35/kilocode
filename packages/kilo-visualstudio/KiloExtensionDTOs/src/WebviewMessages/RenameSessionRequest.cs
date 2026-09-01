@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 69827555d6548ccc2812ba6a059776cedc1ee5d7b6f255d822b285a61eb4ca77
 /// </summary>
-public class RenameSessionRequest
+public partial class RenameSessionRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

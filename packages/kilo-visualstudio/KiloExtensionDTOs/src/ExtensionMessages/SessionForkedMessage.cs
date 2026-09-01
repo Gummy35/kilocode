@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Types;
 /// Source: extension-messages.ts
 /// Signature hash: 768988e98a163415492ade684a5d62e0012b785dcc9a743f6ae4bbcd79cdbc80
 /// </summary>
-public class SessionForkedMessage : IAgentManagerOutMessage
+public partial class SessionForkedMessage : IAgentManagerOutMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

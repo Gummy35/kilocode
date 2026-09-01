@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 1d4b3920a69df3fe87e36f7aff373e43fa30cada1cbd48bb8daa4bfadfa2e0c9
 /// </summary>
-public class CustomProviderModelsFetchedMessage : IExtensionMessage
+public partial class CustomProviderModelsFetchedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -27,7 +27,7 @@ public class CustomProviderModelsFetchedMessage : IExtensionMessage
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("models", NullValueHandling = NullValueHandling.Ignore)]
-    public List<ModelsItemType>? Models { get; set; }
+    public List<object>? Models { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Error { get; set; }

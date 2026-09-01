@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 02a5367c38ad1343638f49fc0fd6fe070f01e194fabd1a07a7840c6e2571c1a1
 /// </summary>
-public class TelemetryRequest
+public partial class TelemetryRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

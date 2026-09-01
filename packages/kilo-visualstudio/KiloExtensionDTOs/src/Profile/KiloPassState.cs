@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: KiloPassState
 /// Source: profile.ts
 /// </summary>
-public class KiloPassState
+public partial class KiloPassState
 {
     [JsonProperty("currentPeriodBaseCreditsUsd")]
     public double CurrentPeriodBaseCreditsUsd { get; set; }

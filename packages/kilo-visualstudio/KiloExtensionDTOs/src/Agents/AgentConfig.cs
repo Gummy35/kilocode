@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentConfig
 /// Source: agents.ts
 /// </summary>
-public class AgentConfig
+public partial class AgentConfig
 {
     [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | null | string

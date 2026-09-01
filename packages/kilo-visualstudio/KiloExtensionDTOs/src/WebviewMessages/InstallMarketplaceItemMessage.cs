@@ -21,7 +21,7 @@ using KiloExtensionDTOs;
 /// Source: webview-messages.ts
 /// Signature hash: adda23152440ea56532f1a6ceb2b6803d04103de5e63a69c8a56609ae151919b
 /// </summary>
-public class InstallMarketplaceItemMessage
+public partial class InstallMarketplaceItemMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

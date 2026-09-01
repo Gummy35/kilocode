@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 230f8b9e9044b07ce2f885764116534949d7822469d057e6ece07c0f4064cfcd
 /// </summary>
-public class ProviderDisconnectedMessage : IExtensionMessage
+public partial class ProviderDisconnectedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

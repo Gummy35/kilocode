@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ModelSelection
 /// Source: providers.ts
 /// </summary>
-public class ModelSelection
+public partial class ModelSelection
 {
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }

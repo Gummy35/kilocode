@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: DiffImageSide
 /// Source: agent-manager.ts
 /// </summary>
-public class DiffImageSide
+public partial class DiffImageSide
 {
     [JsonProperty("mime")]
     public string Mime { get; set; }

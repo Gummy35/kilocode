@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: LocalGitStats
 /// Source: agent-manager.ts
 /// </summary>
-public class LocalGitStats
+public partial class LocalGitStats
 {
     [JsonProperty("branch")]
     public string Branch { get; set; }

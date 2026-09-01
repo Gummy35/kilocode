@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: b3f78f0caaa6c59086f33cb6de9e21bddc285de2191bedd1beac9633864d1dab
 /// </summary>
-public class RequestWorktreeDiffFileMessage
+public partial class RequestWorktreeDiffFileMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

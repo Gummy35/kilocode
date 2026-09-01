@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SuggestionRequest
 /// Source: questions.ts
 /// </summary>
-public class SuggestionRequest
+public partial class SuggestionRequest
 {
     [JsonProperty("id")]
     public string Id { get; set; }
@@ -29,6 +29,6 @@ public class SuggestionRequest
     // Original TypeScript type: undefined | false | true
     public bool? Blocking { get; set; }
     [JsonProperty("tool", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: toolType
-    public ToolType? Tool { get; set; }
+    // Original TypeScript type: SuggestionRequestToolType
+    public object? Tool { get; set; }
 }

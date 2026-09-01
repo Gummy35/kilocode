@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 1f31d0e3c9d35006729a4b2a28e598378cb5f3b3cbcfa6b831ef200724b275f0
 /// </summary>
-public class OpenSettingsPanelRequest
+public partial class OpenSettingsPanelRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

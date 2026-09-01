@@ -20,7 +20,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// Source: extension-messages.ts
 /// Signature hash: 9fd869e4062b7accdd0f2015957cb800351f9a8053a9695b72836361709a1019
 /// </summary>
-public class SandboxStatusMessage : IWebviewMessage
+public partial class SandboxStatusMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

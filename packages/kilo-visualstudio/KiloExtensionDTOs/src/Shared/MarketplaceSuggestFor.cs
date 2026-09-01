@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MarketplaceSuggestFor
 /// Source: ..\marketplace.ts
 /// </summary>
-public class MarketplaceSuggestFor
+public partial class MarketplaceSuggestFor
 {
     [JsonProperty("filename", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array

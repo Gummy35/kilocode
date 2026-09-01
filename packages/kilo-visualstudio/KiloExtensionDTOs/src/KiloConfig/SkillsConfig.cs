@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SkillsConfig
 /// Source: config.ts
 /// </summary>
-public class SkillsConfig
+public partial class SkillsConfig
 {
     [JsonProperty("paths", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array

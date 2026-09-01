@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: McpConfig
 /// Source: config.ts
 /// </summary>
-public class McpConfig
+public partial class McpConfig
 {
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
     public LocalRemoteEnum? Type { get; set; }

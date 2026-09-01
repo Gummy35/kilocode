@@ -20,7 +20,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// Source: extension-messages.ts
 /// Signature hash: 819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d
 /// </summary>
-public class IndexingStatusLoadedMessage : IWebviewMessage
+public partial class IndexingStatusLoadedMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

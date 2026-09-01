@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: BranchInfo
 /// Source: agent-manager.ts
 /// </summary>
-public class BranchInfo
+public partial class BranchInfo
 {
     [JsonProperty("name")]
     public string Name { get; set; }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationProviderInfo
 /// Source: migration.ts
 /// </summary>
-public class MigrationProviderInfo
+public partial class MigrationProviderInfo
 {
     [JsonProperty("profileName")]
     public string ProfileName { get; set; }

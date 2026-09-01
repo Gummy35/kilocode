@@ -18,9 +18,9 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// WebView message: SessionErrorMessage
 /// Discriminator: type = "sessionError"
 /// Source: extension-messages.ts
-/// Signature hash: 5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0
+/// Signature hash: 511cb11994d71a84dbcb33ebf24d47bead531e58a37e9e65ceea0bfd6d668816
 /// </summary>
-public class SessionErrorMessage : IWebviewMessage
+public partial class SessionErrorMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -29,6 +29,6 @@ public class SessionErrorMessage : IWebviewMessage
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: errorType
-    public ErrorType? Error { get; set; }
+    // Original TypeScript type: SessionErrorMessageErrorType
+    public object? Error { get; set; }
 }

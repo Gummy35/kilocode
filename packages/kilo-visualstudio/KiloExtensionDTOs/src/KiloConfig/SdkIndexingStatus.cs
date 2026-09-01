@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.KiloConfig;
 /// Type: SdkIndexingStatus (alias for IndexingStatus)
 /// Source: config.ts
 /// </summary>
-public class SdkIndexingStatus : IndexingStatus { }
+public partial class SdkIndexingStatus : IndexingStatus { }

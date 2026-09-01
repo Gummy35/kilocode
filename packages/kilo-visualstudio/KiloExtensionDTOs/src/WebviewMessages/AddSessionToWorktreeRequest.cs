@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: e03234fe143062d9e9f9a04678b6cc486bdba6a4a511d9173d457ff055ef3a15
 /// </summary>
-public class AddSessionToWorktreeRequest
+public partial class AddSessionToWorktreeRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

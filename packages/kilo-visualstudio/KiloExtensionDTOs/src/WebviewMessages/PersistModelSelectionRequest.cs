@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 84456b40c7b6dfc3e59a437ef6fdfab001b87ac69cc9347f46527856f8b3736b
 /// </summary>
-public class PersistModelSelectionRequest
+public partial class PersistModelSelectionRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

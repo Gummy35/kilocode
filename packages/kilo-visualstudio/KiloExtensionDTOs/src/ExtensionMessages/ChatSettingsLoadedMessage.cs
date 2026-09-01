@@ -17,14 +17,14 @@ using Newtonsoft.Json;
 /// WebView message: ChatSettingsLoadedMessage
 /// Discriminator: type = "chatSettingsLoaded"
 /// Source: extension-messages.ts
-/// Signature hash: 675b7e4fcbdcf48fe108166914629a2424eec8d959c67155ad1ecdddcef7b884
+/// Signature hash: db41351cb1e28f59732084997251a2e2b227d818138f383a39cab27c408addee
 /// </summary>
-public class ChatSettingsLoadedMessage : IExtensionMessage
+public partial class ChatSettingsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "chatSettingsLoaded";
     [JsonProperty("settings")]
-    // Original TypeScript type: settingsType
-    public SettingsType Settings { get; set; }
+    // Original TypeScript type: ChatSettingsLoadedMessageSettingsType
+    public ChatSettingsLoadedMessageSettingsType Settings { get; set; }
 }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: LegacyAutocompleteSettings
 /// Source: migration.ts
 /// </summary>
-public class LegacyAutocompleteSettings
+public partial class LegacyAutocompleteSettings
 {
     [JsonProperty("enableAutoTrigger", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

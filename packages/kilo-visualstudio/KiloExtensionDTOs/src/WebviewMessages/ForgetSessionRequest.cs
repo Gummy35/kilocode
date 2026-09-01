@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 5b1b30834a521bcf338a2ea6a684185254f72818dcab181bfb663ffe976b0bd0
 /// </summary>
-public class ForgetSessionRequest
+public partial class ForgetSessionRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

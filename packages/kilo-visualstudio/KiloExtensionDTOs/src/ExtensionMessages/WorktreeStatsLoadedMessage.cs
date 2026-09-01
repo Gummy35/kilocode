@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: bda1c1463e9daf3cac215efef29fe3eff4ef6204c2216e54689a7e8a392740d2
 /// </summary>
-public class WorktreeStatsLoadedMessage : IExtensionMessage
+public partial class WorktreeStatsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ExtensionSettings
 /// Source: extension-messages.ts
 /// </summary>
-public class ExtensionSettings
+public partial class ExtensionSettings
 {
     [JsonProperty("maxCost", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number

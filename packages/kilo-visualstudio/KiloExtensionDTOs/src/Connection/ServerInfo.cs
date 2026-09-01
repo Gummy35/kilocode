@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ServerInfo
 /// Source: connection.ts
 /// </summary>
-public class ServerInfo
+public partial class ServerInfo
 {
     [JsonProperty("port")]
     public double Port { get; set; }

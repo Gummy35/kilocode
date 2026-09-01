@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: c8c35c9015bb355bbfa3f41fe5d0435011050866fa062572ef93b0d73524e77c
 /// </summary>
-public class AgentManagerTerminalClosedMessage : IExtensionMessage
+public partial class AgentManagerTerminalClosedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

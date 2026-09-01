@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentRequirementSkill
 /// Source: agents.ts
 /// </summary>
-public class AgentRequirementSkill
+public partial class AgentRequirementSkill
 {
     [JsonProperty("name")]
     public string Name { get; set; }

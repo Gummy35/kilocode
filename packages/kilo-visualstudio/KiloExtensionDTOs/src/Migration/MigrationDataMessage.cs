@@ -18,9 +18,9 @@ using KiloExtensionDTOs.ExtensionMessages;
 /// WebView message: MigrationDataMessage
 /// Discriminator: type = "migrationData"
 /// Source: migration.ts
-/// Signature hash: 7d26299641bee2766b2de5d196ec6cbd6ee45d279e0e3027103ef63e3cd021fa
+/// Signature hash: 521f4505d83cdcccc0078b1447f720fe9e3e18bc50c714074b8053be8ad73697
 /// </summary>
-public class MigrationDataMessage : IExtensionMessage
+public partial class MigrationDataMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -31,6 +31,6 @@ public class MigrationDataMessage : IExtensionMessage
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("data")]
-    // Original TypeScript type: dataType
-    public DataType Data { get; set; }
+    // Original TypeScript type: MigrationDataMessageDataType
+    public MigrationDataMessageDataType Data { get; set; }
 }

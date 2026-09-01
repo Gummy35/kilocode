@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: KilocodeNotification
 /// Source: profile.ts
 /// </summary>
-public class KilocodeNotification
+public partial class KilocodeNotification
 {
     [JsonProperty("id")]
     public string Id { get; set; }

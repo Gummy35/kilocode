@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 6028a11362e87f512f3b16aa9a510c8c4cc39be67376611221df4ae447ff88c1
 /// </summary>
-public class SetLanguageRequest
+public partial class SetLanguageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentContent
 /// Source: ..\marketplace.ts
 /// </summary>
-public class AgentContent
+public partial class AgentContent
 {
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: primary | subagent | all
@@ -31,6 +31,6 @@ public class AgentContent
     // Original TypeScript type: undefined | __type
     public object? Permission { get; set; }
     [JsonProperty("requirements", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: requirementsType
-    public RequirementsType? Requirements { get; set; }
+    // Original TypeScript type: AgentContentRequirementsType
+    public AgentContentRequirementsType? Requirements { get; set; }
 }

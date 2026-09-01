@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 731e57cc63338a5f8f922ccb252afe349d657c421033804c46ecf1b8d8081515
 /// </summary>
-public class RequestSandboxStatusMessage
+public partial class RequestSandboxStatusMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

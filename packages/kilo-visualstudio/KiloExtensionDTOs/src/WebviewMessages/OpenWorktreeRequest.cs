@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: d453c93d64f793cadb6c92e708377b76a4eae1d543878d767c20d5f847555bb6
 /// </summary>
-public class OpenWorktreeRequest
+public partial class OpenWorktreeRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

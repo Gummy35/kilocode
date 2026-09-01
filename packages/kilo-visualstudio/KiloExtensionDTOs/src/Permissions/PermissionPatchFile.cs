@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PermissionPatchFile
 /// Source: permissions.ts
 /// </summary>
-public class PermissionPatchFile
+public partial class PermissionPatchFile
 {
     [JsonProperty("filePath", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: CommitMessageConfig
 /// Source: config.ts
 /// </summary>
-public class CommitMessageConfig
+public partial class CommitMessageConfig
 {
     [JsonProperty("prompt", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

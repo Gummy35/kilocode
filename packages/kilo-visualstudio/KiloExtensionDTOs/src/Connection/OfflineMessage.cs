@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 /// Source: connection.ts
 /// Signature hash: d4d0a70801277846f4b9141dad0457000a3cb562350db9fc71c3731a5212b144
 /// </summary>
-public class OfflineMessage : ISessionStatusInfo
+public partial class OfflineMessage : ISessionStatusInfo
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -19,11 +19,11 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 687206805a03368ab123d5c7bca04e75b925a384737d4a866021595d6dce4750
 /// </summary>
-public class ImageModelsLoadedMessage : IExtensionMessage
+public partial class ImageModelsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "imageModelsLoaded";
     [JsonProperty("models")]
-    public List<ModelsItemType> Models { get; set; }
+    public List<ImageModelsLoadedMessageModelsItemType> Models { get; set; }
 }

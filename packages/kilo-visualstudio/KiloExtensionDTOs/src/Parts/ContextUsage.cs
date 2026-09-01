@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ContextUsage
 /// Source: parts.ts
 /// </summary>
-public class ContextUsage
+public partial class ContextUsage
 {
     [JsonProperty("tokens")]
     public double Tokens { get; set; }

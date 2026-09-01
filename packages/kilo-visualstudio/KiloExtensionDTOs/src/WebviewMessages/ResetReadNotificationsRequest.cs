@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: e0e2ef0c12ae4c65eaa74ec7f3b908bf790ec417936608036509cc8abd40257f
 /// </summary>
-public class ResetReadNotificationsRequest
+public partial class ResetReadNotificationsRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ManagedSessionState
 /// Source: agent-manager.ts
 /// </summary>
-public class ManagedSessionState
+public partial class ManagedSessionState
 {
     [JsonProperty("id")]
     public string Id { get; set; }

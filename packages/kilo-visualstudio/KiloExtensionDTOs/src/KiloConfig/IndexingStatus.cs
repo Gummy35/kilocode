@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.KiloConfig;
 /// Type: IndexingStatus (placeholder for typeAlias)
 /// Source: config.ts
 /// </summary>
-public class IndexingStatus { }
+public partial class IndexingStatus { }

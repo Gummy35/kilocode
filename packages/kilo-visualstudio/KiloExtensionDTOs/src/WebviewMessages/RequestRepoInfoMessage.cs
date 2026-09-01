@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: bc78aef72ae1f86cfe44be3ec69aedd09580de793026c54cabc9dd77d4bf7aae
 /// </summary>
-public class RequestRepoInfoMessage
+public partial class RequestRepoInfoMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

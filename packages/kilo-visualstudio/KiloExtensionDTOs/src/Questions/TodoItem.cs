@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: TodoItem
 /// Source: questions.ts
 /// </summary>
-public class TodoItem
+public partial class TodoItem
 {
     [JsonProperty("id")]
     public string Id { get; set; }

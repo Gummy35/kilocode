@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.Types;
 /// Type: MarketplaceItem (placeholder for union)
 /// Source: services\marketplace\types.ts
 /// </summary>
-public class MarketplaceItem { }
+public partial class MarketplaceItem { }

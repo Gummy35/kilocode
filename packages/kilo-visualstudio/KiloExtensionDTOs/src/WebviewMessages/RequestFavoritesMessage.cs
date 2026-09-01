@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 3ab0223b02430a24ccb7b7e489b3a542775f09925b8e5cf4310e6db78c72e4e7
 /// </summary>
-public class RequestFavoritesMessage
+public partial class RequestFavoritesMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

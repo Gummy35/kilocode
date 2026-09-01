@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Types;
 /// Source: extension-messages.ts
 /// Signature hash: aad5690b6d4d2a0c3d36fddd6ad1322c81cee706df618a1ce50e624c7de746dc
 /// </summary>
-public class OpenInstallModalMessage : IExtensionMessage
+public partial class OpenInstallModalMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

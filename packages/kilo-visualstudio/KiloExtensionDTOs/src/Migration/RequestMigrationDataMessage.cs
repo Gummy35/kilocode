@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: migration.ts
 /// Signature hash: 674a3f3c9d6e7f9c6bd02b5b6bf67d5711c1af2ef6f5dbdbcc038453222dde3f
 /// </summary>
-public class RequestMigrationDataMessage
+public partial class RequestMigrationDataMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

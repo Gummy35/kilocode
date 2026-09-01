@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ReviewMessageView
 /// Source: ..\..\..\..\src\shared\review-comments.ts
 /// </summary>
-public class ReviewMessageView
+public partial class ReviewMessageView
 {
     [JsonProperty("data")]
     // Original TypeScript type: ReviewMessageData

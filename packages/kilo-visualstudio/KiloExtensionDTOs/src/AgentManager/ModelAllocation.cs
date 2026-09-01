@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ModelAllocation
 /// Source: agent-manager.ts
 /// </summary>
-public class ModelAllocation
+public partial class ModelAllocation
 {
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }

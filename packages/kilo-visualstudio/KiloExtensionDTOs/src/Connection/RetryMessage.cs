@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 /// Source: connection.ts
 /// Signature hash: 8b8917135196b40054634818075492d04c1eef12cdf8ceb9be791b3d9857d42f
 /// </summary>
-public class RetryMessage : ISessionStatusInfo
+public partial class RetryMessage : ISessionStatusInfo
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

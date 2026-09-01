@@ -20,7 +20,7 @@ using KiloExtensionDTOs;
 /// Source: webview-messages.ts
 /// Signature hash: 9d8862cc7a038ecbb589264b3816d1ac6fcbdd9b6948ae8d1177b042a3fdbb4d
 /// </summary>
-public class DiffViewerSendCommentsRequest
+public partial class DiffViewerSendCommentsRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

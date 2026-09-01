@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.Sessions;
 /// Type: SessionModelUsage (placeholder for typeAlias)
 /// Source: sessions.ts
 /// </summary>
-public class SessionModelUsage { }
+public partial class SessionModelUsage { }

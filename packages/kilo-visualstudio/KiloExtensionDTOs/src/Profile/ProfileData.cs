@@ -15,11 +15,11 @@ using Newtonsoft.Json;
 /// Type: ProfileData
 /// Source: profile.ts
 /// </summary>
-public class ProfileData
+public partial class ProfileData
 {
     [JsonProperty("profile")]
-    // Original TypeScript type: profileType
-    public ProfileType Profile { get; set; }
+    // Original TypeScript type: ProfileDataProfileType
+    public ProfileDataProfileType Profile { get; set; }
     [JsonProperty("balance", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: null | KilocodeBalance
     public KilocodeBalance? Balance { get; set; }

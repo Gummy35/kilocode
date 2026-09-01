@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: TerminalFont
 /// Source: agent-manager.ts
 /// </summary>
-public class TerminalFont
+public partial class TerminalFont
 {
     [JsonProperty("fontFamily")]
     public string FontFamily { get; set; }

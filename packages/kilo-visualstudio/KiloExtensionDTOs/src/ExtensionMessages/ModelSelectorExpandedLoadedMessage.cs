@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 18320e5789c0710e0cd5a81353220ae84ddb49614afa03c625b81b71dcc49089
 /// </summary>
-public class ModelSelectorExpandedLoadedMessage : IExtensionMessage
+public partial class ModelSelectorExpandedLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

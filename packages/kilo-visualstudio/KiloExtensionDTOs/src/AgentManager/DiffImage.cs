@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: DiffImage
 /// Source: agent-manager.ts
 /// </summary>
-public class DiffImage
+public partial class DiffImage
 {
     [JsonProperty("before", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | DiffImageSide

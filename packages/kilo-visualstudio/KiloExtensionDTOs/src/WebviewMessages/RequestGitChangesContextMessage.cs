@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 283160ecf371b3591b438ec4923147fc7ee258445a7cb012ac9a05379bc98e45
 /// </summary>
-public class RequestGitChangesContextMessage
+public partial class RequestGitChangesContextMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

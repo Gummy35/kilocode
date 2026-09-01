@@ -17,9 +17,9 @@ using Newtonsoft.Json;
 /// WebView message: FilePartSource
 /// Discriminator: type = "file"
 /// Source: parts.ts
-/// Signature hash: 95e490faa353aace5fbff94b81edc12a5143d3e69ad34b74d12b58d4d05055c7
+/// Signature hash: 06365aaa09dfb30d0c2af66b485f8c72196e95a5dad9336e3589a4a55ae0d7c7
 /// </summary>
-public class FilePartSource
+public partial class FilePartSource
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -27,6 +27,6 @@ public class FilePartSource
     [JsonProperty("path")]
     public string Path { get; set; }
     [JsonProperty("text")]
-    // Original TypeScript type: textType
-    public TextType Text { get; set; }
+    // Original TypeScript type: FilePartSourceTextType
+    public FilePartSourceTextType Text { get; set; }
 }

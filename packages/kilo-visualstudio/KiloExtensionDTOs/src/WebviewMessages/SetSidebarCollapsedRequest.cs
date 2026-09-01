@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: f5d4d994c69b27a74792babdd2ac5d2eeeeafae160a7ab578c2e00053882756b
 /// </summary>
-public class SetSidebarCollapsedRequest
+public partial class SetSidebarCollapsedRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

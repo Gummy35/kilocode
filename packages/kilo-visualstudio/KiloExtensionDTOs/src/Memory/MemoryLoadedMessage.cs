@@ -20,7 +20,7 @@ using KiloExtensionDTOs.ExtensionMessages;
 /// Source: memory.ts
 /// Signature hash: e2d0705f0c0a48fd1c7424b51d4929eb833a902e9ec1fe9a2f852940500bd146
 /// </summary>
-public class MemoryLoadedMessage : IExtensionMessage
+public partial class MemoryLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

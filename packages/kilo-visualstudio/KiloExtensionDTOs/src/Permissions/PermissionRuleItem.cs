@@ -16,7 +16,7 @@ using KiloExtensionDTOs;
 /// Type: PermissionRuleItem
 /// Source: permissions.ts
 /// </summary>
-public class PermissionRuleItem
+public partial class PermissionRuleItem
 {
     [JsonProperty("permission")]
     public string Permission { get; set; }

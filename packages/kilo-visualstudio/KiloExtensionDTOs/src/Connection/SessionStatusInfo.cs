@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.Connection;
 /// Type: SessionStatusInfo (placeholder for union)
 /// Source: connection.ts
 /// </summary>
-public class SessionStatusInfo { }
+public partial class SessionStatusInfo { }

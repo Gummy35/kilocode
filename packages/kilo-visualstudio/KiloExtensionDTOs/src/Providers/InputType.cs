@@ -14,8 +14,9 @@ using Newtonsoft.Json;
 /// <summary>
 /// Type: inputType
 /// Source: providers.ts
+/// Signature hash: 8e17bf40cfeed0c745ec2d91d21c5d13598afd62e0d42a01c6407cc83f54f578
 /// </summary>
-public class InputType
+public partial class InputType
 {
     [JsonProperty("text")]
     public bool Text { get; set; }

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 0c840eb310c1fdae4d78c532ed88aad8eb37739d86ee094c65e6a6432eea632a
 /// </summary>
-public class AgentManagerSendInitialMessage : IExtensionMessage
+public partial class AgentManagerSendInitialMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -44,5 +44,5 @@ public class AgentManagerSendInitialMessage : IExtensionMessage
     // Original TypeScript type: undefined | string
     public string? Variant { get; set; }
     [JsonProperty("files", NullValueHandling = NullValueHandling.Ignore)]
-    public List<FilesItemType>? Files { get; set; }
+    public List<AgentManagerSendInitialMessageFilesItemType>? Files { get; set; }
 }

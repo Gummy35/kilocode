@@ -14,8 +14,9 @@ using Newtonsoft.Json;
 /// <summary>
 /// Type: defaultModelType
 /// Source: migration.ts
+/// Signature hash: b6a913052b7b148553fd4d3f433fa866c1268df303467f65ff87772ffd8c2b77
 /// </summary>
-public class DefaultModelType
+public partial class DefaultModelType
 {
     [JsonProperty("provider")]
     public string Provider { get; set; }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SessionUpdate
 /// Source: sessions.ts
 /// </summary>
-public class SessionUpdate : SessionInfo
+public partial class SessionUpdate : SessionInfo
 {
     [JsonProperty("id")]
     public string Id { get; set; }

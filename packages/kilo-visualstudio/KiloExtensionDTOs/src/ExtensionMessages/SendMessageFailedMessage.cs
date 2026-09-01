@@ -20,7 +20,7 @@ using KiloExtensionDTOs;
 /// Source: extension-messages.ts
 /// Signature hash: 2069b6b851d17138f04b28883b9dc6f8a5fad36289fea13d1328c5bcac9055e7
 /// </summary>
-public class SendMessageFailedMessage : IExtensionMessage
+public partial class SendMessageFailedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

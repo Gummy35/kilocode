@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 4863a6c27fa1546b924027472f42953b8ab6e04becfbb449130e52f560397bd3
 /// </summary>
-public class RequestMcpStatusMessage
+public partial class RequestMcpStatusMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

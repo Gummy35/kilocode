@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: Config
 /// Source: config.ts
 /// </summary>
-public class Config
+public partial class Config
 {
     [JsonProperty("permission", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type

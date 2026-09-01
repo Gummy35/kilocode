@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MarketplaceFilters
 /// Source: ..\marketplace.ts
 /// </summary>
-public class MarketplaceFilters
+public partial class MarketplaceFilters
 {
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

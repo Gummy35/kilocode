@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: c012a062443b583bfdeff81eda6ab272554eeffb10925fd346a8c77cba93f506
 /// </summary>
-public class SpeechToTextCancelledMessage : IExtensionMessage
+public partial class SpeechToTextCancelledMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

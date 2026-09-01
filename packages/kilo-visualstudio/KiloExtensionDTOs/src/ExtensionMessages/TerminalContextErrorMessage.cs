@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: f016b88502dfdc11df484fc4b21c97613abf1881f74ce00a49e655628d1f6ceb
 /// </summary>
-public class TerminalContextErrorMessage : IExtensionMessage
+public partial class TerminalContextErrorMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

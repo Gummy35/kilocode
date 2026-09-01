@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 997c7c0f120dc17eee41bfa8c4c0ee9864b29acd10fb24eec70802e6a9154fde
 /// </summary>
-public class MarketplaceRemoveResultMessage : IExtensionMessage
+public partial class MarketplaceRemoveResultMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

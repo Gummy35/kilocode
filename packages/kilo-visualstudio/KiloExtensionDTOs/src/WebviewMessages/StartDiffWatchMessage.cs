@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: d87941c68b14b202252c0182d70fc83c5d89726b952d33ca47472b41d3a1ad6b
 /// </summary>
-public class StartDiffWatchMessage
+public partial class StartDiffWatchMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

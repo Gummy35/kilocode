@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 2c4ec544229b813cd741de60936febcf3d0f51df5374fd5fc08468afa7fba073
 /// </summary>
-public class SpeechToTextStartedMessage : IExtensionMessage
+public partial class SpeechToTextStartedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

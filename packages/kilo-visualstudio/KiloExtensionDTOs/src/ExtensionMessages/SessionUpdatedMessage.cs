@@ -21,7 +21,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// Source: extension-messages.ts
 /// Signature hash: ce0108fff6e4a3f89b4f147fbe5df6a5566b4e8298660e3269870a6e791446dd
 /// </summary>
-public class SessionUpdatedMessage : IWebviewMessage
+public partial class SessionUpdatedMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

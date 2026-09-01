@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: KiloEmbeddingModel
 /// Source: config.ts
 /// </summary>
-public class KiloEmbeddingModel
+public partial class KiloEmbeddingModel
 {
     [JsonProperty("id")]
     public string Id { get; set; }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SessionFileDiff
 /// Source: sessions.ts
 /// </summary>
-public class SessionFileDiff
+public partial class SessionFileDiff
 {
     [JsonProperty("file")]
     public string File { get; set; }

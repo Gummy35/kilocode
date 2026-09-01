@@ -12,15 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs.Sessions;
 
 /// <summary>
 /// WebView message: TextPart
 /// Discriminator: type = "text"
 /// Source: parts.ts
-/// Signature hash: 564f5242718081f86a3749644878c4ac959ae368caed261825833eca23fccbb2
+/// Signature hash: 86b5da5cb83860a9c7999a76a46cb8eb9aff5757ac92ccdf97e387ee68d0bdd6
 /// </summary>
-public class TextPart : BasePart, IPart
+public partial class TextPart : BasePart, IPart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -31,8 +30,8 @@ public class TextPart : BasePart, IPart
     // Original TypeScript type: undefined | false | true
     public bool? Synthetic { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: timeType
-    public TimeType? Time { get; set; }
+    // Original TypeScript type: TextPartTimeType
+    public TextPartTimeType? Time { get; set; }
     [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Metadata { get; set; }

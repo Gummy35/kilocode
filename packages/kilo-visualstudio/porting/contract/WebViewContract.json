@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "66051c7724dc37dc2d75b2b08683bf1e96e6155f",
-    "generatedAt": "2026-08-25T13:27:48.420Z"
+    "commit": "27226b500cf29f9930cbc0b64b7b4a60803bb483",
+    "generatedAt": "2026-09-01T09:46:18.017Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -1490,12 +1490,12 @@
           },
           {
             "name": "labels",
-            "type": "labelsType",
+            "type": "OpenConfigFileRequestLabelsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "labelsType",
+              "name": "OpenConfigFileRequestLabelsType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -8459,12 +8459,12 @@
           },
           {
             "name": "time",
-            "type": "timeType",
+            "type": "TextPartTimeType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "timeType",
+              "name": "TextPartTimeType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -8519,12 +8519,12 @@
           },
           {
             "name": "text",
-            "type": "textType",
+            "type": "FilePartSourceTextType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "textType",
+              "name": "FilePartSourceTextType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -8712,12 +8712,12 @@
           },
           {
             "name": "time",
-            "type": "timeType",
+            "type": "ReasoningPartTimeType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "timeType",
+              "name": "ReasoningPartTimeType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -8746,12 +8746,12 @@
           },
           {
             "name": "time",
-            "type": "timeType",
+            "type": "StepStartPartTimeType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "timeType",
+              "name": "StepStartPartTimeType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -8793,12 +8793,12 @@
           },
           {
             "name": "time",
-            "type": "timeType",
+            "type": "StepFinishPartTimeType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "timeType",
+              "name": "StepFinishPartTimeType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -8806,12 +8806,12 @@
           },
           {
             "name": "model",
-            "type": "modelType",
+            "type": "StepFinishPartModelType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "modelType",
+              "name": "StepFinishPartModelType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -8858,12 +8858,12 @@
           },
           {
             "name": "tokens",
-            "type": "tokensType",
+            "type": "StepFinishPartTokensType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "tokensType",
+              "name": "StepFinishPartTokensType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -9069,12 +9069,12 @@
           },
           {
             "name": "data",
-            "type": "dataType",
+            "type": "MigrationDataMessageDataType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "dataType",
+              "name": "MigrationDataMessageDataType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -9434,12 +9434,12 @@
           },
           {
             "name": "selections",
-            "type": "selectionsType",
+            "type": "StartMigrationMessageSelectionsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "selectionsType",
+              "name": "StartMigrationMessageSelectionsType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -10616,12 +10616,12 @@
           },
           {
             "name": "error",
-            "type": "errorType",
+            "type": "SessionErrorMessageErrorType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "errorType",
+              "name": "SessionErrorMessageErrorType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -12144,12 +12144,12 @@
           },
           {
             "name": "settings",
-            "type": "settingsType",
+            "type": "IndexingSettingsLoadedMessageSettingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "settingsType",
+              "name": "IndexingSettingsLoadedMessageSettingsType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -12178,12 +12178,12 @@
           },
           {
             "name": "settings",
-            "type": "settingsType",
+            "type": "ChatSettingsLoadedMessageSettingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "settingsType",
+              "name": "ChatSettingsLoadedMessageSettingsType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -12249,9 +12249,9 @@
             "type": "array",
             "optional": false,
             "nullable": false,
-            "elementType": "modelsItemType",
+            "elementType": "ImageModelsLoadedMessageModelsItemType",
             "typeRef": {
-              "name": "modelsItemType",
+              "name": "ImageModelsLoadedMessageModelsItemType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -12562,12 +12562,12 @@
           },
           {
             "name": "settings",
-            "type": "settingsType",
+            "type": "AutocompleteSettingsLoadedMessageSettingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "settingsType",
+              "name": "AutocompleteSettingsLoadedMessageSettingsType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -13831,12 +13831,12 @@
           },
           {
             "name": "settings",
-            "type": "settingsType",
+            "type": "NotificationSettingsLoadedMessageSettingsType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "settingsType",
+              "name": "NotificationSettingsLoadedMessageSettingsType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -16310,9 +16310,9 @@
             "type": "array",
             "optional": true,
             "nullable": false,
-            "elementType": "filesItemType",
+            "elementType": "AgentManagerSendInitialMessageFilesItemType",
             "typeRef": {
-              "name": "filesItemType",
+              "name": "AgentManagerSendInitialMessageFilesItemType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -17451,9 +17451,9 @@
             "type": "array",
             "optional": true,
             "nullable": false,
-            "elementType": "modelsItemType",
+            "elementType": "CustomProviderModelsFetchedMessageModelsItemType",
             "typeRef": {
-              "name": "modelsItemType",
+              "name": "CustomProviderModelsFetchedMessageModelsItemType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -18034,10 +18034,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "agents.ts"
+      "sourceFile": "Shared\\marketplace.ts",
+      "signatureHash": "ac9e1e9ef2f7dc11e76fd5444af9f29334d7f1c1e07c3f8f875874706b53efdc"
     },
     {
-      "name": "requirementsType",
+      "name": "AgentContentRequirementsType",
       "kind": "interface",
       "properties": [
         {
@@ -18080,7 +18081,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\marketplace.ts"
+      "sourceFile": "..\\marketplace.ts",
+      "signatureHash": "a888a5bb8439ba9449f51cde35755b53223df7f1599c44ee44c9ca74577fb343"
     },
     {
       "name": "AgentContent",
@@ -18153,12 +18155,12 @@
         },
         {
           "name": "requirements",
-          "type": "requirementsType",
+          "type": "AgentContentRequirementsType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "requirementsType",
+            "name": "AgentContentRequirementsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -19028,7 +19030,7 @@
       "sourceFile": "agent-manager.ts"
     },
     {
-      "name": "checksType",
+      "name": "PRStatusChecksType",
       "kind": "interface",
       "properties": [
         {
@@ -19110,10 +19112,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "agent-manager.ts"
+      "sourceFile": "agent-manager.ts",
+      "signatureHash": "094030a57bc0d9eca7eabec6133166ced8e9f7e4acfa810882347cb94b143d1c"
     },
     {
-      "name": "commentsType",
+      "name": "PRStatusCommentsType",
       "kind": "interface",
       "properties": [
         {
@@ -19156,7 +19159,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "agent-manager.ts"
+      "sourceFile": "agent-manager.ts",
+      "signatureHash": "d9030ea877518d76f96e28156127927b4ff70850db8900b9e25e942269ca244a"
     },
     {
       "name": "PRStatus",
@@ -19229,12 +19233,12 @@
         },
         {
           "name": "checks",
-          "type": "checksType",
+          "type": "PRStatusChecksType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "checksType",
+            "name": "PRStatusChecksType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -19242,12 +19246,12 @@
         },
         {
           "name": "comments",
-          "type": "commentsType",
+          "type": "PRStatusCommentsType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "commentsType",
+            "name": "PRStatusCommentsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -20291,39 +20295,6 @@
       "sourceFile": "permissions.ts"
     },
     {
-      "name": "toolType",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "messageID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "callID",
-          "type": "string",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "string",
-            "kind": "string"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "sourceFile": "questions.ts"
-    },
-    {
       "name": "PermissionRequest",
       "kind": "interface",
       "properties": [
@@ -20420,12 +20391,12 @@
         },
         {
           "name": "tool",
-          "type": "toolType",
+          "type": "PermissionRequestToolType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "toolType",
+            "name": "PermissionRequestToolType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -20820,11 +20791,24 @@
       "sourceFile": "agents.ts"
     },
     {
-      "name": "errorType",
+      "name": "AgentRequirementResultErrorType",
       "kind": "interface",
       "properties": [
         {
-          "name": "name",
+          "name": "code",
+          "type": "union",
+          "optional": false,
+          "nullable": false,
+          "elementType": "unknown_agent | malformed_declaration | discovery_failed | mcp_status_failed | scope_mismatch | request_failed",
+          "typeRef": {
+            "name": "unknown_agent",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "message",
           "type": "string",
           "optional": false,
           "nullable": false,
@@ -20835,22 +20819,10 @@
           },
           "literalValue": null,
           "isLiteral": false
-        },
-        {
-          "name": "data",
-          "type": "union",
-          "optional": true,
-          "nullable": false,
-          "elementType": "undefined | __type",
-          "typeRef": {
-            "name": "undefined",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
         }
       ],
-      "sourceFile": "extension-messages.ts"
+      "sourceFile": "agents.ts",
+      "signatureHash": "fd6d640a5d5be4e59566efc0d79c8f5f7b801c8e5924a7fdb23d534403e2050a"
     },
     {
       "name": "AgentRequirementResult",
@@ -20949,12 +20921,12 @@
         },
         {
           "name": "error",
-          "type": "errorType",
+          "type": "AgentRequirementResultErrorType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "errorType",
+            "name": "AgentRequirementResultErrorType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -20998,9 +20970,9 @@
           "type": "array",
           "optional": true,
           "nullable": false,
-          "elementType": "vscode_extensionsItemType",
+          "elementType": "AgentRequirementsVscodeExtensionsItemType",
           "typeRef": {
-            "name": "vscode_extensionsItemType",
+            "name": "AgentRequirementsVscodeExtensionsItemType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -21173,7 +21145,7 @@
       "sourceFile": "agents.ts"
     },
     {
-      "name": "limitType",
+      "name": "ProviderModelLimitType",
       "kind": "interface",
       "properties": [
         {
@@ -21216,7 +21188,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "d7813be32edc31a79468e4a5c644b51e19f5f4bc3f96b4a6d4335e5b3c282993"
     },
     {
       "name": "inputType",
@@ -21288,10 +21261,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "8e17bf40cfeed0c745ec2d91d21c5d13598afd62e0d42a01c6407cc83f54f578"
     },
     {
-      "name": "capabilitiesType",
+      "name": "ProviderModelCapabilitiesType",
       "kind": "interface",
       "properties": [
         {
@@ -21321,10 +21295,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "3f08b85a8625a751dff90ec0958ab1cedba05de6f04f5c74aa055e1f2285c1be"
     },
     {
-      "name": "optionsType",
+      "name": "ProviderModelOptionsType",
       "kind": "interface",
       "properties": [
         {
@@ -21341,10 +21316,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "ae00aad276bcaae5ce8688aa3ec494bdbd57301537ec0d2975b168d53f7e167d"
     },
     {
-      "name": "autoRoutingType",
+      "name": "ProviderModelAutoroutingType",
       "kind": "interface",
       "properties": [
         {
@@ -21361,10 +21337,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "0bfe0c4889dbf3934beecba257bbbd9e1940d5479b976994cfe870cabab4f1c8"
     },
     {
-      "name": "terminalBenchType",
+      "name": "ProviderModelTerminalbenchType",
       "kind": "interface",
       "properties": [
         {
@@ -21394,7 +21371,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "4d8d8046a242f9f5ecd952475dc8d2b49d27eeb9011da2b0d9726dafef60cd3c"
     },
     {
       "name": "cacheType",
@@ -21427,10 +21405,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "parts.ts"
+      "sourceFile": "Shared\\parts.ts",
+      "signatureHash": "a313131d7edb77b28b7d94059981546914b734d899278e2165e3a1c21c8572d2"
     },
     {
-      "name": "costType",
+      "name": "ProviderModelCostType",
       "kind": "interface",
       "properties": [
         {
@@ -21473,7 +21452,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "625d14ff5b79ec87f73af2c37041a500e5021ddbcb8ee2c03339651a6c0d395f"
     },
     {
       "name": "ProviderModel",
@@ -21572,12 +21552,12 @@
         },
         {
           "name": "limit",
-          "type": "limitType",
+          "type": "ProviderModelLimitType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "limitType",
+            "name": "ProviderModelLimitType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -21598,12 +21578,12 @@
         },
         {
           "name": "capabilities",
-          "type": "capabilitiesType",
+          "type": "ProviderModelCapabilitiesType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "capabilitiesType",
+            "name": "ProviderModelCapabilitiesType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -21611,12 +21591,12 @@
         },
         {
           "name": "options",
-          "type": "optionsType",
+          "type": "ProviderModelOptionsType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "optionsType",
+            "name": "ProviderModelOptionsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -21624,12 +21604,12 @@
         },
         {
           "name": "autoRouting",
-          "type": "autoRoutingType",
+          "type": "ProviderModelAutoroutingType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "autoRoutingType",
+            "name": "ProviderModelAutoroutingType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -21689,12 +21669,12 @@
         },
         {
           "name": "terminalBench",
-          "type": "terminalBenchType",
+          "type": "ProviderModelTerminalbenchType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "terminalBenchType",
+            "name": "ProviderModelTerminalbenchType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -21702,12 +21682,12 @@
         },
         {
           "name": "cost",
-          "type": "costType",
+          "type": "ProviderModelCostType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "costType",
+            "name": "ProviderModelCostType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -21717,7 +21697,7 @@
       "sourceFile": "providers.ts"
     },
     {
-      "name": "metadataType",
+      "name": "ProviderMetadataType",
       "kind": "interface",
       "properties": [
         {
@@ -21760,7 +21740,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "providers.ts"
+      "sourceFile": "providers.ts",
+      "signatureHash": "a645b5b0284e8258f8519ef5305c283bdc47671595933c36adcf514f7ddb3bd4"
     },
     {
       "name": "Provider",
@@ -21833,12 +21814,12 @@
         },
         {
           "name": "metadata",
-          "type": "metadataType",
+          "type": "ProviderMetadataType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "metadataType",
+            "name": "ProviderMetadataType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22490,7 +22471,7 @@
       "sourceFile": "config.ts"
     },
     {
-      "name": "kiloType",
+      "name": "IndexingConfigKiloType",
       "kind": "interface",
       "properties": [
         {
@@ -22533,10 +22514,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "config.ts",
+      "signatureHash": "deccf34caa00250a0b4cd22a25279bd107261fde056cd0b5c641e8a66f1d8639"
     },
     {
-      "name": "openaiType",
+      "name": "IndexingConfigOpenaiType",
       "kind": "interface",
       "properties": [
         {
@@ -22553,10 +22535,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "Shared\\config.ts",
+      "signatureHash": "05941250a5c4e27a9d935474e3ad7bc9dd2e96c15b2cde5408210c54a6294980"
     },
     {
-      "name": "ollamaType",
+      "name": "IndexingConfigOllamaType",
       "kind": "interface",
       "properties": [
         {
@@ -22573,10 +22556,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "config.ts",
+      "signatureHash": "8ca5e0926185f69322034d0cc3b607fce6eb30a02af30d3a81579614b42407e6"
     },
     {
-      "name": "openai-compatibleType",
+      "name": "IndexingConfigOpenaiCompatibleType",
       "kind": "interface",
       "properties": [
         {
@@ -22606,70 +22590,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "config.ts",
+      "signatureHash": "1591a8bd05b17b9d65f757f9a1f5f8fb66dbfa61afeb6333f6095edbe132fac4"
     },
     {
-      "name": "geminiType",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "apiKey",
-          "type": "union",
-          "optional": true,
-          "nullable": false,
-          "elementType": "undefined | string",
-          "typeRef": {
-            "name": "undefined",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "mistralType",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "apiKey",
-          "type": "union",
-          "optional": true,
-          "nullable": false,
-          "elementType": "undefined | string",
-          "typeRef": {
-            "name": "undefined",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "vercel-ai-gatewayType",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "apiKey",
-          "type": "union",
-          "optional": true,
-          "nullable": false,
-          "elementType": "undefined | string",
-          "typeRef": {
-            "name": "undefined",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "bedrockType",
+      "name": "IndexingConfigBedrockType",
       "kind": "interface",
       "properties": [
         {
@@ -22699,10 +22624,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "config.ts",
+      "signatureHash": "1f1ae7aaf8fdf0588ed8b1479501f64424e8b70d8441ad70698b277157526fbe"
     },
     {
-      "name": "openrouterType",
+      "name": "IndexingConfigOpenrouterType",
       "kind": "interface",
       "properties": [
         {
@@ -22732,30 +22658,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "config.ts",
+      "signatureHash": "3bf063267542c2e500561d72de0ecd20b1780a58a8ab9bacd47a3dacd28648ec"
     },
     {
-      "name": "voyageType",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "apiKey",
-          "type": "union",
-          "optional": true,
-          "nullable": false,
-          "elementType": "undefined | string",
-          "typeRef": {
-            "name": "undefined",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "sourceFile": "config.ts"
-    },
-    {
-      "name": "qdrantType",
+      "name": "IndexingConfigQdrantType",
       "kind": "interface",
       "properties": [
         {
@@ -22785,10 +22692,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "config.ts",
+      "signatureHash": "425d732f658065a80c19e968640fdbdb4aabf9ec10ba19d265a600a1c1a01375"
     },
     {
-      "name": "lancedbType",
+      "name": "IndexingConfigLancedbType",
       "kind": "interface",
       "properties": [
         {
@@ -22805,7 +22713,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "config.ts"
+      "sourceFile": "config.ts",
+      "signatureHash": "80f57c22514a677be6f92038f704461ed104bdb420707c14aad22fca4c7db8b5"
     },
     {
       "name": "IndexingConfig",
@@ -22878,12 +22787,12 @@
         },
         {
           "name": "kilo",
-          "type": "kiloType",
+          "type": "IndexingConfigKiloType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "kiloType",
+            "name": "IndexingConfigKiloType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22891,12 +22800,12 @@
         },
         {
           "name": "openai",
-          "type": "openaiType",
+          "type": "IndexingConfigOpenaiType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "openaiType",
+            "name": "IndexingConfigOpenaiType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22904,12 +22813,12 @@
         },
         {
           "name": "ollama",
-          "type": "ollamaType",
+          "type": "IndexingConfigOllamaType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "ollamaType",
+            "name": "IndexingConfigOllamaType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22917,12 +22826,12 @@
         },
         {
           "name": "openai-compatible",
-          "type": "openai-compatibleType",
+          "type": "IndexingConfigOpenaiCompatibleType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "openai-compatibleType",
+            "name": "IndexingConfigOpenaiCompatibleType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22930,12 +22839,12 @@
         },
         {
           "name": "gemini",
-          "type": "geminiType",
+          "type": "IndexingConfigGeminiType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "geminiType",
+            "name": "IndexingConfigGeminiType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22943,12 +22852,12 @@
         },
         {
           "name": "mistral",
-          "type": "mistralType",
+          "type": "IndexingConfigMistralType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "mistralType",
+            "name": "IndexingConfigMistralType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22956,12 +22865,12 @@
         },
         {
           "name": "vercel-ai-gateway",
-          "type": "vercel-ai-gatewayType",
+          "type": "IndexingConfigVercelAiGatewayType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "vercel-ai-gatewayType",
+            "name": "IndexingConfigVercelAiGatewayType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22969,12 +22878,12 @@
         },
         {
           "name": "bedrock",
-          "type": "bedrockType",
+          "type": "IndexingConfigBedrockType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "bedrockType",
+            "name": "IndexingConfigBedrockType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22982,12 +22891,12 @@
         },
         {
           "name": "openrouter",
-          "type": "openrouterType",
+          "type": "IndexingConfigOpenrouterType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "openrouterType",
+            "name": "IndexingConfigOpenrouterType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22995,12 +22904,12 @@
         },
         {
           "name": "voyage",
-          "type": "voyageType",
+          "type": "IndexingConfigVoyageType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "voyageType",
+            "name": "IndexingConfigVoyageType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -23008,12 +22917,12 @@
         },
         {
           "name": "qdrant",
-          "type": "qdrantType",
+          "type": "IndexingConfigQdrantType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "qdrantType",
+            "name": "IndexingConfigQdrantType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -23021,12 +22930,12 @@
         },
         {
           "name": "lancedb",
-          "type": "lancedbType",
+          "type": "IndexingConfigLancedbType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "lancedbType",
+            "name": "IndexingConfigLancedbType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24176,11 +24085,11 @@
       "sourceFile": "parts.ts"
     },
     {
-      "name": "timeType",
+      "name": "TextPartTimeType",
       "kind": "interface",
       "properties": [
         {
-          "name": "created",
+          "name": "start",
           "type": "number",
           "optional": false,
           "nullable": false,
@@ -24193,7 +24102,7 @@
           "isLiteral": false
         },
         {
-          "name": "completed",
+          "name": "end",
           "type": "union",
           "optional": true,
           "nullable": false,
@@ -24206,7 +24115,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "sessions.ts"
+      "sourceFile": "Shared\\parts.ts",
+      "signatureHash": "12fc3674e2a370589374eb4b8ac52a9a4fc83a114159a62a688270324e4a1b05"
     },
     {
       "name": "TextPart",
@@ -24250,12 +24160,12 @@
         },
         {
           "name": "time",
-          "type": "timeType",
+          "type": "TextPartTimeType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "timeType",
+            "name": "TextPartTimeType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24281,10 +24191,10 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "564f5242718081f86a3749644878c4ac959ae368caed261825833eca23fccbb2"
+      "signatureHash": "86b5da5cb83860a9c7999a76a46cb8eb9aff5757ac92ccdf97e387ee68d0bdd6"
     },
     {
-      "name": "textType",
+      "name": "FilePartSourceTextType",
       "kind": "interface",
       "properties": [
         {
@@ -24327,7 +24237,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "signatureHash": "0cc878b5bd22883fc1d8714fed80a1cbc57a439a9aebdcfaa2fb6aa2a0cdc08f"
     },
     {
       "name": "FilePartSource",
@@ -24358,12 +24269,12 @@
         },
         {
           "name": "text",
-          "type": "textType",
+          "type": "FilePartSourceTextType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "textType",
+            "name": "FilePartSourceTextType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24375,7 +24286,7 @@
         "value": "file"
       },
       "sourceFile": "parts.ts",
-      "signatureHash": "95e490faa353aace5fbff94b81edc12a5143d3e69ad34b74d12b58d4d05055c7"
+      "signatureHash": "06365aaa09dfb30d0c2af66b485f8c72196e95a5dad9336e3589a4a55ae0d7c7"
     },
     {
       "name": "FilePart",
@@ -24556,12 +24467,12 @@
         },
         {
           "name": "time",
-          "type": "timeType",
+          "type": "ReasoningPartTimeType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "timeType",
+            "name": "ReasoningPartTimeType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24574,7 +24485,28 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "92485d485d7193a7b24f0200cd56f3b2beef93aba70e77641bb7969153c22504"
+      "signatureHash": "a36f89586f92338da0896f467581c716a90d0a3ea2fa6caafa32387fdf4cd0ce"
+    },
+    {
+      "name": "StepStartPartTimeType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "parts.ts",
+      "signatureHash": "b7ff3c82e1481ab938913125b2393cba323fe3947bbf2365afa0820547a8795d"
     },
     {
       "name": "StepStartPart",
@@ -24592,12 +24524,12 @@
         },
         {
           "name": "time",
-          "type": "timeType",
+          "type": "StepStartPartTimeType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "timeType",
+            "name": "StepStartPartTimeType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24610,7 +24542,7 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "8a8068eb1bdd608866b3466a61a44103f453bdc23e5d96bf862f1dcb159a7192"
+      "signatureHash": "1596f921bcef6b679cd7dec085b42e1da012db2878c0066dd4cc905aa08d81ff"
     },
     {
       "name": "StepThroughputMetrics",
@@ -24656,7 +24588,54 @@
       "sourceFile": "parts.ts"
     },
     {
-      "name": "modelType",
+      "name": "StepFinishPartTimeType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "end",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "elapsed",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "parts.ts",
+      "signatureHash": "0220d91ca8244339d35e7b10d81f9969e113494aaed43a57fc611a65298f2b47"
+    },
+    {
+      "name": "StepFinishPartModelType",
       "kind": "interface",
       "properties": [
         {
@@ -24684,25 +24663,13 @@
           },
           "literalValue": null,
           "isLiteral": false
-        },
-        {
-          "name": "variant",
-          "type": "union",
-          "optional": true,
-          "nullable": false,
-          "elementType": "undefined | string",
-          "typeRef": {
-            "name": "undefined",
-            "kind": "union"
-          },
-          "literalValue": null,
-          "isLiteral": false
         }
       ],
-      "sourceFile": "sessions.ts"
+      "sourceFile": "parts.ts",
+      "signatureHash": "e5681b0996d548da3bd5b34e043f094415c8605db1365f8530fb34e01d747f8e"
     },
     {
-      "name": "tokensType",
+      "name": "StepFinishPartTokensType",
       "kind": "interface",
       "properties": [
         {
@@ -24758,7 +24725,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "parts.ts"
+      "sourceFile": "parts.ts",
+      "signatureHash": "fd3afcc7a64998468674b1274de1af7dc53893577aae1da60a0353bb19e377db"
     },
     {
       "name": "StepFinishPart",
@@ -24789,12 +24757,12 @@
         },
         {
           "name": "time",
-          "type": "timeType",
+          "type": "StepFinishPartTimeType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "timeType",
+            "name": "StepFinishPartTimeType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24802,12 +24770,12 @@
         },
         {
           "name": "model",
-          "type": "modelType",
+          "type": "StepFinishPartModelType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "modelType",
+            "name": "StepFinishPartModelType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24854,12 +24822,12 @@
         },
         {
           "name": "tokens",
-          "type": "tokensType",
+          "type": "StepFinishPartTokensType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "tokensType",
+            "name": "StepFinishPartTokensType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24885,7 +24853,7 @@
       },
       "sourceFile": "parts.ts",
       "extendsBase": "BasePart",
-      "signatureHash": "c96a834671e1050bc12f51ef53825c07c2ef24dc967a480ecd56be243e07e50c"
+      "signatureHash": "eeaf31e4cba8e39ed2a5adbc07696072ea2d5ecb9c180cf2862e6a4fcd87bc81"
     },
     {
       "name": "CompactionPart",
@@ -25029,12 +24997,12 @@
         },
         {
           "name": "cache",
-          "type": "cacheType",
+          "type": "TokenUsageCacheType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "cacheType",
+            "name": "TokenUsageCacheType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -25136,7 +25104,88 @@
       "sourceFile": "parts.ts"
     },
     {
-      "name": "pathType",
+      "name": "MessageTimeType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "created",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "completed",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | number",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "sessions.ts",
+      "signatureHash": "dad44a90d2d65539933dc858f9617bf287fdd880d6aa69ed8afdb5d9a1bf2a2c"
+    },
+    {
+      "name": "MessageModelType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "providerID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "modelID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "variant",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "sessions.ts",
+      "signatureHash": "9308da6f7384267e25f2850e99b20884d9996501bf48ac51b15e4028faca1ddf"
+    },
+    {
+      "name": "MessagePathType",
       "kind": "interface",
       "properties": [
         {
@@ -25166,7 +25215,42 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "sessions.ts"
+      "sourceFile": "sessions.ts",
+      "signatureHash": "e4a513ee36b24deb350b1436fe2a7d128128f4d3891e549d0e1ffedc885721da"
+    },
+    {
+      "name": "MessageErrorType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "data",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | __type",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "Shared\\sessions.ts",
+      "signatureHash": "c24891cde040a72568b5b790add75d66132a1ea0da9fc05cd94f45de20b5d16c"
     },
     {
       "name": "Message",
@@ -25252,12 +25336,12 @@
         },
         {
           "name": "time",
-          "type": "timeType",
+          "type": "MessageTimeType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "timeType",
+            "name": "MessageTimeType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -25278,12 +25362,12 @@
         },
         {
           "name": "model",
-          "type": "modelType",
+          "type": "MessageModelType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "modelType",
+            "name": "MessageModelType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -25343,12 +25427,12 @@
         },
         {
           "name": "path",
-          "type": "pathType",
+          "type": "MessagePathType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "pathType",
+            "name": "MessagePathType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -25356,12 +25440,12 @@
         },
         {
           "name": "error",
-          "type": "errorType",
+          "type": "MessageErrorType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "errorType",
+            "name": "MessageErrorType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -26338,6 +26422,40 @@
       "sourceFile": "questions.ts"
     },
     {
+      "name": "QuestionRequestToolType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "messageID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "callID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "Shared\\questions.ts",
+      "signatureHash": "0c1a80024819ebffbb0912889e5e713d3d9fac25bbc56cab10adbf1cff5901f4"
+    },
+    {
       "name": "QuestionRequest",
       "kind": "interface",
       "properties": [
@@ -26447,12 +26565,12 @@
         },
         {
           "name": "tool",
-          "type": "toolType",
+          "type": "QuestionRequestToolType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "toolType",
+            "name": "QuestionRequestToolType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -26578,12 +26696,12 @@
         },
         {
           "name": "tool",
-          "type": "toolType",
+          "type": "SuggestionRequestToolType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "toolType",
+            "name": "SuggestionRequestToolType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -26978,10 +27096,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "profile.ts"
+      "sourceFile": "profile.ts",
+      "signatureHash": "b4e3e5bb4afc85b9002f914452db84071b673afc3ca3f54a6d22857040ad359b"
     },
     {
-      "name": "profileType",
+      "name": "ProfileDataProfileType",
       "kind": "interface",
       "properties": [
         {
@@ -27050,7 +27169,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "profile.ts"
+      "sourceFile": "profile.ts",
+      "signatureHash": "531e196859572f21772133307b283fcf2554b8ccfe4919a50664d919d1940b2a"
     },
     {
       "name": "ProfileData",
@@ -27058,12 +27178,12 @@
       "properties": [
         {
           "name": "profile",
-          "type": "profileType",
+          "type": "ProfileDataProfileType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "profileType",
+            "name": "ProfileDataProfileType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -27665,10 +27785,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "migration.ts"
+      "sourceFile": "migration.ts",
+      "signatureHash": "b6a913052b7b148553fd4d3f433fa866c1268df303467f65ff87772ffd8c2b77"
     },
     {
-      "name": "dataType",
+      "name": "MigrationDataMessageDataType",
       "kind": "interface",
       "properties": [
         {
@@ -27750,7 +27871,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "migration.ts"
+      "sourceFile": "migration.ts",
+      "signatureHash": "ddc52e7fa9dc1f8530735c124e7c4ef2d2c77fee977b936dd2b920cf717dac7e"
     },
     {
       "name": "MigrationDataMessage",
@@ -27794,12 +27916,12 @@
         },
         {
           "name": "data",
-          "type": "dataType",
+          "type": "MigrationDataMessageDataType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "dataType",
+            "name": "MigrationDataMessageDataType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -27811,7 +27933,7 @@
         "value": "migrationData"
       },
       "sourceFile": "migration.ts",
-      "signatureHash": "7d26299641bee2766b2de5d196ec6cbd6ee45d279e0e3027103ef63e3cd021fa"
+      "signatureHash": "521f4505d83cdcccc0078b1447f720fe9e3e18bc50c714074b8053be8ad73697"
     },
     {
       "name": "MigrationProgressMessage",
@@ -28241,11 +28363,24 @@
       "sourceFile": "migration.ts"
     },
     {
-      "name": "settingsType",
+      "name": "MigrationProgressMessageSettingsType",
       "kind": "interface",
       "properties": [
         {
-          "name": "attentionEnabled",
+          "name": "autoApproval",
+          "type": "MigrationAutoApprovalSelections",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "MigrationAutoApprovalSelections",
+            "kind": "object"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "language",
           "type": "boolean",
           "optional": false,
           "nullable": false,
@@ -28258,23 +28393,24 @@
           "isLiteral": false
         },
         {
-          "name": "attentionSound",
-          "type": "string",
+          "name": "autocomplete",
+          "type": "boolean",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "string",
-            "kind": "string"
+            "name": "boolean",
+            "kind": "boolean"
           },
           "literalValue": null,
           "isLiteral": false
         }
       ],
-      "sourceFile": "extension-messages.ts"
+      "sourceFile": "migration.ts",
+      "signatureHash": "673cb6fd978226d985e3b84b4d544fd59d723b40edb07b5882ab5314cc4d60a5"
     },
     {
-      "name": "selectionsType",
+      "name": "StartMigrationMessageSelectionsType",
       "kind": "interface",
       "properties": [
         {
@@ -28344,19 +28480,20 @@
         },
         {
           "name": "settings",
-          "type": "settingsType",
+          "type": "MigrationProgressMessageSettingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "settingsType",
+            "name": "MigrationProgressMessageSettingsType",
             "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
         }
       ],
-      "sourceFile": "migration.ts"
+      "sourceFile": "migration.ts",
+      "signatureHash": "eebf745c1197e1efc63e4f6aae46a55ce74ac4897dda9ef87cd110975f77b058"
     },
     {
       "name": "StartMigrationMessage",
@@ -28400,12 +28537,12 @@
         },
         {
           "name": "selections",
-          "type": "selectionsType",
+          "type": "StartMigrationMessageSelectionsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "selectionsType",
+            "name": "StartMigrationMessageSelectionsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -28417,7 +28554,7 @@
         "value": "startMigration"
       },
       "sourceFile": "migration.ts",
-      "signatureHash": "c71987aaa50943f4862b1084e48cb0e6f5dc9325b01c845a98e09f160631cf3d"
+      "signatureHash": "af500dd928be034768c2a7cdf6aa3eb8f09a054aef31cf7c777c43cb07a4b8ba"
     },
     {
       "name": "SkipLegacyMigrationMessage",
@@ -29067,88 +29204,6 @@
       "signatureHash": "ed2121878c76bbd68d66b8c0cf9a448b3f8aa88da54808e55ac572770a5467ef"
     },
     {
-      "name": "captureType",
-      "kind": "interface",
-      "properties": [
-        {
-          "name": "mode",
-          "type": "literal",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": null,
-          "literalValue": "selective",
-          "isLiteral": true
-        },
-        {
-          "name": "turnClose",
-          "type": "boolean",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "boolean",
-            "kind": "boolean"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "explicit",
-          "type": "boolean",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "boolean",
-            "kind": "boolean"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "maxOpsPerRun",
-          "type": "number",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "number",
-            "kind": "number"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "minIntervalMs",
-          "type": "number",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "number",
-            "kind": "number"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        },
-        {
-          "name": "timeoutMs",
-          "type": "number",
-          "optional": false,
-          "nullable": false,
-          "elementType": null,
-          "typeRef": {
-            "name": "number",
-            "kind": "number"
-          },
-          "literalValue": null,
-          "isLiteral": false
-        }
-      ],
-      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts"
-    },
-    {
       "name": "limitsType",
       "kind": "interface",
       "properties": [
@@ -29231,7 +29286,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts"
+      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts",
+      "signatureHash": "f86f14193f00c50a761a750f276aa1f13813aee58c91f63960d0001c273251a1"
     },
     {
       "name": "statsType",
@@ -29394,10 +29450,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts"
+      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts",
+      "signatureHash": "8288e0d076982f8ffc429144fd79335c51c65dd0cdc460737217c1c07023519a"
     },
     {
-      "name": "stateType",
+      "name": "MemoryOperationResponseStateType",
       "kind": "interface",
       "properties": [
         {
@@ -29474,12 +29531,12 @@
         },
         {
           "name": "capture",
-          "type": "captureType",
+          "type": "MemoryConfigureResponseCaptureType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "captureType",
+            "name": "MemoryConfigureResponseCaptureType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -29512,10 +29569,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts"
+      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts",
+      "signatureHash": "302787dbd8d8eb0c6bc8491315541e7ccbde520592590a29ff1568d06a0644fa"
     },
     {
-      "name": "existsType",
+      "name": "MemoryOperationResponseExistsType",
       "kind": "interface",
       "properties": [
         {
@@ -29545,10 +29603,11 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts"
+      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts",
+      "signatureHash": "04ba0c0c10f9fd8851a168ad1a3fb56bd9a424a08afe3727831a79b105decc7d"
     },
     {
-      "name": "indexType",
+      "name": "MemoryOperationResponseIndexType",
       "kind": "interface",
       "properties": [
         {
@@ -29604,10 +29663,94 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts"
+      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts",
+      "signatureHash": "d77ca9eec0a3ef251832b0a96f42012d8f4a47a492c19191663f21887ad72d95"
     },
     {
-      "name": "skippedItemType",
+      "name": "MemoryShowResponseCaptureType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "mode",
+          "type": "literal",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": "selective",
+          "isLiteral": true
+        },
+        {
+          "name": "turnClose",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "explicit",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "maxOpsPerRun",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "minIntervalMs",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "timeoutMs",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "Shared\\types.gen.ts",
+      "signatureHash": "9bcf2e8135a476469e5f7d32697e71baba603903304c8f0ebebea99e69601c9c"
+    },
+    {
+      "name": "MemoryOperationResponseSkippedItemType",
       "kind": "interface",
       "properties": [
         {
@@ -29637,7 +29780,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts"
+      "sourceFile": "..\\..\\..\\..\\..\\sdk\\js\\src\\v2\\gen\\types.gen.ts",
+      "signatureHash": "67091578b33ccaf7f75c63ed68a1f0ce1b4ab79e63f6b5900c7100b5d935478f"
     },
     {
       "name": "ReadyMessage",
@@ -30326,12 +30470,12 @@
         },
         {
           "name": "error",
-          "type": "errorType",
+          "type": "SessionErrorMessageErrorType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "errorType",
+            "name": "SessionErrorMessageErrorType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -30343,7 +30487,7 @@
         "value": "sessionError"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0"
+      "signatureHash": "511cb11994d71a84dbcb33ebf24d47bead531e58a37e9e65ceea0bfd6d668816"
     },
     {
       "name": "PermissionRequestMessage",
@@ -31874,6 +32018,27 @@
       "signatureHash": "819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d"
     },
     {
+      "name": "IndexingSettingsLoadedMessageSettingsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "showButtonWhenDisabled",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "c06412286c894b143883eaca830529e7e3f7da6b4f42fac258968195c0bed210"
+    },
+    {
       "name": "IndexingSettingsLoadedMessage",
       "kind": "interface",
       "properties": [
@@ -31889,12 +32054,12 @@
         },
         {
           "name": "settings",
-          "type": "settingsType",
+          "type": "IndexingSettingsLoadedMessageSettingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "settingsType",
+            "name": "IndexingSettingsLoadedMessageSettingsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -31906,7 +32071,28 @@
         "value": "indexingSettingsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "16807cf2ae530d01a4a0124dea15f94387228ee3865117ebb30d9ac31258a0c3"
+      "signatureHash": "b5c15049936b78b7a6b94e3ee7d3f91da3e17023894c14accdaf38fe379c7040"
+    },
+    {
+      "name": "ChatSettingsLoadedMessageSettingsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "shiftTabCyclesVariant",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "12826a517574c243096adbe5d6d9107054c050dab2dba15a28a71280b494da8b"
     },
     {
       "name": "ChatSettingsLoadedMessage",
@@ -31924,12 +32110,12 @@
         },
         {
           "name": "settings",
-          "type": "settingsType",
+          "type": "ChatSettingsLoadedMessageSettingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "settingsType",
+            "name": "ChatSettingsLoadedMessageSettingsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -31941,7 +32127,7 @@
         "value": "chatSettingsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "675b7e4fcbdcf48fe108166914629a2424eec8d959c67155ad1ecdddcef7b884"
+      "signatureHash": "db41351cb1e28f59732084997251a2e2b227d818138f383a39cab27c408addee"
     },
     {
       "name": "KiloEmbeddingModelsLoadedMessage",
@@ -31979,7 +32165,7 @@
       "signatureHash": "82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd"
     },
     {
-      "name": "modelsItemType",
+      "name": "ImageModelsLoadedMessageModelsItemType",
       "kind": "interface",
       "properties": [
         {
@@ -32007,9 +32193,23 @@
           },
           "literalValue": null,
           "isLiteral": false
+        },
+        {
+          "name": "description",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
         }
       ],
-      "sourceFile": "extension-messages.ts"
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "78453e18dbf41742895bf1b16effc2e191a6d2ccb42d1921bee27815c66c368d"
     },
     {
       "name": "ImageModelsLoadedMessage",
@@ -32030,9 +32230,9 @@
           "type": "array",
           "optional": false,
           "nullable": false,
-          "elementType": "modelsItemType",
+          "elementType": "ImageModelsLoadedMessageModelsItemType",
           "typeRef": {
-            "name": "modelsItemType",
+            "name": "ImageModelsLoadedMessageModelsItemType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -32335,6 +32535,79 @@
       "signatureHash": "2567692d00c2d83a0a7cbc162c049740210e9b0ca0cdef9e1383943256fcbc30"
     },
     {
+      "name": "AutocompleteSettingsLoadedMessageSettingsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "enableAutoTrigger",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "enableSmartInlineTaskKeybinding",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "enableChatAutocomplete",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "provider",
+          "type": "union",
+          "optional": false,
+          "nullable": false,
+          "elementType": "null | string",
+          "typeRef": {
+            "name": "null",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "model",
+          "type": "union",
+          "optional": false,
+          "nullable": false,
+          "elementType": "null | string",
+          "typeRef": {
+            "name": "null",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "31306e4c71eef2a45d268a97c11e8b1e9c2753cb4937d8a21563cb6db88dc7a3"
+    },
+    {
       "name": "AutocompleteSettingsLoadedMessage",
       "kind": "interface",
       "properties": [
@@ -32350,12 +32623,12 @@
         },
         {
           "name": "settings",
-          "type": "settingsType",
+          "type": "AutocompleteSettingsLoadedMessageSettingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "settingsType",
+            "name": "AutocompleteSettingsLoadedMessageSettingsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -32367,7 +32640,7 @@
         "value": "autocompleteSettingsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "14ddba67bbe6a2c3bdfedb08bc28bcc5de20f14fd0c1f043728856844c08b3e1"
+      "signatureHash": "b8fc6a9c8d47be83c5b642b77e21a7cabf0c8e74bb789998fb23ef0e90df0b39"
     },
     {
       "name": "ChatCompletionResultMessage",
@@ -33730,6 +34003,40 @@
       "signatureHash": "328ebec46d526d6fc6c8fa07ac50b23a2ace1582747c995de2e00fbaf53dae4b"
     },
     {
+      "name": "NotificationSettingsLoadedMessageSettingsType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "attentionEnabled",
+          "type": "boolean",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "boolean",
+            "kind": "boolean"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "attentionSound",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "f720b636b386859738dde1e2621da00815e91b51cec6252ce2647475f02ddfae"
+    },
+    {
       "name": "NotificationSettingsLoadedMessage",
       "kind": "interface",
       "properties": [
@@ -33745,12 +34052,12 @@
         },
         {
           "name": "settings",
-          "type": "settingsType",
+          "type": "NotificationSettingsLoadedMessageSettingsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "settingsType",
+            "name": "NotificationSettingsLoadedMessageSettingsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -33762,7 +34069,7 @@
         "value": "notificationSettingsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "166c20f179c220ef49d651e4dff9117931ed466ef25a235463e91e5dd70cf6a7"
+      "signatureHash": "a06d1d88e58a33675349a1d3e9471b56d75387be3793063d01a3e2c0ec78dc9c"
     },
     {
       "name": "TimelineSettingLoadedMessage",
@@ -36159,7 +36466,7 @@
       "signatureHash": "948b0ec869e108f76b28cbbe5931cb81db510006d565961303b788235937cd13"
     },
     {
-      "name": "filesItemType",
+      "name": "AgentManagerSendInitialMessageFilesItemType",
       "kind": "interface",
       "properties": [
         {
@@ -36189,7 +36496,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "extension-messages.ts"
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "ae208d3f1b4ba32934fed700ec3b096d6ddf899d33662ab66f53be0830412c0b"
     },
     {
       "name": "AgentManagerSendInitialMessage",
@@ -36301,9 +36609,9 @@
           "type": "array",
           "optional": true,
           "nullable": false,
-          "elementType": "filesItemType",
+          "elementType": "AgentManagerSendInitialMessageFilesItemType",
           "typeRef": {
-            "name": "filesItemType",
+            "name": "AgentManagerSendInitialMessageFilesItemType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -37466,9 +37774,9 @@
           "type": "array",
           "optional": true,
           "nullable": false,
-          "elementType": "modelsItemType",
+          "elementType": "CustomProviderModelsFetchedMessageModelsItemType",
           "typeRef": {
-            "name": "modelsItemType",
+            "name": "CustomProviderModelsFetchedMessageModelsItemType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -37739,7 +38047,7 @@
       "sourceFile": "extension-messages.ts"
     },
     {
-      "name": "updatesItemType",
+      "name": "ExtensionMessageUpdatesItemType",
       "kind": "interface",
       "properties": [
         {
@@ -37805,7 +38113,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts"
+      "sourceFile": "..\\..\\..\\..\\src\\shared\\stream-messages.ts",
+      "signatureHash": "683388e2a7727ce41edd5aefc962aa871bcfe93b91b0ec336c67bbed9a370ffc"
     },
     {
       "name": "PartsupdatedMessage",
@@ -37826,9 +38135,9 @@
           "type": "array",
           "optional": false,
           "nullable": false,
-          "elementType": "updatesItemType",
+          "elementType": "ExtensionMessageUpdatesItemType",
           "typeRef": {
-            "name": "updatesItemType",
+            "name": "ExtensionMessageUpdatesItemType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -39318,7 +39627,7 @@
       "signatureHash": "8f4bca3858309affdc819fa743f0d7c930bd09b4cb014ee0e8c4313a7520a15e"
     },
     {
-      "name": "labelsType",
+      "name": "OpenConfigFileRequestLabelsType",
       "kind": "interface",
       "properties": [
         {
@@ -39582,7 +39891,8 @@
           "isLiteral": false
         }
       ],
-      "sourceFile": "webview-messages.ts"
+      "sourceFile": "webview-messages.ts",
+      "signatureHash": "77b5034fc7e6aff4a8e4ba0ccfeb781371d5b6c442cb07b20bfb584dda64a9cc"
     },
     {
       "name": "OpenConfigFileRequest",
@@ -39613,12 +39923,12 @@
         },
         {
           "name": "labels",
-          "type": "labelsType",
+          "type": "OpenConfigFileRequestLabelsType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "labelsType",
+            "name": "OpenConfigFileRequestLabelsType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -39630,7 +39940,7 @@
         "value": "openConfigFile"
       },
       "sourceFile": "webview-messages.ts",
-      "signatureHash": "40e6544653040e781fd1af4498173ac9eb6abb7efea473adecc4c40ac072b897"
+      "signatureHash": "6b79eb8edbfc8aace5ab1a08ac3c29db8204703bfb59700920ef84cfc1e70060"
     },
     {
       "name": "OpenMarketplacePanelRequest",
@@ -49023,12 +49333,12 @@
       ],
       "sourceFile": "parts.ts",
       "unionMemberHashes": [
-        "564f5242718081f86a3749644878c4ac959ae368caed261825833eca23fccbb2",
+        "86b5da5cb83860a9c7999a76a46cb8eb9aff5757ac92ccdf97e387ee68d0bdd6",
         "df3eb60ebe5520b3ebb029e2c55d9b538e4989479ee7137e7eed4007c32eff63",
         "f4daab928abd8065febd65db1c33244ebe7ebfbb3336196af6598f4bc1e0a519",
-        "92485d485d7193a7b24f0200cd56f3b2beef93aba70e77641bb7969153c22504",
-        "8a8068eb1bdd608866b3466a61a44103f453bdc23e5d96bf862f1dcb159a7192",
-        "c96a834671e1050bc12f51ef53825c07c2ef24dc967a480ecd56be243e07e50c",
+        "a36f89586f92338da0896f467581c716a90d0a3ea2fa6caafa32387fdf4cd0ce",
+        "1596f921bcef6b679cd7dec085b42e1da012db2878c0066dd4cc905aa08d81ff",
+        "eeaf31e4cba8e39ed2a5adbc07696072ea2d5ecb9c180cf2862e6a4fcd87bc81",
         "e48c94329221ab913cda1a1c9957fc20ac3012d008c8024cd18141625eb99d28"
       ]
     },
@@ -49474,7 +49784,7 @@
         "747170cb5ff817943c49e3eba4f4f6acfbce1577dd1f6ea52c6b5953496f860e",
         "97ee011c2f268541bee8c2fadfa7ec181fd4bff3886373dfe58616e9b8bbfe6f",
         "a938740656f57f38c7bcacd3a4aaf00937749fec5eb5bf6d86744eab9f22aaa0",
-        "5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0",
+        "511cb11994d71a84dbcb33ebf24d47bead531e58a37e9e65ceea0bfd6d668816",
         "9636ea96f388fb6f20cdd75ad3bc50d13996272cb1b73b7b43c4ef60062e6596",
         "00904432602d2b3d0365d56396af87584ed20113b90bfb905f13eb6c187898c8",
         "8f1687301698cf8f81bbb6df59363dc36b08f6b09828bd3d34d785a8aa317c8e",
@@ -49499,8 +49809,8 @@
         "1079fcc13d09c0186ad9e59b934577e658f097e1c0706cd1c8e27419acbde199",
         "a6f5dc10c5de5b611694c7bde97a8edc102ab076c549188067aa2d3502b82bb3",
         "819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d",
-        "16807cf2ae530d01a4a0124dea15f94387228ee3865117ebb30d9ac31258a0c3",
-        "675b7e4fcbdcf48fe108166914629a2424eec8d959c67155ad1ecdddcef7b884",
+        "b5c15049936b78b7a6b94e3ee7d3f91da3e17023894c14accdaf38fe379c7040",
+        "db41351cb1e28f59732084997251a2e2b227d818138f383a39cab27c408addee",
         "82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd",
         "687206805a03368ab123d5c7bca04e75b925a384737d4a866021595d6dce4750",
         "d9a0e5926de8d2192d5974628f62390d2bf94c8cdb1f6e62be6f18e27d07c20d",
@@ -49509,7 +49819,7 @@
         "82ce29411d042052742586ef92be1d1d50a9cb34e7bd8ae787b64eb05aec64ee",
         "76f13f387ace843faf287725a3f4e4f76aaa9b2e147ca7adef87315064810756",
         "2567692d00c2d83a0a7cbc162c049740210e9b0ca0cdef9e1383943256fcbc30",
-        "14ddba67bbe6a2c3bdfedb08bc28bcc5de20f14fd0c1f043728856844c08b3e1",
+        "b8fc6a9c8d47be83c5b642b77e21a7cabf0c8e74bb789998fb23ef0e90df0b39",
         "00e0998301bc26b74d107df6bbc8b9d1449596439fd8a19cf6f2f7679cc4d895",
         "2c4ec544229b813cd741de60936febcf3d0f51df5374fd5fc08468afa7fba073",
         "c012a062443b583bfdeff81eda6ab272554eeffb10925fd346a8c77cba93f506",
@@ -49536,7 +49846,7 @@
         "7057e8e846e599c052401c1d1d0e871b761749d0d2c9e3aed07702387ccb55d6",
         "fd6d28eeef8a10fd14044f7960b8c6d7358177b6953a81259c2417c0d650456f",
         "328ebec46d526d6fc6c8fa07ac50b23a2ace1582747c995de2e00fbaf53dae4b",
-        "166c20f179c220ef49d651e4dff9117931ed466ef25a235463e91e5dd70cf6a7",
+        "a06d1d88e58a33675349a1d3e9471b56d75387be3793063d01a3e2c0ec78dc9c",
         "36b428441e0aaf16355231543bf0dda0fab9168f0c26a5c61afe762773516ed5",
         "f2acb96c7c999df68c29c7c5117b15d04cf36d9e8d71b020a787be1dce7f2814",
         "3ccd271851b8e7270446e00d0f4eec6feecd141261ad85705ca639547171c500",
@@ -49587,7 +49897,7 @@
         "c8c35c9015bb355bbfa3f41fe5d0435011050866fa062572ef93b0d73524e77c",
         "7b7c411976c4066a2c803e828080339587e7ab57e8d5fd92584a8c5faab8b5e6",
         "ceb61c645ddad49fa6e203b0151aa25b4bd62f609fea1615605947954d83be3d",
-        "7d26299641bee2766b2de5d196ec6cbd6ee45d279e0e3027103ef63e3cd021fa",
+        "521f4505d83cdcccc0078b1447f720fe9e3e18bc50c714074b8053be8ad73697",
         "793e876d11b58badd8ac104721ac5b799ccad6ef1ecf2dfbc68ac14bc6958bcb",
         "9ee47a55cfa622c134316481a8680f2713ddf47ff59cc7c77be3273dffad0faf",
         "ac863ca58c93834f0ae3e15ff8d2a25c5b8a2fd6fdd23e473f5bfb5c1f3dc52f",
@@ -49679,7 +49989,7 @@
         "ce0108fff6e4a3f89b4f147fbe5df6a5566b4e8298660e3269870a6e791446dd",
         "60a0a622c068a0a0f775ee48ccb0704fe6b8c49ca63330939a89d75f5222d97d",
         "d0bc1a00b15be4b7fec96ad8ef947bc4c820433bd0f3ecf37c4b2fbc745f35ab",
-        "5d87f6e4b5ad474442480c611a79dd72b26a26b20e022c98e9a89e6ef7070fd0",
+        "511cb11994d71a84dbcb33ebf24d47bead531e58a37e9e65ceea0bfd6d668816",
         "9fd869e4062b7accdd0f2015957cb800351f9a8053a9695b72836361709a1019"
       ]
     },
@@ -50288,7 +50598,7 @@
     "warnings": []
   },
   "statistics": {
-    "totalTypes": 663,
+    "totalTypes": 668,
     "webviewToExtensionMessages": 205,
     "extensionToWebviewMessages": 183,
     "inlineMessagesExtracted": 0

@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.ExtensionMessages;
 /// Type: DiffViewerNotice (placeholder for typeAlias)
 /// Source: extension-messages.ts
 /// </summary>
-public class DiffViewerNotice { }
+public partial class DiffViewerNotice { }

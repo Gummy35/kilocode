@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationSessionInfo
 /// Source: migration.ts
 /// </summary>
-public class MigrationSessionInfo
+public partial class MigrationSessionInfo
 {
     [JsonProperty("id")]
     public string Id { get; set; }

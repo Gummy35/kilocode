@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: f67a5b4eda5a79fda9dfc7ed193a998f8431353004ab6a82903e9f7d62d3145d
 /// </summary>
-public class RefreshPRMessage
+public partial class RefreshPRMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

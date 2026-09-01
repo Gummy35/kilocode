@@ -10,14 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.Parts;
 
 /// <summary>
 /// Type: Message
 /// Source: sessions.ts
 /// </summary>
-public class Message
+public partial class Message
 {
     [JsonProperty("id")]
     public string Id { get; set; }
@@ -35,14 +34,14 @@ public class Message
     [JsonProperty("createdAt")]
     public string CreatedAt { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: timeType
-    public TimeType? Time { get; set; }
+    // Original TypeScript type: MessageTimeType
+    public MessageTimeType? Time { get; set; }
     [JsonProperty("agent", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Agent { get; set; }
     [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: modelType
-    public ModelType? Model { get; set; }
+    // Original TypeScript type: MessageModelType
+    public MessageModelType? Model { get; set; }
     [JsonProperty("providerID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? ProviderID { get; set; }
@@ -56,11 +55,11 @@ public class Message
     // Original TypeScript type: undefined | string
     public string? ParentID { get; set; }
     [JsonProperty("path", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: pathType
-    public PathType? Path { get; set; }
+    // Original TypeScript type: MessagePathType
+    public MessagePathType? Path { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: errorType
-    public ErrorType? Error { get; set; }
+    // Original TypeScript type: MessageErrorType
+    public MessageErrorType? Error { get; set; }
     [JsonProperty("summary", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true | __type
     public object? Summary { get; set; }

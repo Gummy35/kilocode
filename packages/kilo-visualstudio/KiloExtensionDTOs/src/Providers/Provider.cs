@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: Provider
 /// Source: providers.ts
 /// </summary>
-public class Provider
+public partial class Provider
 {
     [JsonProperty("id")]
     public string Id { get; set; }
@@ -30,6 +30,6 @@ public class Provider
     // Original TypeScript type: undefined | Array
     public object? Env { get; set; }
     [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: metadataType
-    public MetadataType? Metadata { get; set; }
+    // Original TypeScript type: ProviderMetadataType
+    public ProviderMetadataType? Metadata { get; set; }
 }

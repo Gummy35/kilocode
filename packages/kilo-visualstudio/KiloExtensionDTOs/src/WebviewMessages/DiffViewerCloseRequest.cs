@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 5472c1ac9d40f5f21237bfa9ceae6fc1f26df8692c5da4080ff001a3f8269cbf
 /// </summary>
-public class DiffViewerCloseRequest
+public partial class DiffViewerCloseRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: FileAttachment
 /// Source: parts.ts
 /// </summary>
-public class FileAttachment
+public partial class FileAttachment
 {
     [JsonProperty("mime")]
     public string Mime { get; set; }

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: parts.ts
 /// Signature hash: 54969db1945d8454baf4c995c2f783db2202f31dccfddd421610f34baf076801
 /// </summary>
-public class PartDelta
+public partial class PartDelta
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

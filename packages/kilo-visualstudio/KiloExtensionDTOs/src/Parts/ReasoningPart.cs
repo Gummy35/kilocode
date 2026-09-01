@@ -12,15 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs.Sessions;
 
 /// <summary>
 /// WebView message: ReasoningPart
 /// Discriminator: type = "reasoning"
 /// Source: parts.ts
-/// Signature hash: 92485d485d7193a7b24f0200cd56f3b2beef93aba70e77641bb7969153c22504
+/// Signature hash: a36f89586f92338da0896f467581c716a90d0a3ea2fa6caafa32387fdf4cd0ce
 /// </summary>
-public class ReasoningPart : BasePart, IPart
+public partial class ReasoningPart : BasePart, IPart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -28,6 +27,6 @@ public class ReasoningPart : BasePart, IPart
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: timeType
-    public TimeType? Time { get; set; }
+    // Original TypeScript type: ReasoningPartTimeType
+    public object? Time { get; set; }
 }

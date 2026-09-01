@@ -519,6 +519,81 @@ function computeSignatureHash(typeDef: TypeDefinition): string | undefined {
 }
 
 /**
+ * Compute a signature hash for an inline type without a discriminator.
+ * Used for deduplication of inline object types that appear as property types.
+ * 
+ * ## Hash Computation
+ * 1. For each property:
+ *    - Format as `propertyName:CSharpType?` (optional marker if nullable)
+ *    - Normalize TypeScript types to C# equivalents
+ * 2. Sort properties alphabetically for consistent ordering
+ * 3. Join with `|` separator
+ * 4. Hash with SHA-256
+ * 
+ * @param typeDef - Type definition to hash (must have properties)
+ * @returns 64-character hex string (SHA-256)
+ */
+function computeInlineTypeSignatureHash(typeDef: TypeDefinition): string {
+  const crypto = require('crypto')
+  if (!typeDef.properties || typeDef.properties.length === 0) {
+    return crypto.createHash('sha256').update('').digest('hex')
+  }
+  
+  const normalizeToCSharpType = (prop: PropertyDefinition): string => {
+    if (/^[A-Z]$/.test(prop.type) || /^(T|P|K|V|E|R)$/.test(prop.type)) {
+      return "object"
+    }
+    if (prop.type === "union") {
+      return "object"
+    }
+    if (prop.isLiteral && prop.literalValue !== null) {
+      if (typeof prop.literalValue === "string") return "string"
+      if (typeof prop.literalValue === "boolean") return "bool"
+      if (typeof prop.literalValue === "number") return "double"
+    }
+    switch (prop.type) {
+      case "stringLiteral":
+      case "string":
+        return "string"
+      case "boolean":
+      case "booleanLiteral":
+        return "bool"
+      case "number":
+      case "numberLiteral":
+      case "integer":
+        return "double"
+      case "array":
+      case "readonlyarray":
+        return "List<object>"
+      case "map":
+      case "record":
+        return "Dictionary<object, object>"
+      case "typeParameter":
+        return "object"
+      case "object":
+      case "any":
+      case "unknown":
+        return "object"
+      case "Date":
+        return "DateTime"
+      default:
+        return prop.type
+    }
+  }
+  
+  const propsSig = typeDef.properties
+    .map(p => {
+      const optionalMarker = p.optional ? '?' : ''
+      const csharpType = normalizeToCSharpType(p)
+      return `${p.name}:${csharpType}${optionalMarker}`
+    })
+    .sort()
+    .join('|')
+  
+  return crypto.createHash('sha256').update(propsSig).digest('hex')
+}
+
+/**
  * Split a union type definition into individual members using regex.
  * 
  * ## Algorithm
@@ -798,7 +873,8 @@ function getTypeKind(type: ts.Type): string {
 function extractPropertyDefinition(
   property: ts.Symbol,
   typeChecker: ts.TypeChecker,
-  context: ExtractionContext
+  context: ExtractionContext,
+  parentTypeName?: string
 ): PropertyDefinition | null {
   const name = property.getName()
   const declarations = property.getDeclarations()
@@ -811,6 +887,41 @@ function extractPropertyDefinition(
   const type = typeChecker.getTypeOfSymbolAtLocation(property, declaration)
   
   const isOptional = property.flags & ts.SymbolFlags.Optional
+  
+  if (!parentTypeName) {
+    const sourceFile = declaration.getSourceFile()
+    const text = sourceFile.getFullText()
+    const startPos = declaration.getFullStart()
+    
+    let pos = startPos - 1
+    let parenDepth = 0
+    let braceDepth = 0
+    
+    while (pos >= 0) {
+      const char = text[pos]
+      if (char === ')') parenDepth++
+      else if (char === '(') parenDepth--
+      else if (char === '}') braceDepth++
+      else if (char === '{') {
+        braceDepth--
+        if (braceDepth === 0 && parenDepth === 0) {
+          const beforeBrace = text.slice(pos + 1, startPos).trim()
+          const interfaceMatch = beforeBrace.match(/export\s+interface\s+(\w+)/)
+          if (interfaceMatch) {
+            parentTypeName = interfaceMatch[1]
+            break
+          }
+          const typeAliasMatch = beforeBrace.match(/export\s+type\s+(\w+)\s*=/)
+          if (typeAliasMatch) {
+            parentTypeName = typeAliasMatch[1]
+            break
+          }
+          break
+        }
+      }
+      pos--
+    }
+  }
   
   let propertyType: string
   let elementType: string | null = null
@@ -853,17 +964,19 @@ function extractPropertyDefinition(
       }
       
       if (inlineProperties.length > 0) {
-        // Generate a unique name for this inline type
-        const inlineTypeName = `${name}Type`
+        const inlineTypeName = parentTypeName 
+          ? `${parentTypeName}${toPascalCase(name)}Type`
+          : `${name}Type`
         const inlineTypeDef: TypeDefinition = {
           name: inlineTypeName,
           kind: "interface",
           properties: inlineProperties,
           sourceFile: path.relative(VS_CODE_TYPES_PATH, declaration.getSourceFile().fileName),
         }
+        // Compute signature hash for deduplication (even without discriminator)
+        inlineTypeDef.signatureHash = computeInlineTypeSignatureHash(inlineTypeDef)
         context.types.set(inlineTypeName, inlineTypeDef)
         
-        // Update typeRef to point to this inline type
         typeRef = { name: inlineTypeName, kind: "interface" }
         propertyType = inlineTypeName
       }
@@ -888,13 +1001,16 @@ function extractPropertyDefinition(
         }
         
         if (inlineProperties.length > 0) {
-          const inlineTypeName = `${name}ItemType`
+          const inlineTypeName = parentTypeName 
+            ? `${parentTypeName}${toPascalCase(name)}ItemType`
+            : `${name}ItemType`
           const inlineTypeDef: TypeDefinition = {
             name: inlineTypeName,
             kind: "interface",
             properties: inlineProperties,
             sourceFile: path.relative(VS_CODE_TYPES_PATH, declaration.getSourceFile().fileName),
           }
+          inlineTypeDef.signatureHash = computeInlineTypeSignatureHash(inlineTypeDef)
           context.types.set(inlineTypeName, inlineTypeDef)
           
           elementType = inlineTypeName
@@ -992,13 +1108,16 @@ function extractPropertyDefinition(
               }
             }
             if (inlineProperties.length > 0) {
-              const inlineTypeName = `${name}ItemType`
+              const inlineTypeName = parentTypeName 
+                ? `${parentTypeName}${toPascalCase(name)}ItemType`
+                : `${name}ItemType`
               const inlineTypeDef: TypeDefinition = {
                 name: inlineTypeName,
                 kind: "interface",
                 properties: inlineProperties,
                 sourceFile: path.relative(VS_CODE_TYPES_PATH, declaration.getSourceFile().fileName),
               }
+              inlineTypeDef.signatureHash = computeInlineTypeSignatureHash(inlineTypeDef)
               context.types.set(inlineTypeName, inlineTypeDef)
               elementType = inlineTypeName
               typeRef = { name: inlineTypeName, kind: "interface" }
@@ -1089,7 +1208,7 @@ function extractInterfaceDeclaration(
     if (ts.isPropertySignature(member)) {
       const propertySymbol = typeChecker.getSymbolAtLocation(member.name)
       if (propertySymbol) {
-        const propDef = extractPropertyDefinition(propertySymbol, typeChecker, context)
+        const propDef = extractPropertyDefinition(propertySymbol, typeChecker, context, name)
         if (propDef) {
           properties.push(propDef)
         }
@@ -1184,7 +1303,7 @@ function extractTypeAliasDeclaration(
           if (ts.isPropertySignature(member) && member.name) {
             const propSymbol = typeChecker.getSymbolAtLocation(member.name)
             if (propSymbol) {
-              const propDef = extractPropertyDefinition(propSymbol, typeChecker, context)
+              const propDef = extractPropertyDefinition(propSymbol, typeChecker, context, name)
               if (propDef) {
                 inlineProperties.push(propDef)
                 // Check for discriminator

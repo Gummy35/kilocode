@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.ExtensionMessages;
 /// Type: ExtensionMessage (placeholder for union)
 /// Source: extension-messages.ts
 /// </summary>
-public class ExtensionMessage { }
+public partial class ExtensionMessage { }

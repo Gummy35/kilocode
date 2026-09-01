@@ -20,7 +20,7 @@ using KiloExtensionDTOs;
 /// Source: webview-messages.ts
 /// Signature hash: e568f947485cfe582b14ab244acf175c955b62e975d7f842d3e56c8a6205d0ec
 /// </summary>
-public class ApplyWorkStyleMessage
+public partial class ApplyWorkStyleMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

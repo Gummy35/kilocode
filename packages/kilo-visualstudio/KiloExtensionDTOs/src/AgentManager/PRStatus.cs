@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PRStatus
 /// Source: agent-manager.ts
 /// </summary>
-public class PRStatus
+public partial class PRStatus
 {
     [JsonProperty("number")]
     public double Number { get; set; }
@@ -29,11 +29,11 @@ public class PRStatus
     [JsonProperty("review", NullValueHandling = NullValueHandling.Ignore)]
     public PendingApprovedChangesrequestedEnum? Review { get; set; }
     [JsonProperty("checks")]
-    // Original TypeScript type: checksType
-    public ChecksType Checks { get; set; }
+    // Original TypeScript type: PRStatusChecksType
+    public PRStatusChecksType Checks { get; set; }
     [JsonProperty("comments", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: commentsType
-    public CommentsType? Comments { get; set; }
+    // Original TypeScript type: PRStatusCommentsType
+    public PRStatusCommentsType? Comments { get; set; }
     [JsonProperty("additions")]
     public double Additions { get; set; }
     [JsonProperty("deletions")]

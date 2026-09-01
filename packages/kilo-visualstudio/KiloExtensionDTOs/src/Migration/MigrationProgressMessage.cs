@@ -20,7 +20,7 @@ using KiloExtensionDTOs.ExtensionMessages;
 /// Source: migration.ts
 /// Signature hash: 793e876d11b58badd8ac104721ac5b799ccad6ef1ecf2dfbc68ac14bc6958bcb
 /// </summary>
-public class MigrationProgressMessage : IExtensionMessage
+public partial class MigrationProgressMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

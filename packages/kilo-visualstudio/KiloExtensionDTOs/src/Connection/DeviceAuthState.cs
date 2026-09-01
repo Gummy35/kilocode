@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: DeviceAuthState
 /// Source: connection.ts
 /// </summary>
-public class DeviceAuthState
+public partial class DeviceAuthState
 {
     [JsonProperty("status")]
     // Original TypeScript type: DeviceAuthStatus

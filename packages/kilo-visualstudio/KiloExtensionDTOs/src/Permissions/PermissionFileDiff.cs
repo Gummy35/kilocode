@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PermissionFileDiff
 /// Source: permissions.ts
 /// </summary>
-public class PermissionFileDiff
+public partial class PermissionFileDiff
 {
     [JsonProperty("file")]
     public string File { get; set; }

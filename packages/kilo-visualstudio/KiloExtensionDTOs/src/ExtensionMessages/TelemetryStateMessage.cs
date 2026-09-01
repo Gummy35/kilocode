@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: d1ad8c7fcfface31b4478cdbee1f1a2066e513b297250fad2bddf495e1de7501
 /// </summary>
-public class TelemetryStateMessage : IExtensionMessage
+public partial class TelemetryStateMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

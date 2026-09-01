@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: d6f931e702df82673d966367d61f69d2118a9d890c2c158c86319f95932bae6c
 /// </summary>
-public class DismissAgentMigrationBannerMessage
+public partial class DismissAgentMigrationBannerMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -18,7 +18,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// Source: ..\..\..\..\src\shared\stream-messages.ts
 /// Signature hash: a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112
 /// </summary>
-public class PartUpdate : IWebviewMessage
+public partial class PartUpdate : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: stringLiteral

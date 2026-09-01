@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationCustomModeInfo
 /// Source: migration.ts
 /// </summary>
-public class MigrationCustomModeInfo
+public partial class MigrationCustomModeInfo
 {
     [JsonProperty("name")]
     public string Name { get; set; }

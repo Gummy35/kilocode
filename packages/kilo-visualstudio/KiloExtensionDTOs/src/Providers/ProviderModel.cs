@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ProviderModel
 /// Source: providers.ts
 /// </summary>
-public class ProviderModel
+public partial class ProviderModel
 {
     [JsonProperty("id")]
     public string Id { get; set; }
@@ -37,20 +37,20 @@ public class ProviderModel
     // Original TypeScript type: undefined | false | true
     public bool? Latest { get; set; }
     [JsonProperty("limit", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: limitType
-    public LimitType? Limit { get; set; }
+    // Original TypeScript type: ProviderModelLimitType
+    public ProviderModelLimitType? Limit { get; set; }
     [JsonProperty("variants", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type
     public object? Variants { get; set; }
     [JsonProperty("capabilities", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: capabilitiesType
-    public CapabilitiesType? Capabilities { get; set; }
+    // Original TypeScript type: ProviderModelCapabilitiesType
+    public ProviderModelCapabilitiesType? Capabilities { get; set; }
     [JsonProperty("options", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: optionsType
-    public OptionsType? Options { get; set; }
+    // Original TypeScript type: ProviderModelOptionsType
+    public ProviderModelOptionsType? Options { get; set; }
     [JsonProperty("autoRouting", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: autoRoutingType
-    public AutoRoutingType? AutoRouting { get; set; }
+    // Original TypeScript type: ProviderModelAutoroutingType
+    public ProviderModelAutoroutingType? AutoRouting { get; set; }
     [JsonProperty("recommendedIndex", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number
     public double? RecommendedIndex { get; set; }
@@ -64,9 +64,9 @@ public class ProviderModel
     // Original TypeScript type: undefined | false | true
     public bool? HasUserByokAvailable { get; set; }
     [JsonProperty("terminalBench", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: terminalBenchType
-    public TerminalBenchType? TerminalBench { get; set; }
+    // Original TypeScript type: ProviderModelTerminalbenchType
+    public ProviderModelTerminalbenchType? TerminalBench { get; set; }
     [JsonProperty("cost", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: costType
-    public CostType? Cost { get; set; }
+    // Original TypeScript type: ProviderModelCostType
+    public ProviderModelCostType? Cost { get; set; }
 }

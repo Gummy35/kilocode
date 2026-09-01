@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: WorktreeGitStats
 /// Source: agent-manager.ts
 /// </summary>
-public class WorktreeGitStats
+public partial class WorktreeGitStats
 {
     [JsonProperty("worktreeId")]
     public string WorktreeId { get; set; }

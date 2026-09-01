@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: cc66e66207493fd2bf672936ad5cdcbb13daa14eab7704e7887f6085f01111e4
 /// </summary>
-public class RequestTerminalContextMessage
+public partial class RequestTerminalContextMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

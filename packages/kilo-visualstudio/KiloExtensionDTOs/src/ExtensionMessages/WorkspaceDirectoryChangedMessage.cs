@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 0c67165971391a7787b807cc63f41f238fc0813b494d195577419ba978c7d855
 /// </summary>
-public class WorkspaceDirectoryChangedMessage : IExtensionMessage
+public partial class WorkspaceDirectoryChangedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

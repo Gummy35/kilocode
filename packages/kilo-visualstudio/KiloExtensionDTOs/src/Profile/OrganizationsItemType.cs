@@ -14,8 +14,9 @@ using Newtonsoft.Json;
 /// <summary>
 /// Type: organizationsItemType
 /// Source: profile.ts
+/// Signature hash: b4e3e5bb4afc85b9002f914452db84071b673afc3ca3f54a6d22857040ad359b
 /// </summary>
-public class OrganizationsItemType
+public partial class OrganizationsItemType
 {
     [JsonProperty("id")]
     public string Id { get; set; }

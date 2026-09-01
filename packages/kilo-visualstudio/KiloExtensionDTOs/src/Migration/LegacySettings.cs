@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: LegacySettings
 /// Source: migration.ts
 /// </summary>
-public class LegacySettings
+public partial class LegacySettings
 {
     [JsonProperty("autoApprovalEnabled", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

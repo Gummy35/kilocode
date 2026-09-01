@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MarketplaceItemBase
 /// Source: ..\marketplace.ts
 /// </summary>
-public class MarketplaceItemBase
+public partial class MarketplaceItemBase
 {
     [JsonProperty("id")]
     public string Id { get; set; }

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 8904537b319fb592c85e6a96784dc822e30ab7901ccc1968951fdb4efe13bf88
 /// </summary>
-public class ChatCompletionAcceptedMessage
+public partial class ChatCompletionAcceptedMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

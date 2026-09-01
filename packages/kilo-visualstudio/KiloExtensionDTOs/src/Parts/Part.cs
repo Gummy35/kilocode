@@ -12,4 +12,4 @@ namespace KiloExtensionDTOs.Parts;
 /// Type: Part (placeholder for union)
 /// Source: parts.ts
 /// </summary>
-public class Part { }
+public partial class Part { }

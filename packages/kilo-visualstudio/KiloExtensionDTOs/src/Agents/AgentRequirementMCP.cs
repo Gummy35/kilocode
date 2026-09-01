@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentRequirementMCP
 /// Source: agents.ts
 /// </summary>
-public class AgentRequirementMCP
+public partial class AgentRequirementMCP
 {
     [JsonProperty("name")]
     public string Name { get; set; }

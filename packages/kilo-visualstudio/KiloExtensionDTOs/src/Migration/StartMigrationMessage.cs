@@ -17,9 +17,9 @@ using Newtonsoft.Json;
 /// WebView message: StartMigrationMessage
 /// Discriminator: type = "startMigration"
 /// Source: migration.ts
-/// Signature hash: c71987aaa50943f4862b1084e48cb0e6f5dc9325b01c845a98e09f160631cf3d
+/// Signature hash: af500dd928be034768c2a7cdf6aa3eb8f09a054aef31cf7c777c43cb07a4b8ba
 /// </summary>
-public class StartMigrationMessage
+public partial class StartMigrationMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -30,6 +30,6 @@ public class StartMigrationMessage
     [JsonProperty("operationId")]
     public string OperationId { get; set; }
     [JsonProperty("selections")]
-    // Original TypeScript type: selectionsType
-    public SelectionsType Selections { get; set; }
+    // Original TypeScript type: StartMigrationMessageSelectionsType
+    public StartMigrationMessageSelectionsType Selections { get; set; }
 }

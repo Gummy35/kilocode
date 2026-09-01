@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PRComment
 /// Source: agent-manager.ts
 /// </summary>
-public class PRComment
+public partial class PRComment
 {
     [JsonProperty("id")]
     public string Id { get; set; }

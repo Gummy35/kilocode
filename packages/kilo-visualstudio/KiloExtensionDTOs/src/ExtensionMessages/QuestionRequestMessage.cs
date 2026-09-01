@@ -21,7 +21,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// Source: extension-messages.ts
 /// Signature hash: 1a2ee502c778c05dbba3fd496aacb577dcf933fa25cc60d59891a0092bcc4090
 /// </summary>
-public class QuestionRequestMessage : IWebviewMessage
+public partial class QuestionRequestMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: QuestionRequest
 /// Source: questions.ts
 /// </summary>
-public class QuestionRequest
+public partial class QuestionRequest
 {
     [JsonProperty("id")]
     public string Id { get; set; }
@@ -39,6 +39,6 @@ public class QuestionRequest
     // Original TypeScript type: undefined | "warning"
     public string? Tone { get; set; }
     [JsonProperty("tool", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: toolType
-    public ToolType? Tool { get; set; }
+    // Original TypeScript type: QuestionRequestToolType
+    public QuestionRequestToolType? Tool { get; set; }
 }

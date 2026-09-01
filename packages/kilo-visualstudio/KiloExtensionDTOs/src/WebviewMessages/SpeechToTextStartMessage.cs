@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 5b8d9fa06148e49108030e75912063d4e03a2659d2f9a3a1e836822cc8237cb9
 /// </summary>
-public class SpeechToTextStartMessage
+public partial class SpeechToTextStartMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

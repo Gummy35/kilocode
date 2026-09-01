@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ReviewCommentData
 /// Source: ..\..\..\..\src\shared\review-comments.ts
 /// </summary>
-public class ReviewCommentData
+public partial class ReviewCommentData
 {
     [JsonProperty("id")]
     public string Id { get; set; }

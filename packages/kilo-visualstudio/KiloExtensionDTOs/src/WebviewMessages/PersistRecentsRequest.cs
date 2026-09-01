@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Providers;
 /// Source: webview-messages.ts
 /// Signature hash: dd6971e62b60f2c53a93b2eb245eee4a7232bc78c5a75cda57a03a81d73c65e3
 /// </summary>
-public class PersistRecentsRequest
+public partial class PersistRecentsRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

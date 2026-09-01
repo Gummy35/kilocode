@@ -12,15 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using KiloExtensionDTOs.Sessions;
 
 /// <summary>
 /// WebView message: StepFinishPart
 /// Discriminator: type = "step-finish"
 /// Source: parts.ts
-/// Signature hash: c96a834671e1050bc12f51ef53825c07c2ef24dc967a480ecd56be243e07e50c
+/// Signature hash: eeaf31e4cba8e39ed2a5adbc07696072ea2d5ecb9c180cf2862e6a4fcd87bc81
 /// </summary>
-public class StepFinishPart : BasePart, IPart
+public partial class StepFinishPart : BasePart, IPart
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
@@ -29,11 +28,11 @@ public class StepFinishPart : BasePart, IPart
     // Original TypeScript type: undefined | string
     public string? Reason { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: timeType
-    public TimeType? Time { get; set; }
+    // Original TypeScript type: StepFinishPartTimeType
+    public StepFinishPartTimeType? Time { get; set; }
     [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: modelType
-    public ModelType? Model { get; set; }
+    // Original TypeScript type: StepFinishPartModelType
+    public StepFinishPartModelType? Model { get; set; }
     [JsonProperty("generationID", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? GenerationID { get; set; }
@@ -44,8 +43,8 @@ public class StepFinishPart : BasePart, IPart
     // Original TypeScript type: undefined | number
     public double? Cost { get; set; }
     [JsonProperty("tokens", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: tokensType
-    public TokensType? Tokens { get; set; }
+    // Original TypeScript type: StepFinishPartTokensType
+    public StepFinishPartTokensType? Tokens { get; set; }
     [JsonProperty("metrics", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | StepThroughputMetrics
     public StepThroughputMetrics? Metrics { get; set; }

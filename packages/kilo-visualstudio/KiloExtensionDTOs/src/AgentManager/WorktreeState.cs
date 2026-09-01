@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: WorktreeState
 /// Source: agent-manager.ts
 /// </summary>
-public class WorktreeState
+public partial class WorktreeState
 {
     [JsonProperty("id")]
     public string Id { get; set; }

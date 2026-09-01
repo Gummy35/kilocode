@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: baa59eb0817ce279baa9c4850e576795b7a9c7dc7162f39facf8abd5690f4d33
 /// </summary>
-public class DeleteMessageRequest
+public partial class DeleteMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

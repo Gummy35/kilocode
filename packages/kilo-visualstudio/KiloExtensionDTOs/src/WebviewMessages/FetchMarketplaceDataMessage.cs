@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: f7a7048bdb653c60a228b3bde65a5e25ec83285d767e1c0323e122afe63ab2ad
 /// </summary>
-public class FetchMarketplaceDataMessage
+public partial class FetchMarketplaceDataMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

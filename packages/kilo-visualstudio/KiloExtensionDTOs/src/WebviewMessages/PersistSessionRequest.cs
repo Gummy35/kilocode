@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 83f3c78015a9c30759500ab5f9a56f5d5f3de079a36d505d407a2f6230361775
 /// </summary>
-public class PersistSessionRequest
+public partial class PersistSessionRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

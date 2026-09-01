@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Agents;
 /// Source: extension-messages.ts
 /// Signature hash: 2567692d00c2d83a0a7cbc162c049740210e9b0ca0cdef9e1383943256fcbc30
 /// </summary>
-public class CommandsLoadedMessage : IExtensionMessage
+public partial class CommandsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

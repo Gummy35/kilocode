@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: memory.ts
 /// Signature hash: 020a49629db7157c64c821108494c07892565a50afcabaa818c625d17f18c690
 /// </summary>
-public class MemoryShowMessage
+public partial class MemoryShowMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

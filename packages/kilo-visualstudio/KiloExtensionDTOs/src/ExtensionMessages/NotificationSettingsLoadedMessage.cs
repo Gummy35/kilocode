@@ -17,14 +17,14 @@ using Newtonsoft.Json;
 /// WebView message: NotificationSettingsLoadedMessage
 /// Discriminator: type = "notificationSettingsLoaded"
 /// Source: extension-messages.ts
-/// Signature hash: 166c20f179c220ef49d651e4dff9117931ed466ef25a235463e91e5dd70cf6a7
+/// Signature hash: a06d1d88e58a33675349a1d3e9471b56d75387be3793063d01a3e2c0ec78dc9c
 /// </summary>
-public class NotificationSettingsLoadedMessage : IExtensionMessage
+public partial class NotificationSettingsLoadedMessage : IExtensionMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal
     public string Type { get; set; } = "notificationSettingsLoaded";
     [JsonProperty("settings")]
-    // Original TypeScript type: settingsType
-    public SettingsType Settings { get; set; }
+    // Original TypeScript type: NotificationSettingsLoadedMessageSettingsType
+    public NotificationSettingsLoadedMessageSettingsType Settings { get; set; }
 }

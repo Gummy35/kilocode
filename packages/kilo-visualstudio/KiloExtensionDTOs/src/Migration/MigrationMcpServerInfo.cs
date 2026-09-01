@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationMcpServerInfo
 /// Source: migration.ts
 /// </summary>
-public class MigrationMcpServerInfo
+public partial class MigrationMcpServerInfo
 {
     [JsonProperty("name")]
     public string Name { get; set; }

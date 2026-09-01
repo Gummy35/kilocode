@@ -13,9 +13,10 @@ using Newtonsoft.Json;
 
 /// <summary>
 /// Type: cacheType
-/// Source: parts.ts
+/// Source: Shared\parts.ts
+/// Signature hash: a313131d7edb77b28b7d94059981546914b734d899278e2165e3a1c21c8572d2
 /// </summary>
-public class CacheType
+public partial class CacheType
 {
     [JsonProperty("read")]
     public double Read { get; set; }
