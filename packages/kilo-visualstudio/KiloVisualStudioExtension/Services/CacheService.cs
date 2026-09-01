@@ -13,14 +13,14 @@ namespace KiloVisualStudioExtension.Services
   public interface ICacheService:IServiceProviderService
   {
     /// <summary>
-    /// Get a cached value by key. Returns null if not found.
+    /// Get a cached value by key with default fallback.
     /// </summary>
-    T? Get<T>(string key) where T : class;
+    T Get<T>(string key, T defaultValue = default) where T : class;
 
     /// <summary>
     /// Get a cached value by key with default fallback.
     /// </summary>
-    T Get<T>(string key, T defaultValue) where T : class;
+    T GetValue<T>(string key, T defaultValue = default);
 
     /// <summary>
     /// Get a JsonElement from cache. Returns null if not found.
@@ -71,7 +71,29 @@ namespace KiloVisualStudioExtension.Services
       _onSave = onSave ?? ((key, value) => Task.CompletedTask);
     }
 
-    public T? Get<T>(string key) where T : class
+    public T? GetValue<T>(string key, T defaultValue = default)
+    {
+      if (_cache.TryGetValue(key, out var value))
+      {
+        if (value is T typedValue)
+          return typedValue;
+      }
+
+      // Try to load from storage
+      if (_storage.TryGetValue(key, out var json))
+      {
+        var deserialized = json.Deserialize<T>();
+        if (deserialized != null)
+        {
+          _cache[key] = deserialized;
+          return deserialized;
+        }
+      }
+
+      return defaultValue;
+    }
+
+    public T? Get<T>(string key, T defaultValue = default) where T : class
     {
       if (_cache.TryGetValue(key, out var value))
       {
@@ -89,12 +111,7 @@ namespace KiloVisualStudioExtension.Services
         }
       }
 
-      return default;
-    }
-
-    public T Get<T>(string key, T defaultValue) where T : class
-    {
-      return Get<T>(key) ?? defaultValue;
+      return defaultValue;
     }
 
     public JsonElement? GetJson(string key)

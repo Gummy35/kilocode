@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloExtensionDTOs.ExtensionMessages;
 using KiloVisualStudioExtension.ApiClient;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Settings
@@ -30,10 +31,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// </summary>
     /// <param name="payload">The message payload (unused).</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public void HandleRequestIndexingSettings(JsonElement? payload)
+    public void FetchAndSendIndexingSettings()
     {
-      var message = new { type = "indexingSettingsLoaded", settings = new { showButtonWhenDisabled = true } };
-      Provider.PostMessage(JsonSerializer.Serialize(message));
+      Provider.PostMessage(BuildIndexingSettingsMessage());
+    }
+
+    private IndexingSettingsLoadedMessage BuildIndexingSettingsMessage()
+    {
+      var config = CacheService.WorkspaceState.Get<bool>("kilo-code.new.indexing.showButtonWhenDisabled", true);
+      return new IndexingSettingsLoadedMessage
+      {
+        
+      };
     }
 
     /// <summary>

@@ -619,6 +619,11 @@ namespace KiloVisualStudioExtension
       await _miscRequestService.FetchAndSendSkillsAsync();
     }
 
+    internal async Task FetchAndSendMcpStatusAsync()
+    {
+      await _mcpHandlerService.HandleRequestMcpStatusAsync();
+    }
+
     internal async Task FetchAndSendCommandsAsync()
     {
       await _miscRequestService.FetchAndSendCommandsAsync();
@@ -959,344 +964,348 @@ namespace KiloVisualStudioExtension
       {
         switch (type)
         {
-      //    case "webviewReady":
-      //      System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
-      //      _isWebviewReady = true;
-      //      await HandleWebviewReadyAsync();
-      //      break;
-
-      //    case "requestProviders":
-      //      await _providerRequestHandler.FetchAndSendProvidersAsync();
-      //      break;
-
-      //    case "requestAgents":
-      //      await _agentRequestHandler.FetchAndSendAgentsAsync();
-      //      break;
-
-      //    case "requestConfig":
-      ////      await _configHandler.HandleRequestConfigAsync(payload);
-      //      break;
-
-      //    case "requestMcpStatus":
-      //      await _mcpHandler.HandleRequestMcpStatusAsync(payload);
-      //      break;
-
-      //    case "requestRecents":
-      //      _miscRequestHandler.HandleRequestRecents(payload);
-      //      break;
-
-      //    case "requestFavorites":
-      //      _miscRequestHandler.HandleRequestFavorites(payload);
-      //      break;
-
-      //    case "requestVariants":
-      //      _miscRequestHandler.HandleRequestVariants(payload);
-      //      break;
-
-      //    case "requestNotifications":
-      //      await _notificationHandler.FetchAndSendNotificationsAsync();
-      //      break;
-
-      //    case "requestModelSelections":
-      //      _modelHandler.HandleRequestModelSelections(payload);
-      //      break;
-
-      //    case "requestIndexingSettings":
-      //      _settingsHandler.HandleRequestIndexingSettings(payload);
-      //      break;
-
-      //    case "requestChatSettings":
-      //      _settingsHandler.HandleRequestChatSettings(payload);
-      //      break;
-
-      //    case "requestThroughputSetting":
-      //      _settingsHandler.HandleRequestThroughputSetting(payload);
-      //      break;
-
-      //    case "requestAutocompleteSettings":
-      //      _settingsHandler.HandleRequestAutocompleteSettings(payload);
-      //      break;
-
-      //    case "requestWorkStyle":
-      //      await _settingsHandler.HandleRequestWorkStyleAsync(payload);
-      //      break;
-
-      //    case "retryConnection":
-      //      System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: retryConnection requested");
-      //      await _connectionService.ConnectAsync();
-      //      break;
-
-      //    case "prompt":
-      //      await _interactionHandler.HandlePromptAsync(payload);
-      //      break;
-
-      //    case "permission/reply":
-      //      await _interactionHandler.HandlePermissionReplyAsync(payload);
-      //      break;
-
-      //    case "permissionResponse":
-      //      await _interactionHandler.HandlePermissionResponseAsync(payload);
-      //      break;
-
-      //    case "question/reply":
-      //      await _interactionHandler.HandleQuestionReplyAsync(payload);
-      //      break;
-
-      //    case "questionReject":
-      //      await _interactionHandler.HandleQuestionRejectAsync(payload);
-      //      break;
-
-      //    case "questionReply":
-      //      await _interactionHandler.HandleQuestionReplyAsync(payload);
-      //      break;
-
-      //    case "cancelLogin":
-      //      _loginAttempt++;
-      //      PostMessage(JsonSerializer.Serialize(new { type = "deviceAuthCancelled" }));
-      //      break;
-
-      //    case "connectProvider":
-      //      await _providerActionService.HandleConnectProviderAsync(payload);
-      //      break;
-
-      //    case "disconnectProvider":
-      //      await _providerActionService.HandleDisconnectProviderAsync(payload);
-      //      break;
-
-      //    case "authorizeProviderOAuth":
-      //      await _providerActionService.HandleAuthorizeProviderOAuthAsync(payload);
-      //      break;
-
-      //    case "completeProviderOAuth":
-      //      await _providerActionService.HandleCompleteProviderOAuthAsync(payload);
-      //      break;
-
-      //    case "saveCustomProvider":
-      //      await _providerActionService.HandleSaveCustomProviderAsync(payload);
-      //      break;
-
-      //    case "createSession":
-      //      await _sessionHandler.HandleCreateSessionAsync(payload);
-      //      break;
-
-      //    case "clearSession":
-      //      _sessionHandler.HandleClearSession(payload);
-      //      break;
-
-      //    case "setState":
-      //      await _stateManagementHandler.HandleSetStateAsync(payload);
-      //      break;
-
-      //    case "getState":
-      //      await _stateManagementHandler.HandleGetStateAsync();
-      //      break;
-
-      //    case "loadMessages":
-      //      await _sessionHandler.HandleLoadMessagesAsync(payload);
-      //      break;
-
-      //    case "deleteMessage":
-      //      await _sessionHandler.HandleDeleteMessageAsync(payload);
-      //      break;
-
-      //    case "deleteSession":
-      //      await _sessionHandler.HandleDeleteSessionAsync(payload);
-      //      break;
-
-      //    case "renameSession":
-      //      await _sessionHandler.HandleRenameSessionAsync(payload);
-      //      break;
-
-      //    case "loadSessions":
-      //      await _sessionHandler.HandleLoadSessionsAsync(payload);
-      //      break;
-
-      //    case "syncSession":
-      //      await _sessionHandler.HandleSyncSessionAsync(payload);
-      //      break;
-
-      //    case "requestSessionModelUsage":
-      //      await _sessionHandler.HandleRequestSessionModelUsageAsync(payload);
-      //      break;
-
-      //    case "revertSession":
-      //      await _sessionHandler.HandleRevertSessionAsync(payload);
-      //      break;
-
-      //    case "unrevertSession":
-      //      await _sessionHandler.HandleUnrevertSessionAsync(payload);
-      //      break;
-
-      //    case "compact":
-      //      await _sessionHandler.HandleCompactAsync(payload);
-      //      break;
-
-      //    case "abort":
-      //      await _sessionControlHandler.HandleAbortAsync(payload);
-      //      break;
-
-      //    case "sendMessage":
-      //      await _sessionControlHandler.HandleSendMessageAsync(payload);
-      //      break;
-
-      //    case "login":
-      //      _loginAttempt++;
-      //      await _authHandler.HandleLoginAsync(payload);
-      //      break;
-
-      //    case "refreshProfile":
-      //      await _authHandler.HandleRefreshProfileAsync(payload);
-      //      break;
-
-      //    case "logout":
-      //      await _authHandler.HandleLogoutAsync(payload);
-      //      break;
-
-      //    case "setOrganization":
-      //      await _authHandler.HandleSetOrganizationAsync(payload);
-      //      break;
-
-      //    case "openSettingsPanel":
-      //      await _uiHandler.HandleOpenSettingsPanelAsync(payload);
-      //      break;
-
-      //    case "openConfigFile":
-      //      await _configHandler.HandleOpenConfigFileAsync(payload);
-      //      break;
-
-      //    case "updateSetting":
-      //      await _configHandler.HandleUpdateSettingAsync(payload);
-      //      break;
-
-      //    case "updateConfig":
-      //      await _configHandler.HandleUpdateConfigAsync(payload);
-      //      break;
-
-      //    case "requestSkills":
-      //      await _miscRequestHandler.FetchAndSendSkillsAsync();
-      //      break;
-
-      //    case "requestCommands":
-      //      await _miscRequestHandler.FetchAndSendCommandsAsync();
-      //      break;
-
-      //    case "requestGlobalConfig":
-      //  //    await _configHandler.HandleRequestGlobalConfigAsync();
-      //      break;
-
-      //    case "requestIndexingStatus":
-      //      await _settingsHandler.HandleRequestIndexingStatusAsync(payload);
-      //      break;
-
-      //    case "requestKiloEmbeddingModels":
-      //      await _modelHandler.HandleRequestKiloEmbeddingModelsAsync(payload);
-      //      break;
-
-      //    case "requestImageModels":
-      //      await _modelHandler.HandleRequestImageModelsAsync(payload);
-      //      break;
-
-      //    case "settingsTabChanged":
-      //      _uiHandler.HandleSettingsTabChanged(payload);
-      //      break;
-
-      //    case "forkSession":
-      //      await _sessionControlHandler.HandleForkSessionAsync(payload);
-      //      break;
-
-      //    case "reload":
-      //      await _uiHandler.HandleReloadAsync(payload);
-      //      break;
-
-      //    case "saveImage":
-      //      await _uiHandler.HandleSaveImageAsync(payload);
-      //      break;
-
-      //    case "openExternal":
-      //      await HandleOpenExternalAsync(payload);
-      //      break;
-
-      //    case "cycleAgentMode":
-      //      // Fire-and-forget: broadcast to all providers without awaiting
-      //      HandleCycleAgentModeAsync(payload);
-      //      break;
-
-      //    case "toggleMemory":
-      //      await HandleToggleMemoryAsync(payload);
-      //      break;
-
-      //    case "showMemory":
-      //      await HandleShowMemoryAsync(payload);
-      //      break;
-
-      //    case "fetchCustomProviderModels":
-      //      await HandleFetchCustomProviderModelsAsync(payload);
-      //      break;
-
-      //    case "removeSkill":
-      //      await HandleRemoveSkillAsync(payload);
-      //      break;
-
-      //    case "removeAgent":
-      //      await HandleRemoveAgentAsync(payload);
-      //      break;
-
-      //    case "openSubAgentViewer":
-      //      await _uiHandler.HandleOpenSubAgentViewerAsync(payload);
-      //      break;
-
-      //    case "openMarketplacePanel":
-      //      // Fire-and-forget: execute marketplace command without awaiting
-      //      HandleOpenMarketplacePanelAsync(payload);
-      //      break;
-
-      //    case "agentManager.createWorktree":
-      //      await HandleCreateWorktreeAsync(payload);
-      //      break;
-
-      //    case "agentManager.deleteWorktree":
-      //      await HandleDeleteWorktreeAsync(payload);
-      //      break;
-
-      //    case "agentManager.promoteSession":
-      //      await HandlePromoteSessionAsync(payload);
-      //      break;
-
-      //    case "agentManager.forkSession":
-      //      await HandleForkSessionToWorktreeAsync(payload);
-      //      break;
-
-      //    case "agentManager.openLocally":
-      //      await HandleOpenWorktreeLocallyAsync(payload);
-      //      break;
-
-      //    case "agentManager.requestState":
-      //      await HandleRequestAgentManagerStateAsync(payload);
-      //      break;
-
-      //    case "agentManager.setTabOrder":
-      //      await HandleSetTabOrderAsync(payload);
-      //      break;
-
-      //    case "agentManager.showTerminal":
-      //      await HandleShowTerminalAsync(payload);
-      //      break;
-
-      //    case "agentManager.requestWorktreeDiff":
-      //      await HandleRequestWorktreeDiffAsync(payload);
-      //      break;
-
-      //    case "agentManager.applyWorktreeDiff":
-      //      await HandleApplyWorktreeDiffAsync(payload);
-      //      break;
-
-      //    case "agentManager.startDiffWatch":
-      //      await HandleStartDiffWatchAsync(payload);
-      //      break;
-
-      //    case "agentManager.openFile":
-      //      await HandleOpenFileAsync(payload);
-      //      break;
+          case "webviewReady":
+            System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: webviewReady received");
+            _isWebviewReady = true;
+            await HandleWebviewReadyAsync();
+            break;
+
+          case "requestProviders":
+            await FetchAndSendProvidersAsync();
+            break;
+
+          case "requestAgents":
+            await FetchAndSendAgentsAsync();
+            break;
+
+          case "requestConfig":
+            await FetchAndSendConfigAsync();
+            break;
+
+          case "requestMcpStatus":
+            await FetchAndSendMcpStatusAsync();
+            break;
+
+          //////case "requestMemory":
+          //////  await FetchAndSendMemoryAsync();
+          //////  break;
+
+          //    case "requestRecents":
+          //      _miscRequestHandler.HandleRequestRecents(payload);
+          //      break;
+
+          //    case "requestFavorites":
+          //      _miscRequestHandler.HandleRequestFavorites(payload);
+          //      break;
+
+          //    case "requestVariants":
+          //      _miscRequestHandler.HandleRequestVariants(payload);
+          //      break;
+
+          //    case "requestNotifications":
+          //      await _notificationHandler.FetchAndSendNotificationsAsync();
+          //      break;
+
+          //    case "requestModelSelections":
+          //      _modelHandler.HandleRequestModelSelections(payload);
+          //      break;
+
+          case "requestIndexingSettings":
+            await _settingsService.FetchAndSendIndexingSettings();
+            break;
+
+          case "requestChatSettings":
+            _settingsHandler.HandleRequestChatSettings(payload);
+            break;
+
+          //    case "requestThroughputSetting":
+          //      _settingsHandler.HandleRequestThroughputSetting(payload);
+          //      break;
+
+          case "requestAutocompleteSettings":
+            _settingsHandler.HandleRequestAutocompleteSettings(payload);
+            break;
+
+          case "requestWorkStyle":
+            await _settingsHandler.HandleRequestWorkStyleAsync(payload);
+            break;
+
+          //    case "retryConnection":
+          //      System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: retryConnection requested");
+          //      await _connectionService.ConnectAsync();
+          //      break;
+
+          //    case "prompt":
+          //      await _interactionHandler.HandlePromptAsync(payload);
+          //      break;
+
+          //    case "permission/reply":
+          //      await _interactionHandler.HandlePermissionReplyAsync(payload);
+          //      break;
+
+          //    case "permissionResponse":
+          //      await _interactionHandler.HandlePermissionResponseAsync(payload);
+          //      break;
+
+          //    case "question/reply":
+          //      await _interactionHandler.HandleQuestionReplyAsync(payload);
+          //      break;
+
+          //    case "questionReject":
+          //      await _interactionHandler.HandleQuestionRejectAsync(payload);
+          //      break;
+
+          //    case "questionReply":
+          //      await _interactionHandler.HandleQuestionReplyAsync(payload);
+          //      break;
+
+          //    case "cancelLogin":
+          //      _loginAttempt++;
+          //      PostMessage(JsonSerializer.Serialize(new { type = "deviceAuthCancelled" }));
+          //      break;
+
+          //    case "connectProvider":
+          //      await _providerActionService.HandleConnectProviderAsync(payload);
+          //      break;
+
+          //    case "disconnectProvider":
+          //      await _providerActionService.HandleDisconnectProviderAsync(payload);
+          //      break;
+
+          //    case "authorizeProviderOAuth":
+          //      await _providerActionService.HandleAuthorizeProviderOAuthAsync(payload);
+          //      break;
+
+          //    case "completeProviderOAuth":
+          //      await _providerActionService.HandleCompleteProviderOAuthAsync(payload);
+          //      break;
+
+          //    case "saveCustomProvider":
+          //      await _providerActionService.HandleSaveCustomProviderAsync(payload);
+          //      break;
+
+          //    case "createSession":
+          //      await _sessionHandler.HandleCreateSessionAsync(payload);
+          //      break;
+
+          //    case "clearSession":
+          //      _sessionHandler.HandleClearSession(payload);
+          //      break;
+
+          //    case "setState":
+          //      await _stateManagementHandler.HandleSetStateAsync(payload);
+          //      break;
+
+          //    case "getState":
+          //      await _stateManagementHandler.HandleGetStateAsync();
+          //      break;
+
+          //    case "loadMessages":
+          //      await _sessionHandler.HandleLoadMessagesAsync(payload);
+          //      break;
+
+          //    case "deleteMessage":
+          //      await _sessionHandler.HandleDeleteMessageAsync(payload);
+          //      break;
+
+          //    case "deleteSession":
+          //      await _sessionHandler.HandleDeleteSessionAsync(payload);
+          //      break;
+
+          //    case "renameSession":
+          //      await _sessionHandler.HandleRenameSessionAsync(payload);
+          //      break;
+
+          //    case "loadSessions":
+          //      await _sessionHandler.HandleLoadSessionsAsync(payload);
+          //      break;
+
+          //    case "syncSession":
+          //      await _sessionHandler.HandleSyncSessionAsync(payload);
+          //      break;
+
+          //    case "requestSessionModelUsage":
+          //      await _sessionHandler.HandleRequestSessionModelUsageAsync(payload);
+          //      break;
+
+          //    case "revertSession":
+          //      await _sessionHandler.HandleRevertSessionAsync(payload);
+          //      break;
+
+          //    case "unrevertSession":
+          //      await _sessionHandler.HandleUnrevertSessionAsync(payload);
+          //      break;
+
+          //    case "compact":
+          //      await _sessionHandler.HandleCompactAsync(payload);
+          //      break;
+
+          //    case "abort":
+          //      await _sessionControlHandler.HandleAbortAsync(payload);
+          //      break;
+
+          //    case "sendMessage":
+          //      await _sessionControlHandler.HandleSendMessageAsync(payload);
+          //      break;
+
+          //    case "login":
+          //      _loginAttempt++;
+          //      await _authHandler.HandleLoginAsync(payload);
+          //      break;
+
+          //    case "refreshProfile":
+          //      await _authHandler.HandleRefreshProfileAsync(payload);
+          //      break;
+
+          //    case "logout":
+          //      await _authHandler.HandleLogoutAsync(payload);
+          //      break;
+
+          //    case "setOrganization":
+          //      await _authHandler.HandleSetOrganizationAsync(payload);
+          //      break;
+
+          //    case "openSettingsPanel":
+          //      await _uiHandler.HandleOpenSettingsPanelAsync(payload);
+          //      break;
+
+          //    case "openConfigFile":
+          //      await _configHandler.HandleOpenConfigFileAsync(payload);
+          //      break;
+
+          //    case "updateSetting":
+          //      await _configHandler.HandleUpdateSettingAsync(payload);
+          //      break;
+
+          //    case "updateConfig":
+          //      await _configHandler.HandleUpdateConfigAsync(payload);
+          //      break;
+
+          //    case "requestSkills":
+          //      await _miscRequestHandler.FetchAndSendSkillsAsync();
+          //      break;
+
+          //    case "requestCommands":
+          //      await _miscRequestHandler.FetchAndSendCommandsAsync();
+          //      break;
+
+          //    case "requestGlobalConfig":
+          //  //    await _configHandler.HandleRequestGlobalConfigAsync();
+          //      break;
+
+          //    case "requestIndexingStatus":
+          //      await _settingsHandler.HandleRequestIndexingStatusAsync(payload);
+          //      break;
+
+          //    case "requestKiloEmbeddingModels":
+          //      await _modelHandler.HandleRequestKiloEmbeddingModelsAsync(payload);
+          //      break;
+
+          //    case "requestImageModels":
+          //      await _modelHandler.HandleRequestImageModelsAsync(payload);
+          //      break;
+
+          //    case "settingsTabChanged":
+          //      _uiHandler.HandleSettingsTabChanged(payload);
+          //      break;
+
+          //    case "forkSession":
+          //      await _sessionControlHandler.HandleForkSessionAsync(payload);
+          //      break;
+
+          //    case "reload":
+          //      await _uiHandler.HandleReloadAsync(payload);
+          //      break;
+
+          //    case "saveImage":
+          //      await _uiHandler.HandleSaveImageAsync(payload);
+          //      break;
+
+          //    case "openExternal":
+          //      await HandleOpenExternalAsync(payload);
+          //      break;
+
+          //    case "cycleAgentMode":
+          //      // Fire-and-forget: broadcast to all providers without awaiting
+          //      HandleCycleAgentModeAsync(payload);
+          //      break;
+
+          //    case "toggleMemory":
+          //      await HandleToggleMemoryAsync(payload);
+          //      break;
+
+          //    case "showMemory":
+          //      await HandleShowMemoryAsync(payload);
+          //      break;
+
+          //    case "fetchCustomProviderModels":
+          //      await HandleFetchCustomProviderModelsAsync(payload);
+          //      break;
+
+          //    case "removeSkill":
+          //      await HandleRemoveSkillAsync(payload);
+          //      break;
+
+          //    case "removeAgent":
+          //      await HandleRemoveAgentAsync(payload);
+          //      break;
+
+          //    case "openSubAgentViewer":
+          //      await _uiHandler.HandleOpenSubAgentViewerAsync(payload);
+          //      break;
+
+          //    case "openMarketplacePanel":
+          //      // Fire-and-forget: execute marketplace command without awaiting
+          //      HandleOpenMarketplacePanelAsync(payload);
+          //      break;
+
+          //    case "agentManager.createWorktree":
+          //      await HandleCreateWorktreeAsync(payload);
+          //      break;
+
+          //    case "agentManager.deleteWorktree":
+          //      await HandleDeleteWorktreeAsync(payload);
+          //      break;
+
+          //    case "agentManager.promoteSession":
+          //      await HandlePromoteSessionAsync(payload);
+          //      break;
+
+          //    case "agentManager.forkSession":
+          //      await HandleForkSessionToWorktreeAsync(payload);
+          //      break;
+
+          //    case "agentManager.openLocally":
+          //      await HandleOpenWorktreeLocallyAsync(payload);
+          //      break;
+
+          //    case "agentManager.requestState":
+          //      await HandleRequestAgentManagerStateAsync(payload);
+          //      break;
+
+          //    case "agentManager.setTabOrder":
+          //      await HandleSetTabOrderAsync(payload);
+          //      break;
+
+          //    case "agentManager.showTerminal":
+          //      await HandleShowTerminalAsync(payload);
+          //      break;
+
+          //    case "agentManager.requestWorktreeDiff":
+          //      await HandleRequestWorktreeDiffAsync(payload);
+          //      break;
+
+          //    case "agentManager.applyWorktreeDiff":
+          //      await HandleApplyWorktreeDiffAsync(payload);
+          //      break;
+
+          //    case "agentManager.startDiffWatch":
+          //      await HandleStartDiffWatchAsync(payload);
+          //      break;
+
+          //    case "agentManager.openFile":
+          //      await HandleOpenFileAsync(payload);
+          //      break;
 
           default:
             System.Diagnostics.Debug.WriteLine($"[Kilo] VSProvider: unhandled message type={type}");
