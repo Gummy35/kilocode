@@ -497,7 +497,7 @@ namespace KiloVisualStudioExtension.ApiClient
       return new SessionErrorMessage
       {
         SessionID = Properties.SessionID,
-        Error = new ErrorType
+        Error = new KiloExtensionDTOs.Sessions.MessageErrorType
         {
           Name = Properties.Error.AdditionalProperties["name"].ToString(),
           Data = Properties.Error.AdditionalProperties["data"]
@@ -548,7 +548,7 @@ namespace KiloVisualStudioExtension.ApiClient
       //}    }
       return new IndexingStatusLoadedMessage
       {
-        Status = Properties.Status
+        Status = EntityConverter.Convert(Properties.Status)
       };
     }
   }

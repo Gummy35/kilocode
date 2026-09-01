@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.Sessions;
 using KiloExtensionDTOs.KiloProviderUtils;
 
 /// <summary>
@@ -29,6 +30,6 @@ public partial class SessionErrorMessage : IWebviewMessage
     // Original TypeScript type: undefined | string
     public string? SessionID { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: SessionErrorMessageErrorType
-    public object? Error { get; set; }
+    // Original TypeScript type: MessageErrorType
+    public MessageErrorType? Error { get; set; }
 }

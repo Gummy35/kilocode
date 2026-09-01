@@ -85,7 +85,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Indexing
         {
           var message = new IndexingStatusLoadedMessage
           {
-            Status = result
+            Status = EntityConverter.Convert(result)
           };
           await cache.UpdateAsync("indexingStatusLoadedMessage", message);
           Provider.PostMessage(message);

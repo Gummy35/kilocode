@@ -16,7 +16,7 @@ using KiloExtensionDTOs.ExtensionMessages;
 /// Part type: AnacondadesktopsyncedMessage
 /// Discriminator: type = "anacondaDesktopSynced"
 /// Source: ..\..\..\..\src\shared\anaconda-desktop-messages.ts
-/// Signature hash: c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b
+/// Signature hash: f5d770261272773caad189fbf616d96d9f8c900910b1ca27a12a6ec3d18bac7f
 /// </summary>
 public partial class AnacondadesktopsyncedMessage : IExtensionMessage
 {
@@ -26,6 +26,6 @@ public partial class AnacondadesktopsyncedMessage : IExtensionMessage
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("status")]
-    // Original TypeScript type: __type
-    public object Status { get; set; }
+    // Original TypeScript type: AnacondaDesktopExtensionMessageStatusType
+    public AnacondaDesktopExtensionMessageStatusType Status { get; set; }
 }

@@ -562,7 +562,11 @@ namespace KiloVisualStudioExtension
     internal async Task SendKiloEmbeddingModelsAsync(object[] models)
     {
       // TODO : check strong typed
-      PostMessage(new KiloEmbeddingModelsLoadedMessage { Catalog = models });
+      var catalog = new KiloEmbeddingModelsLoadedMessageCatalogType
+      {
+      //  Models = models
+      };
+      PostMessage(new KiloEmbeddingModelsLoadedMessage { Catalog = catalog });
       await Task.CompletedTask;
     }
 
@@ -570,7 +574,7 @@ namespace KiloVisualStudioExtension
     {
       PostMessage(new ImageModelsLoadedMessage
       {
-        Models = models.Select(m => new ModelsItemType
+        Models = models.Select(m => new ImageModelsLoadedMessageModelsItemType
         {
           Id = m.Id,
           Name = m.Name
@@ -663,7 +667,7 @@ namespace KiloVisualStudioExtension
 
     internal async Task SendIndexingStatusAsync(JsonElement status)
     {
-      PostMessage(new IndexingStatusLoadedMessage { Status = status });
+ //     PostMessage(new IndexingStatusLoadedMessage { Status = status });
       await Task.CompletedTask;
     }
 
@@ -1028,9 +1032,9 @@ namespace KiloVisualStudioExtension
             await _settingsService.SendAutocompleteSettings();
             break;
 
-          case "requestWorkStyle":
-            await _settingsHandler.HandleRequestWorkStyleAsync(payload);
-            break;
+          //case "requestWorkStyle":
+          //  await _settingsService.SendWorkStyleSettings();
+          //  break;
 
           //    case "retryConnection":
           //      System.Diagnostics.Debug.WriteLine("[Kilo] VSProvider: retryConnection requested");

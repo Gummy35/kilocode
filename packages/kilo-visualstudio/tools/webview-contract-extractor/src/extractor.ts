@@ -946,9 +946,20 @@ function extractPropertyDefinition(
   
   // Check for inline object types (type literals) in property declarations
   if (ts.isPropertySignature(declaration) && declaration.type) {
-    // Inline object type: { email: string, name?: string, ... }
-    if (ts.isTypeLiteralNode(declaration.type)) {
-      const typeLiteral = declaration.type
+    // Check if this is an inline object type via AST or resolved type
+    const isInlineObjectViaAST = ts.isTypeLiteralNode(declaration.type)
+    const isInlineObjectViaType = 
+      type.flags & ts.TypeFlags.Object &&
+      type.symbol?.name === "__type" &&
+      type.symbol?.declarations &&
+      type.symbol.declarations.length > 0 &&
+      ts.isTypeLiteralNode(type.symbol.declarations[0])
+    
+    const typeLiteral = isInlineObjectViaAST 
+      ? declaration.type 
+      : (isInlineObjectViaType ? type.symbol.declarations[0] as ts.TypeLiteralNode : null)
+    
+    if (typeLiteral) {
       const inlineProperties: PropertyDefinition[] = []
       
       for (const member of typeLiteral.members) {
@@ -1859,6 +1870,22 @@ function deduplicateTypes(
       
       // Remove duplicates after replacement
       union.unionMembers = [...new Set(union.unionMembers)]
+    }
+  }
+  
+  // Update property type references in all types
+  for (const [typeName, typeDef] of types.entries()) {
+    if (typeDef.properties) {
+      for (const prop of typeDef.properties) {
+        if (prop.typeRef?.name) {
+          const replacement = replacements.get(prop.typeRef.name)
+          if (replacement) {
+            prop.typeRef.name = replacement
+            // Update the type field to match the replacement
+            prop.type = replacement
+          }
+        }
+      }
     }
   }
   

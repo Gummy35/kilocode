@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs;
 
 /// <summary>
 /// WebView message: CustomProviderModelsFetchedMessage
@@ -27,7 +28,8 @@ public partial class CustomProviderModelsFetchedMessage : IExtensionMessage
     [JsonProperty("requestId")]
     public string RequestId { get; set; }
     [JsonProperty("models", NullValueHandling = NullValueHandling.Ignore)]
-    public List<object>? Models { get; set; }
+    // Original TypeScript type: vscode_extensionsItemType
+    public Vscode_extensionsItemType? Models { get; set; }
     [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string
     public string? Error { get; set; }

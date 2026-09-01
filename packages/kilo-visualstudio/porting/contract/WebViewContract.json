@@ -3,8 +3,8 @@
   "generatedFrom": {
     "repository": "kilocode",
     "branch": "vs2026",
-    "commit": "27226b500cf29f9930cbc0b64b7b4a60803bb483",
-    "generatedAt": "2026-09-01T09:46:18.017Z"
+    "commit": "7660c4289f4fbc76e520073fa459e4cb130c3ce7",
+    "generatedAt": "2026-09-01T17:00:39.293Z"
   },
   "metadata": {
     "extractorVersion": "1.0.0",
@@ -8712,12 +8712,12 @@
           },
           {
             "name": "time",
-            "type": "ReasoningPartTimeType",
+            "type": "TextPartTimeType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "ReasoningPartTimeType",
+              "name": "TextPartTimeType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -10616,12 +10616,12 @@
           },
           {
             "name": "error",
-            "type": "SessionErrorMessageErrorType",
+            "type": "MessageErrorType",
             "optional": true,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "SessionErrorMessageErrorType",
+              "name": "MessageErrorType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -12110,13 +12110,13 @@
           },
           {
             "name": "status",
-            "type": "__type",
+            "type": "IndexingStatusLoadedMessageStatusType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "IndexingStatusLoadedMessageStatusType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -12212,13 +12212,13 @@
           },
           {
             "name": "catalog",
-            "type": "__type",
+            "type": "KiloEmbeddingModelsLoadedMessageCatalogType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "KiloEmbeddingModelsLoadedMessageCatalogType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -17234,13 +17234,13 @@
           },
           {
             "name": "authorization",
-            "type": "__type",
+            "type": "ProviderOAuthReadyMessageAuthorizationType",
             "optional": false,
             "nullable": false,
             "elementType": null,
             "typeRef": {
-              "name": "__type",
-              "kind": "object"
+              "name": "ProviderOAuthReadyMessageAuthorizationType",
+              "kind": "interface"
             },
             "literalValue": null,
             "isLiteral": false
@@ -17448,12 +17448,12 @@
           },
           {
             "name": "models",
-            "type": "array",
+            "type": "vscode_extensionsItemType",
             "optional": true,
             "nullable": false,
             "elementType": "CustomProviderModelsFetchedMessageModelsItemType",
             "typeRef": {
-              "name": "CustomProviderModelsFetchedMessageModelsItemType",
+              "name": "vscode_extensionsItemType",
               "kind": "interface"
             },
             "literalValue": null,
@@ -20391,12 +20391,12 @@
         },
         {
           "name": "tool",
-          "type": "PermissionRequestToolType",
+          "type": "QuestionRequestToolType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "PermissionRequestToolType",
+            "name": "QuestionRequestToolType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -20967,12 +20967,12 @@
         },
         {
           "name": "vscode_extensions",
-          "type": "array",
+          "type": "vscode_extensionsItemType",
           "optional": true,
           "nullable": false,
           "elementType": "AgentRequirementsVscodeExtensionsItemType",
           "typeRef": {
-            "name": "AgentRequirementsVscodeExtensionsItemType",
+            "name": "vscode_extensionsItemType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22839,12 +22839,12 @@
         },
         {
           "name": "gemini",
-          "type": "IndexingConfigGeminiType",
+          "type": "IndexingConfigOpenaiType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "IndexingConfigGeminiType",
+            "name": "IndexingConfigOpenaiType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22852,12 +22852,12 @@
         },
         {
           "name": "mistral",
-          "type": "IndexingConfigMistralType",
+          "type": "IndexingConfigOpenaiType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "IndexingConfigMistralType",
+            "name": "IndexingConfigOpenaiType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22865,12 +22865,12 @@
         },
         {
           "name": "vercel-ai-gateway",
-          "type": "IndexingConfigVercelAiGatewayType",
+          "type": "IndexingConfigOpenaiType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "IndexingConfigVercelAiGatewayType",
+            "name": "IndexingConfigOpenaiType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -22904,12 +22904,12 @@
         },
         {
           "name": "voyage",
-          "type": "IndexingConfigVoyageType",
+          "type": "IndexingConfigOpenaiType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "IndexingConfigVoyageType",
+            "name": "IndexingConfigOpenaiType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24467,12 +24467,12 @@
         },
         {
           "name": "time",
-          "type": "ReasoningPartTimeType",
+          "type": "TextPartTimeType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "ReasoningPartTimeType",
+            "name": "TextPartTimeType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -24997,12 +24997,12 @@
         },
         {
           "name": "cache",
-          "type": "TokenUsageCacheType",
+          "type": "cacheType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "TokenUsageCacheType",
+            "name": "cacheType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -26092,6 +26092,89 @@
       "signatureHash": "8fc0f60a3b9c8bd26aabcc1a7c3c3958a3b3c4c4d1c6c7f8cdbd9c0b04bb9134"
     },
     {
+      "name": "AnacondaDesktopExtensionMessageStatusType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "type",
+          "type": "literal",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": null,
+          "literalValue": "ready",
+          "isLiteral": true
+        },
+        {
+          "name": "serverID",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "serverName",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "models",
+          "type": "vscode_extensionsItemType",
+          "optional": false,
+          "nullable": false,
+          "elementType": "NotebookReadResultModelsItemType",
+          "typeRef": {
+            "name": "vscode_extensionsItemType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "context",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "toolcall",
+          "type": "union",
+          "optional": false,
+          "nullable": false,
+          "elementType": "supported | unsupported | unknown",
+          "typeRef": {
+            "name": "supported",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "..\\..\\..\\..\\src\\shared\\anaconda-desktop-messages.ts",
+      "signatureHash": "9bb7d6f86acc86153fb30fe6dbe26cf9f7e24fce2a1939d8f404560b17705a0d"
+    },
+    {
       "name": "AnacondadesktopsyncedMessage",
       "kind": "interface",
       "properties": [
@@ -26120,13 +26203,13 @@
         },
         {
           "name": "status",
-          "type": "__type",
+          "type": "AnacondaDesktopExtensionMessageStatusType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "AnacondaDesktopExtensionMessageStatusType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -26137,7 +26220,7 @@
         "value": "anacondaDesktopSynced"
       },
       "sourceFile": "..\\..\\..\\..\\src\\shared\\anaconda-desktop-messages.ts",
-      "signatureHash": "c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b"
+      "signatureHash": "f5d770261272773caad189fbf616d96d9f8c900910b1ca27a12a6ec3d18bac7f"
     },
     {
       "name": "AnacondadesktopactionerrorMessage",
@@ -26696,12 +26779,12 @@
         },
         {
           "name": "tool",
-          "type": "SuggestionRequestToolType",
+          "type": "QuestionRequestToolType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "SuggestionRequestToolType",
+            "name": "QuestionRequestToolType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -29531,12 +29614,12 @@
         },
         {
           "name": "capture",
-          "type": "MemoryConfigureResponseCaptureType",
+          "type": "MemoryShowResponseCaptureType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "MemoryConfigureResponseCaptureType",
+            "name": "MemoryShowResponseCaptureType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -30470,12 +30553,12 @@
         },
         {
           "name": "error",
-          "type": "SessionErrorMessageErrorType",
+          "type": "MessageErrorType",
           "optional": true,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "SessionErrorMessageErrorType",
+            "name": "MessageErrorType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -31983,6 +32066,79 @@
       "signatureHash": "a6f5dc10c5de5b611694c7bde97a8edc102ab076c549188067aa2d3502b82bb3"
     },
     {
+      "name": "IndexingStatusLoadedMessageStatusType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "state",
+          "type": "union",
+          "optional": false,
+          "nullable": false,
+          "elementType": "Disabled | In Progress | Complete | Error | Standby",
+          "typeRef": {
+            "name": "Disabled",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "processedFiles",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "totalFiles",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "percent",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "dc8b6757d5d2415d39f1b69d062dc5e559e205bcf74a06ce024493ed09a1982d"
+    },
+    {
       "name": "IndexingStatusLoadedMessage",
       "kind": "interface",
       "properties": [
@@ -31998,13 +32154,13 @@
         },
         {
           "name": "status",
-          "type": "__type",
+          "type": "IndexingStatusLoadedMessageStatusType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "IndexingStatusLoadedMessageStatusType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -32015,7 +32171,7 @@
         "value": "indexingStatusLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d"
+      "signatureHash": "62c3da26ba7a0a5260ccdff7d54b0c9ab405dbe63a28bd5000ddba09b34e3848"
     },
     {
       "name": "IndexingSettingsLoadedMessageSettingsType",
@@ -32130,6 +32286,126 @@
       "signatureHash": "db41351cb1e28f59732084997251a2e2b227d818138f383a39cab27c408addee"
     },
     {
+      "name": "KiloEmbeddingModelModelsItemType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "dimension",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "scoreThreshold",
+          "type": "number",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "number",
+            "kind": "number"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "note",
+          "type": "union",
+          "optional": true,
+          "nullable": false,
+          "elementType": "undefined | string",
+          "typeRef": {
+            "name": "undefined",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "config.ts",
+      "signatureHash": "87aa14671d6b4694415d7908b2e6b0cf6a661018a6057a570f634a039f02ff92"
+    },
+    {
+      "name": "KiloEmbeddingModelsLoadedMessageCatalogType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "defaultModel",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "models",
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "elementType": "KiloEmbeddingModelModelsItemType",
+          "typeRef": {
+            "name": "KiloEmbeddingModelModelsItemType",
+            "kind": "interface"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "aliases",
+          "type": "__type",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "__type",
+            "kind": "object"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "d22c1e9bc21b2eb9cebffe6e403602426f47a18ad6567cd89ca44aecd67e87ec"
+    },
+    {
       "name": "KiloEmbeddingModelsLoadedMessage",
       "kind": "interface",
       "properties": [
@@ -32145,13 +32421,13 @@
         },
         {
           "name": "catalog",
-          "type": "__type",
+          "type": "KiloEmbeddingModelsLoadedMessageCatalogType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "KiloEmbeddingModelsLoadedMessageCatalogType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -32162,7 +32438,7 @@
         "value": "kiloEmbeddingModelsLoaded"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd"
+      "signatureHash": "2904f949469938cb4477063755ba6894554e82c92f342c9c3782146032ee916e"
     },
     {
       "name": "ImageModelsLoadedMessageModelsItemType",
@@ -37512,6 +37788,53 @@
       "signatureHash": "997c7c0f120dc17eee41bfa8c4c0ee9864b29acd10fb24eec70802e6a9154fde"
     },
     {
+      "name": "ProviderOAuthReadyMessageAuthorizationType",
+      "kind": "interface",
+      "properties": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "method",
+          "type": "union",
+          "optional": false,
+          "nullable": false,
+          "elementType": "auto | code",
+          "typeRef": {
+            "name": "auto",
+            "kind": "union"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        },
+        {
+          "name": "instructions",
+          "type": "string",
+          "optional": false,
+          "nullable": false,
+          "elementType": null,
+          "typeRef": {
+            "name": "string",
+            "kind": "string"
+          },
+          "literalValue": null,
+          "isLiteral": false
+        }
+      ],
+      "sourceFile": "extension-messages.ts",
+      "signatureHash": "0ecd8c396ef40fc75c2f96309f8c90afb8df7f45262b2b7ae690c2fd3f246470"
+    },
+    {
       "name": "ProviderOAuthReadyMessage",
       "kind": "interface",
       "properties": [
@@ -37553,13 +37876,13 @@
         },
         {
           "name": "authorization",
-          "type": "__type",
+          "type": "ProviderOAuthReadyMessageAuthorizationType",
           "optional": false,
           "nullable": false,
           "elementType": null,
           "typeRef": {
-            "name": "__type",
-            "kind": "object"
+            "name": "ProviderOAuthReadyMessageAuthorizationType",
+            "kind": "interface"
           },
           "literalValue": null,
           "isLiteral": false
@@ -37570,7 +37893,7 @@
         "value": "providerOAuthReady"
       },
       "sourceFile": "extension-messages.ts",
-      "signatureHash": "bcfe0a34d4d44b0d7b6756909f1ca1b7dff3698e46cce46db014303b3fb6e16b"
+      "signatureHash": "e25613cb83895524f7340ee0379e624813f3aa9f2fa6815cbeafa73150397f6b"
     },
     {
       "name": "ProviderConnectedMessage",
@@ -37771,12 +38094,12 @@
         },
         {
           "name": "models",
-          "type": "array",
+          "type": "vscode_extensionsItemType",
           "optional": true,
           "nullable": false,
           "elementType": "CustomProviderModelsFetchedMessageModelsItemType",
           "typeRef": {
-            "name": "CustomProviderModelsFetchedMessageModelsItemType",
+            "name": "vscode_extensionsItemType",
             "kind": "interface"
           },
           "literalValue": null,
@@ -49418,7 +49741,7 @@
       "unionMemberHashes": [
         "c3de6e55f030a851f17065920f50cbf6924430955c7ddb3ccf079643d098f048",
         "8fc0f60a3b9c8bd26aabcc1a7c3c3958a3b3c4c4d1c6c7f8cdbd9c0b04bb9134",
-        "c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b"
+        "f5d770261272773caad189fbf616d96d9f8c900910b1ca27a12a6ec3d18bac7f"
       ]
     },
     {
@@ -49448,7 +49771,7 @@
       "unionMemberHashes": [
         "c3de6e55f030a851f17065920f50cbf6924430955c7ddb3ccf079643d098f048",
         "8fc0f60a3b9c8bd26aabcc1a7c3c3958a3b3c4c4d1c6c7f8cdbd9c0b04bb9134",
-        "c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b"
+        "f5d770261272773caad189fbf616d96d9f8c900910b1ca27a12a6ec3d18bac7f"
       ]
     },
     {
@@ -49771,7 +50094,7 @@
         "d6df55074f9b271b596149241284d474f2c8c26a2678b94e62526fb1b5e915b1",
         "c3de6e55f030a851f17065920f50cbf6924430955c7ddb3ccf079643d098f048",
         "8fc0f60a3b9c8bd26aabcc1a7c3c3958a3b3c4c4d1c6c7f8cdbd9c0b04bb9134",
-        "c9ca5933505d5db86d9bf4c9d217c494371157fa23a06a76d9f38e5598d7f93b",
+        "f5d770261272773caad189fbf616d96d9f8c900910b1ca27a12a6ec3d18bac7f",
         "ae763f346054c66737256ab0537e3ce235ff49ecf5721ded085cef702fa0d212",
         "a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112",
         "fafa457b200c456c2a61504d34516ade1639c34ed60f704100f1eae996167c25",
@@ -49808,10 +50131,10 @@
         "f884c3033bca92b5306d6e63a8805056b6ab177ea7e08aa10a4b26a12bea4181",
         "1079fcc13d09c0186ad9e59b934577e658f097e1c0706cd1c8e27419acbde199",
         "a6f5dc10c5de5b611694c7bde97a8edc102ab076c549188067aa2d3502b82bb3",
-        "819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d",
+        "62c3da26ba7a0a5260ccdff7d54b0c9ab405dbe63a28bd5000ddba09b34e3848",
         "b5c15049936b78b7a6b94e3ee7d3f91da3e17023894c14accdaf38fe379c7040",
         "db41351cb1e28f59732084997251a2e2b227d818138f383a39cab27c408addee",
-        "82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd",
+        "2904f949469938cb4477063755ba6894554e82c92f342c9c3782146032ee916e",
         "687206805a03368ab123d5c7bca04e75b925a384737d4a866021595d6dce4750",
         "d9a0e5926de8d2192d5974628f62390d2bf94c8cdb1f6e62be6f18e27d07c20d",
         "6441fe626273bce9c82af7d08b8b09475a5468cfda01a15d4dc38e8889547df1",
@@ -49917,7 +50240,7 @@
         "f7e8b249f3a9ffb4210061316d4530bff025d356bc4975b28f41aeb55d4de9f4",
         "997c7c0f120dc17eee41bfa8c4c0ee9864b29acd10fb24eec70802e6a9154fde",
         "aad5690b6d4d2a0c3d36fddd6ad1322c81cee706df618a1ce50e624c7de746dc",
-        "bcfe0a34d4d44b0d7b6756909f1ca1b7dff3698e46cce46db014303b3fb6e16b",
+        "e25613cb83895524f7340ee0379e624813f3aa9f2fa6815cbeafa73150397f6b",
         "2b05f7bd88e27696a757f27af98506bac47de26abbb57f14b5d57e90e1caa6da",
         "230f8b9e9044b07ce2f885764116534949d7822469d057e6ece07c0f4064cfcd",
         "988ee60c16e8384331baf08818a1e6fb9d8594b4fde2531edf27e075eac57ccb",
@@ -49972,7 +50295,7 @@
         "a4aa5c5f07c41751eecf7e7490dc17b5bb26be529595ebcd5ead64310c86d112",
         "2d52438d99ff50b6f756fd2c4dd1f477591f44114c2082ec9386edf94c6bdaf6",
         "d6df55074f9b271b596149241284d474f2c8c26a2678b94e62526fb1b5e915b1",
-        "819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d",
+        "62c3da26ba7a0a5260ccdff7d54b0c9ab405dbe63a28bd5000ddba09b34e3848",
         "36e7d414838dd1f04ff9311f57c570d29866430181de1a2338e46a189e326df1",
         "97ee011c2f268541bee8c2fadfa7ec181fd4bff3886373dfe58616e9b8bbfe6f",
         "a938740656f57f38c7bcacd3a4aaf00937749fec5eb5bf6d86744eab9f22aaa0",
@@ -50598,7 +50921,7 @@
     "warnings": []
   },
   "statistics": {
-    "totalTypes": 668,
+    "totalTypes": 673,
     "webviewToExtensionMessages": 205,
     "extensionToWebviewMessages": 183,
     "inlineMessagesExtracted": 0

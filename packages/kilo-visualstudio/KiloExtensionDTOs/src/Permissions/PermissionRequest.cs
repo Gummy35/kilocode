@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.Questions;
 
 /// <summary>
 /// Type: PermissionRequest
@@ -34,6 +35,6 @@ public partial class PermissionRequest
     // Original TypeScript type: undefined | string
     public string? Message { get; set; }
     [JsonProperty("tool", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: PermissionRequestToolType
-    public object? Tool { get; set; }
+    // Original TypeScript type: QuestionRequestToolType
+    public QuestionRequestToolType? Tool { get; set; }
 }

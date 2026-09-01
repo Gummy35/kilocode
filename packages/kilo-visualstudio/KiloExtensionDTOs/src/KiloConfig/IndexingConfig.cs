@@ -44,14 +44,14 @@ public partial class IndexingConfig
     // Original TypeScript type: IndexingConfigOpenaiCompatibleType
     public IndexingConfigOpenaiCompatibleType? OpenaiCompatible { get; set; }
     [JsonProperty("gemini", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: IndexingConfigGeminiType
-    public object? Gemini { get; set; }
+    // Original TypeScript type: IndexingConfigOpenaiType
+    public IndexingConfigOpenaiType? Gemini { get; set; }
     [JsonProperty("mistral", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: IndexingConfigMistralType
-    public object? Mistral { get; set; }
+    // Original TypeScript type: IndexingConfigOpenaiType
+    public IndexingConfigOpenaiType? Mistral { get; set; }
     [JsonProperty("vercel-ai-gateway", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: IndexingConfigVercelAiGatewayType
-    public object? VercelAiGateway { get; set; }
+    // Original TypeScript type: IndexingConfigOpenaiType
+    public IndexingConfigOpenaiType? VercelAiGateway { get; set; }
     [JsonProperty("bedrock", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: IndexingConfigBedrockType
     public IndexingConfigBedrockType? Bedrock { get; set; }
@@ -59,8 +59,8 @@ public partial class IndexingConfig
     // Original TypeScript type: IndexingConfigOpenrouterType
     public IndexingConfigOpenrouterType? Openrouter { get; set; }
     [JsonProperty("voyage", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: IndexingConfigVoyageType
-    public object? Voyage { get; set; }
+    // Original TypeScript type: IndexingConfigOpenaiType
+    public IndexingConfigOpenaiType? Voyage { get; set; }
     [JsonProperty("qdrant", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: IndexingConfigQdrantType
     public IndexingConfigQdrantType? Qdrant { get; set; }

@@ -18,7 +18,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// WebView message: IndexingStatusLoadedMessage
 /// Discriminator: type = "indexingStatusLoaded"
 /// Source: extension-messages.ts
-/// Signature hash: 819198f633d4db8fe7243af2d51221f630b9ba0b4e0f1af993b3bf035e00016d
+/// Signature hash: 62c3da26ba7a0a5260ccdff7d54b0c9ab405dbe63a28bd5000ddba09b34e3848
 /// </summary>
 public partial class IndexingStatusLoadedMessage : IWebviewMessage
 {
@@ -26,6 +26,6 @@ public partial class IndexingStatusLoadedMessage : IWebviewMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "indexingStatusLoaded";
     [JsonProperty("status")]
-    // Original TypeScript type: __type
-    public object Status { get; set; }
+    // Original TypeScript type: IndexingStatusLoadedMessageStatusType
+    public IndexingStatusLoadedMessageStatusType Status { get; set; }
 }

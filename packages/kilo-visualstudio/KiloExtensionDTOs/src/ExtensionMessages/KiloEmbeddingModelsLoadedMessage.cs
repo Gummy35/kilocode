@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 /// WebView message: KiloEmbeddingModelsLoadedMessage
 /// Discriminator: type = "kiloEmbeddingModelsLoaded"
 /// Source: extension-messages.ts
-/// Signature hash: 82ae60ec51035858e47f0746537aad966aedcaec99bea6d0dd2a512d08d4b5dd
+/// Signature hash: 2904f949469938cb4477063755ba6894554e82c92f342c9c3782146032ee916e
 /// </summary>
 public partial class KiloEmbeddingModelsLoadedMessage : IExtensionMessage
 {
@@ -25,6 +25,6 @@ public partial class KiloEmbeddingModelsLoadedMessage : IExtensionMessage
     // Original TypeScript type: literal
     public string Type { get; set; } = "kiloEmbeddingModelsLoaded";
     [JsonProperty("catalog")]
-    // Original TypeScript type: __type
-    public object Catalog { get; set; }
+    // Original TypeScript type: KiloEmbeddingModelsLoadedMessageCatalogType
+    public KiloEmbeddingModelsLoadedMessageCatalogType Catalog { get; set; }
 }

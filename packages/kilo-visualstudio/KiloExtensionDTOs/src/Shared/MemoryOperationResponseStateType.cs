@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs.Types.gen;
 
 /// <summary>
 /// Type: MemoryOperationResponseStateType
@@ -33,12 +34,32 @@ public partial class MemoryOperationResponseStateType
     [JsonProperty("verbose")]
     public bool Verbose { get; set; }
     [JsonProperty("capture")]
-    // Original TypeScript type: MemoryConfigureResponseCaptureType
-    public object Capture { get; set; }
+    // Original TypeScript type: MemoryShowResponseCaptureType
+    public MemoryShowResponseCaptureType Capture { get; set; }
     [JsonProperty("limits")]
     // Original TypeScript type: limitsType
     public LimitsType Limits { get; set; }
     [JsonProperty("stats")]
     // Original TypeScript type: statsType
     public StatsType Stats { get; set; }
+    /// <summary>
+    /// Nested type: MemoryShowResponseCaptureType
+    /// </summary>
+    public partial class MemoryShowResponseCaptureType
+    {
+        [JsonProperty("mode")]
+        // Original TypeScript type: literal
+        public string Mode { get; set; }
+        [JsonProperty("turnClose")]
+        public bool TurnClose { get; set; }
+        [JsonProperty("explicit")]
+        public bool Explicit { get; set; }
+        [JsonProperty("maxOpsPerRun")]
+        public double MaxOpsPerRun { get; set; }
+        [JsonProperty("minIntervalMs")]
+        public double MinIntervalMs { get; set; }
+        [JsonProperty("timeoutMs")]
+        public double TimeoutMs { get; set; }
+    }
+
 }

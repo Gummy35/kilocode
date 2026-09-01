@@ -27,6 +27,6 @@ public partial class ReasoningPart : BasePart, IPart
     [JsonProperty("text")]
     public string Text { get; set; }
     [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: ReasoningPartTimeType
-    public object? Time { get; set; }
+    // Original TypeScript type: TextPartTimeType
+    public TextPartTimeType? Time { get; set; }
 }

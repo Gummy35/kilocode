@@ -1,8 +1,9 @@
+using KiloExtensionDTOs.ExtensionMessages;
+using KiloVisualStudioExtension.ApiClient;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using KiloExtensionDTOs.ExtensionMessages;
-using KiloVisualStudioExtension.ApiClient;
+using System.Windows;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Settings
 {
@@ -55,26 +56,36 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task SendChatSettings()
     {
-      Provider.PostMessage(
-        new ChatSettingsLoadedMessage
+      Provider.PostMessage(BuildChatSettingsMessage());
+    }
+
+    public ChatSettingsLoadedMessage BuildChatSettingsMessage()
+    {
+      return new ChatSettingsLoadedMessage
+      {
+        Settings = new ChatSettingsLoadedMessageSettingsType
         {
-          Settings = new ChatSettingsLoadedMessageSettingsType
-          {
-            ShiftTabCyclesVariant = true
-          }
-        });
+          ShiftTabCyclesVariant = true
+        }
+      };
     }
 
     /// <summary>
     /// Handles the requestThroughputSetting message from the webview.
     /// Sends the current throughput setting to the webview.
     /// </summary>
-    /// <param name="payload">The message payload (unused).</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public void HandleRequestThroughputSetting(JsonElement? payload)
+    public async Task SendThroughputSetting()
     {
-      var message = new { type = "throughputSettingLoaded", visible = true };
-      Provider.PostMessage(JsonSerializer.Serialize(message));
+      Provider.PostMessage(BuildThroughputSettingMessage());
+    }
+
+    public ThroughputSettingLoadedMessage BuildThroughputSettingMessage()
+    {
+      return new ThroughputSettingLoadedMessage
+      {
+        Visible = true
+      };
     }
 
     /// <summary>
@@ -143,9 +154,13 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// </summary>
     /// <param name="payload">The message payload (unused).</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task HandleRequestWorkStyleAsync(JsonElement? payload)
+    public async Task SendWorkStyleSettings()
     {
       // Work style endpoint does not exist in current API
+      //await Provider.PostMessage(
+      //  new WorkStyleLoadedMessage { 
+      //    Style = KiloExtensionDTOs.WorkStyleStateEnum.Skipped
+      //  });
       await Provider.SendWorkStyleLoadedAsync(KiloExtensionDTOs.WorkStyleStateEnum.Skipped);
       //      new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
     }
@@ -172,23 +187,23 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
 
     internal void DisposeWatchers()
     {
-      _autocompleteConfigDisposable?.Dispose();
+      VSExtensionSettings.ConfigurationChanged -= _autocompleteConfigDisposable;
       _autocompleteConfigDisposable = null;
-      _indexingConfigDisposable?.Dispose();
+      VSExtensionSettings.ConfigurationChanged -= _indexingConfigDisposable;
       _indexingConfigDisposable = null;
-      _chatConfigDisposable?.Dispose();
+      VSExtensionSettings.ConfigurationChanged -= _chatConfigDisposable;
       _chatConfigDisposable = null;
-      _throughputConfigDisposable?.Dispose();
+      VSExtensionSettings.ConfigurationChanged -= _throughputConfigDisposable;
       _throughputConfigDisposable = null;
-      _telemetryStateDisposable?.Dispose();
+      VSExtensionSettings.ConfigurationChanged -= _telemetryStateDisposable;
       _telemetryStateDisposable = null;
     }
 
-    private IDisposable? _autocompleteConfigDisposable;
-    private IDisposable? _indexingConfigDisposable;
-    private IDisposable? _chatConfigDisposable;
-    private IDisposable? _throughputConfigDisposable;
-    private IDisposable? _telemetryStateDisposable;
+    private Action<ConfigurationChangedEventArgs>? _autocompleteConfigDisposable;
+    private Action<ConfigurationChangedEventArgs>? _indexingConfigDisposable;
+    private Action<ConfigurationChangedEventArgs>? _chatConfigDisposable;
+    private Action<ConfigurationChangedEventArgs>? _throughputConfigDisposable;
+    private Action<ConfigurationChangedEventArgs>? _telemetryStateDisposable;
 
     internal void StartWatchers(Action<object> action)
     {
@@ -199,9 +214,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
       _telemetryStateDisposable = watchTelemetryState(action);
     }
 
-    private IDisposable watchAutocompleteConfig(Action<object> action)
+    private Action<ConfigurationChangedEventArgs> watchAutocompleteConfig(Action<object> action)
     {
-      return VSExtensionSettings.ConfigurationChanged += (e) =>
+      Action<ConfigurationChangedEventArgs> handler = (e) =>
       {
         if (e.AffectsConfiguration("kilo-code.new.autocomplete"))
         {
@@ -209,8 +224,59 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
           action(msg);
         }
       };
+      VSExtensionSettings.ConfigurationChanged += handler;
+      return handler;
     }
 
+    private Action<ConfigurationChangedEventArgs> watchIndexingConfig(Action<object> action)
+    {
+      Action<ConfigurationChangedEventArgs> handler = (e) =>
+      {
+        if (e.AffectsConfiguration("kilo-code.new.indexing"))
+        {
+          var msg = BuildIndexingSettingsMessage();
+          action(msg);
+        }
+      };
+      VSExtensionSettings.ConfigurationChanged += handler;
+      return handler;
+    }
+
+    private Action<ConfigurationChangedEventArgs> watchChatConfig(Action<object> action)
+    {
+      Action<ConfigurationChangedEventArgs> handler = (e) =>
+      {
+        if (e.AffectsConfiguration("kilo-code.new.chat"))
+        {
+          var msg = BuildChatSettingsMessage();
+          action(msg);
+        }
+      };
+      VSExtensionSettings.ConfigurationChanged += handler;
+      return handler;
+    }
+
+    private Action<ConfigurationChangedEventArgs> watchThroughputConfig(Action<object> action)
+    {
+      Action<ConfigurationChangedEventArgs> handler = (e) =>
+      {
+        if (e.AffectsConfiguration("kilo-code.new.showTokenThroughput"))
+        {
+          var msg = BuildThroughputSettingMessage();
+          action(msg);
+        }
+      };
+      VSExtensionSettings.ConfigurationChanged += handler;
+      return handler;
+    }
+
+    private Action<ConfigurationChangedEventArgs> watchTelemetryState(Action<object> action)
+    {
+      return null;
+    //  return vscode.env.onDidChangeTelemetryEnabled((enabled) => {
+    //      post({ type: "telemetryState", enabled })
+    //  })
+    }
   }
 }
 

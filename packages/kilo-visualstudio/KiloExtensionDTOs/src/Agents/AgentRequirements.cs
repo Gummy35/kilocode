@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using KiloExtensionDTOs;
 
 /// <summary>
 /// Type: AgentRequirements
@@ -24,5 +25,6 @@ public partial class AgentRequirements
     // Original TypeScript type: undefined | Array
     public object? Mcps { get; set; }
     [JsonProperty("vscode_extensions", NullValueHandling = NullValueHandling.Ignore)]
-    public List<object>? Vscode_extensions { get; set; }
+    // Original TypeScript type: vscode_extensionsItemType
+    public Vscode_extensionsItemType? Vscode_extensions { get; set; }
 }

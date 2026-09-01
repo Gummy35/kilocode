@@ -8,6 +8,7 @@ using KiloExtensionDTOs.Profile;
 using KiloExtensionDTOs.Questions;
 using KiloExtensionDTOs.Sessions;
 using KiloVisualStudioExtension.ApiClient;
+using Microsoft.VisualStudio.Telemetry.Metrics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,17 @@ namespace KiloVisualStudioExtension.Utils
   public class EntityConverter
   {
 
+    public static IndexingStatusLoadedMessageStatusType Convert(ApiClient.IndexingStatus status)
+    {
+      return new IndexingStatusLoadedMessageStatusType
+      {
+        Message = status.Message,
+        Percent = status.Percent,
+        ProcessedFiles = status.ProcessedFiles,
+        State = status.State,
+        TotalFiles = status.TotalFiles
+      };
+    }
     public static KilocodeNotificationAction Convert(ApiClient.Action action)
     {
       return new KilocodeNotificationAction
@@ -190,10 +202,10 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
-    public static ProfileType Convert(Profile profile)
+    public static ProfileDataProfileType Convert(Profile profile)
     {
       if (profile == null) return null;
-      return new ProfileType
+      return new ProfileDataProfileType
       {
         Email = profile.Email,
         Name = profile.Name,
@@ -251,27 +263,27 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
-    public static ToolType Convert(QuestionTool tool)
+    public static QuestionRequestToolType Convert(QuestionTool tool)
     {
-      return new ToolType
+      return new QuestionRequestToolType
       {
         CallID = tool.CallID,
         MessageID = tool.MessageID
       };
     }
 
-    public static ToolType Convert(Tool3 tool)
+    public static QuestionRequestToolType Convert(Tool3 tool)
     {
-      return new ToolType
+      return new QuestionRequestToolType
       {
         CallID = tool.CallID,
         MessageID = tool.MessageID
       };
     }
 
-    public static ToolType Convert(Tool tool)
+    public static QuestionRequestToolType Convert(Tool tool)
     {
-      return new ToolType
+      return new QuestionRequestToolType
       {
         CallID = tool.CallID,
         MessageID = tool.MessageID
@@ -424,28 +436,28 @@ namespace KiloVisualStudioExtension.Utils
     {
       return new KiloExtensionDTOs.KiloConfig.IndexingConfig
       {
-        Bedrock = config.Bedrock == null ? null : new BedrockType { Profile = config.Bedrock.Profile, Region = config.Bedrock.Region },
+        Bedrock = config.Bedrock == null ? null : new IndexingConfigBedrockType { Profile = config.Bedrock.Profile, Region = config.Bedrock.Region },
         //      Dimension = config.Dimension,
         EmbeddingBatchSize = config.EmbeddingBatchSize,
         Enabled = config.Enabled,
         FileExtensions = config.FileExtensions,
-        Gemini = new GeminiType { ApiKey = config.Gemini.ApiKey },
-        Kilo = config.Kilo == null ? null : new KiloType { ApiKey = config.Kilo.ApiKey, BaseUrl = config.Kilo.BaseUrl, OrganizationId = config.Kilo.OrganizationId },
-        Lancedb = config.Lancedb == null ? null : new LancedbType { Directory = config.Lancedb.Directory },
-        Mistral = config.Mistral == null ? null : new MistralType { ApiKey = config.Mistral.ApiKey },
+        Gemini = new IndexingConfigOpenaiType { ApiKey = config.Gemini.ApiKey },
+        Kilo = config.Kilo == null ? null : new IndexingConfigKiloType { ApiKey = config.Kilo.ApiKey, BaseUrl = config.Kilo.BaseUrl, OrganizationId = config.Kilo.OrganizationId },
+        Lancedb = config.Lancedb == null ? null : new IndexingConfigLancedbType { Directory = config.Lancedb.Directory },
+        Mistral = config.Mistral == null ? null : new IndexingConfigOpenaiType { ApiKey = config.Mistral.ApiKey },
         //        Model = config.Model,
-        Ollama = config.Ollama == null ? null : new OllamaType { BaseUrl = config.Ollama.BaseUrl },
-        Openai = config.Openai == null ? null : new OpenaiType { ApiKey = config.Openai.ApiKey },
-        OpenaiCompatible = config.OpenaiCompatible == null ? null : new OpenaiCompatibleType { ApiKey = config.OpenaiCompatible.ApiKey, BaseUrl = config.OpenaiCompatible.BaseUrl },
-        Openrouter = config.Openrouter == null ? null : new OpenrouterType { ApiKey = config.Openrouter.ApiKey, SpecificProvider = config.Openrouter.SpecificProvider },
+        Ollama = config.Ollama == null ? null : new IndexingConfigOllamaType { BaseUrl = config.Ollama.BaseUrl },
+        Openai = config.Openai == null ? null : new IndexingConfigOpenaiType { ApiKey = config.Openai.ApiKey },
+        OpenaiCompatible = config.OpenaiCompatible == null ? null : new IndexingConfigOpenaiCompatibleType { ApiKey = config.OpenaiCompatible.ApiKey, BaseUrl = config.OpenaiCompatible.BaseUrl },
+        Openrouter = config.Openrouter == null ? null : new IndexingConfigOpenrouterType { ApiKey = config.Openrouter.ApiKey, SpecificProvider = config.Openrouter.SpecificProvider },
         Provider = Convert(config.Provider),
-        Qdrant = config.Qdrant == null ? null : new QdrantType { ApiKey = config.Qdrant.ApiKey, Url = config.Qdrant.Url },
+        Qdrant = config.Qdrant == null ? null : new IndexingConfigQdrantType { ApiKey = config.Qdrant.ApiKey, Url = config.Qdrant.Url },
         ScannerMaxBatchRetries = config.ScannerMaxBatchRetries,
         SearchMaxResults = config.SearchMaxResults,
         SearchMinScore = config.SearchMinScore,
         VectorStore = config.VectorStore == IndexingConfigVectorStore.Qdrant ? LancedbQdrantEnum.Qdrant : LancedbQdrantEnum.Lancedb,
-        VercelAiGateway = config.VercelAiGateway == null ? null : new VercelAiGatewayType { ApiKey = config.VercelAiGateway.ApiKey },
-        Voyage = config.Voyage == null ? null : new VoyageType { ApiKey = config.Voyage.ApiKey }
+        VercelAiGateway = config.VercelAiGateway == null ? null : new IndexingConfigOpenaiType { ApiKey = config.VercelAiGateway.ApiKey },
+        Voyage = config.Voyage == null ? null : new IndexingConfigOpenaiType { ApiKey = config.Voyage.ApiKey }
 
       };
     }
@@ -489,18 +501,18 @@ namespace KiloVisualStudioExtension.Utils
         Permission = config.Permission
       };
     }
-    public static TimeType Convert(Time5 time)
+    public static MessageTimeType Convert(Time5 time)
     {
-      return new TimeType { Created = time.Created };
+      return new MessageTimeType { Created = time.Created };
     }
-    public static TimeType Convert(Time6 time)
+    public static MessageTimeType Convert(Time6 time)
     {
-      return new TimeType { Created = time.Created, Completed = time.Completed };
+      return new MessageTimeType { Created = time.Created, Completed = time.Completed };
     }
 
-    public static ModelType Convert(Model3 model)
+    public static MessageModelType Convert(Model3 model)
     {
-      return new ModelType { ModelID = model.ModelID, ProviderID = model.ProviderID, Variant = model.Variant };
+      return new MessageModelType { ModelID = model.ModelID, ProviderID = model.ProviderID, Variant = model.Variant };
     }
 
     public static CacheType Convert(Cache2 cache)
@@ -512,14 +524,14 @@ namespace KiloVisualStudioExtension.Utils
     {
       return new TokenUsage { Cache = Convert(tokens.Cache), Input = tokens.Input, Output = tokens.Output, Reasoning = tokens.Reasoning};
     }
-    public static ErrorType Convert(Error error)
+    public static MessageErrorType Convert(Error error)
     {
-      return new ErrorType { Data = error.Data, Name = error.Name };
+      return new MessageErrorType { Data = error.Data, Name = error.Name };
     }
 
-    public static PathType Convert(Path2 path)
+    public static MessagePathType Convert(Path2 path)
     {
-      return new PathType { Cwd = path.Cwd, Root = path.Root };
+      return new MessagePathType { Cwd = path.Cwd, Root = path.Root };
     }
   }
 

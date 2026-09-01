@@ -25,6 +25,6 @@ public partial class TokenUsage
     // Original TypeScript type: undefined | number
     public double? Reasoning { get; set; }
     [JsonProperty("cache", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: TokenUsageCacheType
-    public object? Cache { get; set; }
+    // Original TypeScript type: cacheType
+    public CacheType? Cache { get; set; }
 }

@@ -29,6 +29,6 @@ public partial class SuggestionRequest
     // Original TypeScript type: undefined | false | true
     public bool? Blocking { get; set; }
     [JsonProperty("tool", NullValueHandling = NullValueHandling.Ignore)]
-    // Original TypeScript type: SuggestionRequestToolType
-    public object? Tool { get; set; }
+    // Original TypeScript type: QuestionRequestToolType
+    public QuestionRequestToolType? Tool { get; set; }
 }
