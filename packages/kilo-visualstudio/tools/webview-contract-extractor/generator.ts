@@ -930,8 +930,9 @@ function collectNeededTypes(prop: PropertyDefinition) {
  * @param folder - Target folder/namespace for the generated class
  * @returns Generated C# code as string
  */
-function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
+function generateTypeClass(typeDef: TypeDefinition, folder: string, generatedOrder: string[]): string {
   const sb: string[] = []
+  const ns = "KiloExtensionDTOs"
   
   // Collect referenced types from different namespaces
   const referencedNamespaces = new Set<string>()
@@ -946,11 +947,11 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
         const refTypeDef = typeDefinitions.get(typeName)
         const isSdkType = refTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
         
-        if (isSdkType && existingApiTypes.has(typeName)) {
-          // SDK type exists in ApiClient - use ApiClient reference
+        if (isSdkType && existingApiTypes.has(typeName) && !generatedOrder.includes(typeName)) {
+          // SDK type exists in ApiClient and is NOT being generated locally - use ApiClient reference
           needsApiClientReference = true
-        } else if (refTypeDef) {
-          // Non-SDK type or SDK type not in ApiClient - generate reference
+        } else if (refTypeDef && !(isSdkType && existingApiTypes.has(typeName))) {
+          // Non-SDK type or SDK type being generated locally - generate reference
           const refFolder = getSourceFileFolder(refTypeDef.sourceFile)
           if (refFolder !== folder) {
             const refNs = refFolder === 'Shared' ? ns : (ns + "." + refFolder)
@@ -966,9 +967,11 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string): string {
             const elemTypeDef = typeDefinitions.get(part)
             const isSdkType = elemTypeDef?.sourceFile.includes('sdk/js/src/v2/gen/types.gen.ts')
             
-            if (isSdkType && existingApiTypes.has(part)) {
+            if (isSdkType && existingApiTypes.has(part) && !generatedOrder.includes(part)) {
+              // SDK type exists in ApiClient and is NOT being generated locally - use ApiClient reference
               needsApiClientReference = true
-            } else if (elemTypeDef) {
+            } else if (elemTypeDef && !(isSdkType && existingApiTypes.has(part))) {
+              // Non-SDK type or SDK type being generated locally - generate reference
               const elemFolder = getSourceFileFolder(elemTypeDef.sourceFile)
               if (elemFolder !== folder) {
                 const elemNs = elemFolder === 'Shared' ? ns : (ns + "." + elemFolder)
@@ -1210,7 +1213,10 @@ function getSourceFileFolder(sourceFile: string): string {
   const normalizedSource = sourceFile.replace(/\\/g, '/')
   
   // Types from src/shared or SDK go in the Shared folder
-  if (normalizedSource.includes('src/shared') || normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts')) {
+  if (normalizedSource.includes('src/shared') || 
+      normalizedSource.includes('sdk/js/src/v2/gen/types.gen.ts') ||
+      normalizedSource === 'Shared/types.gen.ts' ||
+      normalizedSource.includes('Shared/types.gen.ts')) {
     return 'Shared'
   }
   
@@ -2379,7 +2385,7 @@ public partial class ${pascalCase(typeName)} { }
     continue
   }
   
-  const code = generateTypeClass(typeDef, typeFolder)
+  const code = generateTypeClass(typeDef, typeFolder, generatedOrder)
   const typeTargetDir = getDirectoryForFolder(typeFolder)
   const filePath = path.join(typeTargetDir, `${pascalCase(typeDef.name)}.cs`)
   fs.writeFileSync(filePath, code)
