@@ -50,6 +50,7 @@ namespace KiloVisualStudioExtension.Services
     Task ClearAsync();
   }
 
+  
   /// <summary>
   /// Implementation of ICacheService that provides in-memory caching with async persistence.
   /// </summary>

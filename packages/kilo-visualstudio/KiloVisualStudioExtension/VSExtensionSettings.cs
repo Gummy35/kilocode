@@ -1,13 +1,63 @@
 #nullable enable
 
+using System.Collections.Generic;
+using System.IO;
+
 namespace KiloVisualStudioExtension;
 
+using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
+
+public class DomainConfig
+{
+  private string _domain;
+
+  internal bool _changed { get; set; }
+  internal string _snapshot = null;
+  public DomainConfig(string domain)
+  {
+    this._domain = domain;
+  }
+
+  public T Get<T>(string key, T defaultValue = default!)
+  {
+    return VSExtensionSettings.Get<T>(_domain + "." + key, defaultValue);
+  }
+
+  public void Update(string key, object? value)
+  {
+    var old = VSExtensionSettings.Get<object>(_domain + "." + key, null);
+    VSExtensionSettings.Update(_domain + "." + key, value);
+    if (!Equals(old, value))
+    {
+      _changed = true;
+    }
+  }
+
+  
+  public string UpdateSnapshot()
+  {
+    _snapshot = string.Join("|", VSExtensionSettings.GetAll().Where(kv => kv.Key.StartsWith(_domain + ".")).SelectMany(kv => kv.Key + "=" + kv.Value.ToString()));
+    return _snapshot;
+  }
+
+  public bool CheckChanged()
+  {
+    var previousSnapshot = _snapshot;
+    UpdateSnapshot();
+    _changed = _snapshot != previousSnapshot;
+    return _changed;
+  }
+
+}
 
 /// <summary>
 /// Manages user settings stored in .kilo/vssettings.json at the solution root.
@@ -21,6 +71,7 @@ public static class VSExtensionSettings
   private static FileSystemWatcher? _fileWatcher;
   private static string? _settingsPath;
 
+  private static Dictionary<string, DomainConfig> _domains = new Dictionary<string, DomainConfig>();
   /// <summary>
   /// Gets the settings file path (.kilo/vssettings.json in solution root).
   /// </summary>
@@ -58,6 +109,8 @@ public static class VSExtensionSettings
     }
   }
 
+  public static Action<ConfigurationChangedEventArgs> ConfigurationChanged { get; internal set; }
+
   /// <summary>
   /// Initializes the settings store and starts file watcher.
   /// Called automatically on first Get or Update.
@@ -78,6 +131,12 @@ public static class VSExtensionSettings
     }
   }
 
+  public static string GetPrefix(string input)
+  {
+    int lastDotIndex = input.LastIndexOf('.');
+    return lastDotIndex > 0 ? input.Substring(0, lastDotIndex) : input;
+  }
+
   /// <summary>
   /// Loads settings from file into cache.
   /// </summary>
@@ -88,7 +147,9 @@ public static class VSExtensionSettings
       if (File.Exists(SettingsPath))
       {
         var json = File.ReadAllText(SettingsPath);
-        var settings = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+
+        var settings = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(json);
+
         if (settings != null)
         {
           lock (_lock)
@@ -96,10 +157,20 @@ public static class VSExtensionSettings
             _cache.Clear();
             foreach (var kvp in settings)
             {
-              _cache[kvp.Key] = kvp.Value;
+              _cache[kvp.Key] = kvp.Value.ToObject<object>() ?? kvp.Value;
+              var domain = GetPrefix(kvp.Key);
+              GetConfiguration(domain);
             }
           }
         }
+        var changed = new List<string>();
+        foreach (var kv in _domains)
+        {
+          if (kv.Value.CheckChanged())
+            changed.Add(kv.Key);
+        }
+        if (changed.Count > 0) 
+          ConfigurationChanged(new ConfigurationChangedEventArgs(changed));
       }
     }
     catch (Exception ex)
@@ -107,6 +178,8 @@ public static class VSExtensionSettings
       System.Diagnostics.Debug.WriteLine($"[Kilo] ExtensionSettingsStore: Failed to load settings: {ex.Message}");
     }
   }
+
+  private static System.Threading.Timer? _debounceTimer;
 
   /// <summary>
   /// Sets up file watcher to reload settings when file changes.
@@ -127,15 +200,17 @@ public static class VSExtensionSettings
 
       _fileWatcher.Changed += (sender, e) =>
       {
-        try
+        _debounceTimer?.Dispose();
+        _debounceTimer = new System.Threading.Timer(_ =>
         {
-          System.Threading.Thread.Sleep(100); // Debounce file writes
-          LoadSettings();
-        }
-        catch (Exception ex)
-        {
-          System.Diagnostics.Debug.WriteLine($"[Kilo] ExtensionSettingsStore: File watcher error: {ex.Message}");
-        }
+          try { 
+            LoadSettings();
+          }
+          catch (Exception ex)
+          {
+            System.Diagnostics.Debug.WriteLine($"[Kilo] ExtensionSettingsStore: File watcher error: {ex.Message}");
+          }
+        }, null, 100, System.Threading.Timeout.Infinite);
       };
 
       _fileWatcher.EnableRaisingEvents = true;
@@ -144,6 +219,18 @@ public static class VSExtensionSettings
     {
       System.Diagnostics.Debug.WriteLine($"[Kilo] ExtensionSettingsStore: Failed to setup file watcher: {ex.Message}");
     }
+  }
+
+  public static DomainConfig GetConfiguration(string domain)
+  {
+    DomainConfig result;
+    result = _domains.ContainsKey(domain) ? _domains[domain] : null;
+    if (result == null)
+    {
+      result = new DomainConfig(domain);
+      _domains.Add(domain, result);
+    }
+    return result;
   }
 
   /// <summary>
@@ -209,10 +296,11 @@ public static class VSExtensionSettings
     lock (_lock)
     {
       _cache[key] = value;
+      var domain = GetPrefix(key);
+      GetConfiguration(domain);
+      // Fire and forget async write
+      _ = SaveSettingsAsync();
     }
-
-    // Fire and forget async write
-    _ = SaveSettingsAsync();
   }
 
   /// <summary>
@@ -262,5 +350,27 @@ public static class VSExtensionSettings
     {
       return new Dictionary<string, object?>(_cache);
     }
+  }
+
+  public static void Dispose()
+  {
+    _fileWatcher?.Dispose();
+    _fileWatcher = null;
+    _domains.Clear();
+    _isLoaded = false;
+  }
+}
+
+public class ConfigurationChangedEventArgs
+{
+  private HashSet<string> configurations;
+  public ConfigurationChangedEventArgs(List<string> affectedConfigurations)
+  {
+    configurations = [.. affectedConfigurations];
+  }
+
+  public bool AffectsConfiguration(string configuration)
+  {
+    return configurations.Contains(configuration);
   }
 }

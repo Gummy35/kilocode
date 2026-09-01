@@ -338,6 +338,8 @@ namespace KiloVisualStudioExtension
 
       _sseHelper.SetRemoteStatusService(_remoteService);
 
+      _settingsService.StartWatchers((msg) => this.PostMessage(msg));
+
       if (webView != null)
       {
         webView.OnMessageReceived += HandleMessageReceived;
@@ -1011,11 +1013,11 @@ namespace KiloVisualStudioExtension
           //      break;
 
           case "requestIndexingSettings":
-            await _settingsService.FetchAndSendIndexingSettings();
+            await _settingsService.SendIndexingSettings();
             break;
 
-          case "requestChatSettings":
-            _settingsHandler.HandleRequestChatSettings(payload);
+          case "requestChatSettings":            
+            await _settingsService.SendChatSettings();
             break;
 
           //    case "requestThroughputSetting":
@@ -1023,7 +1025,7 @@ namespace KiloVisualStudioExtension
           //      break;
 
           case "requestAutocompleteSettings":
-            _settingsHandler.HandleRequestAutocompleteSettings(payload);
+            await _settingsService.SendAutocompleteSettings();
             break;
 
           case "requestWorkStyle":
