@@ -1377,7 +1377,8 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
   const implementedInterfaces: string[] = []
   if (messageTypeDef?.signatureHash && hashToUnion.has(messageTypeDef.signatureHash)) {
     const unionName = hashToUnion.get(messageTypeDef.signatureHash)!
-    implementedInterfaces.push(`I${pascalCase(unionName)}`)
+    const interfaceName = `I${pascalCase(unionName)}`
+    implementedInterfaces.push(interfaceName)
   }
   
   const baseClassName = messageTypeDef?.extendsBase || messageTypeDef?.baseType
@@ -1505,6 +1506,17 @@ function generateDiscriminatorFactory(
   }
   sb.push("")
   sb.push("/// <summary>")
+  sb.push("/// Marker interface for WebView messages that can be sent from extension to webview.")
+  sb.push("/// </summary>")
+  sb.push("public interface IWebviewMessage { }")
+  sb.push("")
+  sb.push("/// <summary>")
+  sb.push("/// Marker interface for WebView request messages (sent from webview to extension).")
+  sb.push("/// Inherits from IWebviewMessage for unified handling.")
+  sb.push("/// </summary>")
+  sb.push("public interface IWebviewMessageRequest : IWebviewMessage { }")
+  sb.push("")
+  sb.push("/// <summary>")
   sb.push("/// Discriminator-based deserialization factory for WebView messages.")
   sb.push("/// Uses explicit discriminator checking instead of JsonConverter inheritance.")
   sb.push("/// Reuses KiloJsonSerializer configuration from PORT-INFRA-003.")
@@ -1515,45 +1527,85 @@ function generateDiscriminatorFactory(
   sb.push("")
   sb.push("    /// <summary>")
   sb.push("    /// Deserialize a WebView message from JSON using discriminator-based routing.")
+  sb.push("    /// Returns the deserialized message implementing IWebviewMessage.")
   sb.push("    /// </summary>")
-  sb.push("    public static T Deserialize<T>(JToken token) where T : class")
+  sb.push("    public static IWebviewMessage Deserialize(JToken token)")
   sb.push("    {")
   sb.push("        var type = token[\"type\"]?.Value<string>();")
   sb.push("")
   sb.push("        return type switch")
   sb.push("        {")
 
-  const seenDiscriminators = new Set<string>()
-  const cases: string[] = []
+  const seenDiscriminatorsNonGeneric = new Set<string>()
+  const casesNonGeneric: string[] = []
   
   for (const message of webviewToExt) {
-    // Skip messages from node_modules
     if (message.sourceFile.includes('node_modules')) {
       continue
     }
     const discValue = message.discriminator.value
     const sanitizedName = pascalCase(message.name)
-    if (!seenDiscriminators.has(discValue)) {
-      cases.push("            \"" + discValue + "\" => typeof(T) == typeof(" + sanitizedName + ") ? (T)(object)token.ToObject<" + sanitizedName + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
-      seenDiscriminators.add(discValue)
-    }
-  }
-
-  for (const message of extToWebview) {
-    // Skip messages from node_modules
-    if (message.sourceFile.includes('node_modules')) {
-      continue
-    }
-    const discValue = message.discriminator.value
-    const sanitizedName = pascalCase(message.name)
-    if (!seenDiscriminators.has(discValue)) {
-      cases.push("            \"" + discValue + "\" => typeof(T) == typeof(" + sanitizedName + ") ? (T)(object)token.ToObject<" + sanitizedName + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
-      seenDiscriminators.add(discValue)
+    if (!seenDiscriminatorsNonGeneric.has(discValue)) {
+      casesNonGeneric.push("            \"" + discValue + "\" => (IWebviewMessage)(object)token.ToObject<" + sanitizedName + ">(Serializer)!,")
+      seenDiscriminatorsNonGeneric.add(discValue)
     }
   }
   
-  sb.push(cases.join("\n"))
+  for (const message of extToWebview) {
+    if (message.sourceFile.includes('node_modules')) {
+      continue
+    }
+    const discValue = message.discriminator.value
+    const sanitizedName = pascalCase(message.name)
+    if (!seenDiscriminatorsNonGeneric.has(discValue)) {
+      casesNonGeneric.push("            \"" + discValue + "\" => (IWebviewMessage)(object)token.ToObject<" + sanitizedName + ">(Serializer)!,")
+      seenDiscriminatorsNonGeneric.add(discValue)
+    }
+  }
+  
+  sb.push(casesNonGeneric.join("\n"))
+  sb.push("            _ => throw new JsonSerializationException(\"Unknown message type: \" + type)")
+  sb.push("        };")
+  sb.push("    }")
+  sb.push("")
+  sb.push("    /// <summary>")
+  sb.push("    /// Deserialize a WebView message from JSON using discriminator-based routing.")
+  sb.push("    /// </summary>")
+  sb.push("    public static T Deserialize<T>(JToken token) where T : IWebviewMessage")
+  sb.push("    {")
+  sb.push("        var type = token[\"type\"]?.Value<string>();")
+  sb.push("")
+  sb.push("        return type switch")
+  sb.push("        {")
 
+  const seenDiscriminatorsTyped = new Set<string>()
+  const casesTyped: string[] = []
+  
+  for (const message of webviewToExt) {
+    if (message.sourceFile.includes('node_modules')) {
+      continue
+    }
+    const discValue = message.discriminator.value
+    const sanitizedName = pascalCase(message.name)
+    if (!seenDiscriminatorsTyped.has(discValue)) {
+      casesTyped.push("            \"" + discValue + "\" => typeof(T) == typeof(" + sanitizedName + ") ? (T)(object)token.ToObject<" + sanitizedName + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
+      seenDiscriminatorsTyped.add(discValue)
+    }
+  }
+  
+  for (const message of extToWebview) {
+    if (message.sourceFile.includes('node_modules')) {
+      continue
+    }
+    const discValue = message.discriminator.value
+    const sanitizedName = pascalCase(message.name)
+    if (!seenDiscriminatorsTyped.has(discValue)) {
+      casesTyped.push("            \"" + discValue + "\" => typeof(T) == typeof(" + sanitizedName + ") ? (T)(object)token.ToObject<" + sanitizedName + ">(Serializer)! : throw new JsonSerializationException(\"Type mismatch\"),")
+      seenDiscriminatorsTyped.add(discValue)
+    }
+  }
+  
+  sb.push(casesTyped.join("\n"))
   sb.push("            _ => throw new JsonSerializationException(\"Unknown message type: \" + type)")
   sb.push("        };")
   sb.push("    }")
@@ -1561,7 +1613,16 @@ function generateDiscriminatorFactory(
   sb.push("    /// <summary>")
   sb.push("    /// Deserialize a WebView message from JSON string using discriminator-based routing.")
   sb.push("    /// </summary>")
-  sb.push("    public static T Deserialize<T>(string json) where T : class")
+  sb.push("    public static IWebviewMessage Deserialize(string json)")
+  sb.push("    {")
+  sb.push("        var token = JToken.Parse(json);")
+  sb.push("        return Deserialize(token);")
+  sb.push("    }")
+  sb.push("")
+  sb.push("    /// <summary>")
+  sb.push("    /// Deserialize a WebView message from JSON string using discriminator-based routing.")
+  sb.push("    /// </summary>")
+  sb.push("    public static T Deserialize<T>(string json) where T : IWebviewMessage")
   sb.push("    {")
   sb.push("        var token = JToken.Parse(json);")
   sb.push("        return Deserialize<T>(token);")
@@ -1746,6 +1807,11 @@ for (const union of unionsWithHashes) {
 console.log("Generating empty interfaces for unions with member hashes...")
 console.log(`  Found ${unionsWithHashes.length} unions with member hashes`)
 for (const union of unionsWithHashes) {
+  // Skip WebviewMessage union - IWebviewMessage is defined manually in Shared/IWebviewMessage.cs
+  if (union.name === "WebviewMessage") {
+    console.log(`  Skipping union: ${union.name} (IWebviewMessage defined manually)`)
+    continue
+  }
   console.log(`  Processing union: ${union.name} with ${union.unionMemberHashes?.length ?? 0} members`)
   const unionName = union.name
   const unionFolder = getSourceFileFolder(union.sourceFile)

@@ -1,11 +1,13 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace KiloVisualStudioExtension
@@ -24,14 +26,14 @@ namespace KiloVisualStudioExtension
     /// <summary>
     /// Optional JSON payload containing message data.
     /// </summary>
-    public JsonElement? Payload { get; }
+    public JToken? Payload { get; }
 
     /// <summary>
     /// Creates a new instance of WebViewMessageEventArgs.
     /// </summary>
     /// <param name="type">The message type identifier.</param>
     /// <param name="payload">Optional JSON payload data.</param>
-    public WebViewMessageEventArgs(string type, JsonElement? payload)
+    public WebViewMessageEventArgs(string type, JToken? payload)
     {
       Type = type;
       Payload = payload;
@@ -162,16 +164,18 @@ namespace KiloVisualStudioExtension
         var messageStr = e.WebMessageAsJson;
         System.Diagnostics.Debug.WriteLine($"[Kilo] WebView2: Received message: {messageStr}");
 
-        JsonElement? payload = null;
+        JToken? payload = null;
         string messageType = "";
 
         try
         {
-          var json = JsonDocument.Parse(messageStr);
-          if (json.RootElement.TryGetProperty("type", out var typeProp))
+          var token = JToken.Parse(messageStr);
+          var typeObj = token.Root["type"];
+          if (typeObj != null)
           {
-            messageType = typeProp.GetString() ?? "";
-            payload = json.RootElement.Clone();
+            var typeProp = typeObj.Value<string>();
+            messageType = typeProp;
+            payload = token.Root.DeepClone();
           }
         }
         catch (Exception parseEx)
