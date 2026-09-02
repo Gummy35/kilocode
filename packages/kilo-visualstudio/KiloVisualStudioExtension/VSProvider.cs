@@ -982,7 +982,7 @@ namespace KiloVisualStudioExtension
     {
       try
       {
-        var intercepted = await InterceptMessage(message, new KiloExtensionDTOs.ExtensionMessages)
+//        var intercepted = await InterceptMessage(message, new KiloExtensionDTOs.ExtensionMessages)
 
 //        const intercepted = await interceptMessage(message, {
 //        workspaceDir: (sid) => this.getWorkspaceDirectory(sid ?? this.currentSession?.id),
