@@ -1,6 +1,5 @@
 using KiloExtensionDTOs;
 using KiloExtensionDTOs.ExtensionMessages;
-using KiloExtensionDTOs.KiloProviderUtils;
 using KiloExtensionDTOs.Parts;
 using KiloExtensionDTOs.Questions;
 using KiloExtensionDTOs.WebviewMessages;

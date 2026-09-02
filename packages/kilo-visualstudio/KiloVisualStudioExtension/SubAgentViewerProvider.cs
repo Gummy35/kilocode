@@ -1,6 +1,9 @@
+using KiloExtensionDTOs;
+using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using Microsoft.VisualStudio.Shell;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,8 +107,8 @@ namespace KiloVisualStudioExtension
             _panels[sessionID] = webView;
             _providers[sessionID] = provider;
 
-            // Set up message handlers
-            webView.OnMessageReceived += (sender, e) => HandleMessageReceived(sessionID, e.Type, e.Payload);
+      // Set up message handlers
+      webView.OnMessageReceived += HandleMessageReceived;// (sessionID, e.Type, (e.Payload));
             
             // Handle panel disposal
             // TODO: Add disposal hook when WebView2 supports it
@@ -120,34 +123,47 @@ namespace KiloVisualStudioExtension
         /// <param name="sessionID">The session ID associated with the panel.</param>
         /// <param name="type">The message type.</param>
         /// <param name="payload">The message payload.</param>
-        private void HandleMessageReceived(string sessionID, string type, JsonElement? payload)
-        {
-            System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: received message type={type} for session {sessionID}");
+        private void HandleMessageReceived(object? sender, WebViewMessageEventArgs ev)
+    {
+    //  System.Diagnostics.Debug.WriteLine($"[Kilo] SubAgentViewer: received message type={type} for session {sessionID}");
+      //try
+      //{
+      //  var message = WebViewMessageFactory.Deserialize(ev.Payload);
+      //  if (message != null)
+      //  {
+      //    _ = ProcessMessageAsync(ev.Type, message);
+      //  }
+      //}
+      //catch (Exception e)
+      //{
+      //  System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: Couldn't deserialize Webview event {ev.Payload.ToString()} : {e.Message}");
+      //}
+    
             
-            switch (type)
-            {
-                case "webviewReady":
-                    HandleWebViewReady(sessionID);
-                    break;
+      //      switch (type)
+      //      {
+      //          case "webviewReady":
+      //              HandleWebViewReady(sessionID);
+      //              break;
                     
-                case "closePanel":
-                    HandleClosePanel(sessionID);
-                    break;
+      //          case "closePanel":
+      //              HandleClosePanel(sessionID);
+      //              break;
                     
-                default:
-                    // Forward other messages to the provider
-                    VSProvider? provider = null;
-                    if (_providers.TryGetValue(sessionID, out var p))
-                    {
-                        provider = p;
-                    }
+      //          default:
+      //              // Forward other messages to the provider
+      //              VSProvider? provider = null;
+      //              if (_providers.TryGetValue(sessionID, out var p))
+      //              {
+      //                  provider = p;
+      //              }
                     
-                    if (provider != null)
-                    {
-                        // Provider handles its own message routing
-                    }
-                    break;
-            }
+      //              if (provider != null)
+      //              {
+      //                  // Provider handles its own message routing
+      //              }
+      //              break;
+      //      }
         }
 
         /// <summary>
