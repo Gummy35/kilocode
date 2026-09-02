@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Collections;
 
 #pragma warning disable CS8600
 #pragma warning disable CS8601
@@ -32,7 +33,7 @@ namespace KiloVisualStudioExtension
   public class GitOpsOptions
   {
     // log: (...args: unknown[]) => void 
-    public Action Log { get; set; } = null!;
+    public Action<string> Log { get; set; } = null!;
 
 
     // runGit?: (args: string[], cwd: string) => Promise<string>
@@ -285,9 +286,8 @@ namespace KiloVisualStudioExtension
       {
         // new Promise<string>((resolve, reject) => { ... })
         var tcs = new TaskCompletionSource<string>();
-
         // const onAbort = () => reject(new Error("GitOps disposed"))
-        Registration? onAbortReg = null;
+        CancellationTokenRegistration? onAbortReg = null;
         var onAbort = new Action(() =>
         {
           tcs.TrySetException(new Exception("GitOps disposed"));
@@ -364,13 +364,13 @@ namespace KiloVisualStudioExtension
       if (upstream.Contains("/"))
       {
         // const result = upstream.split("/")[0]
-        var result = upstream.Split('/')[0];
+        var res = upstream.Split('/')[0];
 
         // this.setCached(cacheKey, result)
-        SetCached(cacheKey, result);
+        SetCached(cacheKey, res);
 
         // return result
-        return result;
+        return res;
       }
 
       // const name = branch || (await this.raw(["branch", "--show-current"], cwd).catch(() => ""))
@@ -586,6 +586,11 @@ namespace KiloVisualStudioExtension
       return result;
     }
 
+    private static Task<string> ReadAllTextAsync(string path)
+    {
+      return Task.Run(() => File.ReadAllText(path));
+    }
+
     // async workingTreeStats(cwd: string): Promise<{ files: number; additions: number; deletions: number }> { ... }
     public async Task<(int files, int additions, int deletions)> WorkingTreeStats(string cwd)
     {
@@ -641,7 +646,7 @@ namespace KiloVisualStudioExtension
           if (stat.Length > 1_000_000) return 0;
 
           // const content = await fs.readFile(full, "utf-8")
-          var content = await File.ReadAllTextAsync(full);
+          var content = await ReadAllTextAsync(full);
 
           // return content.split("\n").length
           return content.Split('\n').Length;
@@ -1129,7 +1134,6 @@ namespace KiloVisualStudioExtension
         UseShellExecute = false,
         CreateNoWindow = true
       };
-
       // if (options?.env) { ... }
       if (options?.Env != null)
       {
@@ -1144,6 +1148,9 @@ namespace KiloVisualStudioExtension
 
       // const err: Buffer[] = []
       var errBuffers = new List<byte>();
+
+      var proc = new Process();
+      proc.StartInfo = psi;
 
       // child.stdout?.on("data", (chunk: Buffer) => out.push(chunk))
       proc.OutputDataReceived += (s, e) =>
