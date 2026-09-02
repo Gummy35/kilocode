@@ -1,3 +1,4 @@
+using KiloVisualStudioExtension.Services.Git;
 using System;
 
 namespace KiloVisualStudioExtension
@@ -43,5 +44,7 @@ namespace KiloVisualStudioExtension
     /// Composite hosts (Agent Manager) own viewed/presence registration themselves.
     /// </summary>
     public bool DisableViewedRegistration { get; set; }
+
+    public Interceptor? OnBeforeMessage { get; set; } = null;
   }
 }

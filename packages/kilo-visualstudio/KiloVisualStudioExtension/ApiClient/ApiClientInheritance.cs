@@ -644,8 +644,6 @@ namespace KiloVisualStudioExtension.ApiClient
 
   public partial class Event : IEvent { }
   // SSE Event
-  public partial class EventMessageUpdated : Event { }
-  public partial class EventMessageRemoved : Event { }
   public partial class EventMessagePartUpdated : Event
   {
     /// <summary>
@@ -689,17 +687,127 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
   }
-  public partial class EventMessagePartRemoved : Event { }
-  public partial class EventMessagePartDelta : Event { }
-  public partial class EventSessionCreated : Event { }
-  public partial class EventSessionUpdated : Event { }
-  public partial class EventSessionDeleted : Event { }
-  public partial class EventKiloSessionsRemoteStatusChanged : Event { }
   public partial class EventMemoryStatus : Event, MemoryEventConverter.IMemoryEvent { }
   public partial class EventMemoryUpdated : Event, MemoryEventConverter.IMemoryEvent { }
   public partial class EventMemoryError : Event, MemoryEventConverter.IMemoryEvent { }
-
+  public partial class EventServerInstanceDisposed : Event { }
+  public partial class EventSessionTurnOpen : Event { }
+  public partial class EventSessionTurnClose : Event { }
+  public partial class EventSessionQueueChanged : Event { }
+  public partial class EventSessionNetworkAsked : Event { }
+  public partial class EventSessionNetworkReplied : Event { }
+  public partial class EventSessionNetworkRejected : Event { }
+  public partial class EventSessionNetworkRestored : Event { }
+  public partial class EventBackgroundProcessUpdated : Event { }
+  public partial class EventBackgroundProcessDeleted : Event { }
+  public partial class EventInteractiveTerminalUpdated : Event { }
+  public partial class EventInteractiveTerminalData : Event { }
+  public partial class EventInteractiveTerminalDeleted : Event { }
+  public partial class EventSandboxStatusChanged : Event { }
+  public partial class EventSuggestionShown : Event { }
+  public partial class EventSuggestionAccepted : Event { }
+  public partial class EventSuggestionDismissed : Event { }
+  public partial class EventKilocodeAgentManagerStart : Event { }
+  public partial class EventKilocodeAgentManagerRequested : Event { }
+  public partial class EventKilocodeAgentManagerCancelled : Event { }
+  public partial class EventKilocodeNotebookRequested : Event { }
+  public partial class EventKilocodeNotebookCancelled : Event { }
+  public partial class EventKiloSessionsRemoteStatusChanged : Event { }
+  public partial class EventLspClientDiagnostics : Event { }
+  public partial class EventMemoryStatus1 : Event { }
+  public partial class EventMemoryUpdated1 : Event { }
+  public partial class EventMemoryError1 : Event { }
+  public partial class EventIndexingStatus : Event { }
+  public partial class EventIndexingWarning : Event { }
+  public partial class EventServerConnected : Event { }
+  public partial class EventGlobalDisposed : Event { }
+  public partial class EventGlobalConfigUpdated : Event { }
+  public partial class EventPluginAdded : Event { }
+  public partial class EventCatalogModelUpdated : Event { }
+  public partial class EventSessionCreated : Event { }
+  public partial class EventSessionUpdated : Event { }
+  public partial class EventSessionDeleted : Event { }
+  public partial class EventMessageUpdated : Event { }
+  public partial class EventMessageRemoved : Event { }
+  public partial class EventMessagePartRemoved : Event { }
+  public partial class EventSessionNextAgentSwitched : Event { }
+  public partial class EventSessionNextModelSwitched : Event { }
+  public partial class EventSessionNextMoved : Event { }
+  public partial class EventSessionNextPrompted : Event { }
+  public partial class EventSessionNextPromptAdmitted : Event { }
+  public partial class EventSessionNextPromptPromoted : Event { }
+  public partial class EventSessionNextInterruptRequested : Event { }
+  public partial class EventSessionNextContextUpdated : Event { }
+  public partial class EventSessionNextSynthetic : Event { }
+  public partial class EventSessionNextShellStarted : Event { }
+  public partial class EventSessionNextShellEnded : Event { }
+  public partial class EventSessionNextStepStarted : Event { }
+  public partial class EventSessionNextStepEnded : Event { }
+  public partial class EventSessionNextStepFailed : Event { }
+  public partial class EventSessionNextTextStarted : Event { }
+  public partial class EventSessionNextTextDelta : Event { }
+  public partial class EventSessionNextTextEnded : Event { }
+  public partial class EventSessionNextReasoningStarted : Event { }
+  public partial class EventSessionNextReasoningDelta : Event { }
+  public partial class EventSessionNextReasoningEnded : Event { }
+  public partial class EventSessionNextToolInputStarted : Event { }
+  public partial class EventSessionNextToolInputDelta : Event { }
+  public partial class EventSessionNextToolInputEnded : Event { }
+  public partial class EventSessionNextToolCalled : Event { }
+  public partial class EventSessionNextToolProgress : Event { }
+  public partial class EventSessionNextToolSuccess : Event { }
+  public partial class EventSessionNextToolFailed : Event { }
+  public partial class EventSessionNextRetried : Event { }
+  public partial class EventSessionNextCompactionStarted : Event { }
+  public partial class EventSessionNextCompactionDelta : Event { }
+  public partial class EventSessionNextCompactionEnded : Event { }
+  public partial class EventQuestionAsked : Event { }
+  public partial class EventQuestionReplied : Event { }
+  public partial class EventQuestionRejected : Event { }
+  public partial class EventTuiPromptAppend : Event { }
+  public partial class EventTuiCommandExecute : Event { }
+  public partial class EventTuiToastShow1 : Event { }
+  public partial class EventTuiSessionSelect : Event { }
+  public partial class EventMcpToolsChanged : Event { }
   public partial class EventMcpBrowserOpenFailed : Event { }
+  public partial class EventMessagePartDelta : Event { }
+  public partial class EventSessionDiff : Event { }
+  public partial class EventSessionError : Event { }
+  public partial class EventModelsDevRefreshed : Event { }
+  public partial class EventInstallationUpdated : Event { }
+  public partial class EventInstallationUpdateAvailable : Event { }
+  public partial class EventPermissionAsked : Event { }
+  public partial class EventPermissionReplied : Event { }
+  public partial class EventReferenceUpdated : Event { }
+  public partial class EventIntegrationUpdated : Event { }
+  public partial class EventPermissionV2Asked : Event { }
+  public partial class EventPermissionV2Replied : Event { }
+  public partial class EventProjectDirectoriesUpdated : Event { }
+  public partial class EventFileEdited : Event { }
+  public partial class EventFileWatcherUpdated : Event { }
+  public partial class EventPtyCreated : Event { }
+  public partial class EventPtyUpdated : Event { }
+  public partial class EventPtyExited : Event { }
+  public partial class EventPtyDeleted : Event { }
+  public partial class EventQuestionV2Asked : Event { }
+  public partial class EventQuestionV2Replied : Event { }
+  public partial class EventQuestionV2Rejected : Event { }
+  public partial class EventTodoUpdated : Event { }
+  public partial class EventSessionStatus : Event { }
+  public partial class EventSessionIdle : Event { }
+  public partial class EventSessionCompacted : Event { }
+  public partial class EventCommandExecuted : Event { }
+  public partial class EventProjectUpdated : Event { }
+  public partial class EventVcsBranchUpdated : Event { }
+  public partial class EventLspUpdated : Event { }
+  public partial class EventWorkspaceReady : Event { }
+  public partial class EventWorkspaceFailed : Event { }
+  public partial class EventWorkspaceStatus : Event { }
+  public partial class EventWorktreeReady : Event { }
+  public partial class EventWorktreeFailed : Event { }
+
+
+
 
   public partial class TextPartInput : Parts { }
   public partial class FilePartInput : Parts { }

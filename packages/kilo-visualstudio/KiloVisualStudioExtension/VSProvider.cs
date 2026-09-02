@@ -8,6 +8,7 @@ using KiloExtensionDTOs.Profile;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Services;
+using KiloVisualStudioExtension.Services.Git;
 using KiloVisualStudioExtension.Services.Handlers.AgentRequest;
 using KiloVisualStudioExtension.Services.Handlers.Auth;
 using KiloVisualStudioExtension.Services.Handlers.CloudSession;
@@ -31,6 +32,7 @@ using KiloVisualStudioExtension.Services.Handlers.StateManagement;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
 using KiloVisualStudioExtension.Utils;
 using MessagePack;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Utilities;
@@ -39,6 +41,7 @@ using StreamJsonRpc.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
@@ -188,6 +191,8 @@ namespace KiloVisualStudioExtension
     //  private viewStateDisposable: vscode.Disposable | null = null
     //  private visibilityDisposable: vscode.Disposable | null = null
     //  private autoApproveBridge: ReturnType < typeof createAutoApproveBridge> | null = null
+    private AutoApproveBridge? _autoApproveBridge = null;
+
     //  private readonly marketplaceRemove = createMarketplaceRemover()
 
     //  private ignoreController: FileIgnoreController | null = null
@@ -203,7 +208,8 @@ namespace KiloVisualStudioExtension
     //  private cachedStats: unknown = null
     //  private cachedGitRepo = false
 
-    //  private onBeforeMessage: ((msg: Record<string, unknown>) => Promise < Record<string, unknown> | null >) | null = null
+    // private onBeforeMessage: ((msg: Record<string, unknown>) => Promise < Record<string, unknown> | null >) | null = null
+    private Interceptor? _onBeforeMessage = null;
 
     //  private continueInWorktreeHandler:
     //    | ((sessionId: string, progress: (status: string, detail ?: string, error ?: string) => void) => Promise<void>)
@@ -283,9 +289,11 @@ namespace KiloVisualStudioExtension
     /// </summary>
     public VSProvider(KiloWebViewControl? webView, KiloConnectionService connectionService, KiloProviderOptions? opts = null) : base(new ServiceProvider())
     {
-      _webView = webView!;
       _connectionService = connectionService;
       _opts = opts ?? new KiloProviderOptions();
+      _webView = webView!;
+
+      if (_autoApproveBridge != null) _onBeforeMessage = opts?.OnBeforeMessage ?? null;
 
       _serviceProvider.AddService(this);
       _serviceProvider.AddService(connectionService);
@@ -356,6 +364,18 @@ namespace KiloVisualStudioExtension
         return res.ToArray();
       });
     }
+
+  //  public attachToWebview(
+  // webview: vscode.Webview,
+  // options?: { onBeforeMessage ?: (msg: Record<string, unknown>) => Promise < Record<string, unknown> | null > },
+  //): void {
+  //  this.isWebviewReady = false
+  //  this.webview = webview
+  //  if (!this.autoApproveBridge) this.onBeforeMessage = options?.onBeforeMessage ?? null
+  //  this.setupWebviewMessageHandler(webview)
+  //  this.initializeConnection()
+  //}
+
 
     #region Internal Helper Methods for Handler Services
 
@@ -978,21 +998,41 @@ namespace KiloVisualStudioExtension
     //  }
     //}
 
+    internal void SetAutoApproveController(IAutoApproveController ctrl)
+    {
+      _autoApproveBridge?.Dispose();
+      _autoApproveBridge = AutoApproveBridge.CreateAutoApproveBridge(ctrl, msg => PostMessage(msg), _onBeforeMessage);
+      _onBeforeMessage = msg => _autoApproveBridge?.Handle(msg);  // Sets the default handler
+    }
+
     private async Task ProcessMessageAsync(string type, IWebviewMessage message)
     {
       try
       {
-//        var intercepted = await InterceptMessage(message, new KiloExtensionDTOs.ExtensionMessages)
+        //        const intercepted = await interceptMessage(message, {
+        //        workspaceDir: (sid) => this.getWorkspaceDirectory(sid ?? this.currentSession?.id),
+        //        post: (m) => this.postMessage(m),
+        //        error: getErrorMessage,
+        //        before: this.onBeforeMessage,
+        //      })
 
-//        const intercepted = await interceptMessage(message, {
-//        workspaceDir: (sid) => this.getWorkspaceDirectory(sid ?? this.currentSession?.id),
-//        post: (m) => this.postMessage(m),
-//        error: getErrorMessage,
-//        before: this.onBeforeMessage,
-//      })
-//      if (intercepted === null) return
-//      message = intercepted
+        var intercepted = await _serviceProvider.GetService<GitService>().InterceptMessageAsync(
+          message,
+          new Context
+          {
+            WorkspaceDir =
+              (sid) => _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory(
+                string.IsNullOrEmpty(sid) ? GetCurrentSessionID() : sid
+                ),
+            Post = (m) => PostMessage(m),
+            Error = ErrorHelper.GetErrorMessage,
+            Before = _onBeforeMessage
+          });
 
+        //      if (intercepted === null) return
+        if (intercepted == null) return;
+        //      message = intercepted
+        message = intercepted;
 //      if (
 //        await routeEarlyMessage(message, {
 //        question: this.questionCtx,

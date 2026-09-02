@@ -26,7 +26,7 @@ using System.Collections;
 #pragma warning disable CS8618 
 #pragma warning disable CS8625
 
-namespace KiloVisualStudioExtension
+namespace KiloVisualStudioExtension.Services.Git
 {
   // ======================================================================== 
   // interface GitOpsOptions { ... } 
