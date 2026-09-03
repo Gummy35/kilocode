@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Connection;
 /// Member count: 6
 /// Source: connection.ts
 /// </summary>
-public interface IDeviceAuthStatus
+public interface IDeviceAuthStatus: IWebviewMessage
 {
 }

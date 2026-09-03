@@ -20,7 +20,7 @@ using KiloExtensionDTOs;
 /// Source: webview-messages.ts
 /// Signature hash: 6863172226cdec4dda494de5723081529602c72d13fdf8baebe9fc4d112ecc37
 /// </summary>
-public partial class FilterMarketplaceItemsMessage
+public partial class FilterMarketplaceItemsMessage : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

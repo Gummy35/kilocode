@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 /// Source: connection.ts
 /// Signature hash: dfc0b95a7f6ff65f545fe29dec04cf82afbc7af4c8e8045c5a116ce12efcbbb8
 /// </summary>
-public partial class BusyMessage : ISessionStatusInfo
+public partial class BusyMessage : ISessionStatusInfo, IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

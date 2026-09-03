@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 0ecd8c396ef40fc75c2f96309f8c90afb8df7f45262b2b7ae690c2fd3f246470
 /// </summary>
-public partial class ProviderOAuthReadyMessageAuthorizationType
+public partial class ProviderOAuthReadyMessageAuthorizationType : IWebviewMessage
 {
     [JsonProperty("url")]
     public string Url { get; set; }

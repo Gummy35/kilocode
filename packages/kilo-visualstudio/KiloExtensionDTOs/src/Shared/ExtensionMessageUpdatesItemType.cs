@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\src\shared\stream-messages.ts
 /// Signature hash: 683388e2a7727ce41edd5aefc962aa871bcfe93b91b0ec336c67bbed9a370ffc
 /// </summary>
-public partial class ExtensionMessageUpdatesItemType
+public partial class ExtensionMessageUpdatesItemType : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

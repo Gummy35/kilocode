@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PermissionPatchFile
 /// Source: permissions.ts
 /// </summary>
-public partial class PermissionPatchFile
+public partial class PermissionPatchFile : IWebviewMessage
 {
     [JsonProperty("filePath", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

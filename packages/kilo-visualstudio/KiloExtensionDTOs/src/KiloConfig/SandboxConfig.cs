@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SandboxConfig
 /// Source: config.ts
 /// </summary>
-public partial class SandboxConfig
+public partial class SandboxConfig : IWebviewMessage
 {
     [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

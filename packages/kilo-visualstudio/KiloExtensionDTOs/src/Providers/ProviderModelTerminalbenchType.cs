@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: providers.ts
 /// Signature hash: 4d8d8046a242f9f5ecd952475dc8d2b49d27eeb9011da2b0d9726dafef60cd3c
 /// </summary>
-public partial class ProviderModelTerminalbenchType
+public partial class ProviderModelTerminalbenchType : IWebviewMessage
 {
     [JsonProperty("overallScore")]
     public double OverallScore { get; set; }

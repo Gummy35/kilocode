@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: BrowserSettings
 /// Source: config.ts
 /// </summary>
-public partial class BrowserSettings
+public partial class BrowserSettings : IWebviewMessage
 {
     [JsonProperty("enabled")]
     public bool Enabled { get; set; }

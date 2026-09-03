@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: Shared\sessions.ts
 /// Signature hash: c24891cde040a72568b5b790add75d66132a1ea0da9fc05cd94f45de20b5d16c
 /// </summary>
-public partial class MessageErrorType
+public partial class MessageErrorType : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

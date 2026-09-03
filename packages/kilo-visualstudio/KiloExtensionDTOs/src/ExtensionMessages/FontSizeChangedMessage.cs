@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Types;
 /// Source: extension-messages.ts
 /// Signature hash: 3c3c38392d336db33c42db9ec75e58baebdcc70008b85acdf5f470cd84f92306
 /// </summary>
-public partial class FontSizeChangedMessage : IKiloClawOutMessage
+public partial class FontSizeChangedMessage : IKiloClawOutMessage, IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

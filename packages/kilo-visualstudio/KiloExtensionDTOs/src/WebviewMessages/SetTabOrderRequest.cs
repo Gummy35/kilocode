@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: a95179260d09aaee6ce2528ac854039237ab13cf754db1c1fc10e41adee649bb
 /// </summary>
-public partial class SetTabOrderRequest
+public partial class SetTabOrderRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

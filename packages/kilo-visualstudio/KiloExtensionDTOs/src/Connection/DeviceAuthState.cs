@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: DeviceAuthState
 /// Source: connection.ts
 /// </summary>
-public partial class DeviceAuthState
+public partial class DeviceAuthState : IWebviewMessage
 {
     [JsonProperty("status")]
     // Original TypeScript type: DeviceAuthStatus

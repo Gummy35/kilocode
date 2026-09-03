@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: FileAttachment
 /// Source: parts.ts
 /// </summary>
-public partial class FileAttachment
+public partial class FileAttachment : IWebviewMessage
 {
     [JsonProperty("mime")]
     public string Mime { get; set; }

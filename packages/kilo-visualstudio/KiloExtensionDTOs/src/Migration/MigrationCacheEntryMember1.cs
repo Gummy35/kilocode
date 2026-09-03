@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationCacheEntryMember1
 /// Source: kilo-provider\handlers\migration.ts
 /// </summary>
-public partial class MigrationCacheEntryMember1
+public partial class MigrationCacheEntryMember1 : IWebviewMessage
 {
     [JsonProperty("operationId")]
     public string OperationId { get; set; }

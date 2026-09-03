@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: config.ts
 /// Signature hash: 8ca5e0926185f69322034d0cc3b607fce6eb30a02af30d3a81579614b42407e6
 /// </summary>
-public partial class IndexingConfigOllamaType
+public partial class IndexingConfigOllamaType : IWebviewMessage
 {
     [JsonProperty("baseUrl", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

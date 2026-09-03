@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: providers.ts
 /// Signature hash: 3f08b85a8625a751dff90ec0958ab1cedba05de6f04f5c74aa055e1f2285c1be
 /// </summary>
-public partial class ProviderModelCapabilitiesType
+public partial class ProviderModelCapabilitiesType : IWebviewMessage
 {
     [JsonProperty("reasoning")]
     public bool Reasoning { get; set; }

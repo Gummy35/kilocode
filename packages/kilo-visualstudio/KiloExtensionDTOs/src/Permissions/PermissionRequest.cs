@@ -16,7 +16,7 @@ using KiloExtensionDTOs.Questions;
 /// Type: PermissionRequest
 /// Source: permissions.ts
 /// </summary>
-public partial class PermissionRequest
+public partial class PermissionRequest : IWebviewMessageRequest
 {
     [JsonProperty("id")]
     public string Id { get; set; }

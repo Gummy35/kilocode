@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Parts;
 /// Member count: 7
 /// Source: parts.ts
 /// </summary>
-public interface IPart
+public interface IPart: IWebviewMessage
 {
 }

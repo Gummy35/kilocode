@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: TodoItem
 /// Source: questions.ts
 /// </summary>
-public partial class TodoItem
+public partial class TodoItem : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

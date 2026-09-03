@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: migration.ts
 /// Signature hash: 673cb6fd978226d985e3b84b4d544fd59d723b40edb07b5882ab5314cc4d60a5
 /// </summary>
-public partial class MigrationProgressMessageSettingsType
+public partial class MigrationProgressMessageSettingsType : IWebviewMessage
 {
     [JsonProperty("autoApproval")]
     // Original TypeScript type: MigrationAutoApprovalSelections

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: McpStatusEntry
 /// Source: extension-messages.ts
 /// </summary>
-public partial class McpStatusEntry
+public partial class McpStatusEntry : IWebviewMessage
 {
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: disabled | connected | failed | needs_auth | needs_client_registration

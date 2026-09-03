@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SlashCommandInfo
 /// Source: agents.ts
 /// </summary>
-public partial class SlashCommandInfo
+public partial class SlashCommandInfo : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

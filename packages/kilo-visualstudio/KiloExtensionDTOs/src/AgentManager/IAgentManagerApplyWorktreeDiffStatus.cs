@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.AgentManager;
 /// Member count: 5
 /// Source: agent-manager.ts
 /// </summary>
-public interface IAgentManagerApplyWorktreeDiffStatus
+public interface IAgentManagerApplyWorktreeDiffStatus: IWebviewMessage
 {
 }

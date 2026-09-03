@@ -18,7 +18,7 @@ using KiloExtensionDTOs.ExtensionMessages;
 /// Source: ..\..\..\..\src\shared\anaconda-desktop-messages.ts
 /// Signature hash: ae763f346054c66737256ab0537e3ce235ff49ecf5721ded085cef702fa0d212
 /// </summary>
-public partial class AnacondadesktopactionerrorMessage : IExtensionMessage
+public partial class AnacondadesktopactionerrorMessage : IExtensionMessage, IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

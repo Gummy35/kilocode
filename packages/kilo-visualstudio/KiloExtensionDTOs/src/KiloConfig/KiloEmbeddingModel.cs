@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: KiloEmbeddingModel
 /// Source: config.ts
 /// </summary>
-public partial class KiloEmbeddingModel
+public partial class KiloEmbeddingModel : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

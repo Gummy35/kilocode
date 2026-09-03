@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 12826a517574c243096adbe5d6d9107054c050dab2dba15a28a71280b494da8b
 /// </summary>
-public partial class ChatSettingsLoadedMessageSettingsType
+public partial class ChatSettingsLoadedMessageSettingsType : IWebviewMessage
 {
     [JsonProperty("shiftTabCyclesVariant")]
     public bool ShiftTabCyclesVariant { get; set; }

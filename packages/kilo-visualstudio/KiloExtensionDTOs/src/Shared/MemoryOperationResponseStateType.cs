@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
 /// Signature hash: 302787dbd8d8eb0c6bc8491315541e7ccbde520592590a29ff1568d06a0644fa
 /// </summary>
-public partial class MemoryOperationResponseStateType
+public partial class MemoryOperationResponseStateType : IWebviewMessage
 {
     [JsonProperty("version")]
     // Original TypeScript type: literal

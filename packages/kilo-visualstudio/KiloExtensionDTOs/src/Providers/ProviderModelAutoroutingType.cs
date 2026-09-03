@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: providers.ts
 /// Signature hash: 0bfe0c4889dbf3934beecba257bbbd9e1940d5479b976994cfe870cabab4f1c8
 /// </summary>
-public partial class ProviderModelAutoroutingType
+public partial class ProviderModelAutoroutingType : IWebviewMessage
 {
     [JsonProperty("models")]
     public List<string> Models { get; set; }

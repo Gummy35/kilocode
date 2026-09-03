@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PRStatus
 /// Source: agent-manager.ts
 /// </summary>
-public partial class PRStatus
+public partial class PRStatus : IWebviewMessage
 {
     [JsonProperty("number")]
     public double Number { get; set; }

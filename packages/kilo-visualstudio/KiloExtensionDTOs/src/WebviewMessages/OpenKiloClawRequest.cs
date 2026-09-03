@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 06ce18c0e44e3080af3172c07076ca6afbe487f7688f49173e3dd5ce0602bf72
 /// </summary>
-public partial class OpenKiloClawRequest
+public partial class OpenKiloClawRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

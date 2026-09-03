@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ServerInfo
 /// Source: connection.ts
 /// </summary>
-public partial class ServerInfo
+public partial class ServerInfo : IWebviewMessage
 {
     [JsonProperty("port")]
     public double Port { get; set; }

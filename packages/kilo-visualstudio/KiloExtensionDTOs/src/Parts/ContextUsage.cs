@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ContextUsage
 /// Source: parts.ts
 /// </summary>
-public partial class ContextUsage
+public partial class ContextUsage : IWebviewMessage
 {
     [JsonProperty("tokens")]
     public double Tokens { get; set; }

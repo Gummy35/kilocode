@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SessionSearchItem
 /// Source: extension-messages.ts
 /// </summary>
-public partial class SessionSearchItem
+public partial class SessionSearchItem : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

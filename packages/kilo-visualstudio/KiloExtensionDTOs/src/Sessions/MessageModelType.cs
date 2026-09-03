@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: sessions.ts
 /// Signature hash: 9308da6f7384267e25f2850e99b20884d9996501bf48ac51b15e4028faca1ddf
 /// </summary>
-public partial class MessageModelType
+public partial class MessageModelType : IWebviewMessage
 {
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }

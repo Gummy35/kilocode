@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: KilocodeBalance
 /// Source: profile.ts
 /// </summary>
-public partial class KilocodeBalance
+public partial class KilocodeBalance : IWebviewMessage
 {
     [JsonProperty("balance")]
     public double Balance { get; set; }

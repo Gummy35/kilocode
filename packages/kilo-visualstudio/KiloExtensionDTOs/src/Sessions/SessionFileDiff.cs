@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SessionFileDiff
 /// Source: sessions.ts
 /// </summary>
-public partial class SessionFileDiff
+public partial class SessionFileDiff : IWebviewMessage
 {
     [JsonProperty("file")]
     public string File { get; set; }

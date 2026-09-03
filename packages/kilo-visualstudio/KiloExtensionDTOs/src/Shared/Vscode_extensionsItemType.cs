@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: Shared\marketplace.ts
 /// Signature hash: ac9e1e9ef2f7dc11e76fd5444af9f29334d7f1c1e07c3f8f875874706b53efdc
 /// </summary>
-public partial class Vscode_extensionsItemType
+public partial class Vscode_extensionsItemType : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

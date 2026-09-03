@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentConfig
 /// Source: agents.ts
 /// </summary>
-public partial class AgentConfig
+public partial class AgentConfig : IWebviewMessage
 {
     [JsonProperty("model", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | null | string

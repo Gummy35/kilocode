@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.ExtensionMessages;
 /// Member count: 170
 /// Source: extension-messages.ts
 /// </summary>
-public interface IExtensionMessage:IWebviewMessage
+public interface IExtensionMessage: IWebviewMessage
 {
 }

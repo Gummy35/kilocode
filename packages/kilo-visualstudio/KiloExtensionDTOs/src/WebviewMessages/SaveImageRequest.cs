@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: a4d39a72f1395eaa7738c8d0b25cb1ca4d0430c1fd72ba538236f7a294adbf3e
 /// </summary>
-public partial class SaveImageRequest
+public partial class SaveImageRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

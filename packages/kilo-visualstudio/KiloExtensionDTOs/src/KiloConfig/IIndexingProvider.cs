@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.KiloConfig;
 /// Member count: 10
 /// Source: config.ts
 /// </summary>
-public interface IIndexingProvider
+public interface IIndexingProvider: IWebviewMessage
 {
 }

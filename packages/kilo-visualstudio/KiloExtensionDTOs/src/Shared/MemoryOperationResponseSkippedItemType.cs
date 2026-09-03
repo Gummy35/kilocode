@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
 /// Signature hash: 67091578b33ccaf7f75c63ed68a1f0ce1b4ab79e63f6b5900c7100b5d935478f
 /// </summary>
-public partial class MemoryOperationResponseSkippedItemType
+public partial class MemoryOperationResponseSkippedItemType : IWebviewMessage
 {
     [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: self_referential | out_of_scope | secret

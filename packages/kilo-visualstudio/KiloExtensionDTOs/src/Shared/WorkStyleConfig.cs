@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: WorkStyleConfig
 /// Source: ..\..\..\..\src\shared\work-style-presets.ts
 /// </summary>
-public partial class WorkStyleConfig
+public partial class WorkStyleConfig : IWebviewMessage
 {
     [JsonProperty("permission", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type

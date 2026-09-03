@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Migration;
 /// Member count: 2
 /// Source: migration.ts
 /// </summary>
-public interface IMigrationSource
+public interface IMigrationSource: IWebviewMessage
 {
 }

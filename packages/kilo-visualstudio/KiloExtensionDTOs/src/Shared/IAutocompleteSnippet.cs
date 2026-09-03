@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Types;
 /// Member count: 1
 /// Source: services\autocomplete\continuedev\core\autocomplete\types.ts
 /// </summary>
-public interface IAutocompleteSnippet
+public interface IAutocompleteSnippet: IWebviewMessage
 {
 }

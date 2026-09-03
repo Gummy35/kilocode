@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Index.d;
 /// Member count: 32
 /// Source: services\autocomplete\continuedev\core\index.d.ts
 /// </summary>
-public interface IContextProviderName
+public interface IContextProviderName: IWebviewMessage
 {
 }

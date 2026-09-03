@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: c06412286c894b143883eaca830529e7e3f7da6b4f42fac258968195c0bed210
 /// </summary>
-public partial class IndexingSettingsLoadedMessageSettingsType
+public partial class IndexingSettingsLoadedMessageSettingsType : IWebviewMessage
 {
     [JsonProperty("showButtonWhenDisabled")]
     public bool ShowButtonWhenDisabled { get; set; }

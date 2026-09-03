@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentInfo
 /// Source: agents.ts
 /// </summary>
-public partial class AgentInfo
+public partial class AgentInfo : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

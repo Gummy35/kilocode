@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: de1da32e78e66cfa31ae4ffb4e2aa9b3bed8f5ef3303735db39896d47d8432b5
 /// </summary>
-public partial class ToggleAutoApproveMessage
+public partial class ToggleAutoApproveMessage : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

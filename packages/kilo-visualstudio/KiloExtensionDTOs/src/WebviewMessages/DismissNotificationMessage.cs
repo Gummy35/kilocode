@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 96f3d9f8b9df1c55cd3fe4679868e73bb8c701bc09905b9aa1e0687f60913064
 /// </summary>
-public partial class DismissNotificationMessage
+public partial class DismissNotificationMessage : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

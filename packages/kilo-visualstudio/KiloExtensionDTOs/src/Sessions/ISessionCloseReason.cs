@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Sessions;
 /// Member count: 3
 /// Source: sessions.ts
 /// </summary>
-public interface ISessionCloseReason
+public interface ISessionCloseReason: IWebviewMessage
 {
 }

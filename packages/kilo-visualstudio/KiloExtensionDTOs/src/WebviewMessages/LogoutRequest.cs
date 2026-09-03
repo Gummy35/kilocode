@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: f20d422c748c0b002b1f8ff31f3ae3d2e966dd89eeab477fcf53cb86c8005a82
 /// </summary>
-public partial class LogoutRequest
+public partial class LogoutRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

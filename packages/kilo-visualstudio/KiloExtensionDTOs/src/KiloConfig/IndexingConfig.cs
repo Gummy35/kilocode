@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: IndexingConfig
 /// Source: config.ts
 /// </summary>
-public partial class IndexingConfig
+public partial class IndexingConfig : IWebviewMessage
 {
     [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

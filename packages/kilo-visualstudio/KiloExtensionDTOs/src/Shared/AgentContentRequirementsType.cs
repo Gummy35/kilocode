@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: ..\marketplace.ts
 /// Signature hash: a888a5bb8439ba9449f51cde35755b53223df7f1599c44ee44c9ca74577fb343
 /// </summary>
-public partial class AgentContentRequirementsType
+public partial class AgentContentRequirementsType : IWebviewMessage
 {
     [JsonProperty("skills", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array

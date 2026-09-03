@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: FileSearchItem
 /// Source: extension-messages.ts
 /// </summary>
-public partial class FileSearchItem
+public partial class FileSearchItem : IWebviewMessage
 {
     [JsonProperty("path")]
     public string Path { get; set; }

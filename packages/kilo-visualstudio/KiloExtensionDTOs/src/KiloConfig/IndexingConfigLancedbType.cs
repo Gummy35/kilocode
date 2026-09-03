@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: config.ts
 /// Signature hash: 80f57c22514a677be6f92038f704461ed104bdb420707c14aad22fca4c7db8b5
 /// </summary>
-public partial class IndexingConfigLancedbType
+public partial class IndexingConfigLancedbType : IWebviewMessage
 {
     [JsonProperty("directory", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

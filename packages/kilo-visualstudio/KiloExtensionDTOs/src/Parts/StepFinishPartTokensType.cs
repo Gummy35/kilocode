@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: parts.ts
 /// Signature hash: fd3afcc7a64998468674b1274de1af7dc53893577aae1da60a0353bb19e377db
 /// </summary>
-public partial class StepFinishPartTokensType
+public partial class StepFinishPartTokensType : IWebviewMessage
 {
     [JsonProperty("input")]
     public double Input { get; set; }

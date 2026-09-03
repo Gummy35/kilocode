@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: parts.ts
 /// Signature hash: 0220d91ca8244339d35e7b10d81f9969e113494aaed43a57fc611a65298f2b47
 /// </summary>
-public partial class StepFinishPartTimeType
+public partial class StepFinishPartTimeType : IWebviewMessage
 {
     [JsonProperty("start")]
     public double Start { get; set; }

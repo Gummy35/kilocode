@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: agent-manager.ts
 /// Signature hash: 094030a57bc0d9eca7eabec6133166ced8e9f7e4acfa810882347cb94b143d1c
 /// </summary>
-public partial class PRStatusChecksType
+public partial class PRStatusChecksType : IWebviewMessage
 {
     [JsonProperty("status")]
     // Original TypeScript type: AggregateCheckStatus

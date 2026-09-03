@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 02a6ca9abfa54cb1ce2f1d20842bb79643615bae88d9966b8e49be9b083ee05c
 /// </summary>
-public partial class OpenChangesRequest
+public partial class OpenChangesRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

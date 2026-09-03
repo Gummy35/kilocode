@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentContent
 /// Source: ..\marketplace.ts
 /// </summary>
-public partial class AgentContent
+public partial class AgentContent : IWebviewMessage
 {
     [JsonProperty("mode", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: primary | subagent | all

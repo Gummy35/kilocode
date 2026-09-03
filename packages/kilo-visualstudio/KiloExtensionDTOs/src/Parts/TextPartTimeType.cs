@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: Shared\parts.ts
 /// Signature hash: 12fc3674e2a370589374eb4b8ac52a9a4fc83a114159a62a688270324e4a1b05
 /// </summary>
-public partial class TextPartTimeType
+public partial class TextPartTimeType : IWebviewMessage
 {
     [JsonProperty("start")]
     public double Start { get; set; }

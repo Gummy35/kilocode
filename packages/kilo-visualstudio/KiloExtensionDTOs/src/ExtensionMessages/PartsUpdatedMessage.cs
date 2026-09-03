@@ -18,7 +18,7 @@ using KiloExtensionDTOs;
 /// Source: extension-messages.ts
 /// Signature hash: fafa457b200c456c2a61504d34516ade1639c34ed60f704100f1eae996167c25
 /// </summary>
-public partial class PartsupdatedMessage : IExtensionMessage
+public partial class PartsupdatedMessage : IExtensionMessage, IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: FeatureFlags
 /// Source: config.ts
 /// </summary>
-public partial class FeatureFlags
+public partial class FeatureFlags : IWebviewMessage
 {
     [JsonProperty("indexing")]
     public bool Indexing { get; set; }

@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: providers.ts
 /// Signature hash: a645b5b0284e8258f8519ef5305c283bdc47671595933c36adcf514f7ddb3bd4
 /// </summary>
-public partial class ProviderMetadataType
+public partial class ProviderMetadataType : IWebviewMessage
 {
     [JsonProperty("noteKey", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

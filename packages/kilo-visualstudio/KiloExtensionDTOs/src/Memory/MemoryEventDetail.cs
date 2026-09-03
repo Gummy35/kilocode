@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MemoryEventDetail
 /// Source: memory.ts
 /// </summary>
-public partial class MemoryEventDetail
+public partial class MemoryEventDetail : IWebviewMessage
 {
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
     public SkippedErrorSavedRecalledEnum? Type { get; set; }

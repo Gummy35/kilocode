@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: DiffImageSide
 /// Source: agent-manager.ts
 /// </summary>
-public partial class DiffImageSide
+public partial class DiffImageSide : IWebviewMessage
 {
     [JsonProperty("mime")]
     public string Mime { get; set; }

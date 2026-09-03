@@ -20,7 +20,7 @@ using KiloExtensionDTOs.Permissions;
 /// Source: webview-messages.ts
 /// Signature hash: 9c45366ee42688818739dc7c4e55e3e2454e627156192e2ebe1101d307681f81
 /// </summary>
-public partial class OpenDiffVirtualRequest
+public partial class OpenDiffVirtualRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

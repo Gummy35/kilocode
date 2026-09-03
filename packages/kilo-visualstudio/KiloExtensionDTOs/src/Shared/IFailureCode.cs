@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.OrchestrationDomain;
 /// Member count: 6
 /// Source: agent-manager\orchestration-domain.ts
 /// </summary>
-public interface IFailureCode
+public interface IFailureCode: IWebviewMessage
 {
 }

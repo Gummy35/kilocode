@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.AgentManager;
 /// Member count: 5
 /// Source: agent-manager.ts
 /// </summary>
-public interface ICheckStatus
+public interface ICheckStatus: IWebviewMessage
 {
 }

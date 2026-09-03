@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: dc8b6757d5d2415d39f1b69d062dc5e559e205bcf74a06ce024493ed09a1982d
 /// </summary>
-public partial class IndexingStatusLoadedMessageStatusType
+public partial class IndexingStatusLoadedMessageStatusType : IWebviewMessage
 {
     [JsonProperty("state", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: Disabled | In Progress | Complete | Error | Standby

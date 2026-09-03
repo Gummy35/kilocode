@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 8c0eaf1346810e367ec3eea79e465d2a8861e3f00647396e43afc2e853538b88
 /// </summary>
-public partial class RequestRemoteStatusMessage
+public partial class RequestRemoteStatusMessage : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

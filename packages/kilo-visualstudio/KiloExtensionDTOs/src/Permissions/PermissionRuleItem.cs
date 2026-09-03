@@ -16,7 +16,7 @@ using KiloExtensionDTOs;
 /// Type: PermissionRuleItem
 /// Source: permissions.ts
 /// </summary>
-public partial class PermissionRuleItem
+public partial class PermissionRuleItem : IWebviewMessage
 {
     [JsonProperty("permission")]
     public string Permission { get; set; }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MarketplaceInstalledMetadata
 /// Source: ..\marketplace.ts
 /// </summary>
-public partial class MarketplaceInstalledMetadata
+public partial class MarketplaceInstalledMetadata : IWebviewMessage
 {
     [JsonProperty("project")]
     // Original TypeScript type: __type

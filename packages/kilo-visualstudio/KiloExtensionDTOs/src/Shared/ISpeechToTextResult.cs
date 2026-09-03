@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Transcribe;
 /// Member count: 1
 /// Source: speech-to-text\transcribe.ts
 /// </summary>
-public interface ISpeechToTextResult
+public interface ISpeechToTextResult: IWebviewMessage
 {
 }

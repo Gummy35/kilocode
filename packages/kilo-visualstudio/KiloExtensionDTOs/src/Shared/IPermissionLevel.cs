@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs;
 /// Member count: 3
 /// Source: ..\..\..\..\src\shared\work-style-presets.ts
 /// </summary>
-public interface IPermissionLevel
+public interface IPermissionLevel: IWebviewMessage
 {
 }

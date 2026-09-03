@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: Config
 /// Source: config.ts
 /// </summary>
-public partial class Config
+public partial class Config : IWebviewMessage
 {
     [JsonProperty("permission", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | __type

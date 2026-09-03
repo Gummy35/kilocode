@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationAutoApprovalSelections
 /// Source: migration.ts
 /// </summary>
-public partial class MigrationAutoApprovalSelections
+public partial class MigrationAutoApprovalSelections : IWebviewMessage
 {
     [JsonProperty("commandRules")]
     public bool CommandRules { get; set; }

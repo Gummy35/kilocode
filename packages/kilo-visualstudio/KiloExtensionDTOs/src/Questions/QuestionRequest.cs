@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: QuestionRequest
 /// Source: questions.ts
 /// </summary>
-public partial class QuestionRequest
+public partial class QuestionRequest : IWebviewMessageRequest
 {
     [JsonProperty("id")]
     public string Id { get; set; }

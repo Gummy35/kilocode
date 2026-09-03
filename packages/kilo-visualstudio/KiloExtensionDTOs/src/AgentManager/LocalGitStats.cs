@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: LocalGitStats
 /// Source: agent-manager.ts
 /// </summary>
-public partial class LocalGitStats
+public partial class LocalGitStats : IWebviewMessage
 {
     [JsonProperty("branch")]
     public string Branch { get; set; }

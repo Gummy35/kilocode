@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: CloudSessionInfo
 /// Source: sessions.ts
 /// </summary>
-public partial class CloudSessionInfo
+public partial class CloudSessionInfo : IWebviewMessage
 {
     [JsonProperty("session_id")]
     public string Session_id { get; set; }

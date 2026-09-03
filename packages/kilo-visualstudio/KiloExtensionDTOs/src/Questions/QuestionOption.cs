@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: QuestionOption
 /// Source: questions.ts
 /// </summary>
-public partial class QuestionOption
+public partial class QuestionOption : IWebviewMessage
 {
     [JsonProperty("label")]
     public string Label { get; set; }

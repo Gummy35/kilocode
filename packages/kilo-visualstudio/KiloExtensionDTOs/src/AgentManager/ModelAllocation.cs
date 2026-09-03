@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ModelAllocation
 /// Source: agent-manager.ts
 /// </summary>
-public partial class ModelAllocation
+public partial class ModelAllocation : IWebviewMessage
 {
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }

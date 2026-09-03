@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: parts.ts
 /// Signature hash: 0cc878b5bd22883fc1d8714fed80a1cbc57a439a9aebdcfaa2fb6aa2a0cdc08f
 /// </summary>
-public partial class FilePartSourceTextType
+public partial class FilePartSourceTextType : IWebviewMessage
 {
     [JsonProperty("value")]
     public string Value { get; set; }

@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Types;
 /// Member count: 4
 /// Source: services\notebook\types.ts
 /// </summary>
-public interface INotebookEdit
+public interface INotebookEdit: IWebviewMessage
 {
 }

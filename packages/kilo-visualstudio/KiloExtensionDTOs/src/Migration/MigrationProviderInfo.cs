@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationProviderInfo
 /// Source: migration.ts
 /// </summary>
-public partial class MigrationProviderInfo
+public partial class MigrationProviderInfo : IWebviewMessage
 {
     [JsonProperty("profileName")]
     public string ProfileName { get; set; }

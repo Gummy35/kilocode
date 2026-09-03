@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 77b5034fc7e6aff4a8e4ba0ccfeb781371d5b6c442cb07b20bfb584dda64a9cc
 /// </summary>
-public partial class OpenConfigFileRequestLabelsType
+public partial class OpenConfigFileRequestLabelsType : IWebviewMessageRequest
 {
     [JsonProperty("scope")]
     public string Scope { get; set; }

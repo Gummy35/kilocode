@@ -18,7 +18,7 @@ using KiloExtensionDTOs.AnacondaDesktopMessages;
 /// Source: ..\..\..\..\src\shared\anaconda-desktop-messages.ts
 /// Signature hash: 8278d84f6d7fe6cf6f283b9c107cae5f3b85582040f9c8bd4f03a8947f9af4ac
 /// </summary>
-public partial class CancelanacondadesktoprequestMessage : IAnacondaDesktopWebviewMessage
+public partial class CancelanacondadesktoprequestMessage : IAnacondaDesktopWebviewMessage, IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

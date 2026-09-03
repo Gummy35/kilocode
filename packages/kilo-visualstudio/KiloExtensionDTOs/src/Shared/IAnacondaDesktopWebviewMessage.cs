@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.AnacondaDesktopMessages;
 /// Member count: 4
 /// Source: shared\anaconda-desktop-messages.ts
 /// </summary>
-public interface IAnacondaDesktopWebviewMessage
+public interface IAnacondaDesktopWebviewMessage: IWebviewMessage
 {
 }

@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Sessions;
 /// Member count: 4
 /// Source: sessions.ts
 /// </summary>
-public interface IMessageLoadMode
+public interface IMessageLoadMode: IWebviewMessage
 {
 }

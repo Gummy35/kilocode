@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.AgentManager;
 /// Member count: 7
 /// Source: agent-manager.ts
 /// </summary>
-public interface IContinueInWorktreeStatus
+public interface IContinueInWorktreeStatus: IWebviewMessage
 {
 }

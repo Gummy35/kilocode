@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SectionState
 /// Source: agent-manager.ts
 /// </summary>
-public partial class SectionState
+public partial class SectionState : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

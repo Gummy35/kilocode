@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 31306e4c71eef2a45d268a97c11e8b1e9c2753cb4937d8a21563cb6db88dc7a3
 /// </summary>
-public partial class AutocompleteSettingsLoadedMessageSettingsType
+public partial class AutocompleteSettingsLoadedMessageSettingsType : IWebviewMessage
 {
     [JsonProperty("enableAutoTrigger")]
     public bool EnableAutoTrigger { get; set; }

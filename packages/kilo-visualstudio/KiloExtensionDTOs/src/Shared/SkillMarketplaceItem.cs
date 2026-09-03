@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: ..\marketplace.ts
 /// Signature hash: 753a6bb40fcce57a00937f08f77e7746aec3b32344b89af43fa3966242ace61c
 /// </summary>
-public partial class SkillMarketplaceItem : MarketplaceItemBase
+public partial class SkillMarketplaceItem : MarketplaceItemBase, IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

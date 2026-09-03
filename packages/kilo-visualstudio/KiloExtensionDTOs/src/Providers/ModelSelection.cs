@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ModelSelection
 /// Source: providers.ts
 /// </summary>
-public partial class ModelSelection
+public partial class ModelSelection : IWebviewMessage
 {
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }

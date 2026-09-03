@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: InstallMarketplaceItemOptions
 /// Source: ..\marketplace.ts
 /// </summary>
-public partial class InstallMarketplaceItemOptions
+public partial class InstallMarketplaceItemOptions : IWebviewMessage
 {
     [JsonProperty("target", NullValueHandling = NullValueHandling.Ignore)]
     public GlobalProjectEnum? Target { get; set; }

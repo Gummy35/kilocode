@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Migration;
 /// Member count: 6
 /// Source: migration.ts
 /// </summary>
-public interface ILegacyMigrationSessionPhase
+public interface ILegacyMigrationSessionPhase: IWebviewMessage
 {
 }

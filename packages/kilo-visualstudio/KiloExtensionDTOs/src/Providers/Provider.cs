@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: Provider
 /// Source: providers.ts
 /// </summary>
-public partial class Provider
+public partial class Provider : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

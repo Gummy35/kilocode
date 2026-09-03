@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: migration.ts
 /// Signature hash: ddc52e7fa9dc1f8530735c124e7c4ef2d2c77fee977b936dd2b920cf717dac7e
 /// </summary>
-public partial class MigrationDataMessageDataType
+public partial class MigrationDataMessageDataType : IWebviewMessage
 {
     [JsonProperty("providers")]
     public List<MigrationProviderInfo> Providers { get; set; }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SuggestionRequest
 /// Source: questions.ts
 /// </summary>
-public partial class SuggestionRequest
+public partial class SuggestionRequest : IWebviewMessageRequest
 {
     [JsonProperty("id")]
     public string Id { get; set; }

@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Types;
 /// Member count: 1
 /// Source: kiloclaw\types.ts
 /// </summary>
-public interface IContentBlock
+public interface IContentBlock: IWebviewMessage
 {
 }

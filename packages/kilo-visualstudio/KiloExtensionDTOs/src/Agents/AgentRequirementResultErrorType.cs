@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: agents.ts
 /// Signature hash: fd6d640a5d5be4e59566efc0d79c8f5f7b801c8e5924a7fdb23d534403e2050a
 /// </summary>
-public partial class AgentRequirementResultErrorType
+public partial class AgentRequirementResultErrorType : IWebviewMessage
 {
     [JsonProperty("code", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: unknown_agent | malformed_declaration | discovery_failed | mcp_status_failed | scope_mismatch | request_failed

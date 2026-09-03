@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: parts.ts
 /// Signature hash: e5681b0996d548da3bd5b34e043f094415c8605db1365f8530fb34e01d747f8e
 /// </summary>
-public partial class StepFinishPartModelType
+public partial class StepFinishPartModelType : IWebviewMessage
 {
     [JsonProperty("providerID")]
     public string ProviderID { get; set; }

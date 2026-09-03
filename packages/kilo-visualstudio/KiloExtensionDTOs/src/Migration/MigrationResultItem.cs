@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationResultItem
 /// Source: migration.ts
 /// </summary>
-public partial class MigrationResultItem
+public partial class MigrationResultItem : IWebviewMessage
 {
     [JsonProperty("item")]
     public string Item { get; set; }

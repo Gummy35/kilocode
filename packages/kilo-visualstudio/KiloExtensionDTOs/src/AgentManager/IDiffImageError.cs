@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.AgentManager;
 /// Member count: 2
 /// Source: agent-manager.ts
 /// </summary>
-public interface IDiffImageError
+public interface IDiffImageError: IWebviewMessage
 {
 }

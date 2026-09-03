@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationCustomModeInfo
 /// Source: migration.ts
 /// </summary>
-public partial class MigrationCustomModeInfo
+public partial class MigrationCustomModeInfo : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

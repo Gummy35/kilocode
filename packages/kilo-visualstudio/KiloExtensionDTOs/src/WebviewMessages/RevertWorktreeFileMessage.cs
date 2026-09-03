@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 73687280b781b8d0142c6529892b7d2205a034de7e8e77f76c88c8b9df14e026
 /// </summary>
-public partial class RevertWorktreeFileMessage
+public partial class RevertWorktreeFileMessage : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

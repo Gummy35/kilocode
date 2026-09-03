@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: ae208d3f1b4ba32934fed700ec3b096d6ddf899d33662ab66f53be0830412c0b
 /// </summary>
-public partial class AgentManagerSendInitialMessageFilesItemType
+public partial class AgentManagerSendInitialMessageFilesItemType : IWebviewMessage
 {
     [JsonProperty("mime")]
     public string Mime { get; set; }

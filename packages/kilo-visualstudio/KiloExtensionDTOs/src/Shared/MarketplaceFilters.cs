@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MarketplaceFilters
 /// Source: ..\marketplace.ts
 /// </summary>
-public partial class MarketplaceFilters
+public partial class MarketplaceFilters : IWebviewMessage
 {
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

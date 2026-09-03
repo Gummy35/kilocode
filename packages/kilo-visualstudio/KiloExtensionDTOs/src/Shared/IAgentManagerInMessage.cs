@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Types;
 /// Member count: 71
 /// Source: agent-manager\types.ts
 /// </summary>
-public interface IAgentManagerInMessage
+public interface IAgentManagerInMessage: IWebviewMessage
 {
 }

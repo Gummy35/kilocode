@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: LegacySettings
 /// Source: migration.ts
 /// </summary>
-public partial class LegacySettings
+public partial class LegacySettings : IWebviewMessage
 {
     [JsonProperty("autoApprovalEnabled", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

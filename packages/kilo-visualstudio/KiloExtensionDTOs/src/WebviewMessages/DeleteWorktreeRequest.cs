@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 67b67e135b824601f8d9cdc314f83d28de8854afec1c903bb8ec3ac7e590658f
 /// </summary>
-public partial class DeleteWorktreeRequest
+public partial class DeleteWorktreeRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

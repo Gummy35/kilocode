@@ -17,7 +17,7 @@ using KiloExtensionDTOs.Parts;
 /// Source: providers.ts
 /// Signature hash: 625d14ff5b79ec87f73af2c37041a500e5021ddbcb8ee2c03339651a6c0d395f
 /// </summary>
-public partial class ProviderModelCostType
+public partial class ProviderModelCostType : IWebviewMessage
 {
     [JsonProperty("input")]
     public double Input { get; set; }

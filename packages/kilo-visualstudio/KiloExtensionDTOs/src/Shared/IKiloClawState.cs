@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Types;
 /// Member count: 5
 /// Source: kiloclaw\types.ts
 /// </summary>
-public interface IKiloClawState
+public interface IKiloClawState: IWebviewMessage
 {
 }

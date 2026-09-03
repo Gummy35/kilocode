@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: McpConfig
 /// Source: config.ts
 /// </summary>
-public partial class McpConfig
+public partial class McpConfig : IWebviewMessage
 {
     [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
     public LocalRemoteEnum? Type { get; set; }

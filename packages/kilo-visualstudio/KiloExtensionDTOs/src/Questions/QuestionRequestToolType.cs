@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: Shared\questions.ts
 /// Signature hash: 0c1a80024819ebffbb0912889e5e713d3d9fac25bbc56cab10adbf1cff5901f4
 /// </summary>
-public partial class QuestionRequestToolType
+public partial class QuestionRequestToolType : IWebviewMessageRequest
 {
     [JsonProperty("messageID")]
     public string MessageID { get; set; }

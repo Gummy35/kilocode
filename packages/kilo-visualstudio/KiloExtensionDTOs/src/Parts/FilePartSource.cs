@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: parts.ts
 /// Signature hash: 06365aaa09dfb30d0c2af66b485f8c72196e95a5dad9336e3589a4a55ae0d7c7
 /// </summary>
-public partial class FilePartSource
+public partial class FilePartSource : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

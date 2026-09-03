@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: sessions.ts
 /// Signature hash: dad44a90d2d65539933dc858f9617bf287fdd880d6aa69ed8afdb5d9a1bf2a2c
 /// </summary>
-public partial class MessageTimeType
+public partial class MessageTimeType : IWebviewMessage
 {
     [JsonProperty("created")]
     public double Created { get; set; }

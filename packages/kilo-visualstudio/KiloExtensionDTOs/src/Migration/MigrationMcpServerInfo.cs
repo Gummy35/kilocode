@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationMcpServerInfo
 /// Source: migration.ts
 /// </summary>
-public partial class MigrationMcpServerInfo
+public partial class MigrationMcpServerInfo : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

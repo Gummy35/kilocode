@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: TokenUsage
 /// Source: parts.ts
 /// </summary>
-public partial class TokenUsage
+public partial class TokenUsage : IWebviewMessage
 {
     [JsonProperty("input")]
     public double Input { get; set; }

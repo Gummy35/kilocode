@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: agent-manager.ts
 /// Signature hash: d9030ea877518d76f96e28156127927b4ff70850db8900b9e25e942269ca244a
 /// </summary>
-public partial class PRStatusCommentsType
+public partial class PRStatusCommentsType : IWebviewMessage
 {
     [JsonProperty("total")]
     public double Total { get; set; }

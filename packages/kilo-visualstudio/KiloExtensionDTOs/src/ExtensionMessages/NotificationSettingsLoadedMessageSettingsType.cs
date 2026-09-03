@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: f720b636b386859738dde1e2621da00815e91b51cec6252ce2647475f02ddfae
 /// </summary>
-public partial class NotificationSettingsLoadedMessageSettingsType
+public partial class NotificationSettingsLoadedMessageSettingsType : IWebviewMessage
 {
     [JsonProperty("attentionEnabled")]
     public bool AttentionEnabled { get; set; }

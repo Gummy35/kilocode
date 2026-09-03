@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.AgentRequirements;
 /// Member count: 6
 /// Source: kilo-provider\agent-requirements.ts
 /// </summary>
-public interface IRequirementErrorCode
+public interface IRequirementErrorCode: IWebviewMessage
 {
 }

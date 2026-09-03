@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: MigrationSessionInfo
 /// Source: migration.ts
 /// </summary>
-public partial class MigrationSessionInfo
+public partial class MigrationSessionInfo : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: KiloEmbeddingModelCatalog
 /// Source: config.ts
 /// </summary>
-public partial class KiloEmbeddingModelCatalog
+public partial class KiloEmbeddingModelCatalog : IWebviewMessage
 {
     [JsonProperty("defaultModel")]
     public string DefaultModel { get; set; }

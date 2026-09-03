@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.AgentManager;
 /// Member count: 3
 /// Source: agent-manager.ts
 /// </summary>
-public interface IWorktreeErrorCode
+public interface IWorktreeErrorCode: IWebviewMessage
 {
 }

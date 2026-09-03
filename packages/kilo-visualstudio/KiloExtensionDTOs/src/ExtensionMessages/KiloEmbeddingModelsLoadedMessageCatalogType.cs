@@ -17,7 +17,7 @@ using KiloExtensionDTOs.KiloConfig;
 /// Source: extension-messages.ts
 /// Signature hash: d22c1e9bc21b2eb9cebffe6e403602426f47a18ad6567cd89ca44aecd67e87ec
 /// </summary>
-public partial class KiloEmbeddingModelsLoadedMessageCatalogType
+public partial class KiloEmbeddingModelsLoadedMessageCatalogType : IWebviewMessage
 {
     [JsonProperty("defaultModel")]
     public string DefaultModel { get; set; }

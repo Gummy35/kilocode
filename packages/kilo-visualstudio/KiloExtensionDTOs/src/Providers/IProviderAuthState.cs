@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Providers;
 /// Member count: 3
 /// Source: providers.ts
 /// </summary>
-public interface IProviderAuthState
+public interface IProviderAuthState: IWebviewMessage
 {
 }

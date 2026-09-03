@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: DiffImage
 /// Source: agent-manager.ts
 /// </summary>
-public partial class DiffImage
+public partial class DiffImage : IWebviewMessage
 {
     [JsonProperty("before", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | DiffImageSide

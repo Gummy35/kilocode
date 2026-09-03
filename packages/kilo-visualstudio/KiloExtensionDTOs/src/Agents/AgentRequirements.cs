@@ -16,7 +16,7 @@ using KiloExtensionDTOs;
 /// Type: AgentRequirements
 /// Source: agents.ts
 /// </summary>
-public partial class AgentRequirements
+public partial class AgentRequirements : IWebviewMessage
 {
     [JsonProperty("skills", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | Array

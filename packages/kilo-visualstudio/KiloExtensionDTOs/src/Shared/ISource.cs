@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.ConfigFile;
 /// Member count: 11
 /// Source: kilo-provider\config-file.ts
 /// </summary>
-public interface ISource
+public interface ISource: IWebviewMessage
 {
 }

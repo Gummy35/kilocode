@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: migration.ts
 /// Signature hash: bf5c942f313d803fe17e8f891e1de29b6cd3da0f514f97079490c290afc7a086
 /// </summary>
-public partial class SkipLegacyMigrationMessage
+public partial class SkipLegacyMigrationMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: memory.ts
 /// Signature hash: 5cfbdbda837703974da4b663257e63c16465f1bddf905c5d91f1bbda8c8f9d80
 /// </summary>
-public partial class RequestMemoryMessage
+public partial class RequestMemoryMessage : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ManagedSessionState
 /// Source: agent-manager.ts
 /// </summary>
-public partial class ManagedSessionState
+public partial class ManagedSessionState : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

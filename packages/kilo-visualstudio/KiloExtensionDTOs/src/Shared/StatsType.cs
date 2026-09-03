@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
 /// Signature hash: 8288e0d076982f8ffc429144fd79335c51c65dd0cdc460737217c1c07023519a
 /// </summary>
-public partial class StatsType
+public partial class StatsType : IWebviewMessage
 {
     [JsonProperty("lastInjectedAt")]
     public double LastInjectedAt { get; set; }

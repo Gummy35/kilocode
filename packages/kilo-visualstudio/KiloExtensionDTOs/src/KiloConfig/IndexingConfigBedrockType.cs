@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: config.ts
 /// Signature hash: 1f1ae7aaf8fdf0588ed8b1479501f64424e8b70d8441ad70698b277157526fbe
 /// </summary>
-public partial class IndexingConfigBedrockType
+public partial class IndexingConfigBedrockType : IWebviewMessage
 {
     [JsonProperty("region", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

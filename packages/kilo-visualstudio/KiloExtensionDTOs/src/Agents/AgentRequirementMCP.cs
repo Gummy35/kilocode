@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentRequirementMCP
 /// Source: agents.ts
 /// </summary>
-public partial class AgentRequirementMCP
+public partial class AgentRequirementMCP : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

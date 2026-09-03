@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: extension-messages.ts
 /// Signature hash: 78453e18dbf41742895bf1b16effc2e191a6d2ccb42d1921bee27815c66c368d
 /// </summary>
-public partial class ImageModelsLoadedMessageModelsItemType
+public partial class ImageModelsLoadedMessageModelsItemType : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

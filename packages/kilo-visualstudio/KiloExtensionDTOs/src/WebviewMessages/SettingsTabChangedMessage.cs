@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 79b9a34afddb685c963faf178f42c9b2800129181805427f48d0727942fbac0c
 /// </summary>
-public partial class SettingsTabChangedMessage
+public partial class SettingsTabChangedMessage : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

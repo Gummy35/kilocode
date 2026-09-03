@@ -16,7 +16,7 @@ using KiloExtensionDTOs.Parts;
 /// Type: Message
 /// Source: sessions.ts
 /// </summary>
-public partial class Message
+public partial class Message : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: 713b03614ae18555e877b5e1aaec3723b93592ae7fdafa79e23279fdf805f91d
 /// </summary>
-public partial class ToggleSectionCollapsedRequest
+public partial class ToggleSectionCollapsedRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

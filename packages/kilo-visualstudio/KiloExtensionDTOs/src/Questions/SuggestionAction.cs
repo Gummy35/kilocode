@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SuggestionAction
 /// Source: questions.ts
 /// </summary>
-public partial class SuggestionAction
+public partial class SuggestionAction : IWebviewMessage
 {
     [JsonProperty("label")]
     public string Label { get; set; }

@@ -19,16 +19,7 @@ using KiloExtensionDTOs.Migration;
 using KiloExtensionDTOs.Memory;
 using KiloExtensionDTOs.ExtensionMessages;
 
-/// <summary>
-/// Marker interface for WebView messages that can be sent from extension to webview.
-/// </summary>
-public interface IWebviewMessage { }
-
-/// <summary>
-/// Marker interface for WebView request messages (sent from webview to extension).
-/// Inherits from IWebviewMessage for unified handling.
-/// </summary>
-public interface IWebviewMessageRequest : IWebviewMessage { }
+using Common;
 
 /// <summary>
 /// Discriminator-based deserialization factory for WebView messages.

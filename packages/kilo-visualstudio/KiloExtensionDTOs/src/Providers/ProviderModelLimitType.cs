@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: providers.ts
 /// Signature hash: d7813be32edc31a79468e4a5c644b51e19f5f4bc3f96b4a6d4335e5b3c282993
 /// </summary>
-public partial class ProviderModelLimitType
+public partial class ProviderModelLimitType : IWebviewMessage
 {
     [JsonProperty("context")]
     public double Context { get; set; }

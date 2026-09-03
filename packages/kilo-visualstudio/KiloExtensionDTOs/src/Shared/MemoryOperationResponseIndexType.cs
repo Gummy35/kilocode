@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
 /// Signature hash: d77ca9eec0a3ef251832b0a96f42012d8f4a47a492c19191663f21887ad72d95
 /// </summary>
-public partial class MemoryOperationResponseIndexType
+public partial class MemoryOperationResponseIndexType : IWebviewMessage
 {
     [JsonProperty("text")]
     public string Text { get; set; }

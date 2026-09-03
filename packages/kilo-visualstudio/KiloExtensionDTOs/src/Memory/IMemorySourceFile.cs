@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Memory;
 /// Member count: 1
 /// Source: memory.ts
 /// </summary>
-public interface IMemorySourceFile
+public interface IMemorySourceFile: IWebviewMessage
 {
 }

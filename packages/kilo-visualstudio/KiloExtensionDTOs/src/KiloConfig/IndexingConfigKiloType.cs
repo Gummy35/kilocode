@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: config.ts
 /// Signature hash: deccf34caa00250a0b4cd22a25279bd107261fde056cd0b5c641e8a66f1d8639
 /// </summary>
-public partial class IndexingConfigKiloType
+public partial class IndexingConfigKiloType : IWebviewMessage
 {
     [JsonProperty("apiKey", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

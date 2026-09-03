@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.KiloConfig;
 /// Member count: 2
 /// Source: config.ts
 /// </summary>
-public interface ITerminalCommandDisplay
+public interface ITerminalCommandDisplay: IWebviewMessage
 {
 }

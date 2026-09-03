@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.NextEditSuggestionManager;
 /// Member count: 2
 /// Source: services\autocomplete\next-edit\NextEditSuggestionManager.ts
 /// </summary>
-public interface IPendingNextEdit
+public interface IPendingNextEdit: IWebviewMessage
 {
 }

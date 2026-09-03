@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Index.d;
 /// Member count: 8
 /// Source: services\autocomplete\continuedev\core\index.d.ts
 /// </summary>
-public interface ILLMInteractionItem
+public interface ILLMInteractionItem: IWebviewMessage
 {
 }

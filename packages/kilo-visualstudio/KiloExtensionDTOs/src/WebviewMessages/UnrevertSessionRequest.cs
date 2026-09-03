@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: a81bfb063f815df13138be050d9a68063dbd26964906d7b55143b80e57780d08
 /// </summary>
-public partial class UnrevertSessionRequest
+public partial class UnrevertSessionRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

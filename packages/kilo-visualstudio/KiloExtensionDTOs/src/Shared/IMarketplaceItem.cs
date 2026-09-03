@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Types;
 /// Member count: 1
 /// Source: services\marketplace\types.ts
 /// </summary>
-public interface IMarketplaceItem
+public interface IMarketplaceItem: IWebviewMessage
 {
 }

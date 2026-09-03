@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentRequirementVSCodeExtension
 /// Source: agents.ts
 /// </summary>
-public partial class AgentRequirementVSCodeExtension
+public partial class AgentRequirementVSCodeExtension : IWebviewMessage
 {
     [JsonProperty("name")]
     public string Name { get; set; }

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PermissionFileDiff
 /// Source: permissions.ts
 /// </summary>
-public partial class PermissionFileDiff
+public partial class PermissionFileDiff : IWebviewMessage
 {
     [JsonProperty("file")]
     public string File { get; set; }

@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: profile.ts
 /// Signature hash: 531e196859572f21772133307b283fcf2554b8ccfe4919a50664d919d1940b2a
 /// </summary>
-public partial class ProfileDataProfileType
+public partial class ProfileDataProfileType : IWebviewMessage
 {
     [JsonProperty("email")]
     public string Email { get; set; }

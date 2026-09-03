@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs;
 /// Member count: 2
 /// Source: ..\..\..\..\src\shared\work-style-presets.ts
 /// </summary>
-public interface IWorkStyle
+public interface IWorkStyle: IWebviewMessage
 {
 }

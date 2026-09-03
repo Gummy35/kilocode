@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: AgentManagerApplyWorktreeDiffConflict
 /// Source: agent-manager.ts
 /// </summary>
-public partial class AgentManagerApplyWorktreeDiffConflict
+public partial class AgentManagerApplyWorktreeDiffConflict : IWebviewMessage
 {
     [JsonProperty("file", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

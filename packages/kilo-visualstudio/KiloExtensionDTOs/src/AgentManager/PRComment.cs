@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: PRComment
 /// Source: agent-manager.ts
 /// </summary>
-public partial class PRComment
+public partial class PRComment : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

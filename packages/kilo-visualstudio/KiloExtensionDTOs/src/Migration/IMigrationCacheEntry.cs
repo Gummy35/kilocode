@@ -13,6 +13,6 @@ namespace KiloExtensionDTOs.Migration;
 /// Member count: 2
 /// Source: kilo-provider\handlers\migration.ts
 /// </summary>
-public interface IMigrationCacheEntry
+public interface IMigrationCacheEntry: IWebviewMessage
 {
 }

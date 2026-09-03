@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\..\sdk\js\src\v2\gen\types.gen.ts
 /// Signature hash: 04ba0c0c10f9fd8851a168ad1a3fb56bd9a424a08afe3727831a79b105decc7d
 /// </summary>
-public partial class MemoryOperationResponseExistsType
+public partial class MemoryOperationResponseExistsType : IWebviewMessage
 {
     [JsonProperty("state")]
     public bool State { get; set; }

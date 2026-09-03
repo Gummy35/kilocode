@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ExternalWorktreeInfo
 /// Source: agent-manager.ts
 /// </summary>
-public partial class ExternalWorktreeInfo
+public partial class ExternalWorktreeInfo : IWebviewMessage
 {
     [JsonProperty("path")]
     public string Path { get; set; }

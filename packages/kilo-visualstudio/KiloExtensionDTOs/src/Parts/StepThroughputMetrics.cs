@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: StepThroughputMetrics
 /// Source: parts.ts
 /// </summary>
-public partial class StepThroughputMetrics
+public partial class StepThroughputMetrics : IWebviewMessage
 {
     [JsonProperty("prompt", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | number

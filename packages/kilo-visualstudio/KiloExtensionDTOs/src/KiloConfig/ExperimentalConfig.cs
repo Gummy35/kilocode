@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ExperimentalConfig
 /// Source: config.ts
 /// </summary>
-public partial class ExperimentalConfig
+public partial class ExperimentalConfig : IWebviewMessage
 {
     [JsonProperty("batch_tool", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | false | true

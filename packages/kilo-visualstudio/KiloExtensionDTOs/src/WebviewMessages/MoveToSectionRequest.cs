@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 /// Source: webview-messages.ts
 /// Signature hash: ef17161027d8e35557ceef8071061f35090934a9eb4283ca4366610235f125a1
 /// </summary>
-public partial class MoveToSectionRequest
+public partial class MoveToSectionRequest : IWebviewMessageRequest
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

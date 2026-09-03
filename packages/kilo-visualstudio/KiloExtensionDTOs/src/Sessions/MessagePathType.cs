@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: sessions.ts
 /// Signature hash: e4a513ee36b24deb350b1436fe2a7d128128f4d3891e549d0e1ffedc885721da
 /// </summary>
-public partial class MessagePathType
+public partial class MessagePathType : IWebviewMessage
 {
     [JsonProperty("cwd")]
     public string Cwd { get; set; }

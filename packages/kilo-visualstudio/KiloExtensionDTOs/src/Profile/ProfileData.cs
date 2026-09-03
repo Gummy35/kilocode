@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ProfileData
 /// Source: profile.ts
 /// </summary>
-public partial class ProfileData
+public partial class ProfileData : IWebviewMessage
 {
     [JsonProperty("profile")]
     // Original TypeScript type: ProfileDataProfileType

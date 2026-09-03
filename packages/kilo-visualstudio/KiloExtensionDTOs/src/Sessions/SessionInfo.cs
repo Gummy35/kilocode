@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: SessionInfo
 /// Source: sessions.ts
 /// </summary>
-public partial class SessionInfo
+public partial class SessionInfo : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

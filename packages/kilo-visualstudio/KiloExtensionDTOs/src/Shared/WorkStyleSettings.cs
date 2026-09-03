@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: WorkStyleSettings
 /// Source: ..\..\..\..\src\shared\work-style-presets.ts
 /// </summary>
-public partial class WorkStyleSettings
+public partial class WorkStyleSettings : IWebviewMessage
 {
     [JsonProperty("showTaskTimeline")]
     public bool ShowTaskTimeline { get; set; }

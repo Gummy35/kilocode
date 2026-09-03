@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: ProviderConfig
 /// Source: providers.ts
 /// </summary>
-public partial class ProviderConfig
+public partial class ProviderConfig : IWebviewMessage
 {
     [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
     // Original TypeScript type: undefined | string

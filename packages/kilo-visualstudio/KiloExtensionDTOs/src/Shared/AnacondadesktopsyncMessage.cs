@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 /// Source: ..\..\..\..\src\shared\anaconda-desktop-messages.ts
 /// Signature hash: 1850c213ed65114dbfe5fe0a42a70cf32cefa99174b1b41ab176373753dcabfc
 /// </summary>
-public partial class AnacondadesktopsyncMessage : IAnacondaDesktopRequest
+public partial class AnacondadesktopsyncMessage : IAnacondaDesktopRequest, IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: literal

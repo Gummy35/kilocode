@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /// Source: config.ts
 /// Signature hash: 87aa14671d6b4694415d7908b2e6b0cf6a661018a6057a570f634a039f02ff92
 /// </summary>
-public partial class KiloEmbeddingModelModelsItemType
+public partial class KiloEmbeddingModelModelsItemType : IWebviewMessage
 {
     [JsonProperty("id")]
     public string Id { get; set; }

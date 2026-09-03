@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// Type: CommandConfig
 /// Source: config.ts
 /// </summary>
-public partial class CommandConfig
+public partial class CommandConfig : IWebviewMessage
 {
     [JsonProperty("template")]
     public string Template { get; set; }
