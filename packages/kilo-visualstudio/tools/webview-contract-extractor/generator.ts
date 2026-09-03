@@ -1087,18 +1087,31 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string, generatedOrd
     implementedInterfaces.push(`I${pascalCase(unionName)}`)
   }
   
+  // Determine if this is a Request message (based on discriminator value or class name)
+  const isRequestMessage = className.toLowerCase().includes("request") || 
+    (typeDef.discriminator && typeDef.discriminator.value.toLowerCase().includes("request"))
+  
   // Build class declaration with inheritance and interfaces
   if (baseClassName) {
     if (implementedInterfaces.length > 0) {
       sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}, ${implementedInterfaces.join(', ')}`)
     } else {
-      sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}`)
+      const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
+      sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}, ${baseInterface}`)
     }
   } else {
     if (implementedInterfaces.length > 0) {
-      sb.push(`public partial class ${className} : ${implementedInterfaces.join(', ')}`)
+      // Check if any implemented interface is already IWebviewMessageRequest (which inherits IWebviewMessage)
+      const hasRequestInterface = implementedInterfaces.some(i => i === "IWebviewMessageRequest")
+      if (hasRequestInterface) {
+        sb.push(`public partial class ${className} : ${implementedInterfaces.join(', ')}`)
+      } else {
+        const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
+        sb.push(`public partial class ${className} : ${implementedInterfaces.join(', ')}, ${baseInterface}`)
+      }
     } else {
-      sb.push(`public partial class ${className}`)
+      const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
+      sb.push(`public partial class ${className} : ${baseInterface}`)
     }
   }
   sb.push("{")
@@ -1381,18 +1394,34 @@ function generateMessageClass(message: MessageType, ns: string, folder: string):
     implementedInterfaces.push(interfaceName)
   }
   
+  // Determine if this is a Request message (from webview to extension)
+  // Webview-to-extension messages are requests, so they inherit IWebviewMessageRequest
+  const isRequestMessage = contract.messages.webviewToExtension.includes(message)
+  
   const baseClassName = messageTypeDef?.extendsBase || messageTypeDef?.baseType
   if (baseClassName) {
     if (implementedInterfaces.length > 0) {
       sb.push("public partial class " + sanitizedName + " : " + pascalCase(baseClassName) + ", " + implementedInterfaces.join(', '))
     } else {
-      sb.push("public partial class " + sanitizedName + " : " + pascalCase(baseClassName))
+      const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
+      sb.push("public partial class " + sanitizedName + " : " + pascalCase(baseClassName) + ", " + baseInterface)
     }
   } else {
     if (implementedInterfaces.length > 0) {
-      sb.push("public partial class " + sanitizedName + " : " + implementedInterfaces.join(', '))
+      // Check if any implemented interface already inherits from IWebviewMessage or IWebviewMessageRequest
+      const hasWebviewMessageInterface = implementedInterfaces.some(i => 
+        i === "IWebviewMessage" || i === "IWebviewMessageRequest" || 
+        i === "IExtensionMessage"  // IExtensionMessage inherits IWebviewMessage
+      )
+      if (hasWebviewMessageInterface) {
+        sb.push("public partial class " + sanitizedName + " : " + implementedInterfaces.join(', '))
+      } else {
+        const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
+        sb.push("public partial class " + sanitizedName + " : " + implementedInterfaces.join(', ') + ", " + baseInterface)
+      }
     } else {
-      sb.push("public partial class " + sanitizedName)
+      const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
+      sb.push("public partial class " + sanitizedName + " : " + baseInterface)
     }
   }
   sb.push("{")
@@ -1505,16 +1534,7 @@ function generateDiscriminatorFactory(
     sb.push("using " + namespace + ";")
   }
   sb.push("")
-  sb.push("/// <summary>")
-  sb.push("/// Marker interface for WebView messages that can be sent from extension to webview.")
-  sb.push("/// </summary>")
-  sb.push("public interface IWebviewMessage { }")
-  sb.push("")
-  sb.push("/// <summary>")
-  sb.push("/// Marker interface for WebView request messages (sent from webview to extension).")
-  sb.push("/// Inherits from IWebviewMessage for unified handling.")
-  sb.push("/// </summary>")
-  sb.push("public interface IWebviewMessageRequest : IWebviewMessage { }")
+  sb.push("using Common;")
   sb.push("")
   sb.push("/// <summary>")
   sb.push("/// Discriminator-based deserialization factory for WebView messages.")
@@ -1818,6 +1838,10 @@ for (const union of unionsWithHashes) {
   const namespace = unionFolder === 'Shared' ? ns : (ns + "." + unionFolder)
   const interfaceName = `I${unionName}`
   
+  // Determine base interface: WebviewMessage unions inherit IWebviewMessage, Request unions inherit IWebviewMessageRequest
+  const isRequestUnion = unionName.toLowerCase().includes("request")
+  const baseInterface = isRequestUnion ? ": IWebviewMessageRequest" : ": IWebviewMessage"
+
   const interfaceCode = `// <auto-generated>
 //     This code was generated by WebViewContractGenerator.
 //     Do not modify this file directly as changes will be lost on regeneration.
@@ -1833,7 +1857,7 @@ namespace ${namespace};
 /// Member count: ${union.unionMemberHashes?.length ?? 0}
 /// Source: ${union.sourceFile}
 /// </summary>
-public interface ${interfaceName}
+public interface ${interfaceName}${baseInterface}
 {
 }
 `
@@ -2520,6 +2544,52 @@ const factoryPath = path.join(OUTPUT_PATH, "WebViewMessageFactory.cs")
 fs.writeFileSync(factoryPath, factoryCode)
 generatedCount++
 
+// Generate IWebviewMessage interface in its own file
+const iWebviewMessageCode = `// <auto-generated>
+//     This code was generated by WebViewContractGenerator.
+//     Do not modify this file directly as changes will be lost on regeneration.
+// </auto-generated>
+
+#nullable enable
+
+namespace ${ns};
+
+/// <summary>
+/// Marker interface for WebView messages that can be sent from extension to webview.
+/// All message types implement this interface for unified handling.
+/// </summary>
+public interface IWebviewMessage
+{
+}
+`
+const iWebviewMessagePath = path.join(OUTPUT_PATH, "IWebviewMessage.cs")
+fs.writeFileSync(iWebviewMessagePath, iWebviewMessageCode)
+generatedCount++
+console.log("  Interface: IWebviewMessage.cs")
+
+// Generate IWebviewMessageRequest interface in its own file
+const iWebviewMessageRequestCode = `// <auto-generated>
+//     This code was generated by WebViewContractGenerator.
+//     Do not modify this file directly as changes will be lost on regeneration.
+// </auto-generated>
+
+#nullable enable
+
+namespace ${ns};
+
+/// <summary>
+/// Marker interface for WebView request messages (sent from webview to extension).
+/// Inherits from IWebviewMessage for unified handling.
+/// </summary>
+public interface IWebviewMessageRequest : IWebviewMessage
+{
+}
+`
+const iWebviewMessageRequestPath = path.join(OUTPUT_PATH, "IWebviewMessageRequest.cs")
+fs.writeFileSync(iWebviewMessageRequestPath, iWebviewMessageRequestCode)
+generatedCount++
+console.log("  Interface: IWebviewMessageRequest.cs")
+
 console.log()
 console.log("Generation complete!")
 console.log(`Output directory: ${OUTPUT_PATH}`)
@@ -2528,4 +2598,5 @@ console.log(`  Types: ${generatedTypes.size}`)
 console.log(`  WebView→Extension: ${contract.messages.webviewToExtension.length} message classes`)
 console.log(`  Extension→WebView: ${contract.messages.extensionToWebview.length} message classes`)
 console.log(`  Discriminator factory: WebViewMessageFactory.cs`)
+console.log(`  Base interfaces: IWebviewMessage.cs, IWebviewMessageRequest.cs`)
 
