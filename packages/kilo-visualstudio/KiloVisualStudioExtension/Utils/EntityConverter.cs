@@ -24,7 +24,28 @@ namespace KiloVisualStudioExtension.Utils
 {
   public class EntityConverter
   {
+    public static SuggestionAction Convert(Actions actions)
+    {
+      return new SuggestionAction
+      {
+        Description = actions.Description,
+        Label = actions.Label,
+        Prompt = actions.Prompt
+      };
+    }
 
+    public static KiloExtensionDTOs.Questions.SuggestionRequest Convert(ApiClient.SuggestionRequest request)
+    {
+      return new KiloExtensionDTOs.Questions.SuggestionRequest
+      {
+        Actions = request.Actions.Select(Convert).ToList(),
+        Blocking = request.Blocking,
+        Id = request.Id,
+        SessionID = request.SessionID,
+        Text = request.Text,
+        Tool = Convert(request.Tool)
+      };
+    }
     public static IndexingStatusLoadedMessageStatusType Convert(ApiClient.IndexingStatus status)
     {
       return new IndexingStatusLoadedMessageStatusType

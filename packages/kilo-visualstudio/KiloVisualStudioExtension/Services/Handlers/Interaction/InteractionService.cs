@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KiloExtensionDTOs.ExtensionMessages;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using KiloVisualStudioExtension.Utils;
+using Microsoft.VisualStudio.PlatformUI;
 using Newtonsoft.Json.Linq;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Interaction
@@ -63,12 +64,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         private void StalePermissionCleanup(string permissionId)
         {
             _permissionDirectories.Remove(permissionId);
-            Provider.PostMessage(JsonSerializer.Serialize(new
-            {
-                type = "permissionError",
-                permissionID = permissionId,
-                stale = true
-            }));
+      Provider.PostMessage(new PermissionErrorMessage
+      {
+        PermissionID = permissionId,
+        Stale = true
+      });
             _ = FetchAndSendPendingPermissionsAsync();
         }
 
@@ -79,12 +79,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
         private void StaleQuestionCleanup(string questionId)
         {
             _questionDirectories.Remove(questionId);
-            Provider.PostMessage(JsonSerializer.Serialize(new
-            {
-                type = "questionError",
-                questionID = questionId,
-                stale = true
-            }));
+            Provider.PostMessage(new QuestionErrorMessage {
+              RequestID = questionId,              
+              //  questionID = questionId,
+              //  stale = true
+            });
             _ = FetchAndSendPendingQuestionsAsync();
         }
 
@@ -248,17 +247,16 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             string dir;
             if (!_permissionDirectories.TryGetValue(requestId, out dir))
             {
-                dir = Provider.GetWorkspaceDirectory(sessionID);
+                dir = _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory(sessionID);
             }
 
             var staleCleanup = () =>
             {
                 _permissionDirectories.Remove(requestId);
-                Provider.PostMessage(JsonSerializer.Serialize(new
+                Provider.PostMessage(new PermissionErrorMessage
                 {
-                    type = "permissionError",
-                    permissionID = requestId,
-                    stale = true
+                    PermissionID = requestId,
+                    Stale = true
                 }));
                 _ = FetchAndSendPendingPermissionsAsync();
             };
@@ -284,11 +282,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                         return;
                     }
                     System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: failed to save always-rules: {ex.Message}");
-                    Provider.PostMessage(JsonSerializer.Serialize(new
+                    Provider.PostMessage(new PermissionErrorMessage
                     {
-                        type = "permissionError",
-                        permissionID = requestId
-                    }));
+                        PermissionID = requestId
+                    });
                     return;
                 }
             }
@@ -320,11 +317,10 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                     return;
                 }
                 System.Diagnostics.Debug.WriteLine($"[Kilo] InteractionHandler: permission reply error: {ex.Message}");
-                Provider.PostMessage(JsonSerializer.Serialize(new
-                {
-                    type = "permissionError",
-                    permissionID = requestId
-                }));
+        Provider.PostMessage(new PermissionErrorMessage
+        {
+          PermissionID = requestId
+        });
             }
         }
 
@@ -577,7 +573,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                         if (!_serviceProvider.GetService<SessionHandlerService>().IsTrackedSession(perm.SessionID)) continue;
 
                         _permissionDirectories[perm.Id] = dir;
-                        Provider.PostMessage(System.Text.Json.JsonSerializer.Serialize(new
+                        Provider.PostMessage(JsonSerializer.Serialize(new
                         {
                             type = "permissionRequest",
                             permission = new

@@ -31,6 +31,7 @@ using KiloVisualStudioExtension.Services.Handlers.Settings;
 using KiloVisualStudioExtension.Services.Handlers.StateManagement;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
 using KiloVisualStudioExtension.Utils;
+using KiloVisualStudioExtension.WebviewMessageHandlers;
 using MessagePack;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -50,6 +51,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using VSLangProj110;
+using static KiloVisualStudioExtension.WebviewMessageHandlers.SuggestionHandler;
 using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
@@ -400,10 +402,7 @@ namespace KiloVisualStudioExtension
       }
     }
 
-    internal string GetWorkspaceDirectory(string? sessionID = null)
-    {
-      return System.Environment.CurrentDirectory;
-    }
+    
 
     internal string GetConnectionState()
     {
@@ -1005,6 +1004,19 @@ namespace KiloVisualStudioExtension
       _onBeforeMessage = msg => _autoApproveBridge?.Handle(msg);  // Sets the default handler
     }
 
+    private ISuggestionContext GetQuestionCtx()
+    {
+      return new SuggestionContextImplementation
+      {
+        Client = GetNswagClient(),
+        CurrentSessionId = GetCurrentSessionID(),
+        TrackedSessionIds = _sessionService.GetTrackedSessionIds().ToHashSet(),
+        SessionDirectories = _projectDirectoryService.GetSessionDirectories(),
+        GetWorkspaceDirectory = _projectDirectoryService.GetWorkspaceDirectory,
+        PostMessage = PostMessage
+      };
+    }
+
     private async Task ProcessMessageAsync(string type, IWebviewMessage message)
     {
       try
@@ -1033,18 +1045,21 @@ namespace KiloVisualStudioExtension
         if (intercepted == null) return;
         //      message = intercepted
         message = intercepted;
-        if (await RouteEarlyMessage(IWebviewMessage message, {
-        question: this.questionCtx,
-          client: this.client,
-          connection: this.connectionService,
-          dir: this.getWorkspaceDirectory(this.currentSession?.id),
-          post: (msg) => this.postMessage(msg),
-          exportTranscript: (sessionID) => this.handleExportSessionTranscript(sessionID),
-          openSessions: (ids) => this.trackOpenSessions(ids),
-        })
-      ) {
-          return
-      }
+        if (await EarlyMessageRouter.RouteWebviewMessage(message, 
+          new EarlyMessageRouter.Ctx  
+          {
+            Question = GetQuestionCtx(),
+            Client = this.GetNswagClient(),
+            Connection = this._connectionService,
+            Directory = _projectDirectoryService.GetWorkspaceDirectory(GetCurrentSessionID()),
+            Post = (msg) => this.PostMessage(msg),
+            ExportTranscript = (sessionID) => _serviceProvider.GetService<TranscriptService>().HandleExportSessionTranscriptAsync(sessionID),
+            OpenSessions = (ids) => TrackOpenSessions(ids),
+            ServiceProvider = _serviceProvider
+          })
+        ) {
+          return;
+        }
         //        if (this.handleEditorOpenMessage(message)) return
         //      if (
         //        await handleWorkStyleMessage({

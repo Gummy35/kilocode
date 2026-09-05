@@ -60,4 +60,8 @@
   <ItemGroup>
     <Compile Update="KiloWebViewControl.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="KiloProvider\" />
+  </ItemGroup>
 </Project>

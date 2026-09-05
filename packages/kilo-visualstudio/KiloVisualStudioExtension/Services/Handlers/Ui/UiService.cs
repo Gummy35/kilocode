@@ -1,8 +1,13 @@
+using EnvDTE;
+using KiloExtensionDTOs.Parts;
+using KiloVisualStudioExtension.ApiClient;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using KiloVisualStudioExtension.ApiClient;
+using System.Windows;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Ui
 {
@@ -25,13 +30,39 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
         {
         }
 
-        /// <summary>
-        /// Handles the openSettingsPanel message from the webview.
-        /// Opens the settings panel with the specified tab.
-        /// </summary>
-        /// <param name="payload">The message payload containing tab name.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task HandleOpenSettingsPanelAsync(JsonElement? payload)
+    public async Task<string?> ShowSaveFileDialogAsync(string defaultPath, string[] extensions, string filter = "All files (*.*)|*.*")
+    {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+      var dialog = new SaveFileDialog
+      {
+        FileName = System.IO.Path.GetFileName(defaultPath),
+        DefaultExt = extensions.Length > 0 ? extensions[0] : "",
+        Filter = filter,
+        InitialDirectory = System.IO.Path.GetDirectoryName(defaultPath) ?? Environment.CurrentDirectory
+      };
+
+      var result = dialog.ShowDialog();
+      return result == true ? dialog.FileName : null;
+    }
+
+    public void ShowMessage(string message, string caption = "")
+    {
+      MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+
+
+
+
+
+    /// <summary>
+    /// Handles the openSettingsPanel message from the webview.
+    /// Opens the settings panel with the specified tab.
+    /// </summary>
+    /// <param name="payload">The message payload containing tab name.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task HandleOpenSettingsPanelAsync(JsonElement? payload)
         {
             System.Diagnostics.Debug.WriteLine("[Kilo] UiHandler: openSettingsPanel");
             string? tab = null;

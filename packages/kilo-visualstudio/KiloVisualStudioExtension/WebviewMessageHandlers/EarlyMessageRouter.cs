@@ -1,5 +1,6 @@
 using KiloExtensionDTOs;
 using KiloExtensionDTOs.WebviewMessages;
+using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
 using System;
 using System.Collections.Generic;
@@ -10,22 +11,23 @@ using System.Windows.Forms;
 
 namespace KiloVisualStudioExtension.WebviewMessageHandlers
 {
-  internal class EarlyMessageRouter
+  public class EarlyMessageRouter
   {
-    internal class Ctx
+    public class Ctx
     {
-      internal SuggestionContext Question { get; }
-      internal IKiloClient Client { get; }
-      internal KiloConnectionService Connection { get; }
-      internal string Directory { get; }
-      internal Action<IWebviewMessage> Post { get; }
-      internal Func<string, Task> ExportTranscript {  get; }
-      internal Action<List<string>> OpenSessions { get; }    
+      public SuggestionHandler.ISuggestionContext Question { get; set; }
+      public KiloApiClient Client { get; set; }
+      public KiloConnectionService Connection { get; set; }
+      public string Directory { get; set; }
+      public ModelState.PostMessage Post { get; set; }
+      public Func<string, Task> ExportTranscript { get; set; }
+      public Action<List<string>> OpenSessions { get; set; }
+      public ServiceProvider ServiceProvider { get; set; }
     }
 
-    public static async Task<bool> Route(IWebviewMessage message, Ctx ctx)
+    public static async Task<bool> RouteWebviewMessage(IWebviewMessage message, Ctx ctx)
     {
-      await SuggestionWebviewMessage.Route(ctx.Question, message);
+      await SuggestionHandler.RouteWebviewMessage(ctx.Question, message);
       if (await ModelState.HandleMessage(message, ctx.Client, ctx.Post)) return true;
       if (message is ExportSessionTranscriptRequest exportMessage)
       {
@@ -39,7 +41,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
         ctx.OpenSessions(ids);
         return true;
       }
-      return await InputToolMessage.Route(message, ctx);
+      return await InputTools.RouteWebviewMessage(message, ctx);
     }
   }
 }

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections;
+using KiloVisualStudioExtension.Utils;
 
 #pragma warning disable CS8600
 #pragma warning disable CS8601
@@ -586,10 +587,6 @@ namespace KiloVisualStudioExtension.Services.Git
       return result;
     }
 
-    private static Task<string> ReadAllTextAsync(string path)
-    {
-      return Task.Run(() => File.ReadAllText(path));
-    }
 
     // async workingTreeStats(cwd: string): Promise<{ files: number; additions: number; deletions: number }> { ... }
     public async Task<(int files, int additions, int deletions)> WorkingTreeStats(string cwd)
@@ -646,7 +643,7 @@ namespace KiloVisualStudioExtension.Services.Git
           if (stat.Length > 1_000_000) return 0;
 
           // const content = await fs.readFile(full, "utf-8")
-          var content = await ReadAllTextAsync(full);
+          var content = await AsyncUtils.ReadAllTextAsync(full);
 
           // return content.split("\n").length
           return content.Split('\n').Length;

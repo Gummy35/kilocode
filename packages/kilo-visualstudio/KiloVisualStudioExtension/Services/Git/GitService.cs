@@ -2,6 +2,7 @@ using KiloExtensionDTOs;
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.WebviewMessages;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -332,11 +333,6 @@ async Task<ContextResult> Local(string dir, bool born)
       // }
     }
 
-    private static Task<byte[]> ReadAllBytesAsync(string path)
-    {
-      return Task.Run(() => System.IO.File.ReadAllBytes(path));
-    }
-
     //
     // async function untrackedDiff(dir: string, raw: string): Promise<{ content: string; truncated: boolean }> {
     async Task<ContextResult> UntrackedDiff(string dir, string raw)
@@ -375,7 +371,7 @@ async Task<ContextResult> Local(string dir, bool born)
         //
         //     const buf = await fs.readFile(full).catch(() => undefined)
         byte[]? buf = null;
-        try { buf = await ReadAllBytesAsync(full); } catch { }
+        try { buf = await AsyncUtils.ReadAllBytesAsync(full); } catch { }
         //     const next = !buf
         string next;
         if (buf == null)
