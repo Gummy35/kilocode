@@ -5,6 +5,7 @@ using KiloExtensionDTOs.WebviewMessages;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Services.Git;
+using KiloVisualStudioExtension.Services.Handlers.Settings;
 using KiloVisualStudioExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -29,13 +30,12 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     private static HashSet<string> _stopping = new();
 
     // export async function routeInputToolMessage(message: Msg, ctx: Ctx): Promise<boolean> {
-    public static async Task<bool> RouteWebviewMessage(IWebviewMessage message, EarlyMessageRouter.Ctx ctx)
+    public static async Task<bool> RouteWebviewMessageAsync(IWebviewMessage message, EarlyMessageRouter.Ctx ctx)
 
     {
-      //   if (await routeAutocompleteMessage(message, ctx.post)) return true
-      // if (await RouteAutocompleteMessage(message, ctx.Post)) return true;
-      // Placeholder: Uncomment when autocomplete settings module is available
-      //
+      if (message is RequestAutocompleteSettingsMessage)
+        await ctx.ServiceProvider.GetService<SettingsService>().SendAutocompleteSettings();
+
       //   if (message.type === "speechToTextPrewarm") {
       if (message is SpeechToTextPrewarmMessage)
       //     void prewarmSpeechCapture().catch((err: unknown) => console.warn("[Kilo New] Speech capture prewarm failed:", err))
@@ -58,7 +58,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       {
         if (string.IsNullOrEmpty(speechToTextStartMessage.RequestId)) return true;
         //     handleSpeechToTextStart(
-        HandleSpeechToTextStart(
+        await HandleSpeechToTextStart(
             //       { requestId: message.requestId, model: message.model, language: message.language },
             new SpeechToTextStartOptions
             {
@@ -81,7 +81,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       {
         if (string.IsNullOrEmpty(speechToTextStopMessage.RequestId)) return true;
         //     handleSpeechToTextStop(ctx.connection, { requestId: message.requestId }, ctx.dir, ctx.post)
-        HandleSpeechToTextStop(
+        await HandleSpeechToTextStop(
             ctx.Connection,
             new SpeechToTextStopOptions { RequestId = speechToTextStopMessage.RequestId },
             ctx.Directory,
@@ -130,9 +130,6 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       public string RequestId { get; set; } = "";
     }
 
-    //
-    // Placeholder methods for speech-to-text handlers
-    // Replace with actual implementations from speech-to-text modules
     private static Task PrewarmSpeechCapture(EarlyMessageRouter.Ctx ctx)
     {
       return ctx.ServiceProvider.GetService<CaptureService>().PrewarmSpeechCaptureAsync();
@@ -140,7 +137,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     //
     private static async Task HandleSpeechToTextStart(SpeechToTextStartOptions options, EarlyMessageRouter.Ctx ctx)
     {
-      ModelState.PostMessage post = ctx.Post;
+      ModelStateService.PostMessage post = ctx.Post;
       var task = ctx.ServiceProvider.GetService<CaptureService>().StartSpeechCaptureAsync(
         new CaptureService.Input
         {
@@ -169,7 +166,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     }
     //
     private static async Task HandleSpeechToTextStop(KiloConnectionService connection, SpeechToTextStopOptions options, string dir, EarlyMessageRouter.Ctx ctx)
-    {    
+    {
       var ctrl = new CancellationTokenSource();
       var ready = _starts.TryGetValue(options.RequestId, out var task)
           ? AsyncUtils.SafeTask(task)
@@ -196,18 +193,18 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
 
           if (result.Ok)
           {
-            ctx.Post(new SpeechToTextResultMessage 
-            {  
-              Text = result.Text, 
-              RequestId = options.RequestId 
+            ctx.Post(new SpeechToTextResultMessage
+            {
+              Text = result.Text,
+              RequestId = options.RequestId
             });
             return;
           }
-          ctx.Post(new SpeechToTextErrorMessage 
-          { 
-            Error = result.Error, 
-            Code = result.Code, 
-            RequestId = options.RequestId 
+          ctx.Post(new SpeechToTextErrorMessage
+          {
+            Error = result.Error,
+            Code = result.Code,
+            RequestId = options.RequestId
           });
         }
         catch (Exception err)

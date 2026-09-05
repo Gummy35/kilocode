@@ -1,4 +1,5 @@
 using KiloExtensionDTOs.ExtensionMessages;
+using KiloExtensionDTOs.Providers;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Utils;
@@ -12,15 +13,6 @@ using SkillInfo = KiloVisualStudioExtension.ApiClient.Anonymous3;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
-  /// <summary>
-  /// Model selection for recent/favorite models.
-  /// </summary>
-  public class ModelSelection
-  {
-    public string providerID { get; set; } = "";
-    public string modelID { get; set; } = "";
-  }
-
   /// <summary>
   /// Handles miscellaneous request operations like recents, favorites, variants, skills, commands.
   /// These are simple request handlers that return static or cached data.
@@ -120,20 +112,20 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
         {
           var itemPid = item.TryGetProperty("providerID", out var p) ? p.GetString() : "";
           var itemMid = item.TryGetProperty("modelID", out var m) ? m.GetString() : "";
-          existing.Add(new ModelSelection { providerID = itemPid, modelID = itemMid });
+          existing.Add(new ModelSelection { ProviderID = itemPid, ModelID = itemMid });
         }
       }
 
       if (action == "add")
       {
-        if (!existing.Any(f => $"{f.providerID}/{f.modelID}" == key))
+        if (!existing.Any(f => $"{f.ProviderID}/{f.ModelID}" == key))
         {
-          existing.Add(new ModelSelection { providerID = providerID, modelID = modelID });
+          existing.Add(new ModelSelection { ProviderID = providerID, ModelID = modelID });
         }
       }
       else if (action == "remove")
       {
-        existing = existing.Where(f => $"{f.providerID}/{f.modelID}" != key).ToList();
+        existing = existing.Where(f => $"{f.ProviderID}/{f.ModelID}" != key).ToList();
       }
 
       var validated = JsonSerializer.SerializeToElement(existing);
@@ -188,7 +180,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 
       try
       {
-        var workspaceDir = Provider.GetWorkspaceDirectory();
+        var workspaceDir = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
         var skills = await nswagClient.App_skillsAsync(workspaceDir, "") ?? new List<SkillInfo>();
         var message = new SkillsLoadedMessage
         {
@@ -237,7 +229,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 
       try
       {
-        var dir = Provider.GetWorkspaceDirectory();
+        var dir = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
         var commands = await nswagClient.Command_listAsync(dir, "") ?? new List<Command>();
 
         var message = new CommandsLoadedMessage
@@ -300,7 +292,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     // }
     public async Task HandleRequestImageModelsAsync(JsonElement? payload)
     {
-      var dir = Provider.GetWorkspaceDirectory();
+      var dir = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
       var result = await FetchImageModels(dir);
       if (!result.Ok)
       {

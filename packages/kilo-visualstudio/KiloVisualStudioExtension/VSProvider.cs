@@ -1663,9 +1663,9 @@ namespace KiloVisualStudioExtension
           //      _settingsHandler.HandleRequestThroughputSetting(payload);
           //      break;
 
-          case "requestAutocompleteSettings":
-            await _settingsService.SendAutocompleteSettings();
-            break;
+          //case "requestAutocompleteSettings":
+          //  await _settingsService.SendAutocompleteSettings();
+          //  break;
 
           //case "requestWorkStyle":
           //  await _settingsService.SendWorkStyleSettings();

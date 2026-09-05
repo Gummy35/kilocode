@@ -111,20 +111,20 @@ namespace KiloVisualStudioExtension
         }
     }
 
-    public class FavoriteModel
-    {
-        public string providerID { get; set; } = "";
-        public string modelID { get; set; } = "";
-        public string label { get; set; } = "";
-    }
+    //public class FavoriteModel
+    //{
+    //    public string providerID { get; set; } = "";
+    //    public string modelID { get; set; } = "";
+    //    public string label { get; set; } = "";
+    //}
 
-    public class Notification
-    {
-        public string id { get; set; } = "";
-        public string type { get; set; } = "";
-        public string title { get; set; } = "";
-        public string message { get; set; } = "";
-        public long timestamp { get; set; }
-        public string[] actions { get; set; } = Array.Empty<string>();
-    }
+    //public class Notification
+    //{
+    //    public string id { get; set; } = "";
+    //    public string type { get; set; } = "";
+    //    public string title { get; set; } = "";
+    //    public string message { get; set; } = "";
+    //    public long timestamp { get; set; }
+    //    public string[] actions { get; set; } = Array.Empty<string>();
+    //}
 }

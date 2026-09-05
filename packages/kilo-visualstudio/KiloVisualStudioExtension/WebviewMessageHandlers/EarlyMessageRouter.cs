@@ -19,7 +19,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       public KiloApiClient Client { get; set; }
       public KiloConnectionService Connection { get; set; }
       public string Directory { get; set; }
-      public ModelState.PostMessage Post { get; set; }
+      public ModelStateService.PostMessage Post { get; set; }
       public Func<string, Task> ExportTranscript { get; set; }
       public Action<List<string>> OpenSessions { get; set; }
       public ServiceProvider ServiceProvider { get; set; }
@@ -28,7 +28,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     public static async Task<bool> RouteWebviewMessage(IWebviewMessage message, Ctx ctx)
     {
       await SuggestionHandler.RouteWebviewMessage(ctx.Question, message);
-      if (await ModelState.HandleMessage(message, ctx.Client, ctx.Post)) return true;
+      if (await ctx.ServiceProvider.GetService<ModelStateService>().HandleMessageAsync(message, ctx.Client, ctx.Post)) return true;
       if (message is ExportSessionTranscriptRequest exportMessage)
       {
         if (!string.IsNullOrEmpty(exportMessage.SessionID))
@@ -41,7 +41,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
         ctx.OpenSessions(ids);
         return true;
       }
-      return await InputTools.RouteWebviewMessage(message, ctx);
+      return await InputTools.RouteWebviewMessageAsync(message, ctx);
     }
   }
 }

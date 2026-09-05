@@ -1,4 +1,5 @@
 // /** Validate and sanitize per-mode model selections from untrusted sources. */
+using KiloExtensionDTOs.Providers;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -50,7 +51,7 @@ namespace KiloVisualStudioExtension
 //   )
             {
 //   }
-                selection = new ModelSelection { ProviderId = providerId, ModelId = modelId };
+                selection = new ModelSelection { ProviderID = providerId, ModelID = modelId };
 //     return true
                 return true;
 //   }
@@ -58,11 +59,5 @@ namespace KiloVisualStudioExtension
 // }
             return false;
         }
-    }
-
-    public class ModelSelection
-    {
-        public string ProviderId { get; set; } = "";
-        public string ModelId { get; set; } = "";
     }
 }
