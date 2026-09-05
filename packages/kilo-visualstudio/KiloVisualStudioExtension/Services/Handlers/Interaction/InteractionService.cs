@@ -257,7 +257,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                 {
                     PermissionID = requestId,
                     Stale = true
-                }));
+                });
                 _ = FetchAndSendPendingPermissionsAsync();
             };
 
@@ -371,7 +371,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                 string dir;
                 if (!_questionDirectories.TryGetValue(requestId, out dir))
                 {
-                    dir = Provider.GetWorkspaceDirectory(sessionID);
+                    dir = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory(sessionID);
                 }
 
                 try
@@ -514,7 +514,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                 string dir;
                 if (!_questionDirectories.TryGetValue(requestId, out dir))
                 {
-                    dir = Provider.GetWorkspaceDirectory(sessionID);
+                    dir = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory(sessionID);
                 }
 
                 try

@@ -23,7 +23,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
   public static class InputTools
   {
 
-    private static Dictionary<string, AbortController> _aborts = new();
+    private static Dictionary<string, CancellationTokenSource> _aborts = new();
     private static HashSet<string> _cancelled = new();
     private static Dictionary<string, Task<bool>> _starts = new();
     private static HashSet<string> _stopping = new();
@@ -135,13 +135,13 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     // Replace with actual implementations from speech-to-text modules
     private static Task PrewarmSpeechCapture(EarlyMessageRouter.Ctx ctx)
     {
-      return ctx.ServiceProvider.GetService<CaptureService>().PrewarmSpeechCapture();
+      return ctx.ServiceProvider.GetService<CaptureService>().PrewarmSpeechCaptureAsync();
     }
     //
     private static async Task HandleSpeechToTextStart(SpeechToTextStartOptions options, EarlyMessageRouter.Ctx ctx)
     {
       ModelState.PostMessage post = ctx.Post;
-      var task = ctx.ServiceProvider.GetService<CaptureService>().StartSpeechCapture(
+      var task = ctx.ServiceProvider.GetService<CaptureService>().StartSpeechCaptureAsync(
         new CaptureService.Input
         {
           Language = options.Language,
@@ -164,7 +164,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
         _starts.Remove(options.RequestId);
         _stopping.Remove(options.RequestId);
         if (_cancelled.Remove(options.RequestId)) return;
-        post(new SpeechToTextErrorMessage { RequestId = options.RequestId, Error = ErrorMessageExtraction.GetErrorMessage(err) ?? "Speech recording failed" });
+        post(new SpeechToTextErrorMessage { RequestId = options.RequestId, Error = ErrorHelper.GetErrorMessage(err) ?? "Speech recording failed" });
       }
     }
     //
@@ -185,21 +185,30 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
           var started = t.IsFaulted ? false : t.Result;
           if (!started) return;
 
-          var audio = await ctx.ServiceProvider.GetService<CaptureService>().StopSpeechCapture(options.RequestId);
-          var result = await TranscribeSpeech(connection, audio, dir, ctrl.Token);
+          var audio = await ctx.ServiceProvider.GetService<CaptureService>().StopSpeechCaptureAsync(options.RequestId);
+          var result = await ctx.ServiceProvider.GetService<SpeechTranscriptionService>().TranscribeSpeechAsync(connection, audio, dir, ctrl.Token);
 
           _aborts.Remove(options.RequestId);
           _stopping.Remove(options.RequestId);
-          if (!result) return;
+          if (result == null) return;
           if (_cancelled.Remove(options.RequestId)) return;
-          if (!result.Value.Ok && result.Value.Code == "cancelled") return;
+          if (!result.Ok && result.Code == "cancelled") return;
 
-          if (result.Value.Ok)
+          if (result.Ok)
           {
-            ctx.Post(new { type = "speechToTextResult", text = result.Value.Text, requestId = options.RequestId });
+            ctx.Post(new SpeechToTextResultMessage 
+            {  
+              Text = result.Text, 
+              RequestId = options.RequestId 
+            });
             return;
           }
-          ctx.Post(new { type = "speechToTextError", error = result.Value.Error, code = result.Value.Code, requestId = options.RequestId });
+          ctx.Post(new SpeechToTextErrorMessage 
+          { 
+            Error = result.Error, 
+            Code = result.Code, 
+            RequestId = options.RequestId 
+          });
         }
         catch (Exception err)
         {
@@ -242,7 +251,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
                 var started = t.IsFaulted ? false : t.Result;
                 if (!started) return;
 
-                await ctx.ServiceProvider.GetService<CaptureService>().CancelSpeechCapture(options.RequestId);
+                await ctx.ServiceProvider.GetService<CaptureService>().CancelSpeechCaptureAsync(options.RequestId);
               }
               finally
               {
@@ -267,7 +276,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       }
 
       // No active or pending task, just cancel directly
-      _ = ctx.ServiceProvider.GetService<CaptureService>().CancelSpeechCapture(options.RequestId)
+      _ = ctx.ServiceProvider.GetService<CaptureService>().CancelSpeechCaptureAsync(options.RequestId)
           .ContinueWith(t =>
           {
             if (t.IsFaulted)

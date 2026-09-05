@@ -56,19 +56,7 @@ namespace KiloVisualStudioExtension.Services
       public string? Signal { get; set; }
     }
     //
-    // type Audio = {
-    public class Audio
-    //   data: string
-    {
-      public string Data { get; set; } = "";
-      //   format: "wav"
-      public string Format { get; set; } = "wav";
-      //   model: string
-      public string Model { get; set; } = "";
-      //   language?: string
-      public string? Language { get; set; }
-      // }
-    }
+   
     //
     // type Args = {
     public class Args
@@ -94,7 +82,7 @@ namespace KiloVisualStudioExtension.Services
     }
 
     // export async function prewarmSpeechCapture(): Promise<void> {
-    public async Task PrewarmSpeechCapture()
+    public async Task PrewarmSpeechCaptureAsync()
     // {
     {
       //   await resolveFFmpeg()
@@ -103,7 +91,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
     // export async function startSpeechCapture(input: Input): Promise<boolean> {
-    public async Task<bool> StartSpeechCapture(Input input)
+    public async Task<bool> StartSpeechCaptureAsync(Input input)
     // {
     {
       //   if (active || starting) throw new Error("Speech recording is already in progress")
@@ -120,7 +108,7 @@ namespace KiloVisualStudioExtension.Services
         //     const file = path.join(os.tmpdir(), `kilo-stt-${process.pid}-${Date.now()}.wav`)
         var file = Path.Combine(Path.GetTempPath(), $"kilo-stt-{Process.GetCurrentProcess().Id}-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.wav");
         //     const state = await startWithArgs(bin, file, input, await inputArgSets(bin))
-        var state = await StartWithArgs(bin, file, input, await GetInputArgSets(bin));
+        var state = await StartWithArgsAsync(bin, file, input, await GetInputArgSetsAsync(bin));
         //     return !state.stopped
         return !state.Stopped;
         //   } finally {
@@ -135,7 +123,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
     // export async function stopSpeechCapture(requestId: string): Promise<Audio> {
-    public async Task<Audio> StopSpeechCapture(string requestId)
+    public async Task<SpeechToTextRequest> StopSpeechCaptureAsync(string requestId)
     // {
     {
       //   const state = requireActive(requestId)
@@ -146,7 +134,7 @@ namespace KiloVisualStudioExtension.Services
       _active = null;
       //
       //   await stopProcess(state)
-      await StopProcess(state);
+      await StopProcessAsync(state);
       //
       //   const size = await stat(state.file)
       //     .then((info) => info.size)
@@ -169,7 +157,7 @@ namespace KiloVisualStudioExtension.Services
       if (size < 44)
       //     await removeFile(state.file)
       {
-        await RemoveFile(state.File);
+        await AsyncUtils.RemoveFileAsync(state.File);
         //     throw new Error(summary(state, "No audio was recorded"))
         throw new Exception(Summary(state, "No audio was recorded"));
         //   }
@@ -178,9 +166,9 @@ namespace KiloVisualStudioExtension.Services
       //   const file = await readFile(state.file)
       var file = await AsyncUtils.ReadAllBytesAsync(state.File);
       //   await removeFile(state.file)
-      await RemoveFile(state.File);
+      await AsyncUtils.RemoveFileAsync(state.File);
       //   return { data: file.toString("base64"), format: "wav", model: state.model, language: state.language }
-      return new Audio
+      return new SpeechToTextRequest
       {
         Data = Convert.ToBase64String(file),
         Format = "wav",
@@ -191,7 +179,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
     // export async function cancelSpeechCapture(requestId: string): Promise<void> {
-    public async Task CancelSpeechCapture(string requestId)
+    public async Task CancelSpeechCaptureAsync(string requestId)
     // {
     {
       //   const state = active
@@ -203,14 +191,14 @@ namespace KiloVisualStudioExtension.Services
       //   active = undefined
       _active = null;
       //   await stopProcess(state)
-      await StopProcess(state);
+      await StopProcessAsync(state);
       //   await removeFile(state.file)
-      await RemoveFile(state.File);
+      await AsyncUtils.RemoveFileAsync(state.File);
       // }
     }
     //
     // async function waitForStart(state: Recording): Promise<void> {
-    private async Task WaitForStart(Recording state)
+    private async Task WaitForStartAsync(Recording state)
     // {
     {
       //   await new Promise<void>((resolve, reject) => {
@@ -297,15 +285,15 @@ namespace KiloVisualStudioExtension.Services
       catch
       {
         if (_active == state) _active = null;
-        await StopProcess(state);
-        await RemoveFile(state.File);
+        await StopProcessAsync(state);
+        await AsyncUtils.RemoveFileAsync(state.File);
         throw;
       }
       // }
     }
     //
     // async function startWithArgs(bin: string, file: string, input: Input, args: Args[]): Promise<Recording> {
-    private async Task<Recording> StartWithArgs(string bin, string file, Input input, List<Args> args)
+    private async Task<Recording> StartWithArgsAsync(string bin, string file, Input input, List<Args> args)
     // {
     {
       //   const [first, ...rest] = args
@@ -382,7 +370,7 @@ namespace KiloVisualStudioExtension.Services
       try
       //     await waitForStart(state)
       {
-        await WaitForStart(state);
+        await WaitForStartAsync(state);
         //     return state
         return state;
         //   } catch (err) {
@@ -394,7 +382,7 @@ namespace KiloVisualStudioExtension.Services
         //     if (rest.length === 0) throw err
         if (rest.Count == 0) throw;
         //     return startWithArgs(bin, file, input, rest)
-        return await StartWithArgs(bin, file, input, rest);
+        return await StartWithArgsAsync(bin, file, input, rest);
         //   }
       }
       // }
@@ -489,7 +477,7 @@ namespace KiloVisualStudioExtension.Services
     //        }
     //
     // async function stopProcess(state: Recording): Promise<void> {
-    private async Task StopProcess(Recording state)
+    private async Task StopProcessAsync(Recording state)
     // {
     {
       //   if (state.proc.exitCode !== null || state.proc.signalCode) return
@@ -573,7 +561,7 @@ namespace KiloVisualStudioExtension.Services
       }
       //
       //   const task = findFFmpeg()
-      var task = FindFFmpeg();
+      var task = FindFFmpegAsync();
       //   ffmpeg = task
       _ffmpeg = task;
       //   try {
@@ -595,7 +583,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
     // async function findFFmpeg(): Promise<string> {
-    private async Task<string> FindFFmpeg()
+    private async Task<string> FindFFmpegAsync()
     // {
     {
       //   const paths = [
@@ -698,7 +686,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
     // async function inputArgSets(bin: string): Promise<Args[]> {
-    private async Task<List<Args>> GetInputArgSets(string bin)
+    private async Task<List<Args>> GetInputArgSetsAsync(string bin)
     // {
     {
       ////   if (process.platform === "darwin") return [{ input: ["-f", "avfoundation", "-i", ":default"] }]
@@ -737,14 +725,14 @@ namespace KiloVisualStudioExtension.Services
       //            }
       //   if (process.platform === "win32") return await windowsInputArgSets(bin)
       //            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-      return await WindowsInputArgSets(bin);
+      return await WindowsInputArgSetsAsync(bin);
       ////   return []
       //            return new List<Args>();
       // }
     }
     //
     // async function windowsInputArgSets(bin: string): Promise<Args[]> {
-    private static async Task<List<Args>> WindowsInputArgSets(string bin)
+    private static async Task<List<Args>> WindowsInputArgSetsAsync(string bin)
     // {
     {
       //   const configured = process.env.KILO_FFMPEG_AUDIO_DEVICE
@@ -754,7 +742,7 @@ namespace KiloVisualStudioExtension.Services
         return new List<Args> { new Args { Input = new[] { "-f", "dshow", "-i", $"audio={configured}" } } };
       //
       //   const devices = await listDshowAudioDevices(bin)
-      var devices = await ListDshowAudioDevices(bin);
+      var devices = await ListDshowAudioDevicesAsync(bin);
       //   if (devices.length === 0) throw new Error("No Windows audio input devices found for speech input")
       if (devices.Count == 0)
         throw new Exception("No Windows audio input devices found for speech input");
@@ -764,7 +752,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
     // async function listDshowAudioDevices(bin: string): Promise<string[]> {
-    private static async Task<List<string>> ListDshowAudioDevices(string bin)
+    private static async Task<List<string>> ListDshowAudioDevicesAsync(string bin)
     // {
     {
       //   const raw = await exec(bin, ["-list_devices", "true", "-f", "dshow", "-i", "dummy"], { timeout: 5000 })
@@ -772,7 +760,7 @@ namespace KiloVisualStudioExtension.Services
       try
       //     .then((result) => `${result.stdout}\n${result.stderr}`)
       {
-        var result = await RunCommandWithOutput(bin, new[] { "-list_devices", "true", "-f", "dshow", "-i", "dummy" }, 5000);
+        var result = await RunCommandWithOutputAsync(bin, new[] { "-list_devices", "true", "-f", "dshow", "-i", "dummy" }, 5000);
         raw = $"{result.Output}\n{result.Error}";
         //     .catch((err: unknown) => processOutput(err))
       }
@@ -893,25 +881,7 @@ namespace KiloVisualStudioExtension.Services
       // }
     }
     //
-    // async function removeFile(file: string): Promise<void> {
-    private static async Task RemoveFile(string file)
-    // {
-    {
-      //   await unlink(file).catch((err: unknown) => {
-      try
-      //     console.warn("[Kilo New] Failed to remove speech recording", err)
-      {
-        if (File.Exists(file))
-          File.Delete(file);
-        //   })
-      }
-      catch (Exception err)
-      {
-        Console.WriteLine($"[Kilo New] Failed to remove speech recording: {err.Message}");
-      }
-      // }
-    }
-    //
+   
     private static async Task RunCommand(string exe, string[] args, int timeout)
     {
       var psi = new ProcessStartInfo
@@ -934,7 +904,7 @@ namespace KiloVisualStudioExtension.Services
         throw new TimeoutException("Command timed out");
     }
     //
-    private static async Task<(string Output, string Error)> RunCommandWithOutput(string exe, string[] args, int timeout)
+    private static async Task<(string Output, string Error)> RunCommandWithOutputAsync(string exe, string[] args, int timeout)
     {
       var psi = new ProcessStartInfo
       {

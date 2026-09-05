@@ -302,6 +302,15 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
+    public static QuestionRequestToolType Convert(Tool2 tool)
+    {
+      return new QuestionRequestToolType
+      {
+        CallID = tool.CallID,
+        MessageID = tool.MessageID
+      };
+    }
+
     public static QuestionRequestToolType Convert(Tool tool)
     {
       return new QuestionRequestToolType

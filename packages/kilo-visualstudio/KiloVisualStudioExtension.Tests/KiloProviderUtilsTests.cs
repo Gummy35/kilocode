@@ -159,7 +159,7 @@ namespace KiloVisualStudioExtension.Tests
             var error = new Exception("boom");
 
             // Act
-            var result = ErrorMessageExtraction.GetErrorMessage(error);
+            var result = ErrorHelper.GetErrorMessage(error);
 
             // Assert
             Assert.Equal("boom", result);
@@ -172,7 +172,7 @@ namespace KiloVisualStudioExtension.Tests
             var error = "plain text failure";
 
             // Act
-            var result = ErrorMessageExtraction.GetErrorMessage(error);
+            var result = ErrorHelper.GetErrorMessage(error);
 
             // Assert
             Assert.Equal("plain text failure", result);
@@ -185,7 +185,7 @@ namespace KiloVisualStudioExtension.Tests
             var error = new { message = "bad input" };
 
             // Act
-            var result = ErrorMessageExtraction.GetErrorMessage(error);
+            var result = ErrorHelper.GetErrorMessage(error);
 
             // Assert
             Assert.Equal("bad input", result);
@@ -198,7 +198,7 @@ namespace KiloVisualStudioExtension.Tests
             var error = new { error = "nope" };
 
             // Act
-            var result = ErrorMessageExtraction.GetErrorMessage(error);
+            var result = ErrorHelper.GetErrorMessage(error);
 
             // Assert
             Assert.Equal("nope", result);
@@ -208,7 +208,7 @@ namespace KiloVisualStudioExtension.Tests
         public void Handles_null()
         {
             // Act
-            var result = ErrorMessageExtraction.GetErrorMessage(null);
+            var result = ErrorHelper.GetErrorMessage(null);
 
             // Assert
             Assert.Equal("null", result);
