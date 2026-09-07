@@ -189,7 +189,7 @@ namespace KiloVisualStudioExtension.Utils
         File = diff.File,
         InitialDiffStyle = "unified",
         Patch = diff.Patch
-      }
+      };
     }
 
     private static async Task<EnvDTE.DTE?> GetDteAsync()

@@ -5,6 +5,7 @@ using KiloExtensionDTOs.Agents;
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloExtensionDTOs.KiloConfig;
 using KiloExtensionDTOs.Profile;
+using KiloExtensionDTOs.WebviewMessages;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Services;
@@ -410,54 +411,54 @@ namespace KiloVisualStudioExtension
     }
 
 
-    /// <summary>
-    /// Queues an operation for a session, ensuring sequential execution.
-    /// Matches VS Code's checkpoint pattern for serializing async operations per session.
-    /// </summary>
-    private async Task Checkpoint(string sid, Func<Task> run)
-    {
-      // Get prior task or completed task if none exists
-      var prior = _checkpoints.TryGetValue(sid, out var existing) ? existing : Task.CompletedTask;
+    ///// <summary>
+    ///// Queues an operation for a session, ensuring sequential execution.
+    ///// Matches VS Code's checkpoint pattern for serializing async operations per session.
+    ///// </summary>
+    //private async Task Checkpoint(string sid, Func<Task> run)
+    //{
+    //  // Get prior task or completed task if none exists
+    //  var prior = _checkpoints.TryGetValue(sid, out var existing) ? existing : Task.CompletedTask;
 
-      // Chain the new operation after the prior one
-      var pending = prior.ContinueWith(async _ =>
-      {
-        await run();
-      }, TaskContinuationOptions.ExecuteSynchronously).Unwrap();
+    //  // Chain the new operation after the prior one
+    //  var pending = prior.ContinueWith(async _ =>
+    //  {
+    //    await run();
+    //  }, TaskContinuationOptions.ExecuteSynchronously).Unwrap();
 
-      // Cleanup: remove from dictionary if still the current task
-      void Cleanup()
-      {
-        if (_checkpoints.TryGetValue(sid, out var current) && current == pending)
-        {
-          _checkpoints.Remove(sid);
-        }
-      }
+    //  // Cleanup: remove from dictionary if still the current task
+    //  void Cleanup()
+    //  {
+    //    if (_checkpoints.TryGetValue(sid, out var current) && current == pending)
+    //    {
+    //      _checkpoints.Remove(sid);
+    //    }
+    //  }
 
-      // Register the new task
-      _checkpoints[sid] = pending;
+    //  // Register the new task
+    //  _checkpoints[sid] = pending;
 
-      // Fire-and-forget completion handler
-      _ = pending.ContinueWith(t =>
-      {
-        if (t.IsFaulted && t.Exception != null)
-        {
-          System.Diagnostics.Debug.WriteLine($"[Kilo New] checkpoint mutation failed: {t.Exception.GetBaseException().Message}");
-        }
-        Cleanup();
-      }, TaskContinuationOptions.ExecuteSynchronously);
-    }
+    //  // Fire-and-forget completion handler
+    //  _ = pending.ContinueWith(t =>
+    //  {
+    //    if (t.IsFaulted && t.Exception != null)
+    //    {
+    //      System.Diagnostics.Debug.WriteLine($"[Kilo New] checkpoint mutation failed: {t.Exception.GetBaseException().Message}");
+    //    }
+    //    Cleanup();
+    //  }, TaskContinuationOptions.ExecuteSynchronously);
+    //}
 
-    /// <summary>
-    /// Waits for any pending checkpoint operation for a session.
-    /// </summary>
-    private async Task WaitForCheckpoint(string sid)
-    {
-      if (_checkpoints.TryGetValue(sid, out var task))
-      {
-        await task;
-      }
-    }
+    ///// <summary>
+    ///// Waits for any pending checkpoint operation for a session.
+    ///// </summary>
+    //private async Task WaitForCheckpoint(string sid)
+    //{
+    //  if (_checkpoints.TryGetValue(sid, out var task))
+    //  {
+    //    await task;
+    //  }
+    //}
 
     // Validation functions (matching provider-actions.ts in TypeScript)
     internal bool IsModelSelection(JsonElement? raw)
@@ -1060,10 +1061,11 @@ namespace KiloVisualStudioExtension
         ) {
           return;
         }
-        if (_serviceProvider.GetService<UiService>().HandleEditorOpenMessage(message)) return;
-        //      if (
-        //        await handleWorkStyleMessage({
-        //          message,
+        if (message is IEditorActionMessage editorActionMessage 
+          && await _serviceProvider.GetService<UiService>().HandleEditorOpenMessage(editorActionMessage)) return;
+        //if (
+        //  await handleWorkStyleMessage({
+        //  message,
         //          connection: this.connectionService,
         //          directory: this.getWorkspaceDirectory(this.currentSession?.id),
         //          post: (msg) => this.postMessage(msg),
@@ -1149,455 +1151,455 @@ namespace KiloVisualStudioExtension
         //            this.checkpoint(message.sessionID, () =>
         //              this.handleRevertSession(message.sessionID, message.messageID, message.partID),
 
-          //            )
-          //          break
-          //        case "unrevertSession":
-          //            this.checkpoint(message.sessionID, () => this.handleUnrevertSession(message.sessionID))
-          //          break
-          //        case "deleteMessage":
-          //            await this.handleDeleteMessage(message.sessionID, message.messageID)
-          //          break
-          //        case "permissionResponse":
-          //            await handlePermissionResponse(
-          //              this.permissionCtx,
-          //              message.permissionId,
-          //              message.sessionID,
-          //              message.response,
-          //              message.approvedAlways,
-          //              message.deniedAlways,
+        //            )
+        //          break
+        //        case "unrevertSession":
+        //            this.checkpoint(message.sessionID, () => this.handleUnrevertSession(message.sessionID))
+        //          break
+        //        case "deleteMessage":
+        //            await this.handleDeleteMessage(message.sessionID, message.messageID)
+        //          break
+        //        case "permissionResponse":
+        //            await handlePermissionResponse(
+        //              this.permissionCtx,
+        //              message.permissionId,
+        //              message.sessionID,
+        //              message.response,
+        //              message.approvedAlways,
+        //              message.deniedAlways,
 
-          //            )
-          //          break
-          //        case "createSession":
-          //            await this.handleCreateSession()
-          //          break
-          //        case "clearSession":
-          //            this.stopCurrentSessionProcesses()
-          //          this.contextSessionID = undefined
-          //          this.setCurrentSession(null)
-          //          this.focusSession()
-          //          break
-          //        case "loadMessages":
-          //            // Don't await: allow parallel loads so rapid session switching
-          //            // isn't blocked by slow responses for earlier sessions.
-          //            void this.handleLoadMessages(message.sessionID, {
-          //            mode: message.mode,
-          //            before: message.before,
-          //            limit: message.limit,
-          //          })
-          //          break
-          //        case "syncSession":
-          //            this.handleSyncSession(message.sessionID, message.parentSessionID).catch ((e) =>
-          //            console.error("[Kilo New] handleSyncSession failed:", e),
-          //          )
-          //          break
-          //        case "loadSessions":
-          //        this.handleLoadSessions().catch ((e) => console.error("[Kilo New] handleLoadSessions failed:", e))
-          //          break
-          //        case "requestSessionModelUsage":
-          //        void this.fetchAndSendSessionModelUsage(message.sessionID, message.requestID)
-          //          break
-          //        case "login":
-          //        {
-          //          const attempt = ++this.loginAttempt
-          //          await handleLogin(this.authCtx, attempt, () => this.loginAttempt)
-          //          break
-          //        }
-          //      case "cancelLogin":
-          //        this.loginAttempt++
-          //          this.postMessage({ type: "deviceAuthCancelled" })
-          //          break
-          //        case "logout":
-          //        await handleLogout(this.authCtx)
-          //          break
-          //        case "setOrganization":
-          //        if (typeof message.organizationId === "string" || message.organizationId === null)
-          //        {
-          //          await handleSetOrganization(this.authCtx, message.organizationId)
-          //          }
-          //        break
-          //        case "refreshProfile":
-          //        await handleRefreshProfile(this.authCtx)
-          //          break
-          //        case "openSettingsPanel":
-          //        vscode.commands.executeCommand("kilo-code.new.settingsButtonClicked", message.tab)
-          //          break
-          //        case "openKiloClaw":
-          //        vscode.commands.executeCommand("kilo-code.new.kiloClawOpen")
-          //          break
-          //        case "openVSCodeSettings":
-          //        vscode.commands.executeCommand("workbench.action.openSettings", message.query)
-          //          break
-          //        case "openConfigFile":
-          //        await openConfig(message.scope, message.labels, this.getProjectDirectory(this.currentSession?.id))
-          //          break
-          //        case "openMarketplacePanel":
-          //        this.openMarketplacePanel(message.directory)
-          //          break
-          //        case "forkSession":
-          //        handleForkSession(this.forkCtx, message.sessionId, message.messageId).catch ((e) =>
-          //            console.error("[Kilo New] handleForkSession failed:", e),
-          //          )
-          //          break
-          //        case "retryConnection":
-          //        console.log("[Kilo New] KiloProvider: 🔄 Retrying connection...")
-          //          this.initializeConnection().catch ((e) =>
-          //            console.error("[Kilo New] KiloProvider: ❌ Retry connection failed:", e),
-          //          )
-          //          break
-          //        case "reload":
-          //        this.handleReload().catch ((e) => console.error("[Kilo New] KiloProvider: Reload failed:", e))
-          //          break
-          //        case "openSubAgentViewer":
-          //        vscode.commands.executeCommand("kilo-code.new.openSubAgentViewer", message.sessionID, message.title)
-          //          break
-          //        case "saveImage":
-          //        return saveImage(this.getWorkspaceDirectory(this.currentSession?.id), message)
-          //        case "requestProviders":
-          //        this.fetchAndSendProviders().catch ((e) => console.error("[Kilo New] fetchAndSendProviders failed:", e))
-          //          break
-          //        case "connectProvider":
-          //      case "authorizeProviderOAuth":
-          //      case "completeProviderOAuth":
-          //      case "disconnectProvider":
-          //      case "saveCustomProvider":
-          //        await this.handleProviderAction(message)
-          //          break
-          //        case "anacondaDesktopStatus":
-          //      case "anacondaDesktopOpen":
-          //      case "anacondaDesktopSync":
-          //      case "cancelAnacondaDesktopRequest":
-          //        await this.anacondaDesktop.handle(message, {
-          //        client: this.client,
-          //            directory: this.getWorkspaceDirectory(),
-          //            post: (reply) => this.postMessage(reply),
-          //            refresh: () => this.fetchAndSendProviders(),
-          //            error: getErrorMessage,
-          //          })
-          //          break
-          //        case "fetchCustomProviderModels":
-          //        this.handleFetchCustomProviderModels(message).catch ((e) =>
-          //            console.error("[Kilo New] fetchCustomProviderModels failed:", e),
-          //          )
-          //          break
-          //        case "compact":
-          //        await this.handleCompact(message.sessionID, message.providerID, message.modelID)
-          //          break
-          //        case "requestAgents":
-          //        this.fetchAndSendAgents().catch ((e) => console.error("[Kilo New] fetchAndSendAgents failed:", e))
-          //          break
-          //        case "requestSkills":
-          //        this.fetchAndSendSkills().catch ((e) => console.error("[Kilo New] fetchAndSendSkills failed:", e))
-          //          break
-          //        case "requestAgentRequirements":
-          //        this.requirements
-          //          .fetch({
-          //        agent: message.agent,
-          //              directory: message.directory,
-          //              sessionID: message.sessionID,
-          //              force: message.force === true,
-          //            })
-          //            .catch ((e) => console.error("[Kilo New] fetchAndSendAgentRequirements failed:", e))
-          //          break
-          //        case "requestCommands":
-          //        this.fetchAndSendCommands().catch ((e) => console.error("[Kilo New] fetchAndSendCommands failed:", e))
-          //          break
-          //        case "removeSkill":
-          //        this.removeSkillViaCli(message.location).catch ((e: unknown) =>
-          //            console.error("[Kilo New] removeSkill failed:", e),
-          //          )
-          //          break
-          //        case "removeAgent":
-          //        this.handleRemoveAgent(message.name).catch ((e) => console.error("[Kilo New] handleRemoveAgent failed:", e))
-          //          break
-          //        case "removeMcp":
-          //        this.handleRemoveMcp(message.name).catch ((e) => console.error("[Kilo New] handleRemoveMcp failed:", e))
-          //          break
-          //        case "requestMcpStatus":
-          //        this.fetchAndSendMcpStatus().catch ((e) => console.error("[Kilo New] fetchAndSendMcpStatus failed:", e))
-          //          break
-          //        case "connectMcp":
-          //        {
-          //          const c1 = this.client
-          //          if (c1)
-          //          {
-          //            void McpOAuth.connectMcpServer(c1, message.name, this.getWorkspaceDirectory(), () =>
-          //              this.refreshMcpStatus(),
-          //            ).catch ((e) => console.error("[Kilo New] connectMcpServer failed:", e))
-          //          }
-          //      break
-          //        }
-          //        case "disconnectMcp": {
-          //          const c2 = this.client
-          //          if (c2) {
-          //            void McpOAuth.disconnectMcpServer(c2, message.name, this.getWorkspaceDirectory(), () =>
-          //              this.refreshMcpStatus(),
-          //            ).catch((e) => console.error("[Kilo New] disconnectMcpServer failed:", e))
-          //          }
-          //          break
-          //        }
-          //        case "authenticateMcp":
-          //  {
-          //    const c = this.client
-          //          if (c)
-          //    {
-          //      void McpOAuth.authenticateMcpServer(c, message.name, this.getWorkspaceDirectory(), () =>
-          //        this.refreshMcpStatus(),
+        //            )
+        //          break
+        //        case "createSession":
+        //            await this.handleCreateSession()
+        //          break
+        //        case "clearSession":
+        //            this.stopCurrentSessionProcesses()
+        //          this.contextSessionID = undefined
+        //          this.setCurrentSession(null)
+        //          this.focusSession()
+        //          break
+        //        case "loadMessages":
+        //            // Don't await: allow parallel loads so rapid session switching
+        //            // isn't blocked by slow responses for earlier sessions.
+        //            void this.handleLoadMessages(message.sessionID, {
+        //            mode: message.mode,
+        //            before: message.before,
+        //            limit: message.limit,
+        //          })
+        //          break
+        //        case "syncSession":
+        //            this.handleSyncSession(message.sessionID, message.parentSessionID).catch ((e) =>
+        //            console.error("[Kilo New] handleSyncSession failed:", e),
+        //          )
+        //          break
+        //        case "loadSessions":
+        //        this.handleLoadSessions().catch ((e) => console.error("[Kilo New] handleLoadSessions failed:", e))
+        //          break
+        //        case "requestSessionModelUsage":
+        //        void this.fetchAndSendSessionModelUsage(message.sessionID, message.requestID)
+        //          break
+        //        case "login":
+        //        {
+        //          const attempt = ++this.loginAttempt
+        //          await handleLogin(this.authCtx, attempt, () => this.loginAttempt)
+        //          break
+        //        }
+        //      case "cancelLogin":
+        //        this.loginAttempt++
+        //          this.postMessage({ type: "deviceAuthCancelled" })
+        //          break
+        //        case "logout":
+        //        await handleLogout(this.authCtx)
+        //          break
+        //        case "setOrganization":
+        //        if (typeof message.organizationId === "string" || message.organizationId === null)
+        //        {
+        //          await handleSetOrganization(this.authCtx, message.organizationId)
+        //          }
+        //        break
+        //        case "refreshProfile":
+        //        await handleRefreshProfile(this.authCtx)
+        //          break
+        //        case "openSettingsPanel":
+        //        vscode.commands.executeCommand("kilo-code.new.settingsButtonClicked", message.tab)
+        //          break
+        //        case "openKiloClaw":
+        //        vscode.commands.executeCommand("kilo-code.new.kiloClawOpen")
+        //          break
+        //        case "openVSCodeSettings":
+        //        vscode.commands.executeCommand("workbench.action.openSettings", message.query)
+        //          break
+        //        case "openConfigFile":
+        //        await openConfig(message.scope, message.labels, this.getProjectDirectory(this.currentSession?.id))
+        //          break
+        //        case "openMarketplacePanel":
+        //        this.openMarketplacePanel(message.directory)
+        //          break
+        //        case "forkSession":
+        //        handleForkSession(this.forkCtx, message.sessionId, message.messageId).catch ((e) =>
+        //            console.error("[Kilo New] handleForkSession failed:", e),
+        //          )
+        //          break
+        //        case "retryConnection":
+        //        console.log("[Kilo New] KiloProvider: 🔄 Retrying connection...")
+        //          this.initializeConnection().catch ((e) =>
+        //            console.error("[Kilo New] KiloProvider: ❌ Retry connection failed:", e),
+        //          )
+        //          break
+        //        case "reload":
+        //        this.handleReload().catch ((e) => console.error("[Kilo New] KiloProvider: Reload failed:", e))
+        //          break
+        //        case "openSubAgentViewer":
+        //        vscode.commands.executeCommand("kilo-code.new.openSubAgentViewer", message.sessionID, message.title)
+        //          break
+        //        case "saveImage":
+        //        return saveImage(this.getWorkspaceDirectory(this.currentSession?.id), message)
+        //        case "requestProviders":
+        //        this.fetchAndSendProviders().catch ((e) => console.error("[Kilo New] fetchAndSendProviders failed:", e))
+        //          break
+        //        case "connectProvider":
+        //      case "authorizeProviderOAuth":
+        //      case "completeProviderOAuth":
+        //      case "disconnectProvider":
+        //      case "saveCustomProvider":
+        //        await this.handleProviderAction(message)
+        //          break
+        //        case "anacondaDesktopStatus":
+        //      case "anacondaDesktopOpen":
+        //      case "anacondaDesktopSync":
+        //      case "cancelAnacondaDesktopRequest":
+        //        await this.anacondaDesktop.handle(message, {
+        //        client: this.client,
+        //            directory: this.getWorkspaceDirectory(),
+        //            post: (reply) => this.postMessage(reply),
+        //            refresh: () => this.fetchAndSendProviders(),
+        //            error: getErrorMessage,
+        //          })
+        //          break
+        //        case "fetchCustomProviderModels":
+        //        this.handleFetchCustomProviderModels(message).catch ((e) =>
+        //            console.error("[Kilo New] fetchCustomProviderModels failed:", e),
+        //          )
+        //          break
+        //        case "compact":
+        //        await this.handleCompact(message.sessionID, message.providerID, message.modelID)
+        //          break
+        //        case "requestAgents":
+        //        this.fetchAndSendAgents().catch ((e) => console.error("[Kilo New] fetchAndSendAgents failed:", e))
+        //          break
+        //        case "requestSkills":
+        //        this.fetchAndSendSkills().catch ((e) => console.error("[Kilo New] fetchAndSendSkills failed:", e))
+        //          break
+        //        case "requestAgentRequirements":
+        //        this.requirements
+        //          .fetch({
+        //        agent: message.agent,
+        //              directory: message.directory,
+        //              sessionID: message.sessionID,
+        //              force: message.force === true,
+        //            })
+        //            .catch ((e) => console.error("[Kilo New] fetchAndSendAgentRequirements failed:", e))
+        //          break
+        //        case "requestCommands":
+        //        this.fetchAndSendCommands().catch ((e) => console.error("[Kilo New] fetchAndSendCommands failed:", e))
+        //          break
+        //        case "removeSkill":
+        //        this.removeSkillViaCli(message.location).catch ((e: unknown) =>
+        //            console.error("[Kilo New] removeSkill failed:", e),
+        //          )
+        //          break
+        //        case "removeAgent":
+        //        this.handleRemoveAgent(message.name).catch ((e) => console.error("[Kilo New] handleRemoveAgent failed:", e))
+        //          break
+        //        case "removeMcp":
+        //        this.handleRemoveMcp(message.name).catch ((e) => console.error("[Kilo New] handleRemoveMcp failed:", e))
+        //          break
+        //        case "requestMcpStatus":
+        //        this.fetchAndSendMcpStatus().catch ((e) => console.error("[Kilo New] fetchAndSendMcpStatus failed:", e))
+        //          break
+        //        case "connectMcp":
+        //        {
+        //          const c1 = this.client
+        //          if (c1)
+        //          {
+        //            void McpOAuth.connectMcpServer(c1, message.name, this.getWorkspaceDirectory(), () =>
+        //              this.refreshMcpStatus(),
+        //            ).catch ((e) => console.error("[Kilo New] connectMcpServer failed:", e))
+        //          }
+        //      break
+        //        }
+        //        case "disconnectMcp": {
+        //          const c2 = this.client
+        //          if (c2) {
+        //            void McpOAuth.disconnectMcpServer(c2, message.name, this.getWorkspaceDirectory(), () =>
+        //              this.refreshMcpStatus(),
+        //            ).catch((e) => console.error("[Kilo New] disconnectMcpServer failed:", e))
+        //          }
+        //          break
+        //        }
+        //        case "authenticateMcp":
+        //  {
+        //    const c = this.client
+        //          if (c)
+        //    {
+        //      void McpOAuth.authenticateMcpServer(c, message.name, this.getWorkspaceDirectory(), () =>
+        //        this.refreshMcpStatus(),
 
-          //      ).catch((e) => console.error("[Kilo New] authenticateMcpServer failed:", e))
-          //          }
-          //    break
-          //        }
+        //      ).catch((e) => console.error("[Kilo New] authenticateMcpServer failed:", e))
+        //          }
+        //    break
+        //        }
 
-          //case "questionReply":
-          //  this.noteFollowup(message.answers, message.sessionID)
-          //          if (!(await handleQuestionReply(this.questionCtx, message.requestID, message.answers, message.sessionID)))
-          //  {
-          //    this.pendingFollowup = null
-          //          }
-          //  break
-          //        case "questionReject":
-          //  this.pendingFollowup = null
-          //          await handleQuestionReject(this.questionCtx, message.requestID, message.sessionID)
-          //          break
-          //        case "sessionCostAlertResponse":
-          //  await this.handleCostAlertResponse(message.sessionID, message.limit, message.response)
-          //          break
-          //        case "requestSandboxStatus":
-          //  await this.fetchAndSendSandboxStatus(message.sessionID)
-          //          break
-          //        case "requestSandboxDefault":
-          //  await this.fetchAndSendSandboxDefault(message.contextDirectory, message.requestID)
-          //          break
-          //        case "setSandboxDefault":
-          //  await this.handleSetSandboxDefault(message.enabled, message.requestID, message.contextDirectory)
-          //          break
-          //        case "toggleSandbox":
-          //  await this.handleToggleSandbox(message)
-          //          break
-          //        case "requestConfig":
-          //  this.fetchAndSendConfig().catch((e) => console.error("[Kilo New] fetchAndSendConfig failed:", e))
-          //          break
-          //        case "requestGlobalConfig":
-          //  this.fetchAndSendGlobalConfig().catch((e) => console.error("[Kilo New] fetchAndSendGlobalConfig failed:", e))
-          //          break
-          //        case "requestIndexingStatus":
-          //  this.fetchAndSendIndexingStatus().catch((e) =>
-          //    console.error("[Kilo New] fetchAndSendIndexingStatus failed:", e),
+        //case "questionReply":
+        //  this.noteFollowup(message.answers, message.sessionID)
+        //          if (!(await handleQuestionReply(this.questionCtx, message.requestID, message.answers, message.sessionID)))
+        //  {
+        //    this.pendingFollowup = null
+        //          }
+        //  break
+        //        case "questionReject":
+        //  this.pendingFollowup = null
+        //          await handleQuestionReject(this.questionCtx, message.requestID, message.sessionID)
+        //          break
+        //        case "sessionCostAlertResponse":
+        //  await this.handleCostAlertResponse(message.sessionID, message.limit, message.response)
+        //          break
+        //        case "requestSandboxStatus":
+        //  await this.fetchAndSendSandboxStatus(message.sessionID)
+        //          break
+        //        case "requestSandboxDefault":
+        //  await this.fetchAndSendSandboxDefault(message.contextDirectory, message.requestID)
+        //          break
+        //        case "setSandboxDefault":
+        //  await this.handleSetSandboxDefault(message.enabled, message.requestID, message.contextDirectory)
+        //          break
+        //        case "toggleSandbox":
+        //  await this.handleToggleSandbox(message)
+        //          break
+        //        case "requestConfig":
+        //  this.fetchAndSendConfig().catch((e) => console.error("[Kilo New] fetchAndSendConfig failed:", e))
+        //          break
+        //        case "requestGlobalConfig":
+        //  this.fetchAndSendGlobalConfig().catch((e) => console.error("[Kilo New] fetchAndSendGlobalConfig failed:", e))
+        //          break
+        //        case "requestIndexingStatus":
+        //  this.fetchAndSendIndexingStatus().catch((e) =>
+        //    console.error("[Kilo New] fetchAndSendIndexingStatus failed:", e),
 
-          //  )
-          //          break
-          //        case "requestIndexingSettings":
-          //  this.postMessage(buildIndexingSettingsMessage())
-          //          break
-          //        case "requestChatSettings":
-          //  this.postMessage(buildChatSettingsMessage())
-          //          break
-          //        case "requestKiloEmbeddingModels":
-          //  this.fetchAndSendKiloEmbeddingModels().catch((e) =>
-          //    console.error("[Kilo New] fetchAndSendKiloEmbeddingModels failed:", e),
+        //  )
+        //          break
+        //        case "requestIndexingSettings":
+        //  this.postMessage(buildIndexingSettingsMessage())
+        //          break
+        //        case "requestChatSettings":
+        //  this.postMessage(buildChatSettingsMessage())
+        //          break
+        //        case "requestKiloEmbeddingModels":
+        //  this.fetchAndSendKiloEmbeddingModels().catch((e) =>
+        //    console.error("[Kilo New] fetchAndSendKiloEmbeddingModels failed:", e),
 
-          //  )
-          //          break
-          //        case "requestImageModels":
-          //  this.fetchAndSendImageModels().catch((e) => console.error("[Kilo New] fetchAndSendImageModels failed:", e))
-          //          break
-          //        case "updateConfig":
-          //  await this.handleUpdateConfig(
-          //    message.config,
-          //    message.projectConfig,
-          //    message.globalUnset,
-          //    message.projectUnset,
+        //  )
+        //          break
+        //        case "requestImageModels":
+        //  this.fetchAndSendImageModels().catch((e) => console.error("[Kilo New] fetchAndSendImageModels failed:", e))
+        //          break
+        //        case "updateConfig":
+        //  await this.handleUpdateConfig(
+        //    message.config,
+        //    message.projectConfig,
+        //    message.globalUnset,
+        //    message.projectUnset,
 
-          //  )
-          //          break
-          //        case "openSettingsTab":
-          //  if (message.tab === "indexing")
-          //  {
-          //    await vscode.commands.executeCommand("kilo-code.new.openIndexingSettings")
-          //          }
-          //  break
-          //        case "setLanguage":
-          //  await vscode.workspace
-          //    .getConfiguration("kilo-code.new")
-          //    .update("language", message.locale || undefined, vscode.ConfigurationTarget.Global)
-          //          this.connectionService.notifyLanguageChanged(message.locale as string)
-          //          break
-          //        case "requestChatCompletion":
-          //  {
-          //    if (!this.chatAutocomplete)
-          //    {
-          //      this.chatAutocomplete = new ChatTextAreaAutocomplete(this.connectionService)
-          //          }
-          //    void this.chatAutocomplete.handle(
-          //            { type: "requestChatCompletion", text: message.text, requestId: message.requestId },
-          //            {
-          //    postMessage: (msg: { type: "chatCompletionResult"; text: string; requestId: string }) =>
-          //                this.postMessage(msg),
-          //            },
-          //          )
-          //          break
-          //        }
-          //case "requestFileSearch":
-          //case "requestSessionSearch":
-          //case "requestFilePicker":
-          //case "requestTerminalContext":
-          //  await this.handleContextRequest(message)
-          //          break
-          //        case "chatCompletionAccepted":
-          //  this.chatAutocomplete?.telemetry.captureAcceptSuggestion(message.suggestionLength)
-          //          break
-          //        case "toggleRemote":
-          //case "setRemoteEnabled":
-          //case "requestRemoteStatus":
-          //  this.remoteService
-          //    ?.handleMessage(message.type, message.enabled)
-          //    .then((s) => {
-          //      if (s) this.sendRemoteStatus()
+        //  )
+        //          break
+        //        case "openSettingsTab":
+        //  if (message.tab === "indexing")
+        //  {
+        //    await vscode.commands.executeCommand("kilo-code.new.openIndexingSettings")
+        //          }
+        //  break
+        //        case "setLanguage":
+        //  await vscode.workspace
+        //    .getConfiguration("kilo-code.new")
+        //    .update("language", message.locale || undefined, vscode.ConfigurationTarget.Global)
+        //          this.connectionService.notifyLanguageChanged(message.locale as string)
+        //          break
+        //        case "requestChatCompletion":
+        //  {
+        //    if (!this.chatAutocomplete)
+        //    {
+        //      this.chatAutocomplete = new ChatTextAreaAutocomplete(this.connectionService)
+        //          }
+        //    void this.chatAutocomplete.handle(
+        //            { type: "requestChatCompletion", text: message.text, requestId: message.requestId },
+        //            {
+        //    postMessage: (msg: { type: "chatCompletionResult"; text: string; requestId: string }) =>
+        //                this.postMessage(msg),
+        //            },
+        //          )
+        //          break
+        //        }
+        //case "requestFileSearch":
+        //case "requestSessionSearch":
+        //case "requestFilePicker":
+        //case "requestTerminalContext":
+        //  await this.handleContextRequest(message)
+        //          break
+        //        case "chatCompletionAccepted":
+        //  this.chatAutocomplete?.telemetry.captureAcceptSuggestion(message.suggestionLength)
+        //          break
+        //        case "toggleRemote":
+        //case "setRemoteEnabled":
+        //case "requestRemoteStatus":
+        //  this.remoteService
+        //    ?.handleMessage(message.type, message.enabled)
+        //    .then((s) => {
+        //      if (s) this.sendRemoteStatus()
 
-          //    })
-          //    .catch((err) => console.error("[Kilo New] remote message failed:", err))
-          //          break
-          //        case "deleteSession":
-          //  await this.handleDeleteSession(message.sessionID)
-          //          break
-          //        case "renameSession":
-          //  await this.handleRenameSession(message.sessionID, message.title)
-          //          break
-          //        case "updateSetting":
-          //  await this.handleUpdateSetting(message.key, message.value)
-          //          break
-          //        case "requestBrowserSettings":
-          //  this.sendBrowserSettings()
-          //          break
-          //        case "requestClaudeCompatSetting":
-          //  this.sendClaudeCompatSetting()
-          //          break
-          //        case "requestNotificationSettings":
-          //  this.sendNotificationSettings()
-          //          break
-          //        case "testNotification":
-          //  previewSound(message.sound)
-          //          break
-          //        case "requestTimelineSetting":
-          //  this.sendTimelineSetting()
-          //          break
-          //        case "requestThroughputSetting":
-          //  this.postMessage(buildThroughputSettingMessage())
-          //          break
-          //        case "requestNotifications":
-          //  this.fetchAndSendNotifications().catch((e) =>
-          //    console.error("[Kilo New] fetchAndSendNotifications failed:", e),
+        //    })
+        //    .catch((err) => console.error("[Kilo New] remote message failed:", err))
+        //          break
+        //        case "deleteSession":
+        //  await this.handleDeleteSession(message.sessionID)
+        //          break
+        //        case "renameSession":
+        //  await this.handleRenameSession(message.sessionID, message.title)
+        //          break
+        //        case "updateSetting":
+        //  await this.handleUpdateSetting(message.key, message.value)
+        //          break
+        //        case "requestBrowserSettings":
+        //  this.sendBrowserSettings()
+        //          break
+        //        case "requestClaudeCompatSetting":
+        //  this.sendClaudeCompatSetting()
+        //          break
+        //        case "requestNotificationSettings":
+        //  this.sendNotificationSettings()
+        //          break
+        //        case "testNotification":
+        //  previewSound(message.sound)
+        //          break
+        //        case "requestTimelineSetting":
+        //  this.sendTimelineSetting()
+        //          break
+        //        case "requestThroughputSetting":
+        //  this.postMessage(buildThroughputSettingMessage())
+        //          break
+        //        case "requestNotifications":
+        //  this.fetchAndSendNotifications().catch((e) =>
+        //    console.error("[Kilo New] fetchAndSendNotifications failed:", e),
 
-          //  )
-          //          break
-          //        case "requestCloudSessions":
-          //  await handleRequestCloudSessions(this.cloudSessionCtx, message)
-          //          break
-          //        case "requestGitRemoteUrl":
-          //  void this.getGitRemoteUrl().then((url) => {
-          //  this.postMessage({ type: "gitRemoteUrlLoaded", gitUrl: url ?? null })
-          //          })
-          //          break
-          //        case "requestCloudSessionData":
-          //  void handleRequestCloudSessionData(this.cloudSessionCtx, message.sessionId)
-          //          break
-          //        case "importAndSend":
-          //  {
-          //    const files = parseMessageFiles(message.files)
-          //          void handleImportAndSend(
-          //            this.cloudSessionCtx,
-          //            message.cloudSessionId,
-          //            message.text,
-          //            typeof message.messageID === "string" ? message.messageID : undefined,
-          //            message.providerID,
-          //            message.modelID,
-          //            message.agent,
-          //            message.variant,
-          //            files,
-          //            parseReview(message.review, message.text),
-          //            typeof message.command === "string" ? message.command : undefined,
-          //            typeof message.commandArgs === "string" ? message.commandArgs : undefined,
-          //          )
-          //          break
-          //        }
-          //case "dismissNotification":
-          //  await this.handleDismissNotification(message.notificationId)
-          //          break
-          //        case "resetAllSettings":
-          //  await this.handleResetAllSettings()
-          //          break
-          //        case "resetReadNotifications":
-          //  await resetReadNotifications(this.notificationsContext())
-          //          break
-          //        case "telemetry":
-          //  TelemetryProxy.capture(message.event, message.properties)
-          //          break
-          //        case "persistVariant":
-          //  {
-          //    const stored = this.extensionContext?.globalState.get<Record<string, string>>("variantSelections") ?? { }
-          //    stored[message.key] = message.value
-          //          await this.extensionContext?.globalState.update("variantSelections", stored)
-          //          break
-          //        }
-          //case "requestVariants":
-          //  {
-          //    const variants = this.extensionContext?.globalState.get<Record<string, string>>("variantSelections") ?? { }
-          //    this.postMessage({ type: "variantsLoaded", variants })
-          //          break
-          //        }
-          //case "persistRecents":
-          //  await this.extensionContext?.globalState.update("recentModels", validateRecents(message.recents))
-          //          break
-          //        case "requestRecents":
-          //  {
-          //    const recents = validateRecents(this.extensionContext?.globalState.get("recentModels"))
-          //          this.postMessage({ type: "recentsLoaded", recents })
-          //          break
-          //        }
-          //case "toggleFavorite":
-          //  {
-          //    await this.toggleFavorite(message)
-          //          break
-          //        }
-          //case "requestFavorites":
-          //  {
-          //    const favorites = validateFavorites(this.extensionContext?.globalState.get("favoriteModels"))
-          //          this.postMessage({ type: "favoritesLoaded", favorites })
-          //          break
-          //        }
-          //case "enhancePrompt":
-          //  {
-          //    const sdkClient = this.client
-          //          if (!sdkClient)
-          //    {
-          //      this.postMessage({
-          //      type: "enhancePromptError",
-          //              error: "Not connected to CLI backend",
-          //              requestId: message.requestId,
-          //            })
-          //            break
-          //          }
-          //    void sdkClient.enhancePrompt
-          //      .enhance({ text: message.text }, { throwOnError: true })
-          //            .then(({ data }) => {
-          //      this.postMessage({ type: "enhancePromptResult", text: data.text, requestId: message.requestId })
-          //            })
-          //            .catch((err: unknown) => {
-          //              const raw = getErrorMessage(err) || "Failed to enhance prompt"
-          //              const msg = normalizeEnhancePromptErrorMessage(raw)
-          //              console.error("[Kilo New] KiloProvider: Failed to enhance prompt:", err)
-          //              vscode.window.showErrorMessage(`Enhance prompt failed: ${msg}`)
-          //              this.postMessage({
-          //                type: "enhancePromptError",
-          //                error: msg,
-          //                requestId: message.requestId,
-          //              })
-          //            })
-          //          break
-          //        }
-          //}
-          //    })
+        //  )
+        //          break
+        //        case "requestCloudSessions":
+        //  await handleRequestCloudSessions(this.cloudSessionCtx, message)
+        //          break
+        //        case "requestGitRemoteUrl":
+        //  void this.getGitRemoteUrl().then((url) => {
+        //  this.postMessage({ type: "gitRemoteUrlLoaded", gitUrl: url ?? null })
+        //          })
+        //          break
+        //        case "requestCloudSessionData":
+        //  void handleRequestCloudSessionData(this.cloudSessionCtx, message.sessionId)
+        //          break
+        //        case "importAndSend":
+        //  {
+        //    const files = parseMessageFiles(message.files)
+        //          void handleImportAndSend(
+        //            this.cloudSessionCtx,
+        //            message.cloudSessionId,
+        //            message.text,
+        //            typeof message.messageID === "string" ? message.messageID : undefined,
+        //            message.providerID,
+        //            message.modelID,
+        //            message.agent,
+        //            message.variant,
+        //            files,
+        //            parseReview(message.review, message.text),
+        //            typeof message.command === "string" ? message.command : undefined,
+        //            typeof message.commandArgs === "string" ? message.commandArgs : undefined,
+        //          )
+        //          break
+        //        }
+        //case "dismissNotification":
+        //  await this.handleDismissNotification(message.notificationId)
+        //          break
+        //        case "resetAllSettings":
+        //  await this.handleResetAllSettings()
+        //          break
+        //        case "resetReadNotifications":
+        //  await resetReadNotifications(this.notificationsContext())
+        //          break
+        //        case "telemetry":
+        //  TelemetryProxy.capture(message.event, message.properties)
+        //          break
+        //        case "persistVariant":
+        //  {
+        //    const stored = this.extensionContext?.globalState.get<Record<string, string>>("variantSelections") ?? { }
+        //    stored[message.key] = message.value
+        //          await this.extensionContext?.globalState.update("variantSelections", stored)
+        //          break
+        //        }
+        //case "requestVariants":
+        //  {
+        //    const variants = this.extensionContext?.globalState.get<Record<string, string>>("variantSelections") ?? { }
+        //    this.postMessage({ type: "variantsLoaded", variants })
+        //          break
+        //        }
+        //case "persistRecents":
+        //  await this.extensionContext?.globalState.update("recentModels", validateRecents(message.recents))
+        //          break
+        //        case "requestRecents":
+        //  {
+        //    const recents = validateRecents(this.extensionContext?.globalState.get("recentModels"))
+        //          this.postMessage({ type: "recentsLoaded", recents })
+        //          break
+        //        }
+        //case "toggleFavorite":
+        //  {
+        //    await this.toggleFavorite(message)
+        //          break
+        //        }
+        //case "requestFavorites":
+        //  {
+        //    const favorites = validateFavorites(this.extensionContext?.globalState.get("favoriteModels"))
+        //          this.postMessage({ type: "favoritesLoaded", favorites })
+        //          break
+        //        }
+        //case "enhancePrompt":
+        //  {
+        //    const sdkClient = this.client
+        //          if (!sdkClient)
+        //    {
+        //      this.postMessage({
+        //      type: "enhancePromptError",
+        //              error: "Not connected to CLI backend",
+        //              requestId: message.requestId,
+        //            })
+        //            break
+        //          }
+        //    void sdkClient.enhancePrompt
+        //      .enhance({ text: message.text }, { throwOnError: true })
+        //            .then(({ data }) => {
+        //      this.postMessage({ type: "enhancePromptResult", text: data.text, requestId: message.requestId })
+        //            })
+        //            .catch((err: unknown) => {
+        //              const raw = getErrorMessage(err) || "Failed to enhance prompt"
+        //              const msg = normalizeEnhancePromptErrorMessage(raw)
+        //              console.error("[Kilo New] KiloProvider: Failed to enhance prompt:", err)
+        //              vscode.window.showErrorMessage(`Enhance prompt failed: ${msg}`)
+        //              this.postMessage({
+        //                type: "enhancePromptError",
+        //                error: msg,
+        //                requestId: message.requestId,
+        //              })
+        //            })
+        //          break
+        //        }
+        //}
+        //    })
 
 
 

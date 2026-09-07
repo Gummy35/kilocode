@@ -1,6 +1,7 @@
 using EnvDTE;
 using KiloExtensionDTOs;
 using KiloExtensionDTOs.Parts;
+using KiloExtensionDTOs.WebviewMessages;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -205,12 +206,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
 
 
 
-    internal bool HandleEditorOpenMessage(IWebviewMessage message)
-    {
-      return EditorActions.HandleEditorAction(message, new EditorActions.Options
+    internal async Task<bool> HandleEditorOpenMessage(IEditorActionMessage message)
+    {      
+      return await EditorActions.HandleEditorAction(message, new EditorActions.Options
       {
         Dir = () => _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory(Provider.GetCurrentSessionID()),
-        Storage = VSExtensionSettings.  .globalStorageUri,
+        Storage = null, //this.extensionContext?.globalStorageUri,
         Post = (msg) => Provider.PostMessage(msg)
     });
     }
