@@ -1,6 +1,8 @@
 using EnvDTE;
+using KiloExtensionDTOs;
 using KiloExtensionDTOs.Parts;
 using KiloVisualStudioExtension.ApiClient;
+using KiloVisualStudioExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.Win32;
 using System;
@@ -199,6 +201,19 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
             if (_disposed) return;
             _disposed = true;
         }
+
+
+
+
+    internal bool HandleEditorOpenMessage(IWebviewMessage message)
+    {
+      return EditorActions.HandleEditorAction(message, new EditorActions.Options
+      {
+        Dir = () => _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory(Provider.GetCurrentSessionID()),
+        Storage = VSExtensionSettings.  .globalStorageUri,
+        Post = (msg) => Provider.PostMessage(msg)
+    });
     }
+  }
 }
 

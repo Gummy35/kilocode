@@ -29,6 +29,12 @@ namespace KiloVisualStudioExtension.Utils
       return Task.Run(() => System.IO.File.ReadAllBytes(path));
     }
 
+    public static Task WriteAllBytesAsync(string path, byte[] data)
+    {
+      return Task.Run(() => System.IO.File.WriteAllBytes(path, data));
+    }
+
+
     internal static Task RemoveFileAsync(string file)
     {
       return Task.Run(() =>
