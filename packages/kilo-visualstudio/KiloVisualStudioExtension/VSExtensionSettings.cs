@@ -683,23 +683,6 @@ namespace KiloVisualStudioExtension
     /// allowing lower-priority scopes to become effective again.
     /// </para>
     /// </remarks>
-    /// <summary>
-    /// Updates a setting value synchronously (persists asynchronously).
-    /// </summary>
-    /// <param name="key">The setting key.</param>
-    /// <param name="value">The value to set. Pass <see langword="null"/> to remove the setting.</param>
-    /// <param name="scope">The scope where the setting should be stored.</param>
-    /// <exception cref="ArgumentException">The key is null/empty or scope is <see cref="SettingScope.Default"/>.</exception>
-    /// <remarks>
-    /// <para>
-    /// This method updates the in-memory cache immediately and persists to disk asynchronously.
-    /// The change is visible to all readers immediately.
-    /// </para>
-    /// <para>
-    /// Passing <see langword="null"/> for the value removes the setting from the specified scope,
-    /// allowing lower-priority scopes to become effective again.
-    /// </para>
-    /// </remarks>
     public static void Update(
         string key,
         object? value,
@@ -792,15 +775,6 @@ namespace KiloVisualStudioExtension
           });
     }
 
-    /// <summary>
-    /// Removes a setting from the specified scope.
-    /// </summary>
-    /// <param name="key">The setting key.</param>
-    /// <param name="scope">The scope from which to remove the setting.</param>
-    /// <remarks>
-    /// Removing a setting allows lower-priority scopes to become effective again.
-    /// For example, removing a workspace setting will cause the global setting to take effect.
-    /// </remarks>
     /// <summary>
     /// Removes a setting from the specified scope.
     /// </summary>
