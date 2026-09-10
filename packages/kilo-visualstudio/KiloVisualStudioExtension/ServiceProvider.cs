@@ -1,3 +1,5 @@
+using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -45,6 +47,15 @@ namespace KiloVisualStudioExtension
     public void Clear()
     {
       _services.Clear();
+    }
+
+    public EnvDTE.DTE? GetDTE()
+    {
+      return ThreadHelper.JoinableTaskFactory.Run(async () =>
+      {
+        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        return (EnvDTE.DTE?)await KiloProvider.Package.GetServiceAsync(typeof(EnvDTE.DTE));
+      });
     }
   }
 

@@ -147,37 +147,6 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
       }
     }
 
-    /// <summary>
-    /// Handles the requestWorkStyle message from the webview.
-    /// Work style endpoint is not available in the current API.
-    /// Sends default work style configuration.
-    /// </summary>
-    /// <param name="payload">The message payload (unused).</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task SendWorkStyleSettings()
-    {
-      // Work style endpoint does not exist in current API
-      //await Provider.PostMessage(
-      //  new WorkStyleLoadedMessage { 
-      //    Style = KiloExtensionDTOs.WorkStyleStateEnum.Skipped
-      //  });
-      await Provider.SendWorkStyleLoadedAsync(KiloExtensionDTOs.WorkStyleStateEnum.Skipped);
-      //      new { mode = "ask", autoApprove = new { enabled = false, limit = 0 } });
-    }
-
-    /// <summary>
-    /// Handles the applyWorkStyle message from the webview.
-    /// Work style endpoint is not available in the current API.
-    /// Returns error indicating the feature is not supported.
-    /// </summary>
-    /// <param name="payload">The message payload containing the new work style.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task HandleApplyWorkStyleAsync(JsonElement? payload)
-    {
-      // Work style endpoint does not exist in current API
-      await Provider.SendErrorAsync("Not supported", "Work style configuration is not available in the current API");
-    }
-
     public void Dispose()
     {
       if (_disposed) return;
@@ -187,23 +156,18 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
 
     internal void DisposeWatchers()
     {
-      VSExtensionSettings.ConfigurationChanged -= _autocompleteConfigDisposable;
-      _autocompleteConfigDisposable = null;
-      VSExtensionSettings.ConfigurationChanged -= _indexingConfigDisposable;
-      _indexingConfigDisposable = null;
-      VSExtensionSettings.ConfigurationChanged -= _chatConfigDisposable;
-      _chatConfigDisposable = null;
-      VSExtensionSettings.ConfigurationChanged -= _throughputConfigDisposable;
-      _throughputConfigDisposable = null;
-      VSExtensionSettings.ConfigurationChanged -= _telemetryStateDisposable;
-      _telemetryStateDisposable = null;
+      _autocompleteConfigDisposable?.Dispose();
+      _indexingConfigDisposable?.Dispose();
+      _chatConfigDisposable?.Dispose();
+      _throughputConfigDisposable?.Dispose();
+      _telemetryStateDisposable?.Dispose();
     }
 
-    private Action<ConfigurationChangedEventArgs>? _autocompleteConfigDisposable;
-    private Action<ConfigurationChangedEventArgs>? _indexingConfigDisposable;
-    private Action<ConfigurationChangedEventArgs>? _chatConfigDisposable;
-    private Action<ConfigurationChangedEventArgs>? _throughputConfigDisposable;
-    private Action<ConfigurationChangedEventArgs>? _telemetryStateDisposable;
+    private IDisposable? _autocompleteConfigDisposable;
+    private IDisposable? _indexingConfigDisposable;
+    private IDisposable? _chatConfigDisposable;
+    private IDisposable? _throughputConfigDisposable;
+    private IDisposable? _telemetryStateDisposable;
 
     internal void StartWatchers(Action<object> action)
     {
@@ -214,9 +178,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
       _telemetryStateDisposable = watchTelemetryState(action);
     }
 
-    private Action<ConfigurationChangedEventArgs> watchAutocompleteConfig(Action<object> action)
+    private IDisposable watchAutocompleteConfig(Action<object> action)
     {
-      Action<ConfigurationChangedEventArgs> handler = (e) =>
+      EventHandler<ConfigurationChangedEventArgs> handler = (sender, e) =>
       {
         if (e.AffectsConfiguration("kilo-code.new.autocomplete"))
         {
@@ -225,12 +189,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         }
       };
       VSExtensionSettings.ConfigurationChanged += handler;
-      return handler;
+      return new DelegateDisposable(
+        () =>
+        {
+          VSExtensionSettings.ConfigurationChanged -=
+              handler;
+        });
     }
 
-    private Action<ConfigurationChangedEventArgs> watchIndexingConfig(Action<object> action)
+    private IDisposable watchIndexingConfig(Action<object> action)
     {
-      Action<ConfigurationChangedEventArgs> handler = (e) =>
+      EventHandler<ConfigurationChangedEventArgs> handler = (sender, e) =>
       {
         if (e.AffectsConfiguration("kilo-code.new.indexing"))
         {
@@ -239,12 +208,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         }
       };
       VSExtensionSettings.ConfigurationChanged += handler;
-      return handler;
+      return new DelegateDisposable(
+        () =>
+        {
+          VSExtensionSettings.ConfigurationChanged -=
+              handler;
+        });
     }
 
-    private Action<ConfigurationChangedEventArgs> watchChatConfig(Action<object> action)
+    private IDisposable watchChatConfig(Action<object> action)
     {
-      Action<ConfigurationChangedEventArgs> handler = (e) =>
+      EventHandler<ConfigurationChangedEventArgs> handler = (sender, e) =>
       {
         if (e.AffectsConfiguration("kilo-code.new.chat"))
         {
@@ -253,12 +227,17 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         }
       };
       VSExtensionSettings.ConfigurationChanged += handler;
-      return handler;
+      return new DelegateDisposable(
+        () =>
+        {
+          VSExtensionSettings.ConfigurationChanged -=
+              handler;
+        });
     }
 
-    private Action<ConfigurationChangedEventArgs> watchThroughputConfig(Action<object> action)
+    private IDisposable watchThroughputConfig(Action<object> action)
     {
-      Action<ConfigurationChangedEventArgs> handler = (e) =>
+      EventHandler<ConfigurationChangedEventArgs> handler = (sender, e) =>
       {
         if (e.AffectsConfiguration("kilo-code.new.showTokenThroughput"))
         {
@@ -267,10 +246,15 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
         }
       };
       VSExtensionSettings.ConfigurationChanged += handler;
-      return handler;
+      return new DelegateDisposable(
+        () =>
+        {
+          VSExtensionSettings.ConfigurationChanged -=
+              handler;
+        });
     }
 
-    private Action<ConfigurationChangedEventArgs> watchTelemetryState(Action<object> action)
+    private IDisposable watchTelemetryState(Action<object> action)
     {
       return null;
     //  return vscode.env.onDidChangeTelemetryEnabled((enabled) => {

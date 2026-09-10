@@ -34,7 +34,197 @@ try {
     }
 }
 
-(Get-Content "$TempOpenApiFile") -replace '"type": "integer"', '"type": "integer", "format": "int64"' | Set-Content "$TempOpenApiFile"
+# Step 1b: Normalize only boolean/string anyOf schemas
+Write-Host ""
+Write-Host "Step 1b: Normalizing boolean anyOf schemas" `
+    -ForegroundColor Yellow
+
+$openApiDocument =
+    Get-Content -Raw "$TempOpenApiFile" |
+    ConvertFrom-Json
+
+function Has-Property {
+    param(
+        [object]$Object,
+        [string]$Name
+    )
+
+    return $null -ne $Object.PSObject.Properties[$Name]
+}
+
+function Is-BooleanSchema {
+    param(
+        [object]$Schema
+    )
+
+    return (
+        $null -ne $Schema -and
+        (Has-Property $Schema "type") -and
+        $Schema.type -eq "boolean"
+    )
+}
+
+function Is-TrueFalseStringSchema {
+    param(
+        [object]$Schema
+    )
+
+    if ($null -eq $Schema) {
+        return $false
+    }
+
+    if (
+        -not (Has-Property $Schema "type") -or
+        $Schema.type -ne "string"
+    ) {
+        return $false
+    }
+
+    if (-not (Has-Property $Schema "enum")) {
+        return $false
+    }
+
+    $enumValues = @($Schema.enum)
+
+    if ($enumValues.Count -ne 2) {
+        return $false
+    }
+
+    $normalizedValues = @(
+        $enumValues |
+            ForEach-Object {
+                ([string]$_).ToLowerInvariant()
+            }
+    )
+
+    return (
+        $normalizedValues -contains "true" -and
+        $normalizedValues -contains "false"
+    )
+}
+
+function Is-BooleanStringAnyOf {
+    param(
+        [object]$Schema
+    )
+
+    if (
+        $null -eq $Schema -or
+        -not (Has-Property $Schema "anyOf")
+    ) {
+        return $false
+    }
+
+    $anyOf = @($Schema.anyOf)
+
+    if ($anyOf.Count -ne 2) {
+        return $false
+    }
+
+    $hasBooleanSchema = $false
+    $hasTrueFalseStringSchema = $false
+
+    foreach ($variant in $anyOf) {
+        if (Is-BooleanSchema $variant) {
+            $hasBooleanSchema = $true
+        }
+        elseif (Is-TrueFalseStringSchema $variant) {
+            $hasTrueFalseStringSchema = $true
+        }
+    }
+
+    return (
+        $hasBooleanSchema -and
+        $hasTrueFalseStringSchema
+    )
+}
+
+function Normalize-BooleanStringAnyOf {
+    param(
+        [object]$Node,
+        [string]$Path = '$'
+    )
+
+    if ($null -eq $Node) {
+        return 0
+    }
+
+    $changeCount = 0
+
+    if ($Node -is [System.Array]) {
+        for ($i = 0; $i -lt $Node.Count; $i++) {
+            $changeCount += Normalize-BooleanStringAnyOf `
+                -Node $Node[$i] `
+                -Path "$Path[$i]"
+        }
+
+        return $changeCount
+    }
+
+    if (
+        $Node -isnot [PSCustomObject] -and
+        $Node -isnot [System.Management.Automation.PSObject]
+    ) {
+        return 0
+    }
+
+    if (Is-BooleanStringAnyOf $Node) {
+        $Node.PSObject.Properties.Remove("anyOf")
+
+        if (Has-Property $Node "type") {
+            $Node.type = "boolean"
+        }
+        else {
+            $Node |
+                Add-Member `
+                    -MemberType NoteProperty `
+                    -Name "type" `
+                    -Value "boolean"
+        }
+
+        Write-Host (
+            "  Normalized anyOf schema at {0}" -f $Path
+        ) -ForegroundColor Gray
+
+        $changeCount++
+    }
+
+    # Copy names before recursively traversing children.
+    $propertyNames = @(
+        $Node.PSObject.Properties.Name
+    )
+
+    foreach ($propertyName in $propertyNames) {
+        if ([string]::IsNullOrWhiteSpace($propertyName)) {
+            continue
+        }
+
+        $property = $Node.PSObject.Properties.Match($propertyName)
+
+        if ($null -eq $property -or $null -eq $property.Value) {
+            continue
+        }
+
+        $changeCount += Normalize-BooleanStringAnyOf `
+            -Node $property.Value `
+            -Path "$Path.$propertyName"
+    }
+
+    return $changeCount
+}
+
+$normalizedCount =
+    Normalize-BooleanStringAnyOf `
+        -Node $openApiDocument
+
+$openApiDocument |
+    ConvertTo-Json -Depth 100 |
+    Set-Content "$TempOpenApiFile" -Encoding UTF8
+
+Write-Host (
+    "  Normalized {0} boolean anyOf schema(s)" -f $normalizedCount
+) -ForegroundColor Green
+
 
 # Step 2: Run NSwag
 Write-Host ""

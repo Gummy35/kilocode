@@ -602,7 +602,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, Roots roots, double? start, double? cursor, string search, double? limit, Archived archived);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, bool? roots, double? start, double? cursor, string search, double? limit, bool? archived);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -613,7 +613,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, Roots roots, double? start, double? cursor, string search, double? limit, Archived archived, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, bool? roots, double? start, double? cursor, string search, double? limit, bool? archived, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Background subagents
@@ -1703,7 +1703,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, Roots2 roots, double? start, string search, double? limit);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, bool? roots, double? start, string search, double? limit);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1714,7 +1714,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, Roots2 roots, double? start, string search, double? limit, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, bool? roots, double? start, string search, double? limit, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Create session
@@ -8474,7 +8474,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, Roots roots, double? start, double? cursor, string search, double? limit, Archived archived)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, bool? roots, double? start, double? cursor, string search, double? limit, bool? archived)
         {
             return Experimental_session_listAsync(directory, workspace, projectID, worktrees, current, roots, start, cursor, search, limit, archived, System.Threading.CancellationToken.None);
         }
@@ -8488,7 +8488,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, Roots roots, double? start, double? cursor, string search, double? limit, Archived archived, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GlobalSession>> Experimental_session_listAsync(string directory, string workspace, string projectID, bool? worktrees, Current? current, bool? roots, double? start, double? cursor, string search, double? limit, bool? archived, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -14695,7 +14695,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, Roots2 roots, double? start, string search, double? limit)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, bool? roots, double? start, string search, double? limit)
         {
             return Session_listAsync(directory, workspace, scope, path, roots, start, search, limit, System.Threading.CancellationToken.None);
         }
@@ -14709,7 +14709,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of sessions</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, Roots2 roots, double? start, string search, double? limit, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Session1>> Session_listAsync(string directory, string workspace, Scope? scope, string path, bool? roots, double? start, string search, double? limit, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -51035,60 +51035,6 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Roots
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Roots FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Roots>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Archived
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Archived FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Archived>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum Dirs
     {
 
@@ -51459,33 +51405,6 @@ namespace KiloVisualStudioExtension.ApiClient
         [System.Runtime.Serialization.EnumMember(Value = @"project")]
         Project = 0,
 
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Roots2
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Roots2 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Roots2>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]

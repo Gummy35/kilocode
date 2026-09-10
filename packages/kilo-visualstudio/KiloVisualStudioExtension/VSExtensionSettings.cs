@@ -179,6 +179,27 @@ namespace KiloVisualStudioExtension
           BuildKey(key));
     }
 
+    public bool IsConfigured(
+    string key,
+    SettingScope scope)
+    {
+      return VSExtensionSettings.IsConfigured(
+          BuildKey(key),
+          scope);
+    }
+
+    // Inspect
+    public T? GetAtScope<T>(
+    string key,
+    SettingScope scope)
+    {
+      return VSExtensionSettings.GetAtScope<T>(
+          BuildKey(key),
+          scope);
+    }
+
+
+
     /// <summary>
     /// Gets the scope where a setting is configured.
     /// </summary>
@@ -424,7 +445,7 @@ namespace KiloVisualStudioExtension
     /// <remarks>
     /// Set this value by calling <see cref="SetWorkspaceRoot"/> when a solution is opened or closed.
     /// </remarks>
-   
+
     public static string? WorkspaceRoot
     {
       get
@@ -436,7 +457,7 @@ namespace KiloVisualStudioExtension
       }
     }
 
- 
+
     /// <summary>
     /// Gets the path to the workspace settings file.
     /// </summary>
@@ -454,7 +475,7 @@ namespace KiloVisualStudioExtension
       }
     }
 
- 
+
     /// <summary>
     /// Gets or creates a domain-specific configuration accessor.
     /// </summary>
@@ -511,7 +532,7 @@ namespace KiloVisualStudioExtension
     ///   <item><description>Raises <see cref="ConfigurationChanged"/> to notify listeners</description></item>
     /// </list>
     /// </remarks>
-   
+
     public static void SetWorkspaceRoot(
         string? workspaceRoot)
     {
@@ -579,7 +600,7 @@ namespace KiloVisualStudioExtension
     ///   <item><description>Default value</description></item>
     /// </list>
     /// </remarks>
-   
+
     public static T Get<T>(
         string key,
         T defaultValue = default!)
@@ -633,6 +654,66 @@ namespace KiloVisualStudioExtension
                _globalSettings.ContainsKey(key);
       }
     }
+
+    public static bool IsConfigured(
+    string key,
+    SettingScope scope)
+    {
+      if (string.IsNullOrWhiteSpace(key))
+        return false;
+
+      EnsureInitialized();
+
+      lock (_lock)
+      {
+        var settings = scope switch
+        {
+          SettingScope.Global => _globalSettings,
+          SettingScope.Workspace => _workspaceSettings,
+          _ => null
+        };
+
+        return settings?.ContainsKey(key) == true;
+      }
+    }
+
+    public static T? GetAtScope<T>(
+    string key,
+    SettingScope scope)
+    {
+      if (string.IsNullOrWhiteSpace(key))
+        return default;
+
+      EnsureInitialized();
+
+      JToken? token;
+
+      lock (_lock)
+      {
+        var settings = scope switch
+        {
+          SettingScope.Global => _globalSettings,
+          SettingScope.Workspace => _workspaceSettings,
+          _ => null
+        };
+
+        if (settings == null ||
+            !settings.TryGetValue(key, out token))
+        {
+          return default;
+        }
+      }
+
+      try
+      {
+        return token.ToObject<T>();
+      }
+      catch
+      {
+        return default;
+      }
+    }
+
 
     /// <summary>
     /// Gets the scope where a setting is configured.
@@ -1435,6 +1516,25 @@ namespace KiloVisualStudioExtension
         Debug.WriteLine(
             $"[Kilo] ConfigurationChanged failed: {ex}");
       }
+    }
+  }
+
+  public sealed class DelegateDisposable : IDisposable
+  {
+    private Action? _dispose;
+
+    public DelegateDisposable(Action dispose)
+    {
+      _dispose = dispose;
+    }
+
+    public void Dispose()
+    {
+      var dispose = Interlocked.Exchange(
+          ref _dispose,
+          null);
+
+      dispose?.Invoke();
     }
   }
 }

@@ -31,6 +31,7 @@ using KiloVisualStudioExtension.Services.Handlers.SessionControl;
 using KiloVisualStudioExtension.Services.Handlers.Settings;
 using KiloVisualStudioExtension.Services.Handlers.StateManagement;
 using KiloVisualStudioExtension.Services.Handlers.Ui;
+using KiloVisualStudioExtension.Services.WorkStyle;
 using KiloVisualStudioExtension.Utils;
 using KiloVisualStudioExtension.WebviewMessageHandlers;
 using MessagePack;
@@ -52,6 +53,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using VSLangProj110;
+using static KiloVisualStudioExtension.WebviewMessageHandlers.SidebarWorktreeHandler;
 using static KiloVisualStudioExtension.WebviewMessageHandlers.SuggestionHandler;
 using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
 using static System.Net.Mime.MediaTypeNames;
@@ -251,6 +253,8 @@ namespace KiloVisualStudioExtension
     private readonly MemoryService _memoryService;
     private readonly ProviderService _providerActionService;
     private readonly RemoteStatusService _remoteService;
+    private readonly VisualStudioCommandService _commandService;
+
     private readonly VisibleTaskStreams _visibleTaskStreams;
 
     private bool _isWebviewReady = false;
@@ -276,15 +280,10 @@ namespace KiloVisualStudioExtension
     // private KiloExtensionDTOs.KiloConfig.Config? _cachedGlobalConfig = null;
     private int _pending = 0;
 
+    public CreateWorktreeHandlerDelegate CreateWorktreeHandler { get; set; }
+    public ContinueInWorktreeHandlerDelegate ContinueInWorktreeHandler { get; set; }
 
-    private EnvDTE.DTE? GetDTE()
-    {
-      return ThreadHelper.JoinableTaskFactory.Run(async () =>
-      {
-        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-        return (EnvDTE.DTE?)await KiloProvider.Package.GetServiceAsync(typeof(EnvDTE.DTE));
-      });
-    }
+
 
     /// <summary>
     /// Constructor for factory creation (webView may be null initially).
@@ -301,7 +300,7 @@ namespace KiloVisualStudioExtension
       _serviceProvider.AddService(this);
       _serviceProvider.AddService(connectionService);
       _serviceProvider.AddService(webView ?? throw new ArgumentNullException(nameof(webView)));
-     
+
       _sseHelper = _serviceProvider.AddService(new SSEHandlerService(_serviceProvider, PostMessage));
       _connectionService.RegisterSSEHelper(instanceId, _sseHelper);
       _streamScheduler = _serviceProvider.AddService(new SessionStreamScheduler(PostMessage));
@@ -310,21 +309,21 @@ namespace KiloVisualStudioExtension
 
       // Initialize CacheService - it manages its own internal storage
       var cacheService = _serviceProvider.AddService<ICacheService>(new CacheService(_serviceProvider));
-      
+
 
       _sessionService = _serviceProvider.GetService<SessionHandlerService>();
 
-      var dte = GetDTE();
+      var dte = _serviceProvider.GetDTE();
       if (dte != null)
       {
-        var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(_serviceProvider, dte));
+        var vsProvider = _serviceProvider.AddService(new VisualStudioDirectoryProvider(_serviceProvider));
         _projectDirectoryService = vsProvider.CreateProvider(
             projectDirectoryOverride: null // or specify a path like @"C:\MyProject"
                                            //sessionDirectories: _sessionDirectories
             );
         _serviceProvider.AddService(_projectDirectoryService);
       }
-//      _projectDirectoryService = _serviceProvider.GetService<ProjectDirectoryProvider>();
+      //      _projectDirectoryService = _serviceProvider.GetService<ProjectDirectoryProvider>();
       _authService = _serviceProvider.GetService<AuthHandlerService>();
       _configService = _serviceProvider.GetService<ConfigHandlerService>();
       _providerRequestService = _serviceProvider.GetService<ProviderRequestService>();
@@ -349,6 +348,7 @@ namespace KiloVisualStudioExtension
       _providerActionService = _serviceProvider.GetService<ProviderService>();
 
       _remoteService = _serviceProvider.GetService<RemoteStatusService>();
+      _commandService = _serviceProvider.GetService<VisualStudioCommandService>();
 
       _sseHelper.SetRemoteStatusService(_remoteService);
 
@@ -368,16 +368,16 @@ namespace KiloVisualStudioExtension
       });
     }
 
-  //  public attachToWebview(
-  // webview: vscode.Webview,
-  // options?: { onBeforeMessage ?: (msg: Record<string, unknown>) => Promise < Record<string, unknown> | null > },
-  //): void {
-  //  this.isWebviewReady = false
-  //  this.webview = webview
-  //  if (!this.autoApproveBridge) this.onBeforeMessage = options?.onBeforeMessage ?? null
-  //  this.setupWebviewMessageHandler(webview)
-  //  this.initializeConnection()
-  //}
+    //  public attachToWebview(
+    // webview: vscode.Webview,
+    // options?: { onBeforeMessage ?: (msg: Record<string, unknown>) => Promise < Record<string, unknown> | null > },
+    //): void {
+    //  this.isWebviewReady = false
+    //  this.webview = webview
+    //  if (!this.autoApproveBridge) this.onBeforeMessage = options?.onBeforeMessage ?? null
+    //  this.setupWebviewMessageHandler(webview)
+    //  this.initializeConnection()
+    //}
 
 
     #region Internal Helper Methods for Handler Services
@@ -403,7 +403,7 @@ namespace KiloVisualStudioExtension
       }
     }
 
-    
+
 
     internal string GetConnectionState()
     {
@@ -538,7 +538,7 @@ namespace KiloVisualStudioExtension
       var costSvc = ServiceProvider.GetService<CostService>();
       var limit = costSvc.Limit;
       if (limit == null || limit == 0.0 || double.IsNaN(limit.Value) || double.IsInfinity(limit.Value) || cost < limit) return;
-      
+
       costSvc.SetSessionCost(sessionID, cost);
       var alert = costSvc.Check(sessionID);
       if (alert == null) return;
@@ -588,7 +588,7 @@ namespace KiloVisualStudioExtension
       // TODO : check strong typed
       var catalog = new KiloEmbeddingModelsLoadedMessageCatalogType
       {
-      //  Models = models
+        //  Models = models
       };
       PostMessage(new KiloEmbeddingModelsLoadedMessage { Catalog = catalog });
       await Task.CompletedTask;
@@ -691,7 +691,7 @@ namespace KiloVisualStudioExtension
 
     internal async Task SendIndexingStatusAsync(JsonElement status)
     {
- //     PostMessage(new IndexingStatusLoadedMessage { Status = status });
+      //     PostMessage(new IndexingStatusLoadedMessage { Status = status });
       await Task.CompletedTask;
     }
 
@@ -728,7 +728,7 @@ namespace KiloVisualStudioExtension
     internal void ClearCurrentSession()
     {
       _currentSession = null;
-//      _contextSessionID = null;
+      //      _contextSessionID = null;
     }
 
     //internal void RemoveTrackedSession(string sessionID)
@@ -949,7 +949,8 @@ namespace KiloVisualStudioExtension
         {
           _ = ProcessMessageAsync(ev.Type, message);
         }
-      } catch (Exception e)
+      }
+      catch (Exception e)
       {
         System.Diagnostics.Debug.WriteLine($"[Kilo] KiloProvider: Couldn't deserialize Webview event {ev.Payload.ToString()} : {e.Message}");
       }
@@ -962,7 +963,7 @@ namespace KiloVisualStudioExtension
     /// </summary>
     internal async Task ReloadAfterAuthChangeAsync()
     {
-    //   _requirements.Clear(); AgentsRequirementController => Future plan
+      //   _requirements.Clear(); AgentsRequirementController => Future plan
       await FetchAndSendConfigAsync();
       await Task.WhenAll(
         FetchAndSendProvidersAsync(),
@@ -1044,10 +1045,12 @@ namespace KiloVisualStudioExtension
 
         //      if (intercepted === null) return
         if (intercepted == null) return;
+
         //      message = intercepted
         message = intercepted;
-        if (await EarlyMessageRouter.RouteWebviewMessage(message, 
-          new EarlyMessageRouter.Ctx  
+
+        if (await EarlyMessageRouter.RouteWebviewMessage(message,
+          new EarlyMessageRouter.Ctx
           {
             Question = GetQuestionCtx(),
             Client = this.GetNswagClient(),
@@ -1058,36 +1061,36 @@ namespace KiloVisualStudioExtension
             OpenSessions = (ids) => TrackOpenSessions(ids),
             ServiceProvider = _serviceProvider
           })
-        ) {
+        )
+          return;
+
+        if (message is IEditorActionMessage editorActionMessage
+          && await _serviceProvider.GetService<UiService>().HandleEditorOpenMessage(editorActionMessage)) return;
+
+        if (await _serviceProvider.GetService<WorkStyleService>().HandleMessageAsync(
+            message,
+            connection: _connectionService,
+            directory: _projectDirectoryService.GetWorkspaceDirectory(GetCurrentSessionID()),
+            post: (msg) => PostMessage(msg)
+          ))
+          return;
+
+        if (await SidebarWorktreeHandler.HandleWorktreeMessage(message, new SidebarWorktreeHandler.Ctx
+        {
+          Post = (msg) => PostMessage(msg),
+          OpenAgentManager = () => _commandService.ExecuteCommandAsync("KiloCode.AgentManagerOpen"),
+          OpenAdvancedWorktree =  () => _commandService.ExecuteCommandAsync("KiloCode.AgentManagerAdvancedWorktree"),
+          OpenChanges = (string sessionId, string turnId) =>
+                    _commandService.ExecuteCommandAsync("KiloCode.ShowChanges", $"{sessionId} {turnId}"),
+          CurrentSessionId = GetCurrentSessionID(),
+          CreateWorktree = async (baseBranch, branchName) =>
+                    await CreateWorktreeHandler(baseBranch, branchName),
+          ContinueInWorktree = ContinueInWorktreeHandler,
+                })
+              )
+        {
           return;
         }
-        if (message is IEditorActionMessage editorActionMessage 
-          && await _serviceProvider.GetService<UiService>().HandleEditorOpenMessage(editorActionMessage)) return;
-        //if (
-        //  await handleWorkStyleMessage({
-        //  message,
-        //          connection: this.connectionService,
-        //          directory: this.getWorkspaceDirectory(this.currentSession?.id),
-        //          post: (msg) => this.postMessage(msg),
-        //        })
-        //      )
-        //        return
-        //      if (
-        //        await handleSidebarWorktreeMessage(message, {
-        //        post: (msg) => this.postMessage(msg),
-        //          openAgentManager: () => vscode.commands.executeCommand("kilo-code.new.agentManagerOpen"),
-        //          openAdvancedWorktree: () => vscode.commands.executeCommand("kilo-code.new.agentManager.advancedWorktree"),
-        //          openChanges: (sessionId ?: string, turnId ?: string) =>
-        //            vscode.commands.executeCommand("kilo-code.new.showChanges", { sessionId, turnId }),
-        //          currentSessionId: this.currentSession?.id,
-        //          createWorktree: async (baseBranch, branchName) => {
-        //            await this.createWorktreeHandler?.(baseBranch, branchName)
-        //          },
-        //          continueInWorktree: this.continueInWorktreeHandler ?? undefined,
-        //        })
-        //      ) {
-        //          return
-        //      }
         //        if (await this.handleModelSelectorExpandedMessage(message)) return
         //        this.handleWebviewFocusMessage(message)
         //      this.visibleTaskStreams.handle(message)
@@ -1657,7 +1660,7 @@ namespace KiloVisualStudioExtension
             await _settingsService.SendIndexingSettings();
             break;
 
-          case "requestChatSettings":            
+          case "requestChatSettings":
             await _settingsService.SendChatSettings();
             break;
 

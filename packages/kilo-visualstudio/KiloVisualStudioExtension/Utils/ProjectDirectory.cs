@@ -2,6 +2,7 @@ using EnvDTE;
 using KiloVisualStudioExtension.Services;
 using KiloVisualStudioExtension.Services.Handlers.Session;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -228,46 +229,52 @@ namespace KiloVisualStudioExtension.Utils
   {
     private readonly DTE _dte;
 
-    public VisualStudioDirectoryProvider(ServiceProvider serviceProvider, DTE dte) : base(serviceProvider)
+    public VisualStudioDirectoryProvider(ServiceProvider serviceProvider) : base(serviceProvider)
     {
-      _dte = dte;
+      _dte = serviceProvider.GetDTE();
     }
 
     public string GetActiveProjectDirectory()
     {
-      try
-      {
-        var activeDoc = _dte.ActiveDocument;
-        if (activeDoc != null && !string.IsNullOrEmpty(activeDoc.FullName))
-        {
-          var docPath = Path.GetDirectoryName(activeDoc.FullName);
-          if (!string.IsNullOrEmpty(docPath))
-          {
-            foreach (Project project in _dte.Solution.Projects)
-            {
-              var projectPath = GetProjectPath(project);
-              if (projectPath != null && docPath.StartsWith(projectPath, StringComparison.OrdinalIgnoreCase))
-              {
-                return projectPath;
-              }
-            }
+      return ThreadHelper.JoinableTaskFactory.Run(
+       async delegate
+       {
+         await ThreadHelper.JoinableTaskFactory
+              .SwitchToMainThreadAsync();
+         try
+         {
+           var activeDoc = _dte.ActiveDocument;
+           if (activeDoc != null && !string.IsNullOrEmpty(activeDoc.FullName))
+           {
+             var docPath = Path.GetDirectoryName(activeDoc.FullName);
+             if (!string.IsNullOrEmpty(docPath))
+             {
+               foreach (Project project in _dte.Solution.Projects)
+               {
+                 var projectPath = GetProjectPath(project);
+                 if (projectPath != null && docPath.StartsWith(projectPath, StringComparison.OrdinalIgnoreCase))
+                 {
+                   return projectPath;
+                 }
+               }
 
-            return docPath;
-          }
-        }
-      }
-      catch
-      {
-        // Ignore errors and fall through
-      }
+               return docPath;
+             }
+           }
+         }
+         catch
+         {
+           // Ignore errors and fall through
+         }
 
-      var solutionDir = GetSolutionDirectory();
-      if (!string.IsNullOrEmpty(solutionDir))
-      {
-        return solutionDir;
-      }
+         var solutionDir = GetSolutionDirectory();
+         if (!string.IsNullOrEmpty(solutionDir))
+         {
+           return solutionDir;
+         }
 
-      return Directory.GetCurrentDirectory();
+         return Directory.GetCurrentDirectory();
+       });
     }
 
     public string? GetSolutionDirectory()

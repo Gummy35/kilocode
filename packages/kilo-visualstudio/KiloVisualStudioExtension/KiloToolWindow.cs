@@ -63,6 +63,11 @@ namespace KiloVisualStudioExtension
             _webView.SetConnectionService(KiloVisualStudioExtensionPackage.GetConnectionService());
             _vsProvider = ProviderFactory.CreateSidebarProvider(_webView);
 
+            _vsProvider.ContinueInWorktreeHandler = (sessionId, progress) => { return Task.CompletedTask; };
+            // agentManagerProvider.continueFromSidebar(sessionId, progress),
+            _vsProvider.CreateWorktreeHandler = (baseBranch, branchName) => { return Task.CompletedTask; };
+            //    agentManagerProvider.createFromSidebar(baseBranch, branchName),
+  
             // Connect to backend (starts lazily if not already running)
             await KiloVisualStudioExtensionPackage.GetConnectionService().ConnectAsync();
             await _webView!.InitializeAsync();
