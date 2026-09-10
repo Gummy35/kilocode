@@ -57,7 +57,7 @@ namespace KiloVisualStudioExtension.Services
             return string.Join("\n", lines);
         }
 
-        public static async Task RecordForkHandoff(IKiloClient client, string sessionId, string directory)
+        public static async Task RecordForkHandoffAsync(IKiloClient client, string sessionId, string directory)
         {
             var payload = new SessionPromptRequest
             {

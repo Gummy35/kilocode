@@ -68,7 +68,7 @@ namespace KiloVisualStudioExtension.AgentManager
         string? WorkspacePath();
         (bool enabled, string prefix) AutoBranchNaming();
         void ShowError(string message);
-        Task OpenDocument(string path);
+        Task OpenDocumentAsync(string path);
         void OpenFile(string path, int? line = null, int? column = null);
         void OpenFolder(string path, bool newWindow = false);
         IOutputHandle CreateOutput(string name);
@@ -141,7 +141,7 @@ namespace KiloVisualStudioExtension.AgentManager
         /// <summary>
         /// Open a text document in the editor.
         /// </summary>
-        public async Task OpenDocument(string path)
+        public async Task OpenDocumentAsync(string path)
         {
             try
             {

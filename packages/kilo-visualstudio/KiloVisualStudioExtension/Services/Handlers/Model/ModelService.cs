@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using KiloVisualStudioExtension.ApiClient;
-using ApiImageModel = KiloVisualStudioExtension.ApiClient.Anonymous10;
+using ApiImageModel = KiloVisualStudioExtension.ApiClient.KiloModelsImagesResponseSchema200Item;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Model
 {

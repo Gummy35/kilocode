@@ -100,7 +100,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                     return;
                 }
 
-                var forkBody = new Body21 { MessageID = messageID };
+                var forkBody = new SessionForkRequest { MessageID = messageID };
                 await nswagClient.Session_forkAsync(sessionID, System.Environment.CurrentDirectory, "", forkBody);
                 System.Diagnostics.Debug.WriteLine($"[Kilo] SessionControl: session forked: {sessionID}");
                 
@@ -172,7 +172,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                 }
 
                 var text = payload.Value.TryGetProperty("text", out var textProp) ? textProp.GetString() : "";
-                var enhanceBody = new Body47 { Text = text };
+                var enhanceBody = new EnhancePromptEnhanceRequest { Text = text };
                 
                 var response = await nswagClient.EnhancePrompt_enhanceAsync(System.Environment.CurrentDirectory, "", enhanceBody);
                 if (response != null && !string.IsNullOrEmpty(response.Text))
@@ -210,7 +210,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.SessionControl
                 }
 
                 var sessionId = payload.Value.TryGetProperty("sessionID", out var sid) ? sid.GetString() : "";
-                var importBody = new Body52 { SessionId = sessionId };
+                var importBody = new KiloCloudSessionImportRequest { SessionId = sessionId };
                 
                 await nswagClient.Kilo_cloud_session_importAsync(System.Environment.CurrentDirectory, "", importBody);
             }

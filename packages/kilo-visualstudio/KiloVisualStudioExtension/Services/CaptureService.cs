@@ -86,7 +86,7 @@ namespace KiloVisualStudioExtension.Services
     // {
     {
       //   await resolveFFmpeg()
-      await ResolveFFmpeg();
+      await ResolveFFmpegAsync();
       // }
     }
     //
@@ -104,7 +104,7 @@ namespace KiloVisualStudioExtension.Services
       try
       //     const bin = await resolveFFmpeg()
       {
-        var bin = await ResolveFFmpeg();
+        var bin = await ResolveFFmpegAsync();
         //     const file = path.join(os.tmpdir(), `kilo-stt-${process.pid}-${Date.now()}.wav`)
         var file = Path.Combine(Path.GetTempPath(), $"kilo-stt-{Process.GetCurrentProcess().Id}-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.wav");
         //     const state = await startWithArgs(bin, file, input, await inputArgSets(bin))
@@ -545,7 +545,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
     // async function resolveFFmpeg(): Promise<string> {
-    private async Task<string> ResolveFFmpeg()
+    private async Task<string> ResolveFFmpegAsync()
     // {
     {
       //   const cached = ffmpeg
@@ -614,7 +614,7 @@ namespace KiloVisualStudioExtension.Services
         try
         //       await exec(bin, ["-version"], { timeout: 3000 })
         {
-          await RunCommand(bin, new[] { "-version" }, 3000);
+          await RunCommandAsync(bin, new[] { "-version" }, 3000);
           //       return bin
           return bin;
           //     } catch (err) {
@@ -882,7 +882,7 @@ namespace KiloVisualStudioExtension.Services
     }
     //
    
-    private static async Task RunCommand(string exe, string[] args, int timeout)
+    private static async Task RunCommandAsync(string exe, string[] args, int timeout)
     {
       var psi = new ProcessStartInfo
       {

@@ -100,11 +100,11 @@ namespace KiloVisualStudioExtension.Utils
     }
 
     /// <summary>
-    /// Transforms an Anonymous6 message by slimming the info (stripping summary patches)
+    /// Transforms an SessionMessagesResponseSchema200Item message by slimming the info (stripping summary patches)
     /// and slimming the parts (stripping heavy metadata from tool/reasoning parts).
     /// Matches VS Code's message transformation pattern for webview transmission.
     /// </summary>
-    public static WebviewMessage SlimMessage(Anonymous6 message)
+    public static WebviewMessage SlimMessage(SessionMessagesResponseSchema200Item message)
     {
       if (message == null)
         return null;
@@ -115,7 +115,6 @@ namespace KiloVisualStudioExtension.Utils
       // Slim the parts
       var slimmedParts = SlimParts(message.Parts);
 
-      // Return new Anonymous6 with slimmed data
       WebviewMessage result = EntityConverter.Convert(slimmedInfo);
       result.Parts = slimmedParts;
       result.CreatedAt = DateTimeOffset.Now.ToString("O");

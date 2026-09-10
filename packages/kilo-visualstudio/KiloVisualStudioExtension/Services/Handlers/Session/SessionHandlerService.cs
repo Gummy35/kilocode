@@ -7,10 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
-using RevertRequest = KiloVisualStudioExtension.ApiClient.Body27;
-using SessionCreateRequest = KiloVisualStudioExtension.ApiClient.Body18;
-using SessionUpdateRequest = KiloVisualStudioExtension.ApiClient.Body19;
+
 
 namespace KiloVisualStudioExtension.Services.Handlers.Session
 {

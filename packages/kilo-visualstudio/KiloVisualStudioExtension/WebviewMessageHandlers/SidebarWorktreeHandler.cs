@@ -39,18 +39,18 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       { get; set; }
     }
 
-    public static async Task Repo(Action<IWebviewMessage?> post)
+    public static async Task RepoAsync(Action<IWebviewMessage?> post)
     {
       string root = VSExtensionSettings.WorkspaceRoot;
       if (root == null) return;
       var git = new GitOps(new GitOpsOptions { Log = (s) => { } });
-      var branch = await git.CurrentBranch(root);
+      var branch = await git.CurrentBranchAsync(root);
       git.Dispose();
       if (string.IsNullOrEmpty(branch) || branch == "HEAD") return;
       post(new AgentManagerRepoInfoMessage { Branch = branch });
     }
 
-    public static async Task<bool> HandleWorktreeMessage(IWebviewMessage message, Ctx ctx)
+    public static async Task<bool> HandleWorktreeMessageAsync(IWebviewMessage message, Ctx ctx)
     {
       if (message is OpenAgentManagerRequest agentManagerRequest)
       {
@@ -64,7 +64,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       }
       if (message is RequestRepoInfoMessage requestRepoInfoMessage)
       {
-        await Repo(ctx.Post);
+        await RepoAsync(ctx.Post);
         return true;
       }
       if (message is CreateWorktreeRequest createWorktreeRequest)

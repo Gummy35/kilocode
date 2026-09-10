@@ -68,7 +68,7 @@ namespace KiloVisualStudioExtension.Tests
             var context = new MockCloudSessionContext();
 
             // Act
-            await service.HandleRequestCloudSessionData(context, "cloud-session", 50);
+            await service.HandleRequestCloudSessionDataAsync(context, "cloud-session", 50);
 
             // Assert
             Assert.Single(context.SentMessages);
@@ -86,7 +86,7 @@ namespace KiloVisualStudioExtension.Tests
             var context = new MockCloudSessionContext();
 
             // Act
-            await service.HandleImportAndSend(context, "cloud-session", "Continue", 50);
+            await service.HandleImportAndSendAsync(context, "cloud-session", "Continue", 50);
 
             // Assert
             Assert.Single(context.SentMessages);
@@ -104,7 +104,7 @@ namespace KiloVisualStudioExtension.Tests
             var context = new MockCloudSessionContext();
 
             // Act
-            await service.HandleImportAndSend(context, "cloud-session", "Continue", 5000);
+            await service.HandleImportAndSendAsync(context, "cloud-session", "Continue", 5000);
 
             // Assert
             Assert.Empty(context.SentMessages);
@@ -119,7 +119,7 @@ namespace KiloVisualStudioExtension.Tests
             var context = new MockCloudSessionContext();
 
             // Act
-            await service.HandleImportAndSend(context, "cloud-session", "Continue", 5000);
+            await service.HandleImportAndSendAsync(context, "cloud-session", "Continue", 5000);
 
             // Assert
             Assert.Single(context.SentMessages);

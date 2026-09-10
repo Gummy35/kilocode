@@ -63,7 +63,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                 authBody.AdditionalProperties["key"] = apiKey;
 
                 await nswagClient.Auth_setAsync(providerID, authBody);
-                await Provider.DisposeGlobal();
+                await Provider.DisposeGlobalAsync();
                 await Provider.FetchAndSendProvidersAsync();
                 
                 Provider.PostMessage(JsonSerializer.Serialize(new 
@@ -112,7 +112,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                     Provider.PostMessage(JsonSerializer.Serialize(new { type = "profileData", data = (object)null }));
                 }
 
-                await Provider.DisposeGlobal();
+                await Provider.DisposeGlobalAsync();
                 await Provider.FetchAndSendProvidersAsync();
 
                 Provider.PostMessage(JsonSerializer.Serialize(new 
@@ -155,7 +155,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                 }
 
                 var directory = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
-                var auth = await nswagClient.Provider_oauth_authorizeAsync(providerID, directory, "", new Body16
+                var auth = await nswagClient.Provider_oauth_authorizeAsync(providerID, directory, "", new ProviderOauthAuthorizeRequest
                 {
                     Method = method
                 });
@@ -202,12 +202,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                 }
 
                 var directory = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
-                await nswagClient.Provider_oauth_callbackAsync(providerID, directory, "", new Body17
+                await nswagClient.Provider_oauth_callbackAsync(providerID, directory, "", new ProviderOauthCallbackRequest
                 {
                     Code = string.IsNullOrEmpty(code) ? null : code
                 });
 
-                await Provider.DisposeGlobal();
+                await Provider.DisposeGlobalAsync();
                 await Provider.FetchAndSendProvidersAsync();
 
                 Provider.PostMessage(JsonSerializer.Serialize(new 
@@ -269,7 +269,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Provider
                     }
                 }
 
-                await Provider.DisposeGlobal();
+                await Provider.DisposeGlobalAsync();
                 await Provider.FetchAndSendProvidersAsync();
 
                 Provider.PostMessage(JsonSerializer.Serialize(new 

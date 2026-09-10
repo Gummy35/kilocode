@@ -90,7 +90,7 @@ namespace KiloVisualStudioExtension
     /// <param name="sessionId">The session identifier</param>
     /// <param name="fallback">Fallback directory to include</param>
     /// <returns>True if session was known and all aborts succeeded, false otherwise</returns>
-    public async Task<bool> Stop(KiloApiClient client, string sessionId, string fallback)
+    public async Task<bool> StopAsync(KiloApiClient client, string sessionId, string fallback)
     {
       var known = _active.ContainsKey(sessionId);
       var dirs = _active.TryGetValue(sessionId, out var dirSet)

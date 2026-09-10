@@ -8,7 +8,7 @@ $OpenApiUrl = "http://127.0.0.1:56631/doc"
 $TempDir = $env:TEMP ?? "C:\Users\$env:USERNAME\AppData\Local\Temp\kilo"
 $TempOpenApiFile = Join-Path $TempDir "openapi.json"
 $OutputFile = "packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\KiloApiClient.cs"
-$InheritanceFile = "packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\ApiClientInheritance.cs"
+$InheritanceFile = "packages\kilo-visualstudio\KiloVisualStudioExtension\ApiClient\ApiClientInheritance.generated.cs"
 $Namespace = "KiloVisualStudioExtension.ApiClient"
 $ClassName = "KiloApiClient"
 
@@ -42,6 +42,454 @@ Write-Host "Step 1b: Normalizing boolean anyOf schemas" `
 $openApiDocument =
     Get-Content -Raw "$TempOpenApiFile" |
     ConvertFrom-Json
+
+function Get-DeterministicTypeName {
+    param(
+        [string]$Name
+    )
+
+    $parts =
+        ([string]$Name -replace '[^A-Za-z0-9]+', ' ') `
+            -split '\s+' |
+        Where-Object {
+            -not [string]::IsNullOrWhiteSpace($_)
+        }
+
+    $result = ""
+
+    foreach ($part in $parts) {
+        if ($part.Length -eq 1) {
+            $result += $part.ToUpperInvariant()
+        }
+        else {
+            $result +=
+                $part.Substring(0, 1).ToUpperInvariant() +
+                $part.Substring(1)
+        }
+    }
+
+    if ([string]::IsNullOrWhiteSpace($result)) {
+        return "Anonymous"
+    }
+
+    if ($result -match '^[0-9]') {
+        return "Schema$result"
+    }
+
+    return $result
+}
+
+function Is-ReferenceSchema {
+    param(
+        [object]$Schema
+    )
+
+    return (
+        $null -ne $Schema -and
+        $null -ne $Schema.PSObject.Properties['$ref']
+    )
+}
+
+function Is-ComplexSchema {
+    param(
+        [object]$Schema
+    )
+
+    if ($null -eq $Schema) {
+        return $false
+    }
+
+    return (
+        (Has-Property $Schema "properties") -or
+        (Has-Property $Schema "items") -or
+        (Has-Property $Schema "anyOf") -or
+        (Has-Property $Schema "oneOf") -or
+        (Has-Property $Schema "allOf")
+    )
+}
+
+$script:UsedSchemaTitles = @{}
+$script:SchemaTitleByIdentity = @{}
+
+# Reserve component names because NSwag also generates these types.
+if ($null -ne $openApiDocument.components.schemas) {
+    foreach (
+        $schemaProperty in
+        $openApiDocument.components.schemas.PSObject.Properties
+    ) {
+        $componentName =
+            Get-DeterministicTypeName $schemaProperty.Name
+
+        $script:UsedSchemaTitles[$componentName] = $true
+    }
+}
+
+function Get-SchemaIdentity {
+    param(
+        [object]$Schema
+    )
+
+    return [System.Runtime.CompilerServices.RuntimeHelpers]::GetHashCode(
+        $Schema
+    )
+}
+
+function Get-TitleSuffixFromPath {
+    param(
+        [string]$Path
+    )
+
+    $suffix =
+        $Path `
+            -replace '[^A-Za-z0-9]+', ' ' `
+            -split '\s+' |
+        Where-Object {
+            -not [string]::IsNullOrWhiteSpace($_)
+        } |
+        ForEach-Object {
+            $part = [string]$_
+
+            if ($part.Length -eq 1) {
+                $part.ToUpperInvariant()
+            }
+            else {
+                $part.Substring(0, 1).ToUpperInvariant() +
+                $part.Substring(1)
+            }
+        }
+
+    return ($suffix -join '')
+}
+
+function Get-UniqueSchemaTitle {
+    param(
+        [object]$Schema,
+        [string]$BaseTitle,
+        [string]$Path
+    )
+
+    $identity =
+        Get-SchemaIdentity $Schema
+
+    $identityKey =
+        [string]$identity
+
+    # If the same schema object is encountered again, reuse its title.
+    if ($script:SchemaTitleByIdentity.ContainsKey($identityKey)) {
+        return $script:SchemaTitleByIdentity[$identityKey]
+    }
+
+    $candidate =
+        Get-DeterministicTypeName $BaseTitle
+
+    if (
+        -not $script:UsedSchemaTitles.ContainsKey($candidate)
+    ) {
+        $script:UsedSchemaTitles[$candidate] = $true
+        $script:SchemaTitleByIdentity[$identityKey] = $candidate
+
+        return $candidate
+    }
+
+    # First collision: include the schema path.
+    $pathSuffix =
+        Get-TitleSuffixFromPath $Path
+
+    if (-not [string]::IsNullOrWhiteSpace($pathSuffix)) {
+        $candidate =
+            Get-DeterministicTypeName "$BaseTitle$pathSuffix"
+    }
+
+    # Final deterministic fallback.
+    $index = 2
+    $baseCandidate = $candidate
+
+    while ($script:UsedSchemaTitles.ContainsKey($candidate)) {
+        $candidate =
+            "${baseCandidate}$index"
+
+        $index++
+    }
+
+    $script:UsedSchemaTitles[$candidate] = $true
+    $script:SchemaTitleByIdentity[$identityKey] = $candidate
+
+    return $candidate
+}
+
+function Visit-Schema {
+    param(
+        [object]$Schema,
+        [string]$Title,
+        [string]$Path,
+        [System.Collections.Generic.HashSet[string]]$Visited
+    )
+
+    if (
+        $null -eq $Schema -or
+        (Is-ReferenceSchema $Schema) -or
+        -not (Is-ComplexSchema $Schema)
+    ) {
+        return
+    }
+
+    $identity =
+        [string](Get-SchemaIdentity $Schema)
+
+    if ($Visited.Contains($identity)) {
+        return
+    }
+
+    $Visited.Add($identity) | Out-Null
+
+    Set-SchemaTitle `
+        -Schema $Schema `
+        -Title $Title `
+        -Path $Path
+
+    if (Has-Property $Schema "properties") {
+        foreach (
+            $property in
+            $Schema.properties.PSObject.Properties
+        ) {
+            $propertyName =
+                Get-DeterministicTypeName $property.Name
+
+            Visit-Schema `
+                -Schema $property.Value `
+                -Title "${Title}${propertyName}" `
+                -Path "$Path/properties/$($property.Name)" `
+                -Visited $Visited
+        }
+    }
+
+    if (Has-Property $Schema "items") {
+        Visit-Schema `
+            -Schema $Schema.items `
+            -Title "${Title}Item" `
+            -Path "$Path/items" `
+            -Visited $Visited
+    }
+
+    if (Has-Property $Schema "anyOf") {
+        $index = 1
+
+        foreach ($variant in @($Schema.anyOf)) {
+            Visit-Schema `
+                -Schema $variant `
+                -Title "${Title}Variant$index" `
+                -Path "$Path/anyOf/$index" `
+                -Visited $Visited
+
+            $index++
+        }
+    }
+
+    if (Has-Property $Schema "oneOf") {
+        $index = 1
+
+        foreach ($variant in @($Schema.oneOf)) {
+            Visit-Schema `
+                -Schema $variant `
+                -Title "${Title}Variant$index" `
+                -Path "$Path/oneOf/$index" `
+                -Visited $Visited
+
+            $index++
+        }
+    }
+
+    if (Has-Property $Schema "allOf") {
+        $index = 1
+
+        foreach ($variant in @($Schema.allOf)) {
+            Visit-Schema `
+                -Schema $variant `
+                -Title "${Title}Base$index" `
+                -Path "$Path/allOf/$index" `
+                -Visited $Visited
+
+            $index++
+        }
+    }
+}
+
+function Set-SchemaTitle {
+    param(
+        [object]$Schema,
+        [string]$Title,
+        [string]$Path
+    )
+
+    if (
+        $null -eq $Schema -or
+        (Is-ReferenceSchema $Schema) -or
+        -not (Is-ComplexSchema $Schema)
+    ) {
+        return
+    }
+
+    $assignedTitle =
+        Get-UniqueSchemaTitle `
+            -Schema $Schema `
+            -BaseTitle $Title `
+            -Path $Path
+
+    if (
+        -not (Has-Property $Schema "title") -or
+        [string]::IsNullOrWhiteSpace(
+            [string]$Schema.title)
+    ) {
+        $Schema |
+            Add-Member `
+                -MemberType NoteProperty `
+                -Name "title" `
+                -Value $assignedTitle `
+                -Force
+    }
+    else {
+        $Schema.title =
+            $assignedTitle
+    }
+}
+
+function Get-OperationTypeName {
+    param(
+        [object]$Operation,
+        [string]$Method,
+        [string]$Path
+    )
+
+    if (
+        $null -ne $Operation.operationId -and
+        -not [string]::IsNullOrWhiteSpace(
+            [string]$Operation.operationId)
+    ) {
+        return Get-DeterministicTypeName `
+            ([string]$Operation.operationId)
+    }
+
+    return Get-DeterministicTypeName `
+        "$Method $Path"
+}
+
+function Add-DeterministicSchemaTitles {
+    param(
+        [object]$OpenApiDocument
+    )
+
+    foreach (
+        $pathProperty in
+        $OpenApiDocument.paths.PSObject.Properties
+    ) {
+        $path =
+            $pathProperty.Value
+
+        foreach (
+            $operationProperty in
+            $path.PSObject.Properties
+        ) {
+            $method =
+                $operationProperty.Name.ToLowerInvariant()
+
+            if (
+                $method -notin @(
+                    "get",
+                    "post",
+                    "put",
+                    "patch",
+                    "delete",
+                    "options",
+                    "head",
+                    "trace"
+                )
+            ) {
+                continue
+            }
+
+            $operation =
+                $operationProperty.Value
+
+            $operationName =
+                Get-OperationTypeName `
+                    -Operation $operation `
+                    -Method $method `
+                    -Path $pathProperty.Name
+
+            # Request body schemas
+            if ($null -ne $operation.requestBody) {
+                $content =
+                    $operation.requestBody.content
+
+                if ($null -ne $content) {
+                    foreach (
+                        $contentProperty in
+                        $content.PSObject.Properties
+                    ) {
+                        $schema =
+                            $contentProperty.Value.schema
+
+                        $visited =
+                            [System.Collections.Generic.HashSet[string]]::new()
+
+                        Visit-Schema `
+                            -Schema $schema `
+                            -Title "${operationName}Request" `
+                            -Path "$($pathProperty.Name)/$method/requestBody/$($contentProperty.Name)" `
+                            -Visited $visited
+                    }
+                }
+            }
+
+            # Response schemas
+            if ($null -ne $operation.responses) {
+                $responseProperties = @(
+                    $operation.responses.PSObject.Properties |
+                        Where-Object {
+                            $null -ne $_.Value.content
+                        }
+                )
+
+                $hasOnlyResponse200 = (
+                    $responseProperties.Count -eq 1 -and
+                    [string]$responseProperties[0].Name -eq "200"
+                )
+
+                foreach ($responseProperty in $responseProperties) {
+                    $response =
+                        $responseProperty.Value
+
+                    $statusCode =
+                        [string]$responseProperty.Name
+
+                    if ($hasOnlyResponse200) {
+                        $responseTitle =
+                            "${operationName}Response"
+                    }
+                    else {
+                        $responseTitle =
+                            "${operationName}Response$(
+                                Get-DeterministicTypeName $statusCode
+                            )"
+                    }
+
+                    foreach (
+                        $contentProperty in
+                        $response.content.PSObject.Properties
+                    ) {
+                        $schema =
+                            $contentProperty.Value.schema
+
+                        Set-SchemaTitle `
+                            -Schema $schema `
+                            -Title $responseTitle
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 function Has-Property {
     param(
@@ -213,6 +661,17 @@ function Normalize-BooleanStringAnyOf {
     return $changeCount
 }
 
+Write-Host ""
+
+Write-Host "Step 1c: Adding deterministic schema titles" `
+    -ForegroundColor Yellow
+
+Add-DeterministicSchemaTitles `
+    -OpenApiDocument $openApiDocument
+
+Write-Host "  Deterministic schema titles added" `
+    -ForegroundColor Green
+
 $normalizedCount =
     Normalize-BooleanStringAnyOf `
         -Node $openApiDocument
@@ -231,36 +690,56 @@ Write-Host ""
 Write-Host "Step 2: Running NSwag code generator" -ForegroundColor Yellow
 $nswagArgs = @(
     "openapi2csclient",
-    "/input:`"$TempOpenApiFile`"",
-    "/output:`"$OutputFile`"",
-    "/namespace:`"$Namespace`"",
-    "/ClassName:`"$ClassName`"",
+
+    "/input:$TempOpenApiFile",
+    "/output:$OutputFile",
+    "/namespace:$Namespace",
+    "/ClassName:$ClassName",
+
     "/GenerateClientInterfaces:true",
     "/GenerateExceptionClasses:true",
-    "/ExceptionClass:`"ApiException`"",
+    "/ExceptionClass:ApiException",
+
     "/UseBaseUrl:true",
     "/GenerateBaseUrlProperty:true",
     "/InjectHttpClient:false",
+
     "/GenerateNativeRecords:false",
     "/GenerateDataAnnotations:false",
     "/GenerateJsonMethods:true",
     "/EnforceFlagEnums:false",
+
     "/GenerateDefaultValues:true",
     "/GenerateImmutableArrayProperties:false",
     "/GenerateImmutableDictionaryProperties:false",
-    "/GenerateResponseClasses:true",
-    "/ResponseClass:`"ApiResponse`"",
-    "/operationGenerationMode:`"SingleClientFromOperationId`""
+
+    "/GenerateResponseClasses:false",
+  
+    "/operationGenerationMode:SingleClientFromOperationId"
 )
+#  "/GenerateResponseClasses:true",
+  #  "/ResponseClass:ApiResponse",
 
 Write-Host "  Command: nswag $($nswagArgs -join ' ')" -ForegroundColor Gray
 try {
     & nswag $nswagArgs
-    Write-Host "  NSwag completed successfully" -ForegroundColor Green
-} catch {
-    Write-Host "  ERROR: NSwag failed: $_" -ForegroundColor Red
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "NSwag exited with code $LASTEXITCODE."
+    }
+
+    Write-Host `
+        "  NSwag completed successfully" `
+        -ForegroundColor Green
+}
+catch {
+    Write-Host `
+        "  ERROR: NSwag failed: $_" `
+        -ForegroundColor Red
+
     exit 1
 }
+
 
 # Step 3: Generate inheritance declarations
 Write-Host ""

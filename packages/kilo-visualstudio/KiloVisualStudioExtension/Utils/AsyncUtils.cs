@@ -50,7 +50,7 @@ namespace KiloVisualStudioExtension.Utils
 
     }
 
-    internal static async Task<bool> SafeTask(Task<bool> r)
+    internal static async Task<bool> SafeTaskAsync(Task<bool> r)
     {
       try { return await r; }
       catch { return false; }

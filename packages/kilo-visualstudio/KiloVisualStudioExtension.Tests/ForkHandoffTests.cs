@@ -28,7 +28,7 @@ namespace KiloVisualStudioExtension.Tests
             var mockSession = new Mock<KiloVisualStudioExtension.Services.ISessionService>();
             mockClient.Setup(c => c.Session).Returns(mockSession.Object);
 
-            await ForkHandoff.RecordForkHandoff(mockClient.Object, "session-fork", "/repo/.kilo/worktrees/feature");
+            await ForkHandoff.RecordForkHandoffAsync(mockClient.Object, "session-fork", "/repo/.kilo/worktrees/feature");
 
             mockSession.Verify(s => s.PromptAsync(
                 It.Is<KiloVisualStudioExtension.Services.SessionPromptRequest>(r =>

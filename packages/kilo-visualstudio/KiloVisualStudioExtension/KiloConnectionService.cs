@@ -14,7 +14,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using VSLangProj80;
 using static Microsoft.VisualStudio.Shell.ThreadedWaitDialogHelper;
-using ViewedRequest = KiloVisualStudioExtension.ApiClient.Body29;
 using ViewerModel = KiloVisualStudioExtension.ApiClient.Viewer;
 
 
@@ -715,7 +714,7 @@ namespace KiloVisualStudioExtension
 
       try
       {       
-        var body = new ViewedRequest
+        var body = new SessionViewedRequest
         {
           Visible = visibleList,
           Attached = attachedList,

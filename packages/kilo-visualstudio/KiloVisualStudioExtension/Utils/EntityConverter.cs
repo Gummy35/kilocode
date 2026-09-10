@@ -16,7 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
 using Message = KiloVisualStudioExtension.ApiClient.Message;
-using Notification = KiloVisualStudioExtension.ApiClient.Anonymous11;
+using Notification = KiloVisualStudioExtension.ApiClient.KiloNotificationsResponseSchema200Item;
 using WebviewMessage = KiloExtensionDTOs.Sessions.Message;
 
 
@@ -110,7 +110,7 @@ namespace KiloVisualStudioExtension.Utils
       return null;
     }
 
-    public static KilocodeNotification Convert(Anonymous11 notification)
+    public static KilocodeNotification Convert(KiloNotificationsResponseSchema200Item notification)
     {
       return new KilocodeNotification
       {
@@ -123,7 +123,7 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
-    public static SkillInfo Convert(Anonymous3 skill)
+    public static SkillInfo Convert(AppSkillsResponseSchema200Item skill)
     {
       return new SkillInfo
       {
@@ -212,7 +212,7 @@ namespace KiloVisualStudioExtension.Utils
       };
     }
 
-    public static ProfileData Convert(Response23 response)
+    public static ProfileData Convert(KiloProfileResponseSchema200 response)
     {
       return new ProfileData
       {

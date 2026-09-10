@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using KiloExtensionDTOs.ExtensionMessages;
 using KiloVisualStudioExtension.ApiClient;
 using KiloVisualStudioExtension.Utils;
-using ProfileResponse = KiloVisualStudioExtension.ApiClient.Response23;
 
 namespace KiloVisualStudioExtension.Services.Handlers.Auth
 {
@@ -17,6 +16,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
 
     private VSProvider Provider => _serviceProvider.GetService<VSProvider>()
             ?? throw new InvalidOperationException("VSProvider not registered in service provider");
+    private ProjectDirectoryProvider DirProvider => _serviceProvider.GetService<ProjectDirectoryProvider>()
+            ?? throw new InvalidOperationException("VSProvider not registered in service provider");
+
 
     public AuthHandlerService(ServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -51,12 +53,12 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
         return;
       }
 
-      var directory = Provider.GetWorkspaceDirectory();
+      var directory = DirProvider.GetWorkspaceDirectory();
       var attempt = Provider.GetLoginAttempt();
 
       try
       {
-        var auth = await nswagClient.Provider_oauth_authorizeAsync("kilo", directory, "", new Body16
+        var auth = await nswagClient.Provider_oauth_authorizeAsync("kilo", directory, "", new ProviderOauthAuthorizeRequest
         {
           Method = 0,
           Inputs = new System.Collections.Generic.Dictionary<string, string> { { "providerID", "kilo" } }
@@ -72,11 +74,11 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
           ExpiresIn = 900
         });
 
-        await WaitForOAuthCallback(nswagClient, directory, attempt);
+        await WaitForOAuthCallbackAsync(nswagClient, directory, attempt);
 
         if (attempt != Provider.GetLoginAttempt()) return;
 
-        await Provider.DisposeGlobal();
+        await Provider.DisposeGlobalAsync();
 
         var profile = await nswagClient.Kilo_profileAsync(directory, "");
         await Provider.SendProfileDataAsync(profile != null ? EntityConverter.Convert(profile) : null);
@@ -97,14 +99,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
       }
     }
 
-    private async Task WaitForOAuthCallback(KiloApiClient client, string directory, int expectedAttempt)
+    private async Task WaitForOAuthCallbackAsync(KiloApiClient client, string directory, int expectedAttempt)
     {
       var cts = new CancellationTokenSource(TimeSpan.FromMinutes(15));
       while (!cts.Token.IsCancellationRequested && expectedAttempt == Provider.GetLoginAttempt())
       {
         try
         {
-          await client.Provider_oauth_callbackAsync("kilo", directory, "", new Body17());
+          await client.Provider_oauth_callbackAsync("kilo", directory, "", new ProviderOauthCallbackRequest());
           return;
         }
         catch (ApiException ex) when (ex.StatusCode == 401 || ex.StatusCode == 403)
@@ -139,7 +141,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
       if (nswagClient == null) return;
       try
       {
-        var profile = await nswagClient.Kilo_profileAsync(Provider.GetWorkspaceDirectory(), "");
+        var profile = await nswagClient.Kilo_profileAsync(DirProvider.GetWorkspaceDirectory(), "");
         await Provider.SendProfileDataAsync(profile != null ? EntityConverter.Convert(profile) : null);
       }
       catch (Exception ex)
@@ -157,7 +159,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
       try
       {
         await nswagClient.Auth_removeAsync("kilo");
-        await Provider.DisposeGlobal();
+        await Provider.DisposeGlobalAsync();
         Provider.PostMessage(new ProfileDataMessage { Data = null });
         await Provider.FetchAndSendProvidersAsync();
       }
@@ -176,26 +178,26 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
           ? (org.ValueKind == JsonValueKind.Null ? null : org.GetString())
           : null;
 
-      var directory = Provider.GetWorkspaceDirectory();
+      var directory = DirProvider.GetWorkspaceDirectory();
       var nswagClient = Provider.GetNswagClient();
       if (nswagClient == null) return;
 
       try
       {
-        var orgBody = new Body51();
+        var orgBody = new KiloOrganizationSetRequest();
         if (orgId != null)
         {
           orgBody.OrganizationId.AdditionalProperties["organizationId"] = orgId;
         }
         await nswagClient.Kilo_organization_setAsync(directory, "", orgBody);
-        await Provider.DisposeGlobal();
+        await Provider.DisposeGlobalAsync();
       }
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine($"[Kilo] AuthHandler: org switch error: {ex.Message}");
         try
         {
-          var profile = await nswagClient.Kilo_profileAsync(Provider.GetWorkspaceDirectory(), "");
+          var profile = await nswagClient.Kilo_profileAsync(DirProvider.GetWorkspaceDirectory(), "");
           await Provider.SendProfileDataAsync(profile != null ? EntityConverter.Convert(profile) : null);
         }
         catch { }
@@ -204,7 +206,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Auth
 
       try
       {
-        var profile = await nswagClient.Kilo_profileAsync(Provider.GetWorkspaceDirectory(), "");
+        var profile = await nswagClient.Kilo_profileAsync(DirProvider.GetWorkspaceDirectory(), "");
         await Provider.SendProfileDataAsync(profile != null ? EntityConverter.Convert(profile) : null);
       }
       catch (Exception ex)

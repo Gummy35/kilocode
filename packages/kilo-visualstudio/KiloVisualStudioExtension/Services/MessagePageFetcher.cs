@@ -38,7 +38,7 @@ namespace KiloVisualStudioExtension.Services
             public long Created { get; set; }
         }
 
-        public async Task<PageResult> FetchMessagePage(IClient client, string sessionID, string workspaceDir, int limit)
+        public async Task<PageResult> FetchMessagePageAsync(IClient client, string sessionID, string workspaceDir, int limit)
         {
             var result = await client.MessagesAsync(sessionID, workspaceDir, limit);
 

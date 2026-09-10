@@ -268,9 +268,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Config
         var overlayTask = client.Config_overlayAsync(workspaceDir, "", Scope2.Project);
 
         await Task.WhenAll(configTask, globalTask, overlayTask);
-        var config = EntityConverter.Convert(configTask.Result);
-        var global = EntityConverter.Convert(globalTask.Result);
-        var overlay = EntityConverter.Convert(overlayTask.Result?.Project);
+        var config = EntityConverter.Convert(await configTask);
+        var global = EntityConverter.Convert(await globalTask);
+        var overlay = EntityConverter.Convert((await overlayTask)?.Project);
 
 
         //    this.cachedGlobalConfig = global ?? null

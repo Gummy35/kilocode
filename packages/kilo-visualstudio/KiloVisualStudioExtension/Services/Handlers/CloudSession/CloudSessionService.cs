@@ -73,7 +73,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.CloudSession
         /// <param name="sessionId">The unique identifier of the cloud session to fetch.</param>
         /// <param name="timeoutMs">The timeout in milliseconds (default: 5000ms).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task HandleRequestCloudSessionData(ICloudSessionContext context, string sessionId, int timeoutMs = 5000)
+        public async Task HandleRequestCloudSessionDataAsync(ICloudSessionContext context, string sessionId, int timeoutMs = 5000)
         {
             using var cts = new CancellationTokenSource(timeoutMs);
 
@@ -121,7 +121,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.CloudSession
         /// <param name="mode">The import mode (e.g., "replace", "fork").</param>
         /// <param name="timeoutMs">The timeout in milliseconds (default: 5000ms).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task HandleImportAndSend(ICloudSessionContext context, string sessionId, string mode, int timeoutMs = 5000)
+        public async Task HandleImportAndSendAsync(ICloudSessionContext context, string sessionId, string mode, int timeoutMs = 5000)
         {
             using var cts = new CancellationTokenSource(timeoutMs);
 

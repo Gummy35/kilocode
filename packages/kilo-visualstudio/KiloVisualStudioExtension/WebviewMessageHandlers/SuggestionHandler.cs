@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VSLangProj80;
+using SuggestionAcceptRequest = KiloExtensionDTOs.WebviewMessages.SuggestionAcceptRequest;
 // import { recoveryDirs } from "./permission-handler"
 
 namespace KiloVisualStudioExtension.WebviewMessageHandlers
@@ -79,7 +80,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     //  * Extracted from the main message handler to stay within the complexity limit.
     //  */
     // export async function routeSuggestionWebviewMessage(
-    public static async Task RouteWebviewMessage(
+    public static async Task RouteWebviewMessageAsync(
         //   ctx: SuggestionContext,
         ISuggestionContext ctx,
         //   message: { type: string; requestID?: string; sessionID?: string; index?: number },
@@ -90,17 +91,17 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     {
       if (message is SuggestionAcceptRequest suggestionAccept)
       {
-        await HandleSuggestionAccept(ctx, suggestionAccept.RequestID, (int)suggestionAccept.Index, suggestionAccept.SessionID);
+        await HandleSuggestionAcceptAsync(ctx, suggestionAccept.RequestID, (int)suggestionAccept.Index, suggestionAccept.SessionID);
         return;
       }
       if (message is SuggestionDismissRequest suggestionDismiss)
       {
-        await HandleSuggestionDismiss(ctx, suggestionDismiss.RequestID, suggestionDismiss.SessionID);
+        await HandleSuggestionDismissAsync(ctx, suggestionDismiss.RequestID, suggestionDismiss.SessionID);
       }
     }
     //
     // export async function handleSuggestionAccept(
-    public static async Task HandleSuggestionAccept(
+    public static async Task HandleSuggestionAcceptAsync(
         //   ctx: SuggestionContext,
         ISuggestionContext ctx,
         //   requestID: string,
@@ -132,7 +133,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
           requestId, 
           ctx.GetWorkspaceDirectory(sessionId ?? ctx.CurrentSessionId), 
           "",
-          new Body64 { Index = index }
+          new ApiClient.SuggestionAcceptRequest { Index = index }
           );
         //   } catch (error) {
       }
@@ -148,7 +149,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     }
     //
     // export async function handleSuggestionDismiss(
-    public static async Task HandleSuggestionDismiss(
+    public static async Task HandleSuggestionDismissAsync(
         //   ctx: SuggestionContext,
         ISuggestionContext ctx,
         //   requestID: string,
@@ -188,7 +189,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
     }
     //
     // export async function fetchAndSendPendingSuggestions(ctx: SuggestionContext): Promise<void> {
-    public async Task FetchAndSendPendingSuggestions(ISuggestionContext ctx)
+    public async Task FetchAndSendPendingSuggestionsAsync(ISuggestionContext ctx)
     // {
     {
       //   if (!ctx.client) return

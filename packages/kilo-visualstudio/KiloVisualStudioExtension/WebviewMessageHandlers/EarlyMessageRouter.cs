@@ -25,9 +25,9 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       public ServiceProvider ServiceProvider { get; set; }
     }
 
-    public static async Task<bool> RouteWebviewMessage(IWebviewMessage message, Ctx ctx)
+    public static async Task<bool> RouteWebviewMessageAsync(IWebviewMessage message, Ctx ctx)
     {
-      await SuggestionHandler.RouteWebviewMessage(ctx.Question, message);
+      await SuggestionHandler.RouteWebviewMessageAsync(ctx.Question, message);
       if (await ctx.ServiceProvider.GetService<ModelStateService>().HandleMessageAsync(message, ctx.Client, ctx.Post)) return true;
       if (message is ExportSessionTranscriptRequest exportMessage)
       {

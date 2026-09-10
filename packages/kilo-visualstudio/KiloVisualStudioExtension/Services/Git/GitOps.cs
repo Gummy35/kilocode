@@ -321,11 +321,11 @@ namespace KiloVisualStudioExtension.Services.Git
       };
 
       // return this.semaphore ? this.semaphore.run(invoke) : invoke()
-      return _semaphore != null ? _semaphore.Run(invoke) : invoke();
+      return _semaphore != null ? _semaphore.RunAsync(invoke) : invoke();
     }
 
     // async currentBranch(cwd: string): Promise<string> { ... }
-    public async Task<string> CurrentBranch(string cwd)
+    public async Task<string> CurrentBranchAsync(string cwd)
     {
       try
       {
@@ -339,7 +339,7 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async resolveRemote(cwd: string, branch?: string): Promise<string> { ... }
-    public async Task<string> ResolveRemote(string cwd, string? branch = null)
+    public async Task<string> ResolveRemoteAsync(string cwd, string? branch = null)
     {
       // const cacheKey = `remote:${cwd}:${branch}`
       var cacheKey = $"remote:{cwd}:{branch}";
@@ -375,7 +375,7 @@ namespace KiloVisualStudioExtension.Services.Git
       }
 
       // const name = branch || (await this.raw(["branch", "--show-current"], cwd).catch(() => ""))
-      var name = branch ?? await CurrentBranch(cwd);
+      var name = branch ?? await CurrentBranchAsync(cwd);
 
       // if (name) { ... }
       if (!string.IsNullOrEmpty(name))
@@ -413,7 +413,7 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async resolveTrackingBranch(cwd: string, branch: string): Promise<string | undefined> { ... }
-    public async Task<string?> ResolveTrackingBranch(string cwd, string branch)
+    public async Task<string?> ResolveTrackingBranchAsync(string cwd, string branch)
     {
       // const cacheKey = `tracking:${cwd}:${branch}`
       var cacheKey = $"tracking:{cwd}:{branch}";
@@ -446,7 +446,7 @@ namespace KiloVisualStudioExtension.Services.Git
       }
 
       // const remote = await this.resolveRemote(cwd, branch)
-      var remote = await ResolveRemote(cwd, branch);
+      var remote = await ResolveRemoteAsync(cwd, branch);
 
       // const ref = `${remote}/${branch}`
       var @ref = $"{remote}/{branch}";
@@ -480,10 +480,10 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async resolveDefaultBranch(cwd: string, branch?: string): Promise<string | undefined> { ... }
-    public async Task<string?> ResolveDefaultBranch(string cwd, string? branch = null)
+    public async Task<string?> ResolveDefaultBranchAsync(string cwd, string? branch = null)
     {
       // const remote = await this.resolveRemote(cwd, branch)
-      var remote = await ResolveRemote(cwd, branch);
+      var remote = await ResolveRemoteAsync(cwd, branch);
 
       // const cacheKey = `default-branch:${cwd}:${remote}`
       var cacheKey = $"default-branch:{cwd}:{remote}";
@@ -516,7 +516,7 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async hasRemoteRef(cwd: string, ref: string): Promise<boolean> { ... }
-    public async Task<bool> HasRemoteRef(string cwd, string @ref)
+    public async Task<bool> HasRemoteRefAsync(string cwd, string @ref)
     {
       try
       {
@@ -534,7 +534,7 @@ namespace KiloVisualStudioExtension.Services.Git
     public async Task<(List<BranchListItem> branches, string defaultBranch)> ListBranches(string cwd)
     {
       // const def = (await this.resolveDefaultBranch(cwd)) ?? ""
-      var def = await ResolveDefaultBranch(cwd) ?? "";
+      var def = await ResolveDefaultBranchAsync(cwd) ?? "";
 
       // const raw = await this.raw([...], cwd).catch((err) => { ... })
       string raw;
@@ -589,7 +589,7 @@ namespace KiloVisualStudioExtension.Services.Git
 
 
     // async workingTreeStats(cwd: string): Promise<{ files: number; additions: number; deletions: number }> { ... }
-    public async Task<(int files, int additions, int deletions)> WorkingTreeStats(string cwd)
+    public async Task<(int files, int additions, int deletions)> WorkingTreeStatsAsync(string cwd)
     {
       // const [numstat, untracked] = await Promise.all([ ... ])
       var numstatTask = Raw(new[] { "diff", "HEAD", "--numstat" }, cwd).ContinueWith(t =>
@@ -665,14 +665,14 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async aheadBehind(cwd: string, base: string): Promise<{ ahead: number; behind: number }> { ... }
-    public async Task<(int ahead, int behind)> AheadBehind(string cwd, string @base)
+    public async Task<(int ahead, int behind)> AheadBehindAsync(string cwd, string @base)
     {
       // return this.parseLeftRight(cwd, base)
-      return await ParseLeftRight(cwd, @base);
+      return await ParseLeftRightAsync(cwd, @base);
     }
 
     // private async parseLeftRight(cwd: string, ref: string): Promise<{ ahead: number; behind: number }> { ... }
-    private async Task<(int ahead, int behind)> ParseLeftRight(string cwd, string @ref)
+    private async Task<(int ahead, int behind)> ParseLeftRightAsync(string cwd, string @ref)
     {
       // const out = await this.raw(["rev-list", "--left-right", "--count", `${ref}...HEAD`], cwd).catch(() => "0\t0")
       string outStr;
@@ -695,7 +695,7 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async buildWorktreePatch(sourcePath: string, baseBranch: string, selectedFiles?: string[]): Promise<string> { ... }
-    public async Task<string> BuildWorktreePatch(string sourcePath, string baseBranch, string[]? selectedFiles = null)
+    public async Task<string> BuildWorktreePatchAsync(string sourcePath, string baseBranch, string[]? selectedFiles = null)
     {
       // const tmp = await fs.mkdtemp(nodePath.join(os.tmpdir(), "kilo-apply-"))
       var tmp = Path.Combine(Path.GetTempPath(), $"kilo-apply-{Guid.NewGuid():N}");
@@ -801,7 +801,7 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async revertFile(cwd: string, baseBranch: string, file: string, status?: "added" | "deleted" | "modified"): Promise<{ ok: boolean; message: string }> { ... }
-    public async Task<(bool ok, string message)> RevertFile(string cwd, string baseBranch, string file, string? status = null)
+    public async Task<(bool ok, string message)> RevertFileAsync(string cwd, string baseBranch, string file, string? status = null)
     {
       // if (nodePath.isAbsolute(file) || file.split(/[\\/]/).includes("..")) { return { ok: false, message: "Invalid file path" } }
       if (Path.IsPathRooted(file) || file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Contains(".."))
@@ -889,7 +889,7 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async checkApplyPatch(targetPath: string, patch: string): Promise<ApplyCheckResult> { ... }
-    public async Task<ApplyCheckResult> CheckApplyPatch(string targetPath, string patch)
+    public async Task<ApplyCheckResult> CheckApplyPatchAsync(string targetPath, string patch)
     {
       // if (!patch.trim()) { return { ok: true, conflicts: [], message: "No changes to apply" } }
       if (string.IsNullOrWhiteSpace(patch))
@@ -936,7 +936,7 @@ namespace KiloVisualStudioExtension.Services.Git
     }
 
     // async applyPatch(targetPath: string, patch: string): Promise<ApplyPatchResult> { ... }
-    public async Task<ApplyPatchResult> ApplyPatch(string targetPath, string patch)
+    public async Task<ApplyPatchResult> ApplyPatchAsync(string targetPath, string patch)
     {
       // if (!patch.trim()) { return { ok: true, conflicts: [], message: "No changes to apply" } }
       if (string.IsNullOrWhiteSpace(patch))
@@ -1194,7 +1194,7 @@ namespace KiloVisualStudioExtension.Services.Git
 
       // return this.semaphore ? this.semaphore.run(invoke) : invoke()
       Func<Task<ExecBufferResult>> invoke = () => tcs.Task;
-      return _semaphore != null ? _semaphore.Run(invoke) : invoke();
+      return _semaphore != null ? _semaphore.RunAsync(invoke) : invoke();
     }
 
     // (fs.realpath equivalent)
@@ -1423,7 +1423,7 @@ namespace KiloVisualStudioExtension.Services.Git
     private readonly int _limit;
 
     // async run<T>(fn: () => Promise<T>): Promise<T> { ... }
-    public async Task<T> Run<T>(Func<Task<T>> fn)
+    public async Task<T> RunAsync<T>(Func<Task<T>> fn)
     {
       // await this.acquire()
       await Acquire();

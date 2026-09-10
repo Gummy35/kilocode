@@ -44,7 +44,7 @@ namespace KiloVisualStudioExtension.Services
       try
       //     const res = await fetch(url, {
       {
-        Response28 response = await client.Kilo_audio_transcriptionsAsync("", "", new Body50
+        var response = await client.Kilo_audio_transcriptionsAsync("", "", new KiloAudioTranscriptionsRequest
         {
           Model = model.Id,
           Language = input.Language,

@@ -35,7 +35,7 @@ namespace KiloVisualStudioExtension.Utils
       public Action<object?>? Post { get; set; }
     }
 
-    public static async Task<bool> HandleEditorAction(
+    public static async Task<bool> HandleEditorActionAsync(
         IEditorActionMessage message,
         Options options)
     {

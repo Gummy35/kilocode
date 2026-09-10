@@ -18,7 +18,7 @@ using KiloExtensionDTOs.KiloProviderUtils;
 /// Source: ..\..\..\..\src\shared\stream-messages.ts
 /// Signature hash: d6df55074f9b271b596149241284d474f2c8c26a2678b94e62526fb1b5e915b1
 /// </summary>
-public partial class PartRemove : IWebviewMessage, IWebviewMessage
+public partial class PartRemove : IWebviewMessage
 {
     [JsonProperty("type")]
     // Original TypeScript type: stringLiteral

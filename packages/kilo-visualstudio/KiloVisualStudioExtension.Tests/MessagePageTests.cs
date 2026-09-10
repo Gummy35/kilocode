@@ -82,7 +82,7 @@ namespace KiloVisualStudioExtension.Tests
             };
 
             var fetcher = new MessagePageFetcher();
-            var page = await fetcher.FetchMessagePage(client, "s1", @"/repo", 3);
+            var page = await fetcher.FetchMessagePageAsync(client, "s1", @"/repo", 3);
 
             page.Cursor.Should().Be("server-cursor-abc");
         }
@@ -108,7 +108,7 @@ namespace KiloVisualStudioExtension.Tests
             };
 
             var fetcher = new MessagePageFetcher();
-            var page = await fetcher.FetchMessagePage(client, "s1", @"/repo", 4);
+            var page = await fetcher.FetchMessagePageAsync(client, "s1", @"/repo", 4);
 
             page.Cursor.Should().NotBeNull();
             
@@ -137,7 +137,7 @@ namespace KiloVisualStudioExtension.Tests
             };
 
             var fetcher = new MessagePageFetcher();
-            var page = await fetcher.FetchMessagePage(client, "s1", @"/repo", 4);
+            var page = await fetcher.FetchMessagePageAsync(client, "s1", @"/repo", 4);
 
             page.Cursor.Should().BeNull();
         }

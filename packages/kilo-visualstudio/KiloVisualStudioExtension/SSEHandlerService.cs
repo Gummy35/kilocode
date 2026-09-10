@@ -249,7 +249,7 @@ namespace KiloVisualStudioExtension
             }
             // void this.memory.fetch(sessionID)
 
-            _serviceProvider.GetService<MemoryService>().Fetch(target);
+            _serviceProvider.GetService<MemoryService>().FetchAsync(target);
           }
           // return
           return;
@@ -529,7 +529,7 @@ namespace KiloVisualStudioExtension
           ////   this.client,
           ////   (s) => this.getWorkspaceDirectory(s),
           //// )
-          _ = HandleNetworkEvent(evt);         
+          _ = HandleNetworkEventAsync(evt);         
         }
 
         // if (event.type === "indexing.status" && directory) {
@@ -618,7 +618,7 @@ namespace KiloVisualStudioExtension
       }
     }
 
-    private async Task HandleNetworkEvent(IEvent evt)
+    private async Task HandleNetworkEventAsync(IEvent evt)
     {
       if (evt is EventSessionNetworkAsked)
       {

@@ -77,7 +77,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Log entry written successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, Body body);
+        System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, AppLogRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -88,7 +88,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Log entry written successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, Body body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, AppLogRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Move session
@@ -98,7 +98,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session moved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(Body2 body);
+        System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(ExperimentalControlPlaneMoveSessionRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -109,7 +109,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session moved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(Body2 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(ExperimentalControlPlaneMoveSessionRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get health
@@ -119,7 +119,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Health information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response> Global_healthAsync();
+        System.Threading.Tasks.Task<GlobalHealthResponseSchema200> Global_healthAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -130,7 +130,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Health information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response> Global_healthAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GlobalHealthResponseSchema200> Global_healthAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get global events
@@ -224,7 +224,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Upgrade result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response2> Global_upgradeAsync(Body3 body);
+        System.Threading.Tasks.Task<GlobalUpgradeResponseSchema200> Global_upgradeAsync(GlobalUpgradeRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -235,7 +235,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Upgrade result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response2> Global_upgradeAsync(Body3 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GlobalUpgradeResponseSchema200> Global_upgradeAsync(GlobalUpgradeRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Subscribe to events
@@ -308,7 +308,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Config warnings</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Config_warningsAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConfigWarningsResponseSchema200Item>> Config_warningsAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -319,7 +319,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Config warnings</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Config_warningsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConfigWarningsResponseSchema200Item>> Config_warningsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List config providers
@@ -329,7 +329,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response3> Config_providersAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<ConfigProvidersResponseSchema200> Config_providersAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -340,7 +340,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response3> Config_providersAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ConfigProvidersResponseSchema200> Config_providersAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get active Console provider metadata
@@ -371,7 +371,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switchable Console orgs</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response4> Experimental_console_listOrgsAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<ExperimentalConsoleListOrgsResponseSchema200> Experimental_console_listOrgsAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -382,7 +382,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switchable Console orgs</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response4> Experimental_console_listOrgsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ExperimentalConsoleListOrgsResponseSchema200> Experimental_console_listOrgsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Switch active Console org
@@ -392,7 +392,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switch success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, Body4 body);
+        System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, ExperimentalConsoleSwitchOrgRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -403,7 +403,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switch success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, Body4 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, ExperimentalConsoleSwitchOrgRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List tools
@@ -665,7 +665,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Matches</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous2>> Find_textAsync(string directory, string workspace, string pattern);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FindTextResponseSchema200Item>> Find_textAsync(string directory, string workspace, string pattern);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -676,7 +676,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Matches</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous2>> Find_textAsync(string directory, string workspace, string pattern, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FindTextResponseSchema200Item>> Find_textAsync(string directory, string workspace, string pattern, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Find files
@@ -917,7 +917,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS patch applied</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response5> Vcs_applyAsync(string directory, string workspace, Body5 body);
+        System.Threading.Tasks.Task<VcsApplyResponseSchema200> Vcs_applyAsync(string directory, string workspace, VcsApplyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -928,7 +928,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS patch applied</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response5> Vcs_applyAsync(string directory, string workspace, Body5 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<VcsApplyResponseSchema200> Vcs_applyAsync(string directory, string workspace, VcsApplyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List commands
@@ -980,7 +980,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of skills</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous3>> App_skillsAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AppSkillsResponseSchema200Item>> App_skillsAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -991,7 +991,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of skills</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous3>> App_skillsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AppSkillsResponseSchema200Item>> App_skillsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get LSP status
@@ -1064,7 +1064,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>MCP server added successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, Body6 body);
+        System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, McpAddRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1075,7 +1075,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>MCP server added successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, Body6 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, McpAddRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Start MCP OAuth
@@ -1085,7 +1085,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth flow started</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response6> Mcp_auth_startAsync(string name, string directory, string workspace);
+        System.Threading.Tasks.Task<McpAuthStartResponseSchema200> Mcp_auth_startAsync(string name, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1096,7 +1096,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth flow started</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response6> Mcp_auth_startAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<McpAuthStartResponseSchema200> Mcp_auth_startAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove MCP OAuth
@@ -1106,7 +1106,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth credentials removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response7> Mcp_auth_removeAsync(string name, string directory, string workspace);
+        System.Threading.Tasks.Task<McpAuthRemoveResponseSchema200> Mcp_auth_removeAsync(string name, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1117,7 +1117,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth credentials removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response7> Mcp_auth_removeAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<McpAuthRemoveResponseSchema200> Mcp_auth_removeAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Complete MCP OAuth
@@ -1127,7 +1127,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth authentication completed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, Body7 body);
+        System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, McpAuthCallbackRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1138,7 +1138,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth authentication completed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, Body7 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, McpAuthCallbackRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Authenticate MCP OAuth
@@ -1262,7 +1262,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated project information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, Body8 body);
+        System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, ProjectUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1273,7 +1273,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated project information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, Body8 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, ProjectUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List project directories
@@ -1283,7 +1283,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project directories</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous4>> Project_directoriesAsync(string projectID, string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Project_directoriesAsync(string projectID, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1294,7 +1294,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project directories</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous4>> Project_directoriesAsync(string projectID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Project_directoriesAsync(string projectID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Generate project copy name
@@ -1304,7 +1304,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response8> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, Body9 body);
+        System.Threading.Tasks.Task<ExperimentalProjectCopyGenerateNameResponseSchema200> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, ExperimentalProjectCopyGenerateNameRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1315,7 +1315,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response8> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, Body9 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ExperimentalProjectCopyGenerateNameResponseSchema200> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, ExperimentalProjectCopyGenerateNameRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List available shells
@@ -1325,7 +1325,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of shells</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous5>> Pty_shellsAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PtyShellsResponseSchema200Item>> Pty_shellsAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1336,7 +1336,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of shells</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous5>> Pty_shellsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PtyShellsResponseSchema200Item>> Pty_shellsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List PTY sessions
@@ -1367,7 +1367,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, Body10 body);
+        System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, PtyCreateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1378,7 +1378,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, Body10 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, PtyCreateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get PTY session
@@ -1409,7 +1409,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, Body11 body);
+        System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, PtyUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1420,7 +1420,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, Body11 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, PtyUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove PTY session
@@ -1451,7 +1451,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>WebSocket connect token</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response9> Pty_connectTokenAsync(string ptyID, string directory, string workspace);
+        System.Threading.Tasks.Task<PtyConnectTokenResponseSchema200> Pty_connectTokenAsync(string ptyID, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1462,7 +1462,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>WebSocket connect token</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response9> Pty_connectTokenAsync(string ptyID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<PtyConnectTokenResponseSchema200> Pty_connectTokenAsync(string ptyID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List pending questions
@@ -1493,7 +1493,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Question answered successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, Body12 body);
+        System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, QuestionReplyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1504,7 +1504,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Question answered successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, Body12 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, QuestionReplyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Reject question request
@@ -1556,7 +1556,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, Body13 body);
+        System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, PermissionReplyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1567,7 +1567,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, Body13 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, PermissionReplyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Save always-allow/deny permission rules
@@ -1577,7 +1577,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Always-rules saved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, Body14 body);
+        System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, PermissionSaveAlwaysRulesRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1588,7 +1588,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Always-rules saved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, Body14 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, PermissionSaveAlwaysRulesRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Allow everything
@@ -1598,7 +1598,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, Body15 body);
+        System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, PermissionAllowEverythingRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1609,7 +1609,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, Body15 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, PermissionAllowEverythingRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List providers
@@ -1619,7 +1619,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response10> Provider_listAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<ProviderListResponseSchema200> Provider_listAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1630,7 +1630,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response10> Provider_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProviderListResponseSchema200> Provider_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get provider auth methods
@@ -1661,7 +1661,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Authorization URL and method</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, Body16 body);
+        System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, ProviderOauthAuthorizeRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1672,7 +1672,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Authorization URL and method</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, Body16 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, ProviderOauthAuthorizeRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Handle OAuth callback
@@ -1682,7 +1682,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth callback processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, Body17 body);
+        System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, ProviderOauthCallbackRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1693,7 +1693,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth callback processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, Body17 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, ProviderOauthCallbackRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List sessions
@@ -1724,7 +1724,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, Body18 body);
+        System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, SessionCreateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1735,7 +1735,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, Body18 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, SessionCreateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get session status
@@ -1808,7 +1808,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, Body19 body);
+        System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, SessionUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1819,7 +1819,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, Body19 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, SessionUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get session children
@@ -1892,7 +1892,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of messages</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous6>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SessionMessagesResponseSchema200Item>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1903,7 +1903,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of messages</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous6>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SessionMessagesResponseSchema200Item>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Send message
@@ -1913,7 +1913,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response11> Session_promptAsync(string sessionID, string directory, string workspace, Body20 body);
+        System.Threading.Tasks.Task<SessionPromptResponseSchema200> Session_promptAsync(string sessionID, string directory, string workspace, SessionPromptRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1924,7 +1924,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response11> Session_promptAsync(string sessionID, string directory, string workspace, Body20 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SessionPromptResponseSchema200> Session_promptAsync(string sessionID, string directory, string workspace, SessionPromptRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get message
@@ -1934,7 +1934,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response12> Session_messageAsync(string sessionID, string messageID, string directory, string workspace);
+        System.Threading.Tasks.Task<SessionMessageResponseSchema200> Session_messageAsync(string sessionID, string messageID, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1945,7 +1945,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response12> Session_messageAsync(string sessionID, string messageID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SessionMessageResponseSchema200> Session_messageAsync(string sessionID, string messageID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Delete message
@@ -1976,7 +1976,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, Body21 body);
+        System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, SessionForkRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1987,7 +1987,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, Body21 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, SessionForkRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Abort session
@@ -2018,7 +2018,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, Body22 body);
+        System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, SessionInitRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2029,7 +2029,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, Body22 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, SessionInitRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Share session
@@ -2081,7 +2081,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Summarized session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, Body23 body);
+        System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, SessionSummarizeRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2092,7 +2092,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Summarized session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, Body23 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, SessionSummarizeRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Send async message
@@ -2102,7 +2102,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, Body24 body);
+        System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, SessionPromptAsyncRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2113,7 +2113,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, Body24 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, SessionPromptAsyncRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Send command
@@ -2123,7 +2123,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response13> Session_commandAsync(string sessionID, string directory, string workspace, Body25 body);
+        System.Threading.Tasks.Task<SessionCommandResponseSchema200> Session_commandAsync(string sessionID, string directory, string workspace, SessionCommandRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2134,7 +2134,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response13> Session_commandAsync(string sessionID, string directory, string workspace, Body25 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SessionCommandResponseSchema200> Session_commandAsync(string sessionID, string directory, string workspace, SessionCommandRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Run shell command
@@ -2144,7 +2144,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response14> Session_shellAsync(string sessionID, string directory, string workspace, Body26 body);
+        System.Threading.Tasks.Task<SessionShellResponseSchema200> Session_shellAsync(string sessionID, string directory, string workspace, SessionShellRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2155,7 +2155,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response14> Session_shellAsync(string sessionID, string directory, string workspace, Body26 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SessionShellResponseSchema200> Session_shellAsync(string sessionID, string directory, string workspace, SessionShellRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Revert message
@@ -2165,7 +2165,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, Body27 body);
+        System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, SessionRevertRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2176,7 +2176,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, Body27 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, SessionRevertRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Restore reverted messages
@@ -2208,7 +2208,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         [System.Obsolete]
-        System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, Body28 body);
+        System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, PermissionRespondRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2220,7 +2220,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         [System.Obsolete]
-        System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, Body28 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, PermissionRespondRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <remarks>
         /// Delete a part from a message.
@@ -2260,7 +2260,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Viewed sessions updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, Body29 body);
+        System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, SessionViewedRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2271,7 +2271,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Viewed sessions updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, Body29 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, SessionViewedRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Start workspace sync
@@ -2302,7 +2302,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Replayed sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response15> Sync_replayAsync(string directory, string workspace, Body30 body);
+        System.Threading.Tasks.Task<SyncReplayResponseSchema200> Sync_replayAsync(string directory, string workspace, SyncReplayRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2313,7 +2313,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Replayed sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response15> Sync_replayAsync(string directory, string workspace, Body30 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SyncReplayResponseSchema200> Sync_replayAsync(string directory, string workspace, SyncReplayRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Steal session into workspace
@@ -2323,7 +2323,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session stolen into workspace</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response16> Sync_stealAsync(string directory, string workspace, Body31 body);
+        System.Threading.Tasks.Task<SyncStealResponseSchema200> Sync_stealAsync(string directory, string workspace, SyncStealRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2334,7 +2334,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session stolen into workspace</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response16> Sync_stealAsync(string directory, string workspace, Body31 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SyncStealResponseSchema200> Sync_stealAsync(string directory, string workspace, SyncStealRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List sync events
@@ -2344,7 +2344,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SyncHistoryListResponseSchema200Item>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2355,7 +2355,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SyncHistoryListResponseSchema200Item>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Append TUI prompt
@@ -2365,7 +2365,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, Body32 body);
+        System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, TuiAppendPromptRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2376,7 +2376,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, Body32 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, TuiAppendPromptRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Open help dialog
@@ -2512,7 +2512,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Command executed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, Body33 body);
+        System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, TuiExecuteCommandRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2523,7 +2523,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Command executed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, Body33 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, TuiExecuteCommandRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Show TUI toast
@@ -2533,7 +2533,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Toast notification shown successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, Body34 body);
+        System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, TuiShowToastRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2544,7 +2544,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Toast notification shown successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, Body34 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, TuiShowToastRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Publish TUI event
@@ -2554,7 +2554,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event published successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, Body35 body);
+        System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, TuiPublishRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2565,7 +2565,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event published successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, Body35 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, TuiPublishRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Select session
@@ -2575,7 +2575,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session selected successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, Body36 body);
+        System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, TuiSelectSessionRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2586,7 +2586,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session selected successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, Body36 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, TuiSelectSessionRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get next TUI request
@@ -2596,7 +2596,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next TUI request</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response17> Tui_control_nextAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<TuiControlNextResponseSchema200> Tui_control_nextAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2607,7 +2607,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next TUI request</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response17> Tui_control_nextAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TuiControlNextResponseSchema200> Tui_control_nextAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Submit TUI response
@@ -2638,7 +2638,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace adapters</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous8>> Experimental_workspace_adapter_listAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceAdapterListResponseSchema200Item>> Experimental_workspace_adapter_listAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2649,7 +2649,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace adapters</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous8>> Experimental_workspace_adapter_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceAdapterListResponseSchema200Item>> Experimental_workspace_adapter_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List workspaces
@@ -2680,7 +2680,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, Body37 body);
+        System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, ExperimentalWorkspaceCreateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2691,7 +2691,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, Body37 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, ExperimentalWorkspaceCreateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Sync workspace list
@@ -2722,7 +2722,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous9>> Experimental_workspace_statusAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceStatusResponseSchema200Item>> Experimental_workspace_statusAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2733,7 +2733,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous9>> Experimental_workspace_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceStatusResponseSchema200Item>> Experimental_workspace_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove workspace
@@ -2764,7 +2764,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session warped</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, Body38 body);
+        System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, ExperimentalWorkspaceWarpRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2775,7 +2775,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session warped</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, Body38 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, ExperimentalWorkspaceWarpRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Preview agent markdown
@@ -2785,7 +2785,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent markdown preview</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response18> AgentBuilder_previewAsync(string directory, string workspace, Body39 body);
+        System.Threading.Tasks.Task<AgentBuilderPreviewResponseSchema200> AgentBuilder_previewAsync(string directory, string workspace, AgentBuilderPreviewRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2796,7 +2796,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent markdown preview</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response18> AgentBuilder_previewAsync(string directory, string workspace, Body39 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AgentBuilderPreviewResponseSchema200> AgentBuilder_previewAsync(string directory, string workspace, AgentBuilderPreviewRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Save agent markdown
@@ -2806,7 +2806,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Saved agent markdown</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response19> AgentBuilder_saveAsync(string id, string directory, string workspace, Body40 body);
+        System.Threading.Tasks.Task<AgentBuilderSaveResponseSchema200> AgentBuilder_saveAsync(string id, string directory, string workspace, AgentBuilderSaveRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2817,7 +2817,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Saved agent markdown</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response19> AgentBuilder_saveAsync(string id, string directory, string workspace, Body40 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AgentBuilderSaveResponseSchema200> AgentBuilder_saveAsync(string id, string directory, string workspace, AgentBuilderSaveRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List background processes
@@ -2953,7 +2953,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated branch name or null when the task is not clear yet</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response20> BranchName_generateAsync(string sessionID, string directory, string workspace, Body41 body);
+        System.Threading.Tasks.Task<BranchNameGenerateResponseSchema200> BranchName_generateAsync(string sessionID, string directory, string workspace, BranchNameGenerateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2964,7 +2964,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated branch name or null when the task is not clear yet</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response20> BranchName_generateAsync(string sessionID, string directory, string workspace, Body41 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<BranchNameGenerateResponseSchema200> BranchName_generateAsync(string sessionID, string directory, string workspace, BranchNameGenerateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Generate commit message
@@ -2974,7 +2974,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated commit message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response21> CommitMessage_generateAsync(string directory, string workspace, Body42 body);
+        System.Threading.Tasks.Task<CommitMessageGenerateResponseSchema200> CommitMessage_generateAsync(string directory, string workspace, CommitMessageGenerateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2985,7 +2985,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated commit message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response21> CommitMessage_generateAsync(string directory, string workspace, Body42 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CommitMessageGenerateResponseSchema200> CommitMessage_generateAsync(string directory, string workspace, CommitMessageGenerateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get config overlay
@@ -3016,7 +3016,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective configuration after patch</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, Body43 body);
+        System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, ConfigOverlayUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3027,7 +3027,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective configuration after patch</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, Body43 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, ConfigOverlayUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List config sources
@@ -3100,7 +3100,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project rules after update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, Body44 body);
+        System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, ConfigRulesUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3111,7 +3111,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project rules after update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, Body44 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, ConfigRulesUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get model state
@@ -3142,7 +3142,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated model state</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, Body45 body);
+        System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, ConfigModelStateUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3153,7 +3153,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated model state</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, Body45 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, ConfigModelStateUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get TUI configuration
@@ -3184,7 +3184,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective TUI configuration after the update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, Body46 body);
+        System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, TuiConfigUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3195,7 +3195,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective TUI configuration after the update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, Body46 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, TuiConfigUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List TUI keybinds
@@ -3226,7 +3226,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Enhanced prompt text</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response22> EnhancePrompt_enhanceAsync(string directory, string workspace, Body47 body);
+        System.Threading.Tasks.Task<EnhancePromptEnhanceResponseSchema200> EnhancePrompt_enhanceAsync(string directory, string workspace, EnhancePromptEnhanceRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3237,7 +3237,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Enhanced prompt text</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response22> EnhancePrompt_enhanceAsync(string directory, string workspace, Body47 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<EnhancePromptEnhanceResponseSchema200> EnhancePrompt_enhanceAsync(string directory, string workspace, EnhancePromptEnhanceRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get indexing status
@@ -3436,7 +3436,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Profile data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response23> Kilo_profileAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<KiloProfileResponseSchema200> Kilo_profileAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3447,7 +3447,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Profile data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response23> Kilo_profileAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloProfileResponseSchema200> Kilo_profileAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Kilo authentication status
@@ -3457,7 +3457,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo authentication status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response24> Kilo_authStatusAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<KiloAuthStatusResponseSchema200> Kilo_authStatusAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3468,7 +3468,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo authentication status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response24> Kilo_authStatusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloAuthStatusResponseSchema200> Kilo_authStatusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get organization custom modes
@@ -3478,7 +3478,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization modes list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response25> Kilo_modesAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<KiloModesResponseSchema200> Kilo_modesAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3489,7 +3489,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization modes list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response25> Kilo_modesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloModesResponseSchema200> Kilo_modesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// FIM completion
@@ -3499,7 +3499,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Streaming FIM completion response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response26> Kilo_fimAsync(string directory, string workspace, Body48 body);
+        System.Threading.Tasks.Task<KiloFimResponseSchema200> Kilo_fimAsync(string directory, string workspace, KiloFimRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3510,7 +3510,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Streaming FIM completion response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response26> Kilo_fimAsync(string directory, string workspace, Body48 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloFimResponseSchema200> Kilo_fimAsync(string directory, string workspace, KiloFimRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Next Edit completion
@@ -3520,7 +3520,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next Edit completion</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response27> Kilo_editAsync(string directory, string workspace, Body49 body);
+        System.Threading.Tasks.Task<KiloEditResponseSchema200> Kilo_editAsync(string directory, string workspace, KiloEditRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3531,7 +3531,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next Edit completion</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response27> Kilo_editAsync(string directory, string workspace, Body49 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloEditResponseSchema200> Kilo_editAsync(string directory, string workspace, KiloEditRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Speech to text transcription
@@ -3541,7 +3541,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Transcription response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response28> Kilo_audio_transcriptionsAsync(string directory, string workspace, Body50 body);
+        System.Threading.Tasks.Task<KiloAudioTranscriptionsResponseSchema200> Kilo_audio_transcriptionsAsync(string directory, string workspace, KiloAudioTranscriptionsRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3552,7 +3552,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Transcription response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response28> Kilo_audio_transcriptionsAsync(string directory, string workspace, Body50 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloAudioTranscriptionsResponseSchema200> Kilo_audio_transcriptionsAsync(string directory, string workspace, KiloAudioTranscriptionsRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Image generation models
@@ -3562,7 +3562,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Image-capable model list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous10>> Kilo_models_imagesAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloModelsImagesResponseSchema200Item>> Kilo_models_imagesAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3573,7 +3573,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Image-capable model list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous10>> Kilo_models_imagesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloModelsImagesResponseSchema200Item>> Kilo_models_imagesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Kilo notifications
@@ -3583,7 +3583,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notifications list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous11>> Kilo_notificationsAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloNotificationsResponseSchema200Item>> Kilo_notificationsAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3594,7 +3594,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notifications list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous11>> Kilo_notificationsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloNotificationsResponseSchema200Item>> Kilo_notificationsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Update Kilo Gateway organization
@@ -3604,7 +3604,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization updated successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, Body51 body);
+        System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, KiloOrganizationSetRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3615,7 +3615,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization updated successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, Body51 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, KiloOrganizationSetRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get KiloClaw instance status
@@ -3625,7 +3625,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Instance status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response29> Kilo_claw_statusAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<KiloClawStatusResponseSchema200> Kilo_claw_statusAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3636,7 +3636,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Instance status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response29> Kilo_claw_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloClawStatusResponseSchema200> Kilo_claw_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get KiloClaw chat credentials
@@ -3646,7 +3646,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo Chat credentials or null</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response30> Kilo_claw_chatCredentialsAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<KiloClawChatCredentialsResponseSchema200> Kilo_claw_chatCredentialsAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3657,7 +3657,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo Chat credentials or null</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response30> Kilo_claw_chatCredentialsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloClawChatCredentialsResponseSchema200> Kilo_claw_chatCredentialsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get cloud sessions
@@ -3667,7 +3667,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud sessions list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response31> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl);
+        System.Threading.Tasks.Task<KiloCloudSessionsResponseSchema200> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3678,7 +3678,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud sessions list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response31> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloCloudSessionsResponseSchema200> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get cloud session
@@ -3688,7 +3688,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud session data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response32> Kilo_cloud_session_getAsync(string id, string directory, string workspace);
+        System.Threading.Tasks.Task<KiloCloudSessionGetResponseSchema200> Kilo_cloud_session_getAsync(string id, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3699,7 +3699,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud session data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response32> Kilo_cloud_session_getAsync(string id, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloCloudSessionGetResponseSchema200> Kilo_cloud_session_getAsync(string id, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Import session from cloud
@@ -3709,7 +3709,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Imported session info</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response33> Kilo_cloud_session_importAsync(string directory, string workspace, Body52 body);
+        System.Threading.Tasks.Task<KiloCloudSessionImportResponseSchema200> Kilo_cloud_session_importAsync(string directory, string workspace, KiloCloudSessionImportRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3720,7 +3720,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Imported session info</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response33> Kilo_cloud_session_importAsync(string directory, string workspace, Body52 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KiloCloudSessionImportResponseSchema200> Kilo_cloud_session_importAsync(string directory, string workspace, KiloCloudSessionImportRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Write heap snapshot
@@ -3772,7 +3772,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Skill removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, Body53 body);
+        System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, KilocodeRemoveSkillRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3783,7 +3783,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Skill removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, Body53 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, KilocodeRemoveSkillRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove a custom agent
@@ -3793,7 +3793,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, Body54 body);
+        System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, KilocodeRemoveAgentRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3804,7 +3804,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, Body54 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, KilocodeRemoveAgentRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List pending notebook requests
@@ -3835,7 +3835,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, Body55 body);
+        System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, KilocodeNotebookReplyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3846,7 +3846,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, Body55 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, KilocodeNotebookReplyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Reject a notebook request
@@ -3856,7 +3856,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, Body56 body);
+        System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, KilocodeNotebookRejectRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3867,7 +3867,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, Body56 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, KilocodeNotebookRejectRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List pending Agent Manager requests
@@ -3898,7 +3898,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, Body57 body);
+        System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, KilocodeAgentManagerReplyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3909,7 +3909,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, Body57 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, KilocodeAgentManagerReplyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Reject an Agent Manager request
@@ -3919,7 +3919,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, Body58 body);
+        System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, KilocodeAgentManagerRejectRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3930,7 +3930,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, Body58 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, KilocodeAgentManagerRejectRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get session model usage
@@ -3940,7 +3940,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Model usage for a session tree</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response34> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace);
+        System.Threading.Tasks.Task<KilocodeSessionModelUsageResponseSchema200> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -3951,7 +3951,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Model usage for a session tree</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response34> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KilocodeSessionModelUsageResponseSchema200> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Anaconda Desktop setup status
@@ -4003,7 +4003,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Anaconda Desktop connection synchronized</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response35> AnacondaDesktop_syncAsync(string directory, string workspace, Body59 body);
+        System.Threading.Tasks.Task<AnacondaDesktopSyncResponseSchema200> AnacondaDesktop_syncAsync(string directory, string workspace, AnacondaDesktopSyncRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4014,7 +4014,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Anaconda Desktop connection synchronized</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response35> AnacondaDesktop_syncAsync(string directory, string workspace, Body59 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AnacondaDesktopSyncResponseSchema200> AnacondaDesktop_syncAsync(string directory, string workspace, AnacondaDesktopSyncRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List pending network waits
@@ -4087,7 +4087,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response36> Remote_enableAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<RemoteEnableResponseSchema200> Remote_enableAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4098,7 +4098,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response36> Remote_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<RemoteEnableResponseSchema200> Remote_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Disable remote connection
@@ -4108,7 +4108,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response37> Remote_disableAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<RemoteDisableResponseSchema200> Remote_disableAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4119,7 +4119,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response37> Remote_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<RemoteDisableResponseSchema200> Remote_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get remote connection status
@@ -4129,7 +4129,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response38> Remote_statusAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<RemoteStatusResponseSchema200> Remote_statusAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4140,7 +4140,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response38> Remote_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<RemoteStatusResponseSchema200> Remote_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get sandbox backend support
@@ -4150,7 +4150,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sandbox backend support</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response39> Sandbox_supportAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<SandboxSupportResponseSchema200> Sandbox_supportAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4161,7 +4161,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sandbox backend support</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response39> Sandbox_supportAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SandboxSupportResponseSchema200> Sandbox_supportAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get session sandbox status
@@ -4171,7 +4171,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response40> Sandbox_statusAsync(string sessionID, string directory, string workspace);
+        System.Threading.Tasks.Task<SandboxStatusResponseSchema200> Sandbox_statusAsync(string sessionID, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4182,7 +4182,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response40> Sandbox_statusAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SandboxStatusResponseSchema200> Sandbox_statusAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Toggle session sandbox
@@ -4192,7 +4192,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response41> Sandbox_toggleAsync(string sessionID, string directory, string workspace);
+        System.Threading.Tasks.Task<SandboxToggleResponseSchema200> Sandbox_toggleAsync(string sessionID, string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4203,7 +4203,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response41> Sandbox_toggleAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SandboxToggleResponseSchema200> Sandbox_toggleAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Insert project for session import
@@ -4213,7 +4213,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, Body60 body);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, KilocodeSessionImportProjectRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4224,7 +4224,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, Body60 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, KilocodeSessionImportProjectRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Insert session for session import
@@ -4234,7 +4234,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, Body61 body);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, KilocodeSessionImportSessionRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4245,7 +4245,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, Body61 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, KilocodeSessionImportSessionRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Insert message for session import
@@ -4255,7 +4255,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, Body62 body);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, KilocodeSessionImportMessageRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4266,7 +4266,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, Body62 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, KilocodeSessionImportMessageRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Insert part for session import
@@ -4276,7 +4276,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Part import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, Body63 body);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, KilocodeSessionImportPartRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4287,7 +4287,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Part import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, Body63 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, KilocodeSessionImportPartRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List pending suggestions
@@ -4318,7 +4318,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Suggestion accepted successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, Body64 body);
+        System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, SuggestionAcceptRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4329,7 +4329,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Suggestion accepted successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, Body64 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, SuggestionAcceptRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Dismiss suggestion request
@@ -4360,7 +4360,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event captured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, Body65 body);
+        System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, TelemetryCaptureRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4371,7 +4371,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event captured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, Body65 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, TelemetryCaptureRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Set PostHog telemetry enabled state
@@ -4381,7 +4381,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>State updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, Body66 body);
+        System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, TelemetrySetEnabledRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4392,7 +4392,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>State updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, Body66 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, TelemetrySetEnabledRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get memory status
@@ -4402,7 +4402,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response42> Memory_statusAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<MemoryStatusResponseSchema200> Memory_statusAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4413,7 +4413,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response42> Memory_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryStatusResponseSchema200> Memory_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Show memory
@@ -4423,7 +4423,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory source and index</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response43> Memory_showAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<MemoryShowResponseSchema200> Memory_showAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4434,7 +4434,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory source and index</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response43> Memory_showAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryShowResponseSchema200> Memory_showAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Enable memory
@@ -4444,7 +4444,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response44> Memory_enableAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<MemoryEnableResponseSchema200> Memory_enableAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4455,7 +4455,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response44> Memory_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryEnableResponseSchema200> Memory_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Disable memory
@@ -4465,7 +4465,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response45> Memory_disableAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<MemoryDisableResponseSchema200> Memory_disableAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4476,7 +4476,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response45> Memory_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryDisableResponseSchema200> Memory_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Configure memory
@@ -4486,7 +4486,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory configured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response46> Memory_configureAsync(string directory, string workspace, Body67 body);
+        System.Threading.Tasks.Task<MemoryConfigureResponseSchema200> Memory_configureAsync(string directory, string workspace, MemoryConfigureRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4497,7 +4497,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory configured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response46> Memory_configureAsync(string directory, string workspace, Body67 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryConfigureResponseSchema200> Memory_configureAsync(string directory, string workspace, MemoryConfigureRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Rebuild memory index
@@ -4507,7 +4507,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory rebuilt</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response47> Memory_rebuildAsync(string directory, string workspace);
+        System.Threading.Tasks.Task<MemoryRebuildResponseSchema200> Memory_rebuildAsync(string directory, string workspace);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4518,7 +4518,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory rebuilt</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response47> Memory_rebuildAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryRebuildResponseSchema200> Memory_rebuildAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remember text
@@ -4528,7 +4528,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory operation result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response48> Memory_rememberAsync(string directory, string workspace, Body68 body);
+        System.Threading.Tasks.Task<MemoryRememberResponseSchema200> Memory_rememberAsync(string directory, string workspace, MemoryRememberRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4539,7 +4539,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory operation result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response48> Memory_rememberAsync(string directory, string workspace, Body68 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryRememberResponseSchema200> Memory_rememberAsync(string directory, string workspace, MemoryRememberRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remember correction
@@ -4549,7 +4549,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory correction result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response49> Memory_correctAsync(string directory, string workspace, Body69 body);
+        System.Threading.Tasks.Task<MemoryCorrectResponseSchema200> Memory_correctAsync(string directory, string workspace, MemoryCorrectRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4560,7 +4560,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory correction result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response49> Memory_correctAsync(string directory, string workspace, Body69 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryCorrectResponseSchema200> Memory_correctAsync(string directory, string workspace, MemoryCorrectRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Forget memory
@@ -4570,7 +4570,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory forget result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response50> Memory_forgetAsync(string directory, string workspace, Body70 body);
+        System.Threading.Tasks.Task<MemoryForgetResponseSchema200> Memory_forgetAsync(string directory, string workspace, MemoryForgetRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4581,7 +4581,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory forget result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response50> Memory_forgetAsync(string directory, string workspace, Body70 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryForgetResponseSchema200> Memory_forgetAsync(string directory, string workspace, MemoryForgetRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Purge memory
@@ -4591,7 +4591,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory purged</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response51> Memory_purgeAsync(string directory, string workspace, Body71 body);
+        System.Threading.Tasks.Task<MemoryPurgeResponseSchema200> Memory_purgeAsync(string directory, string workspace, MemoryPurgeRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4602,7 +4602,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory purged</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response51> Memory_purgeAsync(string directory, string workspace, Body71 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MemoryPurgeResponseSchema200> Memory_purgeAsync(string directory, string workspace, MemoryPurgeRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Check server health
@@ -4612,7 +4612,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response52> V2_health_getAsync();
+        System.Threading.Tasks.Task<V2HealthGetResponseSchema200> V2_health_getAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4623,7 +4623,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response52> V2_health_getAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2HealthGetResponseSchema200> V2_health_getAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get location
@@ -4654,7 +4654,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response53> V2_agent_listAsync(Location2 location);
+        System.Threading.Tasks.Task<V2AgentListResponseSchema200> V2_agent_listAsync(Location2 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4665,7 +4665,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response53> V2_agent_listAsync(Location2 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2AgentListResponseSchema200> V2_agent_listAsync(Location2 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List sessions
@@ -4696,7 +4696,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response54> V2_session_createAsync(Body72 body);
+        System.Threading.Tasks.Task<V2SessionCreateResponseSchema200> V2_session_createAsync(V2SessionCreateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4707,7 +4707,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response54> V2_session_createAsync(Body72 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2SessionCreateResponseSchema200> V2_session_createAsync(V2SessionCreateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get session
@@ -4717,7 +4717,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response55> V2_session_getAsync(string sessionID);
+        System.Threading.Tasks.Task<V2SessionGetResponseSchema200> V2_session_getAsync(string sessionID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4728,7 +4728,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response55> V2_session_getAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2SessionGetResponseSchema200> V2_session_getAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Send message
@@ -4738,7 +4738,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response56> V2_session_promptAsync(string sessionID, Body73 body);
+        System.Threading.Tasks.Task<V2SessionPromptResponseSchema200> V2_session_promptAsync(string sessionID, V2SessionPromptRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4749,7 +4749,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response56> V2_session_promptAsync(string sessionID, Body73 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2SessionPromptResponseSchema200> V2_session_promptAsync(string sessionID, V2SessionPromptRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Compact session
@@ -4801,7 +4801,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response57> V2_session_contextAsync(string sessionID);
+        System.Threading.Tasks.Task<V2SessionContextResponseSchema200> V2_session_contextAsync(string sessionID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4812,7 +4812,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response57> V2_session_contextAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2SessionContextResponseSchema200> V2_session_contextAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get session messages
@@ -4843,7 +4843,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response58> V2_model_listAsync(Location3 location);
+        System.Threading.Tasks.Task<V2ModelListResponseSchema200> V2_model_listAsync(Location3 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4854,7 +4854,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response58> V2_model_listAsync(Location3 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2ModelListResponseSchema200> V2_model_listAsync(Location3 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List providers
@@ -4864,7 +4864,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response59> V2_provider_listAsync(Location4 location);
+        System.Threading.Tasks.Task<V2ProviderListResponseSchema200> V2_provider_listAsync(Location4 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4875,7 +4875,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response59> V2_provider_listAsync(Location4 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2ProviderListResponseSchema200> V2_provider_listAsync(Location4 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get provider
@@ -4885,7 +4885,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response60> V2_provider_getAsync(string providerID, Location5 location);
+        System.Threading.Tasks.Task<V2ProviderGetResponseSchema200> V2_provider_getAsync(string providerID, Location5 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4896,7 +4896,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response60> V2_provider_getAsync(string providerID, Location5 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2ProviderGetResponseSchema200> V2_provider_getAsync(string providerID, Location5 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List integrations
@@ -4906,7 +4906,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response61> V2_integration_listAsync(Location6 location);
+        System.Threading.Tasks.Task<V2IntegrationListResponseSchema200> V2_integration_listAsync(Location6 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4917,7 +4917,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response61> V2_integration_listAsync(Location6 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2IntegrationListResponseSchema200> V2_integration_listAsync(Location6 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get integration
@@ -4927,7 +4927,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response62> V2_integration_getAsync(string integrationID, Location7 location);
+        System.Threading.Tasks.Task<V2IntegrationGetResponseSchema200> V2_integration_getAsync(string integrationID, Location7 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4938,7 +4938,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response62> V2_integration_getAsync(string integrationID, Location7 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2IntegrationGetResponseSchema200> V2_integration_getAsync(string integrationID, Location7 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Connect with key
@@ -4948,7 +4948,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, Body74 body);
+        System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, V2IntegrationConnectKeyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4959,7 +4959,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, Body74 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, V2IntegrationConnectKeyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Begin OAuth connection
@@ -4969,7 +4969,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response63> V2_integration_connect_oauthAsync(string integrationID, Location9 location, Body75 body);
+        System.Threading.Tasks.Task<V2IntegrationConnectOauthResponseSchema200> V2_integration_connect_oauthAsync(string integrationID, Location9 location, V2IntegrationConnectOauthRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4980,7 +4980,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response63> V2_integration_connect_oauthAsync(string integrationID, Location9 location, Body75 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2IntegrationConnectOauthResponseSchema200> V2_integration_connect_oauthAsync(string integrationID, Location9 location, V2IntegrationConnectOauthRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Get OAuth attempt status
@@ -4990,7 +4990,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response64> V2_integration_attempt_statusAsync(string attemptID, Location10 location);
+        System.Threading.Tasks.Task<V2IntegrationAttemptStatusResponseSchema200> V2_integration_attempt_statusAsync(string attemptID, Location10 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5001,7 +5001,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response64> V2_integration_attempt_statusAsync(string attemptID, Location10 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2IntegrationAttemptStatusResponseSchema200> V2_integration_attempt_statusAsync(string attemptID, Location10 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Cancel OAuth connection
@@ -5032,7 +5032,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, Body76 body);
+        System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, V2IntegrationAttemptCompleteRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5043,7 +5043,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, Body76 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, V2IntegrationAttemptCompleteRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Update credential
@@ -5053,7 +5053,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, Body77 body);
+        System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, V2CredentialUpdateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5064,7 +5064,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, Body77 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, V2CredentialUpdateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove credential
@@ -5095,7 +5095,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response65> V2_permission_request_listAsync(Location13 location);
+        System.Threading.Tasks.Task<V2PermissionRequestListResponseSchema200> V2_permission_request_listAsync(Location13 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5106,7 +5106,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response65> V2_permission_request_listAsync(Location13 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2PermissionRequestListResponseSchema200> V2_permission_request_listAsync(Location13 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List saved permissions
@@ -5116,7 +5116,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response66> V2_permission_saved_listAsync(string projectID);
+        System.Threading.Tasks.Task<V2PermissionSavedListResponseSchema200> V2_permission_saved_listAsync(string projectID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5127,7 +5127,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response66> V2_permission_saved_listAsync(string projectID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2PermissionSavedListResponseSchema200> V2_permission_saved_listAsync(string projectID, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove saved permission
@@ -5158,7 +5158,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response67> V2_session_permission_listAsync(string sessionID);
+        System.Threading.Tasks.Task<V2SessionPermissionListResponseSchema200> V2_session_permission_listAsync(string sessionID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5169,7 +5169,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response67> V2_session_permission_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2SessionPermissionListResponseSchema200> V2_session_permission_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Reply to pending permission request
@@ -5179,7 +5179,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, Body78 body);
+        System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, V2SessionPermissionReplyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5190,7 +5190,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, Body78 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, V2SessionPermissionReplyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Read file
@@ -5221,7 +5221,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response68> V2_fs_listAsync(Location15 location, string path);
+        System.Threading.Tasks.Task<V2FsListResponseSchema200> V2_fs_listAsync(Location15 location, string path);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5232,7 +5232,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response68> V2_fs_listAsync(Location15 location, string path, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2FsListResponseSchema200> V2_fs_listAsync(Location15 location, string path, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Find files
@@ -5242,7 +5242,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response69> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit);
+        System.Threading.Tasks.Task<V2FsFindResponseSchema200> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5253,7 +5253,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response69> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2FsFindResponseSchema200> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List commands
@@ -5263,7 +5263,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response70> V2_command_listAsync(Location17 location);
+        System.Threading.Tasks.Task<V2CommandListResponseSchema200> V2_command_listAsync(Location17 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5274,7 +5274,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response70> V2_command_listAsync(Location17 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2CommandListResponseSchema200> V2_command_listAsync(Location17 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List skills
@@ -5284,7 +5284,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response71> V2_skill_listAsync(Location18 location);
+        System.Threading.Tasks.Task<V2SkillListResponseSchema200> V2_skill_listAsync(Location18 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5295,7 +5295,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response71> V2_skill_listAsync(Location18 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2SkillListResponseSchema200> V2_skill_listAsync(Location18 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Subscribe to events
@@ -5326,7 +5326,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response72> V2_question_request_listAsync(Location20 location);
+        System.Threading.Tasks.Task<V2QuestionRequestListResponseSchema200> V2_question_request_listAsync(Location20 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5337,7 +5337,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response72> V2_question_request_listAsync(Location20 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2QuestionRequestListResponseSchema200> V2_question_request_listAsync(Location20 location, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List session question requests
@@ -5347,7 +5347,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response73> V2_session_question_listAsync(string sessionID);
+        System.Threading.Tasks.Task<V2SessionQuestionListResponseSchema200> V2_session_question_listAsync(string sessionID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5358,7 +5358,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response73> V2_session_question_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2SessionQuestionListResponseSchema200> V2_session_question_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Reply to pending question request
@@ -5410,7 +5410,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response74> V2_reference_listAsync(Location21 location);
+        System.Threading.Tasks.Task<V2ReferenceListResponseSchema200> V2_reference_listAsync(Location21 location);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -5421,25 +5421,25 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response74> V2_reference_listAsync(Location21 location, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V2ReferenceListResponseSchema200> V2_reference_listAsync(Location21 location, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>ProjectCopy.Copy</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, Body79 body);
+        System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, V2ProjectCopyCreateRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>ProjectCopy.Copy</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, Body79 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, V2ProjectCopyCreateRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, Body80 body);
+        System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, V2ProjectCopyRemoveRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, Body80 body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, V2ProjectCopyRemoveRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -5600,12 +5600,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response75>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response75>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5704,12 +5704,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response76>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response2>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response76>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response2>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5739,7 +5739,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Log entry written successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, Body body)
+        public virtual System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, AppLogRequest body)
         {
             return App_logAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -5753,7 +5753,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Log entry written successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, Body body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> App_logAsync(string directory, string workspace, AppLogRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -5818,12 +5818,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response77>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response3>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response77>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response3>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5853,7 +5853,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session moved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(Body2 body)
+        public virtual System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(ExperimentalControlPlaneMoveSessionRequest body)
         {
             return Experimental_controlPlane_moveSessionAsync(body, System.Threading.CancellationToken.None);
         }
@@ -5867,7 +5867,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session moved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(Body2 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task Experimental_controlPlane_moveSessionAsync(ExperimentalControlPlaneMoveSessionRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -5916,12 +5916,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response78>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response4>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response78>("MoveSessionError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response4>("MoveSessionError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5951,7 +5951,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Health information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response> Global_healthAsync()
+        public virtual System.Threading.Tasks.Task<GlobalHealthResponseSchema200> Global_healthAsync()
         {
             return Global_healthAsync(System.Threading.CancellationToken.None);
         }
@@ -5965,7 +5965,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Health information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response> Global_healthAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GlobalHealthResponseSchema200> Global_healthAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -6006,7 +6006,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GlobalHealthResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -6320,12 +6320,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response79>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response5>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response79>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response5>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6456,7 +6456,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Upgrade result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response2> Global_upgradeAsync(Body3 body)
+        public virtual System.Threading.Tasks.Task<GlobalUpgradeResponseSchema200> Global_upgradeAsync(GlobalUpgradeRequest body)
         {
             return Global_upgradeAsync(body, System.Threading.CancellationToken.None);
         }
@@ -6470,7 +6470,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Upgrade result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response2> Global_upgradeAsync(Body3 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GlobalUpgradeResponseSchema200> Global_upgradeAsync(GlobalUpgradeRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -6515,7 +6515,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response2>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GlobalUpgradeResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -6525,12 +6525,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response80>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response6>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response80>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response6>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6849,12 +6849,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response81>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response7>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response81>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response7>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6884,7 +6884,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Config warnings</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Config_warningsAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConfigWarningsResponseSchema200Item>> Config_warningsAsync(string directory, string workspace)
         {
             return Config_warningsAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -6898,7 +6898,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Config warnings</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Config_warningsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConfigWarningsResponseSchema200Item>> Config_warningsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -6949,7 +6949,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ConfigWarningsResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -6994,7 +6994,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response3> Config_providersAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<ConfigProvidersResponseSchema200> Config_providersAsync(string directory, string workspace)
         {
             return Config_providersAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -7008,7 +7008,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response3> Config_providersAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ConfigProvidersResponseSchema200> Config_providersAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -7059,7 +7059,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response3>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ConfigProvidersResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -7224,7 +7224,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switchable Console orgs</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response4> Experimental_console_listOrgsAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<ExperimentalConsoleListOrgsResponseSchema200> Experimental_console_listOrgsAsync(string directory, string workspace)
         {
             return Experimental_console_listOrgsAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -7238,7 +7238,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switchable Console orgs</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response4> Experimental_console_listOrgsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ExperimentalConsoleListOrgsResponseSchema200> Experimental_console_listOrgsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -7289,7 +7289,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response4>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ExperimentalConsoleListOrgsResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -7344,7 +7344,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switch success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, Body4 body)
+        public virtual System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, ExperimentalConsoleSwitchOrgRequest body)
         {
             return Experimental_console_switchOrgAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -7358,7 +7358,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Switch success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, Body4 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Experimental_console_switchOrgAsync(string directory, string workspace, ExperimentalConsoleSwitchOrgRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -7531,12 +7531,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response82>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response8>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response82>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response8>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7641,12 +7641,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response83>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response9>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response83>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response9>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7751,12 +7751,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response84>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response10>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response84>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response10>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7865,12 +7865,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response85>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response11>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response85>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response11>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7979,12 +7979,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response86>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response12>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response86>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response12>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8093,12 +8093,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response87>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response13>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response87>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response13>("WorktreeError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8207,12 +8207,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response88>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response14>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response88>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response14>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8321,12 +8321,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response89>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response15>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response89>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response15>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8439,12 +8439,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response90>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response16>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response90>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response16>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8701,12 +8701,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response91>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response17>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response91>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response17>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8846,7 +8846,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Matches</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous2>> Find_textAsync(string directory, string workspace, string pattern)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FindTextResponseSchema200Item>> Find_textAsync(string directory, string workspace, string pattern)
         {
             return Find_textAsync(directory, workspace, pattern, System.Threading.CancellationToken.None);
         }
@@ -8860,7 +8860,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Matches</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous2>> Find_textAsync(string directory, string workspace, string pattern, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FindTextResponseSchema200Item>> Find_textAsync(string directory, string workspace, string pattern, System.Threading.CancellationToken cancellationToken)
         {
             if (pattern == null)
                 throw new System.ArgumentNullException("pattern");
@@ -8915,7 +8915,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous2>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<FindTextResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -10207,7 +10207,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS patch applied</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response5> Vcs_applyAsync(string directory, string workspace, Body5 body)
+        public virtual System.Threading.Tasks.Task<VcsApplyResponseSchema200> Vcs_applyAsync(string directory, string workspace, VcsApplyRequest body)
         {
             return Vcs_applyAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -10221,7 +10221,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>VCS patch applied</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response5> Vcs_applyAsync(string directory, string workspace, Body5 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<VcsApplyResponseSchema200> Vcs_applyAsync(string directory, string workspace, VcsApplyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -10276,7 +10276,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response5>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<VcsApplyResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -10286,12 +10286,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response92>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response18>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response92>("VcsApplyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response18>("VcsApplyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -10541,7 +10541,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of skills</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous3>> App_skillsAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AppSkillsResponseSchema200Item>> App_skillsAsync(string directory, string workspace)
         {
             return App_skillsAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -10555,7 +10555,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of skills</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous3>> App_skillsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AppSkillsResponseSchema200Item>> App_skillsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -10606,7 +10606,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous3>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<AppSkillsResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -10981,7 +10981,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>MCP server added successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, Body6 body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, McpAddRequest body)
         {
             return Mcp_addAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -10995,7 +10995,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>MCP server added successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, Body6 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, MCPStatus>> Mcp_addAsync(string directory, string workspace, McpAddRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -11060,12 +11060,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response93>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response19>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response93>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response19>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -11095,7 +11095,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth flow started</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response6> Mcp_auth_startAsync(string name, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<McpAuthStartResponseSchema200> Mcp_auth_startAsync(string name, string directory, string workspace)
         {
             return Mcp_auth_startAsync(name, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -11109,7 +11109,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth flow started</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response6> Mcp_auth_startAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<McpAuthStartResponseSchema200> Mcp_auth_startAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (name == null)
                 throw new System.ArgumentNullException("name");
@@ -11166,7 +11166,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response6>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<McpAuthStartResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -11176,12 +11176,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response94>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response20>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response94>("McpUnsupportedOAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response20>("McpUnsupportedOAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -11221,7 +11221,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth credentials removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response7> Mcp_auth_removeAsync(string name, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<McpAuthRemoveResponseSchema200> Mcp_auth_removeAsync(string name, string directory, string workspace)
         {
             return Mcp_auth_removeAsync(name, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -11235,7 +11235,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth credentials removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response7> Mcp_auth_removeAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<McpAuthRemoveResponseSchema200> Mcp_auth_removeAsync(string name, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (name == null)
                 throw new System.ArgumentNullException("name");
@@ -11291,7 +11291,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response7>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<McpAuthRemoveResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -11346,7 +11346,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth authentication completed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, Body7 body)
+        public virtual System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, McpAuthCallbackRequest body)
         {
             return Mcp_auth_callbackAsync(name, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -11360,7 +11360,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth authentication completed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, Body7 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MCPStatus> Mcp_auth_callbackAsync(string name, string directory, string workspace, McpAuthCallbackRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (name == null)
                 throw new System.ArgumentNullException("name");
@@ -11430,12 +11430,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response95>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response21>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response95>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response21>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -11556,12 +11556,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response96>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response22>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response96>("McpUnsupportedOAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response22>("McpUnsupportedOAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -12172,7 +12172,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated project information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, Body8 body)
+        public virtual System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, ProjectUpdateRequest body)
         {
             return Project_updateAsync(projectID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -12186,7 +12186,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated project information</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, Body8 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Project> Project_updateAsync(string projectID, string directory, string workspace, ProjectUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (projectID == null)
                 throw new System.ArgumentNullException("projectID");
@@ -12255,12 +12255,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response97>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response23>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response97>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response23>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -12300,7 +12300,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project directories</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous4>> Project_directoriesAsync(string projectID, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Project_directoriesAsync(string projectID, string directory, string workspace)
         {
             return Project_directoriesAsync(projectID, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -12314,7 +12314,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project directories</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous4>> Project_directoriesAsync(string projectID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous>> Project_directoriesAsync(string projectID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (projectID == null)
                 throw new System.ArgumentNullException("projectID");
@@ -12370,7 +12370,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous4>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -12415,7 +12415,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response8> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, Body9 body)
+        public virtual System.Threading.Tasks.Task<ExperimentalProjectCopyGenerateNameResponseSchema200> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, ExperimentalProjectCopyGenerateNameRequest body)
         {
             return Experimental_projectCopy_generateNameAsync(projectID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -12429,7 +12429,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response8> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, Body9 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ExperimentalProjectCopyGenerateNameResponseSchema200> Experimental_projectCopy_generateNameAsync(string projectID, string directory, string workspace, ExperimentalProjectCopyGenerateNameRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (projectID == null)
                 throw new System.ArgumentNullException("projectID");
@@ -12489,7 +12489,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response8>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ExperimentalProjectCopyGenerateNameResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -12534,7 +12534,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of shells</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous5>> Pty_shellsAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PtyShellsResponseSchema200Item>> Pty_shellsAsync(string directory, string workspace)
         {
             return Pty_shellsAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -12548,7 +12548,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of shells</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous5>> Pty_shellsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PtyShellsResponseSchema200Item>> Pty_shellsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -12599,7 +12599,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous5>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<PtyShellsResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -12754,7 +12754,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, Body10 body)
+        public virtual System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, PtyCreateRequest body)
         {
             return Pty_createAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -12768,7 +12768,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, Body10 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Pty> Pty_createAsync(string directory, string workspace, PtyCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -12833,12 +12833,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response98>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response24>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response98>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response24>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -12992,7 +12992,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, Body11 body)
+        public virtual System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, PtyUpdateRequest body)
         {
             return Pty_updateAsync(ptyID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -13006,7 +13006,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, Body11 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Pty> Pty_updateAsync(string ptyID, string directory, string workspace, PtyUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (ptyID == null)
                 throw new System.ArgumentNullException("ptyID");
@@ -13075,12 +13075,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response99>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response25>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response99>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response25>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -13244,7 +13244,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>WebSocket connect token</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response9> Pty_connectTokenAsync(string ptyID, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<PtyConnectTokenResponseSchema200> Pty_connectTokenAsync(string ptyID, string directory, string workspace)
         {
             return Pty_connectTokenAsync(ptyID, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -13258,7 +13258,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>WebSocket connect token</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response9> Pty_connectTokenAsync(string ptyID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<PtyConnectTokenResponseSchema200> Pty_connectTokenAsync(string ptyID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (ptyID == null)
                 throw new System.ArgumentNullException("ptyID");
@@ -13315,7 +13315,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response9>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<PtyConnectTokenResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -13490,7 +13490,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Question answered successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, Body12 body)
+        public virtual System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, QuestionReplyRequest body)
         {
             return Question_replyAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -13504,7 +13504,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Question answered successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, Body12 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Question_replyAsync(string requestID, string directory, string workspace, QuestionReplyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -13574,12 +13574,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response100>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response26>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response100>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response26>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -13700,12 +13700,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response101>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response27>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response101>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response27>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -13855,7 +13855,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, Body13 body)
+        public virtual System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, PermissionReplyRequest body)
         {
             return Permission_replyAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -13869,7 +13869,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, Body13 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Permission_replyAsync(string requestID, string directory, string workspace, PermissionReplyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -13939,12 +13939,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response102>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response28>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response102>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response28>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -13984,7 +13984,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Always-rules saved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, Body14 body)
+        public virtual System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, PermissionSaveAlwaysRulesRequest body)
         {
             return Permission_saveAlwaysRulesAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -13998,7 +13998,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Always-rules saved</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, Body14 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Permission_saveAlwaysRulesAsync(string requestID, string directory, string workspace, PermissionSaveAlwaysRulesRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -14113,7 +14113,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, Body15 body)
+        public virtual System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, PermissionAllowEverythingRequest body)
         {
             return Permission_allowEverythingAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -14127,7 +14127,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, Body15 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Permission_allowEverythingAsync(string directory, string workspace, PermissionAllowEverythingRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -14192,12 +14192,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response103>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response29>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response103>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response29>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -14237,7 +14237,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response10> Provider_listAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<ProviderListResponseSchema200> Provider_listAsync(string directory, string workspace)
         {
             return Provider_listAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -14251,7 +14251,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of providers</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response10> Provider_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProviderListResponseSchema200> Provider_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -14302,7 +14302,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response10>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProviderListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -14457,7 +14457,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Authorization URL and method</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, Body16 body)
+        public virtual System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, ProviderOauthAuthorizeRequest body)
         {
             return Provider_oauth_authorizeAsync(providerID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -14471,7 +14471,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Authorization URL and method</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, Body16 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProviderAuthAuthorization> Provider_oauth_authorizeAsync(string providerID, string directory, string workspace, ProviderOauthAuthorizeRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (providerID == null)
                 throw new System.ArgumentNullException("providerID");
@@ -14541,12 +14541,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response104>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response30>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response104>("ProviderAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response30>("ProviderAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -14576,7 +14576,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth callback processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, Body17 body)
+        public virtual System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, ProviderOauthCallbackRequest body)
         {
             return Provider_oauth_callbackAsync(providerID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -14590,7 +14590,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>OAuth callback processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, Body17 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Provider_oauth_callbackAsync(string providerID, string directory, string workspace, ProviderOauthCallbackRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (providerID == null)
                 throw new System.ArgumentNullException("providerID");
@@ -14660,12 +14660,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response105>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response31>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response105>("ProviderAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response31>("ProviderAuthError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -14829,7 +14829,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, Body18 body)
+        public virtual System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, SessionCreateRequest body)
         {
             return Session_createAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -14843,7 +14843,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully created session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, Body18 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Session3> Session_createAsync(string directory, string workspace, SessionCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -14908,12 +14908,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response106>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response32>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response106>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response32>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -15018,12 +15018,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response107>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response33>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response107>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response33>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -15132,12 +15132,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response108>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response34>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response108>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response34>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -15256,12 +15256,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response109>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response35>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response109>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response35>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -15301,7 +15301,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, Body19 body)
+        public virtual System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, SessionUpdateRequest body)
         {
             return Session_updateAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -15315,7 +15315,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Successfully updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, Body19 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Session4> Session_updateAsync(string sessionID, string directory, string workspace, SessionUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -15384,12 +15384,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response110>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response36>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response110>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response36>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -15509,12 +15509,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response111>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response37>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response111>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response37>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -15634,12 +15634,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response112>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response38>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response112>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response38>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -15798,7 +15798,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of messages</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous6>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SessionMessagesResponseSchema200Item>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before)
         {
             return Session_messagesAsync(sessionID, directory, workspace, limit, before, System.Threading.CancellationToken.None);
         }
@@ -15812,7 +15812,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>List of messages</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous6>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SessionMessagesResponseSchema200Item>> Session_messagesAsync(string sessionID, string directory, string workspace, long? limit, string before, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -15876,7 +15876,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous6>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<SessionMessagesResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -15886,12 +15886,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response113>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response39>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response113>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response39>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -15931,7 +15931,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response11> Session_promptAsync(string sessionID, string directory, string workspace, Body20 body)
+        public virtual System.Threading.Tasks.Task<SessionPromptResponseSchema200> Session_promptAsync(string sessionID, string directory, string workspace, SessionPromptRequest body)
         {
             return Session_promptAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -15945,7 +15945,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response11> Session_promptAsync(string sessionID, string directory, string workspace, Body20 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SessionPromptResponseSchema200> Session_promptAsync(string sessionID, string directory, string workspace, SessionPromptRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -16005,7 +16005,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response11>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SessionPromptResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -16015,12 +16015,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response114>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response40>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response114>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response40>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -16060,7 +16060,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response12> Session_messageAsync(string sessionID, string messageID, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<SessionMessageResponseSchema200> Session_messageAsync(string sessionID, string messageID, string directory, string workspace)
         {
             return Session_messageAsync(sessionID, messageID, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -16074,7 +16074,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response12> Session_messageAsync(string sessionID, string messageID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SessionMessageResponseSchema200> Session_messageAsync(string sessionID, string messageID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -16134,7 +16134,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response12>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SessionMessageResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -16144,12 +16144,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response115>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response41>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response115>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response41>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -16273,12 +16273,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response116>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response42>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response116>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response42>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -16328,7 +16328,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, Body21 body)
+        public virtual System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, SessionForkRequest body)
         {
             return Session_forkAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -16342,7 +16342,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, Body21 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Session5> Session_forkAsync(string sessionID, string directory, string workspace, SessionForkRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -16412,12 +16412,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response117>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response43>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response117>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response43>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -16538,12 +16538,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response118>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response44>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response118>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response44>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -16573,7 +16573,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, Body22 body)
+        public virtual System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, SessionInitRequest body)
         {
             return Session_initAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -16587,7 +16587,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>200</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, Body22 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Session_initAsync(string sessionID, string directory, string workspace, SessionInitRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -16657,12 +16657,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response119>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response45>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response119>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response45>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -16973,7 +16973,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Summarized session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, Body23 body)
+        public virtual System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, SessionSummarizeRequest body)
         {
             return Session_summarizeAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -16987,7 +16987,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Summarized session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, Body23 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Session_summarizeAsync(string sessionID, string directory, string workspace, SessionSummarizeRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -17057,12 +17057,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response120>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response46>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response120>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response46>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -17102,7 +17102,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, Body24 body)
+        public virtual System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, SessionPromptAsyncRequest body)
         {
             return Session_prompt_asyncAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -17116,7 +17116,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, Body24 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task Session_prompt_asyncAsync(string sessionID, string directory, string workspace, SessionPromptAsyncRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -17180,12 +17180,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response121>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response47>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response121>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response47>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -17225,7 +17225,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response13> Session_commandAsync(string sessionID, string directory, string workspace, Body25 body)
+        public virtual System.Threading.Tasks.Task<SessionCommandResponseSchema200> Session_commandAsync(string sessionID, string directory, string workspace, SessionCommandRequest body)
         {
             return Session_commandAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -17239,7 +17239,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response13> Session_commandAsync(string sessionID, string directory, string workspace, Body25 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SessionCommandResponseSchema200> Session_commandAsync(string sessionID, string directory, string workspace, SessionCommandRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -17299,7 +17299,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response13>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SessionCommandResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -17309,12 +17309,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response122>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response48>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response122>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response48>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -17354,7 +17354,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response14> Session_shellAsync(string sessionID, string directory, string workspace, Body26 body)
+        public virtual System.Threading.Tasks.Task<SessionShellResponseSchema200> Session_shellAsync(string sessionID, string directory, string workspace, SessionShellRequest body)
         {
             return Session_shellAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -17368,7 +17368,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Created message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response14> Session_shellAsync(string sessionID, string directory, string workspace, Body26 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SessionShellResponseSchema200> Session_shellAsync(string sessionID, string directory, string workspace, SessionShellRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -17428,7 +17428,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response14>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SessionShellResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -17438,12 +17438,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response123>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response49>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response123>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response49>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -17493,7 +17493,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, Body27 body)
+        public virtual System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, SessionRevertRequest body)
         {
             return Session_revertAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -17507,7 +17507,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, Body27 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Session8> Session_revertAsync(string sessionID, string directory, string workspace, SessionRevertRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -17577,12 +17577,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response124>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response50>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response124>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response50>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -17713,12 +17713,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response125>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response51>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response125>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response51>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -17769,7 +17769,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         [System.Obsolete]
-        public virtual System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, Body28 body)
+        public virtual System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, PermissionRespondRequest body)
         {
             return Permission_respondAsync(sessionID, permissionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -17784,7 +17784,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// <returns>Permission processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         [System.Obsolete]
-        public virtual async System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, Body28 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Permission_respondAsync(string sessionID, string permissionID, string directory, string workspace, PermissionRespondRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -17858,22 +17858,22 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response126>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response52>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response126>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response52>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response127>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response53>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response127>("NotFoundError | PermissionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response53>("NotFoundError | PermissionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -17986,12 +17986,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response128>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response54>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response128>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response54>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -18118,12 +18118,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response129>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response55>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response129>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response55>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -18163,7 +18163,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Viewed sessions updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, Body29 body)
+        public virtual System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, SessionViewedRequest body)
         {
             return Session_viewedAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -18177,7 +18177,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Viewed sessions updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, Body29 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Session_viewedAsync(string directory, string workspace, SessionViewedRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -18242,12 +18242,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response130>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response56>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response130>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response56>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -18388,7 +18388,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Replayed sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response15> Sync_replayAsync(string directory, string workspace, Body30 body)
+        public virtual System.Threading.Tasks.Task<SyncReplayResponseSchema200> Sync_replayAsync(string directory, string workspace, SyncReplayRequest body)
         {
             return Sync_replayAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -18402,7 +18402,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Replayed sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response15> Sync_replayAsync(string directory, string workspace, Body30 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SyncReplayResponseSchema200> Sync_replayAsync(string directory, string workspace, SyncReplayRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -18457,7 +18457,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response15>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SyncReplayResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -18467,12 +18467,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response131>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response57>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response131>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response57>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -18502,7 +18502,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session stolen into workspace</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response16> Sync_stealAsync(string directory, string workspace, Body31 body)
+        public virtual System.Threading.Tasks.Task<SyncStealResponseSchema200> Sync_stealAsync(string directory, string workspace, SyncStealRequest body)
         {
             return Sync_stealAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -18516,7 +18516,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session stolen into workspace</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response16> Sync_stealAsync(string directory, string workspace, Body31 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SyncStealResponseSchema200> Sync_stealAsync(string directory, string workspace, SyncStealRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -18571,7 +18571,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response16>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SyncStealResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -18581,12 +18581,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response132>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response58>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response132>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response58>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -18616,7 +18616,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SyncHistoryListResponseSchema200Item>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body)
         {
             return Sync_history_listAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -18630,7 +18630,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sync events</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous7>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SyncHistoryListResponseSchema200Item>> Sync_history_listAsync(string directory, string workspace, System.Collections.Generic.IDictionary<string, long> body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -18685,7 +18685,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous7>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<SyncHistoryListResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -18695,12 +18695,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response133>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response59>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response133>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response59>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -18730,7 +18730,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, Body32 body)
+        public virtual System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, TuiAppendPromptRequest body)
         {
             return Tui_appendPromptAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -18744,7 +18744,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Prompt processed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, Body32 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Tui_appendPromptAsync(string directory, string workspace, TuiAppendPromptRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -18809,12 +18809,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response134>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response60>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response134>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response60>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -19510,7 +19510,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Command executed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, Body33 body)
+        public virtual System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, TuiExecuteCommandRequest body)
         {
             return Tui_executeCommandAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -19524,7 +19524,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Command executed successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, Body33 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Tui_executeCommandAsync(string directory, string workspace, TuiExecuteCommandRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -19589,12 +19589,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response135>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response61>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response135>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response61>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -19624,7 +19624,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Toast notification shown successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, Body34 body)
+        public virtual System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, TuiShowToastRequest body)
         {
             return Tui_showToastAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -19638,7 +19638,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Toast notification shown successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, Body34 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Tui_showToastAsync(string directory, string workspace, TuiShowToastRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -19738,7 +19738,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event published successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, Body35 body)
+        public virtual System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, TuiPublishRequest body)
         {
             return Tui_publishAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -19752,7 +19752,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event published successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, Body35 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Tui_publishAsync(string directory, string workspace, TuiPublishRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -19817,12 +19817,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response136>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response62>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response136>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response62>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -19852,7 +19852,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session selected successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, Body36 body)
+        public virtual System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, TuiSelectSessionRequest body)
         {
             return Tui_selectSessionAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -19866,7 +19866,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session selected successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, Body36 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Tui_selectSessionAsync(string directory, string workspace, TuiSelectSessionRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -19931,12 +19931,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response137>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response63>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response137>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response63>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -19976,7 +19976,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next TUI request</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response17> Tui_control_nextAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<TuiControlNextResponseSchema200> Tui_control_nextAsync(string directory, string workspace)
         {
             return Tui_control_nextAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -19990,7 +19990,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next TUI request</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response17> Tui_control_nextAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TuiControlNextResponseSchema200> Tui_control_nextAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -20041,7 +20041,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response17>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<TuiControlNextResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -20200,7 +20200,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace adapters</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous8>> Experimental_workspace_adapter_listAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceAdapterListResponseSchema200Item>> Experimental_workspace_adapter_listAsync(string directory, string workspace)
         {
             return Experimental_workspace_adapter_listAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -20214,7 +20214,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace adapters</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous8>> Experimental_workspace_adapter_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceAdapterListResponseSchema200Item>> Experimental_workspace_adapter_listAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -20265,7 +20265,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous8>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ExperimentalWorkspaceAdapterListResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -20420,7 +20420,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, Body37 body)
+        public virtual System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, ExperimentalWorkspaceCreateRequest body)
         {
             return Experimental_workspace_createAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -20434,7 +20434,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, Body37 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Workspace> Experimental_workspace_createAsync(string directory, string workspace, ExperimentalWorkspaceCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -20499,12 +20499,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response138>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response64>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response138>("WorkspaceCreateError | BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response64>("WorkspaceCreateError | BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -20639,7 +20639,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous9>> Experimental_workspace_statusAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceStatusResponseSchema200Item>> Experimental_workspace_statusAsync(string directory, string workspace)
         {
             return Experimental_workspace_statusAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -20653,7 +20653,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Workspace status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous9>> Experimental_workspace_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExperimentalWorkspaceStatusResponseSchema200Item>> Experimental_workspace_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -20704,7 +20704,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous9>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ExperimentalWorkspaceStatusResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -20828,12 +20828,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response139>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response65>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response139>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response65>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -20863,7 +20863,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session warped</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, Body38 body)
+        public virtual System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, ExperimentalWorkspaceWarpRequest body)
         {
             return Experimental_workspace_warpAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -20877,7 +20877,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session warped</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, Body38 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task Experimental_workspace_warpAsync(string directory, string workspace, ExperimentalWorkspaceWarpRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -20936,12 +20936,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response140>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response66>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response140>("WorkspaceWarpError | VcsApplyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response66>("WorkspaceWarpError | VcsApplyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -20981,7 +20981,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent markdown preview</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response18> AgentBuilder_previewAsync(string directory, string workspace, Body39 body)
+        public virtual System.Threading.Tasks.Task<AgentBuilderPreviewResponseSchema200> AgentBuilder_previewAsync(string directory, string workspace, AgentBuilderPreviewRequest body)
         {
             return AgentBuilder_previewAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -20995,7 +20995,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent markdown preview</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response18> AgentBuilder_previewAsync(string directory, string workspace, Body39 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AgentBuilderPreviewResponseSchema200> AgentBuilder_previewAsync(string directory, string workspace, AgentBuilderPreviewRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -21050,7 +21050,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response18>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AgentBuilderPreviewResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -21060,12 +21060,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response141>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response67>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response141>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response67>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -21095,7 +21095,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Saved agent markdown</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response19> AgentBuilder_saveAsync(string id, string directory, string workspace, Body40 body)
+        public virtual System.Threading.Tasks.Task<AgentBuilderSaveResponseSchema200> AgentBuilder_saveAsync(string id, string directory, string workspace, AgentBuilderSaveRequest body)
         {
             return AgentBuilder_saveAsync(id, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -21109,7 +21109,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Saved agent markdown</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response19> AgentBuilder_saveAsync(string id, string directory, string workspace, Body40 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AgentBuilderSaveResponseSchema200> AgentBuilder_saveAsync(string id, string directory, string workspace, AgentBuilderSaveRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -21168,7 +21168,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response19>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AgentBuilderSaveResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -21178,12 +21178,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response142>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response68>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response142>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response68>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -21940,7 +21940,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated branch name or null when the task is not clear yet</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response20> BranchName_generateAsync(string sessionID, string directory, string workspace, Body41 body)
+        public virtual System.Threading.Tasks.Task<BranchNameGenerateResponseSchema200> BranchName_generateAsync(string sessionID, string directory, string workspace, BranchNameGenerateRequest body)
         {
             return BranchName_generateAsync(sessionID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -21954,7 +21954,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated branch name or null when the task is not clear yet</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response20> BranchName_generateAsync(string sessionID, string directory, string workspace, Body41 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<BranchNameGenerateResponseSchema200> BranchName_generateAsync(string sessionID, string directory, string workspace, BranchNameGenerateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -22014,7 +22014,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response20>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<BranchNameGenerateResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -22059,7 +22059,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated commit message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response21> CommitMessage_generateAsync(string directory, string workspace, Body42 body)
+        public virtual System.Threading.Tasks.Task<CommitMessageGenerateResponseSchema200> CommitMessage_generateAsync(string directory, string workspace, CommitMessageGenerateRequest body)
         {
             return CommitMessage_generateAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -22073,7 +22073,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Generated commit message</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response21> CommitMessage_generateAsync(string directory, string workspace, Body42 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CommitMessageGenerateResponseSchema200> CommitMessage_generateAsync(string directory, string workspace, CommitMessageGenerateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -22128,7 +22128,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response21>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CommitMessageGenerateResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -22138,12 +22138,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response143>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response69>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response143>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response69>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 422)
@@ -22297,7 +22297,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective configuration after patch</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, Body43 body)
+        public virtual System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, ConfigOverlayUpdateRequest body)
         {
             return Config_overlayUpdateAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -22311,7 +22311,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective configuration after patch</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, Body43 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Config> Config_overlayUpdateAsync(string directory, string workspace, ConfigOverlayUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -22745,7 +22745,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project rules after update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, Body44 body)
+        public virtual System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, ConfigRulesUpdateRequest body)
         {
             return Config_rulesUpdateAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -22759,7 +22759,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project rules after update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, Body44 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ConfigRulesResponse> Config_rulesUpdateAsync(string directory, string workspace, ConfigRulesUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -22969,7 +22969,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated model state</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, Body45 body)
+        public virtual System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, ConfigModelStateUpdateRequest body)
         {
             return Config_modelStateUpdateAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -22983,7 +22983,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated model state</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, Body45 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ConfigModelStateResponse> Config_modelStateUpdateAsync(string directory, string workspace, ConfigModelStateUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -23193,7 +23193,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective TUI configuration after the update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, Body46 body)
+        public virtual System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, TuiConfigUpdateRequest body)
         {
             return Tui_config_updateAsync(directory, workspace, scope, body, System.Threading.CancellationToken.None);
         }
@@ -23207,7 +23207,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Effective TUI configuration after the update</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, Body46 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TuiConfigGetResponse> Tui_config_updateAsync(string directory, string workspace, Scope3? scope, TuiConfigUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -23276,12 +23276,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response144>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response70>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response144>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response70>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -23421,7 +23421,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Enhanced prompt text</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response22> EnhancePrompt_enhanceAsync(string directory, string workspace, Body47 body)
+        public virtual System.Threading.Tasks.Task<EnhancePromptEnhanceResponseSchema200> EnhancePrompt_enhanceAsync(string directory, string workspace, EnhancePromptEnhanceRequest body)
         {
             return EnhancePrompt_enhanceAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -23435,7 +23435,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Enhanced prompt text</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response22> EnhancePrompt_enhanceAsync(string directory, string workspace, Body47 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<EnhancePromptEnhanceResponseSchema200> EnhancePrompt_enhanceAsync(string directory, string workspace, EnhancePromptEnhanceRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -23490,7 +23490,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response22>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<EnhancePromptEnhanceResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -23500,12 +23500,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response145>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response71>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response145>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response71>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -24604,7 +24604,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Profile data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response23> Kilo_profileAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<KiloProfileResponseSchema200> Kilo_profileAsync(string directory, string workspace)
         {
             return Kilo_profileAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -24618,7 +24618,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Profile data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response23> Kilo_profileAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloProfileResponseSchema200> Kilo_profileAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -24669,7 +24669,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response23>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloProfileResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -24679,12 +24679,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response146>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response72>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response146>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response72>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -24714,7 +24714,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo authentication status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response24> Kilo_authStatusAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<KiloAuthStatusResponseSchema200> Kilo_authStatusAsync(string directory, string workspace)
         {
             return Kilo_authStatusAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -24728,7 +24728,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo authentication status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response24> Kilo_authStatusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloAuthStatusResponseSchema200> Kilo_authStatusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -24779,7 +24779,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response24>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloAuthStatusResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -24789,12 +24789,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response147>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response73>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response147>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response73>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -24824,7 +24824,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization modes list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response25> Kilo_modesAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<KiloModesResponseSchema200> Kilo_modesAsync(string directory, string workspace)
         {
             return Kilo_modesAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -24838,7 +24838,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization modes list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response25> Kilo_modesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloModesResponseSchema200> Kilo_modesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -24889,7 +24889,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response25>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloModesResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -24934,7 +24934,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Streaming FIM completion response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response26> Kilo_fimAsync(string directory, string workspace, Body48 body)
+        public virtual System.Threading.Tasks.Task<KiloFimResponseSchema200> Kilo_fimAsync(string directory, string workspace, KiloFimRequest body)
         {
             return Kilo_fimAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -24948,7 +24948,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Streaming FIM completion response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response26> Kilo_fimAsync(string directory, string workspace, Body48 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloFimResponseSchema200> Kilo_fimAsync(string directory, string workspace, KiloFimRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25003,7 +25003,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response26>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloFimResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25013,12 +25013,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response148>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response74>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response148>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response74>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -25048,7 +25048,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next Edit completion</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response27> Kilo_editAsync(string directory, string workspace, Body49 body)
+        public virtual System.Threading.Tasks.Task<KiloEditResponseSchema200> Kilo_editAsync(string directory, string workspace, KiloEditRequest body)
         {
             return Kilo_editAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -25062,7 +25062,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Next Edit completion</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response27> Kilo_editAsync(string directory, string workspace, Body49 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloEditResponseSchema200> Kilo_editAsync(string directory, string workspace, KiloEditRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25117,7 +25117,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response27>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloEditResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25127,12 +25127,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response149>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response75>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response149>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response75>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -25162,7 +25162,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Transcription response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response28> Kilo_audio_transcriptionsAsync(string directory, string workspace, Body50 body)
+        public virtual System.Threading.Tasks.Task<KiloAudioTranscriptionsResponseSchema200> Kilo_audio_transcriptionsAsync(string directory, string workspace, KiloAudioTranscriptionsRequest body)
         {
             return Kilo_audio_transcriptionsAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -25176,7 +25176,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Transcription response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response28> Kilo_audio_transcriptionsAsync(string directory, string workspace, Body50 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloAudioTranscriptionsResponseSchema200> Kilo_audio_transcriptionsAsync(string directory, string workspace, KiloAudioTranscriptionsRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25231,7 +25231,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response28>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloAudioTranscriptionsResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25241,12 +25241,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response150>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response76>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response150>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response76>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -25276,7 +25276,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Image-capable model list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous10>> Kilo_models_imagesAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloModelsImagesResponseSchema200Item>> Kilo_models_imagesAsync(string directory, string workspace)
         {
             return Kilo_models_imagesAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -25290,7 +25290,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Image-capable model list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous10>> Kilo_models_imagesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloModelsImagesResponseSchema200Item>> Kilo_models_imagesAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25341,7 +25341,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous10>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<KiloModelsImagesResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25351,12 +25351,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response151>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response77>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response151>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response77>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -25386,7 +25386,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notifications list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous11>> Kilo_notificationsAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloNotificationsResponseSchema200Item>> Kilo_notificationsAsync(string directory, string workspace)
         {
             return Kilo_notificationsAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -25400,7 +25400,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notifications list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Anonymous11>> Kilo_notificationsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<KiloNotificationsResponseSchema200Item>> Kilo_notificationsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25451,7 +25451,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Anonymous11>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<KiloNotificationsResponseSchema200Item>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25461,12 +25461,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response152>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response78>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response152>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response78>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -25496,7 +25496,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization updated successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, Body51 body)
+        public virtual System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, KiloOrganizationSetRequest body)
         {
             return Kilo_organization_setAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -25510,7 +25510,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Organization updated successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, Body51 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Kilo_organization_setAsync(string directory, string workspace, KiloOrganizationSetRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25575,12 +25575,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response153>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response79>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response153>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response79>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -25610,7 +25610,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Instance status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response29> Kilo_claw_statusAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<KiloClawStatusResponseSchema200> Kilo_claw_statusAsync(string directory, string workspace)
         {
             return Kilo_claw_statusAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -25624,7 +25624,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Instance status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response29> Kilo_claw_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloClawStatusResponseSchema200> Kilo_claw_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25675,7 +25675,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response29>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloClawStatusResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25730,7 +25730,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo Chat credentials or null</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response30> Kilo_claw_chatCredentialsAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<KiloClawChatCredentialsResponseSchema200> Kilo_claw_chatCredentialsAsync(string directory, string workspace)
         {
             return Kilo_claw_chatCredentialsAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -25744,7 +25744,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Kilo Chat credentials or null</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response30> Kilo_claw_chatCredentialsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloClawChatCredentialsResponseSchema200> Kilo_claw_chatCredentialsAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25795,7 +25795,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response30>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloClawChatCredentialsResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25840,7 +25840,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud sessions list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response31> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl)
+        public virtual System.Threading.Tasks.Task<KiloCloudSessionsResponseSchema200> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl)
         {
             return Kilo_cloudSessionsAsync(directory, workspace, cursor, limit, gitUrl, System.Threading.CancellationToken.None);
         }
@@ -25854,7 +25854,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud sessions list</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response31> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloCloudSessionsResponseSchema200> Kilo_cloudSessionsAsync(string directory, string workspace, string cursor, double? limit, string gitUrl, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -25917,7 +25917,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response31>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloCloudSessionsResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -25927,12 +25927,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response154>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response80>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response154>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response80>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -25962,7 +25962,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud session data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response32> Kilo_cloud_session_getAsync(string id, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<KiloCloudSessionGetResponseSchema200> Kilo_cloud_session_getAsync(string id, string directory, string workspace)
         {
             return Kilo_cloud_session_getAsync(id, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -25976,7 +25976,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Cloud session data</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response32> Kilo_cloud_session_getAsync(string id, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloCloudSessionGetResponseSchema200> Kilo_cloud_session_getAsync(string id, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -26031,7 +26031,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response32>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloCloudSessionGetResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -26086,7 +26086,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Imported session info</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response33> Kilo_cloud_session_importAsync(string directory, string workspace, Body52 body)
+        public virtual System.Threading.Tasks.Task<KiloCloudSessionImportResponseSchema200> Kilo_cloud_session_importAsync(string directory, string workspace, KiloCloudSessionImportRequest body)
         {
             return Kilo_cloud_session_importAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -26100,7 +26100,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Imported session info</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response33> Kilo_cloud_session_importAsync(string directory, string workspace, Body52 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KiloCloudSessionImportResponseSchema200> Kilo_cloud_session_importAsync(string directory, string workspace, KiloCloudSessionImportRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -26155,7 +26155,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response33>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KiloCloudSessionImportResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -26165,12 +26165,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response155>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response81>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response155>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response81>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -26296,12 +26296,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response156>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response82>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response156>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response82>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -26445,7 +26445,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Skill removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, Body53 body)
+        public virtual System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, KilocodeRemoveSkillRequest body)
         {
             return Kilocode_removeSkillAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -26459,7 +26459,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Skill removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, Body53 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Kilocode_removeSkillAsync(string directory, string workspace, KilocodeRemoveSkillRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -26524,12 +26524,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response157>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response83>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response157>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response83>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -26559,7 +26559,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, Body54 body)
+        public virtual System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, KilocodeRemoveAgentRequest body)
         {
             return Kilocode_removeAgentAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -26573,7 +26573,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent removed</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, Body54 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Kilocode_removeAgentAsync(string directory, string workspace, KilocodeRemoveAgentRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -26638,12 +26638,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response158>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response84>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response158>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response84>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -26783,7 +26783,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, Body55 body)
+        public virtual System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, KilocodeNotebookReplyRequest body)
         {
             return Kilocode_notebook_replyAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -26797,7 +26797,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, Body55 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Kilocode_notebook_replyAsync(string requestID, string directory, string workspace, KilocodeNotebookReplyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -26867,12 +26867,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response159>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response85>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response159>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response85>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -26912,7 +26912,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, Body56 body)
+        public virtual System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, KilocodeNotebookRejectRequest body)
         {
             return Kilocode_notebook_rejectAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -26926,7 +26926,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Notebook rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, Body56 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Kilocode_notebook_rejectAsync(string requestID, string directory, string workspace, KilocodeNotebookRejectRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -27151,7 +27151,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, Body57 body)
+        public virtual System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, KilocodeAgentManagerReplyRequest body)
         {
             return Kilocode_agentManager_replyAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -27165,7 +27165,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager reply accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, Body57 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Kilocode_agentManager_replyAsync(string requestID, string directory, string workspace, KilocodeAgentManagerReplyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -27235,12 +27235,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response160>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response86>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response160>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response86>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -27280,7 +27280,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, Body58 body)
+        public virtual System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, KilocodeAgentManagerRejectRequest body)
         {
             return Kilocode_agentManager_rejectAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -27294,7 +27294,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Agent Manager rejection accepted</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, Body58 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Kilocode_agentManager_rejectAsync(string requestID, string directory, string workspace, KilocodeAgentManagerRejectRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -27409,7 +27409,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Model usage for a session tree</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response34> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<KilocodeSessionModelUsageResponseSchema200> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace)
         {
             return Kilocode_sessionModelUsageAsync(sessionID, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -27423,7 +27423,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Model usage for a session tree</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response34> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KilocodeSessionModelUsageResponseSchema200> Kilocode_sessionModelUsageAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -27479,7 +27479,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response34>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<KilocodeSessionModelUsageResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -27775,7 +27775,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Anaconda Desktop connection synchronized</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response35> AnacondaDesktop_syncAsync(string directory, string workspace, Body59 body)
+        public virtual System.Threading.Tasks.Task<AnacondaDesktopSyncResponseSchema200> AnacondaDesktop_syncAsync(string directory, string workspace, AnacondaDesktopSyncRequest body)
         {
             return AnacondaDesktop_syncAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -27789,7 +27789,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Anaconda Desktop connection synchronized</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response35> AnacondaDesktop_syncAsync(string directory, string workspace, Body59 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AnacondaDesktopSyncResponseSchema200> AnacondaDesktop_syncAsync(string directory, string workspace, AnacondaDesktopSyncRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -27844,7 +27844,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response35>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AnacondaDesktopSyncResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -28100,12 +28100,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response161>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response87>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response161>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response87>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -28226,12 +28226,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response162>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response88>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response162>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response88>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -28271,7 +28271,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response36> Remote_enableAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<RemoteEnableResponseSchema200> Remote_enableAsync(string directory, string workspace)
         {
             return Remote_enableAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -28285,7 +28285,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response36> Remote_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<RemoteEnableResponseSchema200> Remote_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -28337,7 +28337,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response36>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<RemoteEnableResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -28382,7 +28382,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response37> Remote_disableAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<RemoteDisableResponseSchema200> Remote_disableAsync(string directory, string workspace)
         {
             return Remote_disableAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -28396,7 +28396,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response37> Remote_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<RemoteDisableResponseSchema200> Remote_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -28448,7 +28448,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response37>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<RemoteDisableResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -28493,7 +28493,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response38> Remote_statusAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<RemoteStatusResponseSchema200> Remote_statusAsync(string directory, string workspace)
         {
             return Remote_statusAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -28507,7 +28507,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Remote connection status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response38> Remote_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<RemoteStatusResponseSchema200> Remote_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -28558,7 +28558,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response38>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<RemoteStatusResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -28603,7 +28603,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sandbox backend support</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response39> Sandbox_supportAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<SandboxSupportResponseSchema200> Sandbox_supportAsync(string directory, string workspace)
         {
             return Sandbox_supportAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -28617,7 +28617,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Sandbox backend support</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response39> Sandbox_supportAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SandboxSupportResponseSchema200> Sandbox_supportAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -28668,7 +28668,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response39>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SandboxSupportResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -28713,7 +28713,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response40> Sandbox_statusAsync(string sessionID, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<SandboxStatusResponseSchema200> Sandbox_statusAsync(string sessionID, string directory, string workspace)
         {
             return Sandbox_statusAsync(sessionID, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -28727,7 +28727,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response40> Sandbox_statusAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SandboxStatusResponseSchema200> Sandbox_statusAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -28783,7 +28783,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response40>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SandboxStatusResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -28838,7 +28838,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response41> Sandbox_toggleAsync(string sessionID, string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<SandboxToggleResponseSchema200> Sandbox_toggleAsync(string sessionID, string directory, string workspace)
         {
             return Sandbox_toggleAsync(sessionID, directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -28852,7 +28852,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Updated session sandbox status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response41> Sandbox_toggleAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SandboxToggleResponseSchema200> Sandbox_toggleAsync(string sessionID, string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -28909,7 +28909,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response41>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SandboxToggleResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -28964,7 +28964,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, Body60 body)
+        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, KilocodeSessionImportProjectRequest body)
         {
             return Kilocode_sessionImport_projectAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -28978,7 +28978,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Project import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, Body60 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_projectAsync(string directory, string workspace, KilocodeSessionImportProjectRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -29043,12 +29043,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response163>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response89>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response163>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response89>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -29078,7 +29078,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, Body61 body)
+        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, KilocodeSessionImportSessionRequest body)
         {
             return Kilocode_sessionImport_sessionAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -29092,7 +29092,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Session import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, Body61 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_sessionAsync(string directory, string workspace, KilocodeSessionImportSessionRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -29157,12 +29157,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response164>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response90>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response164>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response90>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -29192,7 +29192,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, Body62 body)
+        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, KilocodeSessionImportMessageRequest body)
         {
             return Kilocode_sessionImport_messageAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -29206,7 +29206,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Message import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, Body62 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_messageAsync(string directory, string workspace, KilocodeSessionImportMessageRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -29271,12 +29271,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response165>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response91>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response165>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response91>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -29306,7 +29306,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Part import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, Body63 body)
+        public virtual System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, KilocodeSessionImportPartRequest body)
         {
             return Kilocode_sessionImport_partAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -29320,7 +29320,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Part import result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, Body63 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<KilocodeSessionImportResult> Kilocode_sessionImport_partAsync(string directory, string workspace, KilocodeSessionImportPartRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -29385,12 +29385,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response166>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response92>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response166>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response92>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -29530,7 +29530,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Suggestion accepted successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, Body64 body)
+        public virtual System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, SuggestionAcceptRequest body)
         {
             return Suggestion_acceptAsync(requestID, directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -29544,7 +29544,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Suggestion accepted successfully</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, Body64 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Suggestion_acceptAsync(string requestID, string directory, string workspace, SuggestionAcceptRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (requestID == null)
                 throw new System.ArgumentNullException("requestID");
@@ -29614,12 +29614,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response167>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response93>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response167>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response93>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -29740,12 +29740,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response168>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response94>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response168>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response94>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -29785,7 +29785,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event captured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, Body65 body)
+        public virtual System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, TelemetryCaptureRequest body)
         {
             return Telemetry_captureAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -29799,7 +29799,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Event captured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, Body65 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Telemetry_captureAsync(string directory, string workspace, TelemetryCaptureRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -29864,12 +29864,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response169>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response95>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response169>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response95>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -29899,7 +29899,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>State updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, Body66 body)
+        public virtual System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, TelemetrySetEnabledRequest body)
         {
             return Telemetry_setEnabledAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -29913,7 +29913,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>State updated</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, Body66 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<bool> Telemetry_setEnabledAsync(string directory, string workspace, TelemetrySetEnabledRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -29978,12 +29978,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response170>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response96>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response170>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response96>("BadRequest | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -30013,7 +30013,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response42> Memory_statusAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<MemoryStatusResponseSchema200> Memory_statusAsync(string directory, string workspace)
         {
             return Memory_statusAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -30027,7 +30027,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory status</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response42> Memory_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryStatusResponseSchema200> Memory_statusAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30078,7 +30078,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response42>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryStatusResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30088,12 +30088,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response171>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response97>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response171>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response97>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30133,7 +30133,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory source and index</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response43> Memory_showAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<MemoryShowResponseSchema200> Memory_showAsync(string directory, string workspace)
         {
             return Memory_showAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -30147,7 +30147,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory source and index</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response43> Memory_showAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryShowResponseSchema200> Memory_showAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30198,7 +30198,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response43>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryShowResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30208,12 +30208,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response172>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response98>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response172>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response98>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30253,7 +30253,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response44> Memory_enableAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<MemoryEnableResponseSchema200> Memory_enableAsync(string directory, string workspace)
         {
             return Memory_enableAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -30267,7 +30267,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory enabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response44> Memory_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryEnableResponseSchema200> Memory_enableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30319,7 +30319,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response44>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryEnableResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30329,12 +30329,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response173>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response99>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response173>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response99>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30374,7 +30374,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response45> Memory_disableAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<MemoryDisableResponseSchema200> Memory_disableAsync(string directory, string workspace)
         {
             return Memory_disableAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -30388,7 +30388,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory disabled</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response45> Memory_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryDisableResponseSchema200> Memory_disableAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30440,7 +30440,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response45>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryDisableResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30450,12 +30450,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response174>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response100>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response174>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response100>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30495,7 +30495,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory configured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response46> Memory_configureAsync(string directory, string workspace, Body67 body)
+        public virtual System.Threading.Tasks.Task<MemoryConfigureResponseSchema200> Memory_configureAsync(string directory, string workspace, MemoryConfigureRequest body)
         {
             return Memory_configureAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -30509,7 +30509,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory configured</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response46> Memory_configureAsync(string directory, string workspace, Body67 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryConfigureResponseSchema200> Memory_configureAsync(string directory, string workspace, MemoryConfigureRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30564,7 +30564,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response46>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryConfigureResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30574,12 +30574,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response175>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response101>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response175>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response101>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30619,7 +30619,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory rebuilt</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response47> Memory_rebuildAsync(string directory, string workspace)
+        public virtual System.Threading.Tasks.Task<MemoryRebuildResponseSchema200> Memory_rebuildAsync(string directory, string workspace)
         {
             return Memory_rebuildAsync(directory, workspace, System.Threading.CancellationToken.None);
         }
@@ -30633,7 +30633,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory rebuilt</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response47> Memory_rebuildAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryRebuildResponseSchema200> Memory_rebuildAsync(string directory, string workspace, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30685,7 +30685,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response47>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryRebuildResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30695,12 +30695,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response176>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response102>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response176>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response102>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30740,7 +30740,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory operation result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response48> Memory_rememberAsync(string directory, string workspace, Body68 body)
+        public virtual System.Threading.Tasks.Task<MemoryRememberResponseSchema200> Memory_rememberAsync(string directory, string workspace, MemoryRememberRequest body)
         {
             return Memory_rememberAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -30754,7 +30754,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory operation result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response48> Memory_rememberAsync(string directory, string workspace, Body68 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryRememberResponseSchema200> Memory_rememberAsync(string directory, string workspace, MemoryRememberRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30809,7 +30809,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response48>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryRememberResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30819,12 +30819,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response177>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response103>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response177>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response103>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30864,7 +30864,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory correction result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response49> Memory_correctAsync(string directory, string workspace, Body69 body)
+        public virtual System.Threading.Tasks.Task<MemoryCorrectResponseSchema200> Memory_correctAsync(string directory, string workspace, MemoryCorrectRequest body)
         {
             return Memory_correctAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -30878,7 +30878,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory correction result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response49> Memory_correctAsync(string directory, string workspace, Body69 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryCorrectResponseSchema200> Memory_correctAsync(string directory, string workspace, MemoryCorrectRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -30933,7 +30933,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response49>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryCorrectResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -30943,12 +30943,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response178>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response104>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response178>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response104>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -30988,7 +30988,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory forget result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response50> Memory_forgetAsync(string directory, string workspace, Body70 body)
+        public virtual System.Threading.Tasks.Task<MemoryForgetResponseSchema200> Memory_forgetAsync(string directory, string workspace, MemoryForgetRequest body)
         {
             return Memory_forgetAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -31002,7 +31002,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory forget result</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response50> Memory_forgetAsync(string directory, string workspace, Body70 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryForgetResponseSchema200> Memory_forgetAsync(string directory, string workspace, MemoryForgetRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -31057,7 +31057,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response50>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryForgetResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -31067,12 +31067,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response179>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response105>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response179>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response105>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -31112,7 +31112,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory purged</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response51> Memory_purgeAsync(string directory, string workspace, Body71 body)
+        public virtual System.Threading.Tasks.Task<MemoryPurgeResponseSchema200> Memory_purgeAsync(string directory, string workspace, MemoryPurgeRequest body)
         {
             return Memory_purgeAsync(directory, workspace, body, System.Threading.CancellationToken.None);
         }
@@ -31126,7 +31126,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Memory purged</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response51> Memory_purgeAsync(string directory, string workspace, Body71 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MemoryPurgeResponseSchema200> Memory_purgeAsync(string directory, string workspace, MemoryPurgeRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -31181,7 +31181,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response51>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MemoryPurgeResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -31191,12 +31191,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response180>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response106>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response180>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response106>("MemoryApiClientError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -31236,7 +31236,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response52> V2_health_getAsync()
+        public virtual System.Threading.Tasks.Task<V2HealthGetResponseSchema200> V2_health_getAsync()
         {
             return V2_health_getAsync(System.Threading.CancellationToken.None);
         }
@@ -31250,7 +31250,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response52> V2_health_getAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2HealthGetResponseSchema200> V2_health_getAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -31291,7 +31291,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response52>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2HealthGetResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -31469,7 +31469,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response53> V2_agent_listAsync(Location2 location)
+        public virtual System.Threading.Tasks.Task<V2AgentListResponseSchema200> V2_agent_listAsync(Location2 location)
         {
             return V2_agent_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -31483,7 +31483,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response53> V2_agent_listAsync(Location2 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2AgentListResponseSchema200> V2_agent_listAsync(Location2 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -31537,7 +31537,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response53>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2AgentListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -31691,12 +31691,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response181>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response107>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response181>("InvalidCursorError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response107>("InvalidCursorError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -31736,7 +31736,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response54> V2_session_createAsync(Body72 body)
+        public virtual System.Threading.Tasks.Task<V2SessionCreateResponseSchema200> V2_session_createAsync(V2SessionCreateRequest body)
         {
             return V2_session_createAsync(body, System.Threading.CancellationToken.None);
         }
@@ -31750,7 +31750,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response54> V2_session_createAsync(Body72 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2SessionCreateResponseSchema200> V2_session_createAsync(V2SessionCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -31798,7 +31798,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response54>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2SessionCreateResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -31853,7 +31853,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response55> V2_session_getAsync(string sessionID)
+        public virtual System.Threading.Tasks.Task<V2SessionGetResponseSchema200> V2_session_getAsync(string sessionID)
         {
             return V2_session_getAsync(sessionID, System.Threading.CancellationToken.None);
         }
@@ -31867,7 +31867,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response55> V2_session_getAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2SessionGetResponseSchema200> V2_session_getAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -31912,7 +31912,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response55>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2SessionGetResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -31942,12 +31942,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response182>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response108>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response182>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response108>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -31977,7 +31977,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response56> V2_session_promptAsync(string sessionID, Body73 body)
+        public virtual System.Threading.Tasks.Task<V2SessionPromptResponseSchema200> V2_session_promptAsync(string sessionID, V2SessionPromptRequest body)
         {
             return V2_session_promptAsync(sessionID, body, System.Threading.CancellationToken.None);
         }
@@ -31991,7 +31991,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response56> V2_session_promptAsync(string sessionID, Body73 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2SessionPromptResponseSchema200> V2_session_promptAsync(string sessionID, V2SessionPromptRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -32044,7 +32044,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response56>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2SessionPromptResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -32074,12 +32074,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response183>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response109>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response183>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response109>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -32204,12 +32204,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response184>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response110>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response184>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response110>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -32334,12 +32334,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response185>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response111>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response185>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response111>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -32379,7 +32379,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response57> V2_session_contextAsync(string sessionID)
+        public virtual System.Threading.Tasks.Task<V2SessionContextResponseSchema200> V2_session_contextAsync(string sessionID)
         {
             return V2_session_contextAsync(sessionID, System.Threading.CancellationToken.None);
         }
@@ -32393,7 +32393,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response57> V2_session_contextAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2SessionContextResponseSchema200> V2_session_contextAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -32439,7 +32439,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response57>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2SessionContextResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -32469,12 +32469,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response186>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response112>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response186>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response112>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
@@ -32598,12 +32598,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response187>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response113>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response187>("InvalidCursorError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response113>("InvalidCursorError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -32618,12 +32618,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response188>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response114>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response188>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response114>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
@@ -32663,7 +32663,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response58> V2_model_listAsync(Location3 location)
+        public virtual System.Threading.Tasks.Task<V2ModelListResponseSchema200> V2_model_listAsync(Location3 location)
         {
             return V2_model_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -32677,7 +32677,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response58> V2_model_listAsync(Location3 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2ModelListResponseSchema200> V2_model_listAsync(Location3 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -32731,7 +32731,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response58>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2ModelListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -32796,7 +32796,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response59> V2_provider_listAsync(Location4 location)
+        public virtual System.Threading.Tasks.Task<V2ProviderListResponseSchema200> V2_provider_listAsync(Location4 location)
         {
             return V2_provider_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -32810,7 +32810,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response59> V2_provider_listAsync(Location4 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2ProviderListResponseSchema200> V2_provider_listAsync(Location4 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -32864,7 +32864,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response59>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2ProviderListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -32929,7 +32929,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response60> V2_provider_getAsync(string providerID, Location5 location)
+        public virtual System.Threading.Tasks.Task<V2ProviderGetResponseSchema200> V2_provider_getAsync(string providerID, Location5 location)
         {
             return V2_provider_getAsync(providerID, location, System.Threading.CancellationToken.None);
         }
@@ -32943,7 +32943,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response60> V2_provider_getAsync(string providerID, Location5 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2ProviderGetResponseSchema200> V2_provider_getAsync(string providerID, Location5 location, System.Threading.CancellationToken cancellationToken)
         {
             if (providerID == null)
                 throw new System.ArgumentNullException("providerID");
@@ -33001,7 +33001,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response60>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2ProviderGetResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -33076,7 +33076,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response61> V2_integration_listAsync(Location6 location)
+        public virtual System.Threading.Tasks.Task<V2IntegrationListResponseSchema200> V2_integration_listAsync(Location6 location)
         {
             return V2_integration_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -33090,7 +33090,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response61> V2_integration_listAsync(Location6 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2IntegrationListResponseSchema200> V2_integration_listAsync(Location6 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -33144,7 +33144,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response61>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2IntegrationListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -33199,7 +33199,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response62> V2_integration_getAsync(string integrationID, Location7 location)
+        public virtual System.Threading.Tasks.Task<V2IntegrationGetResponseSchema200> V2_integration_getAsync(string integrationID, Location7 location)
         {
             return V2_integration_getAsync(integrationID, location, System.Threading.CancellationToken.None);
         }
@@ -33213,7 +33213,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response62> V2_integration_getAsync(string integrationID, Location7 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2IntegrationGetResponseSchema200> V2_integration_getAsync(string integrationID, Location7 location, System.Threading.CancellationToken cancellationToken)
         {
             if (integrationID == null)
                 throw new System.ArgumentNullException("integrationID");
@@ -33271,7 +33271,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response62>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2IntegrationGetResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -33326,7 +33326,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, Body74 body)
+        public virtual System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, V2IntegrationConnectKeyRequest body)
         {
             return V2_integration_connect_keyAsync(integrationID, location, body, System.Threading.CancellationToken.None);
         }
@@ -33340,7 +33340,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, Body74 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task V2_integration_connect_keyAsync(string integrationID, Location8 location, V2IntegrationConnectKeyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (integrationID == null)
                 throw new System.ArgumentNullException("integrationID");
@@ -33410,12 +33410,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response189>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response115>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response189>("InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response115>("InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -33455,7 +33455,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response63> V2_integration_connect_oauthAsync(string integrationID, Location9 location, Body75 body)
+        public virtual System.Threading.Tasks.Task<V2IntegrationConnectOauthResponseSchema200> V2_integration_connect_oauthAsync(string integrationID, Location9 location, V2IntegrationConnectOauthRequest body)
         {
             return V2_integration_connect_oauthAsync(integrationID, location, body, System.Threading.CancellationToken.None);
         }
@@ -33469,7 +33469,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response63> V2_integration_connect_oauthAsync(string integrationID, Location9 location, Body75 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2IntegrationConnectOauthResponseSchema200> V2_integration_connect_oauthAsync(string integrationID, Location9 location, V2IntegrationConnectOauthRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (integrationID == null)
                 throw new System.ArgumentNullException("integrationID");
@@ -33535,7 +33535,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response63>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2IntegrationConnectOauthResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -33545,12 +33545,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response190>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response116>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response190>("InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response116>("InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -33590,7 +33590,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response64> V2_integration_attempt_statusAsync(string attemptID, Location10 location)
+        public virtual System.Threading.Tasks.Task<V2IntegrationAttemptStatusResponseSchema200> V2_integration_attempt_statusAsync(string attemptID, Location10 location)
         {
             return V2_integration_attempt_statusAsync(attemptID, location, System.Threading.CancellationToken.None);
         }
@@ -33604,7 +33604,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response64> V2_integration_attempt_statusAsync(string attemptID, Location10 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2IntegrationAttemptStatusResponseSchema200> V2_integration_attempt_statusAsync(string attemptID, Location10 location, System.Threading.CancellationToken cancellationToken)
         {
             if (attemptID == null)
                 throw new System.ArgumentNullException("attemptID");
@@ -33662,7 +33662,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response64>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2IntegrationAttemptStatusResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -33838,7 +33838,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, Body76 body)
+        public virtual System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, V2IntegrationAttemptCompleteRequest body)
         {
             return V2_integration_attempt_completeAsync(attemptID, location, body, System.Threading.CancellationToken.None);
         }
@@ -33852,7 +33852,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, Body76 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task V2_integration_attempt_completeAsync(string attemptID, Location12 location, V2IntegrationAttemptCompleteRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (attemptID == null)
                 throw new System.ArgumentNullException("attemptID");
@@ -33922,12 +33922,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response191>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response117>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response191>("InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response117>("InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -33967,7 +33967,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, Body77 body)
+        public virtual System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, V2CredentialUpdateRequest body)
         {
             return V2_credential_updateAsync(credentialID, body, System.Threading.CancellationToken.None);
         }
@@ -33981,7 +33981,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, Body77 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task V2_credential_updateAsync(string credentialID, V2CredentialUpdateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (credentialID == null)
                 throw new System.ArgumentNullException("credentialID");
@@ -34190,7 +34190,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response65> V2_permission_request_listAsync(Location13 location)
+        public virtual System.Threading.Tasks.Task<V2PermissionRequestListResponseSchema200> V2_permission_request_listAsync(Location13 location)
         {
             return V2_permission_request_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -34204,7 +34204,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response65> V2_permission_request_listAsync(Location13 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2PermissionRequestListResponseSchema200> V2_permission_request_listAsync(Location13 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -34258,7 +34258,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response65>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2PermissionRequestListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -34313,7 +34313,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response66> V2_permission_saved_listAsync(string projectID)
+        public virtual System.Threading.Tasks.Task<V2PermissionSavedListResponseSchema200> V2_permission_saved_listAsync(string projectID)
         {
             return V2_permission_saved_listAsync(projectID, System.Threading.CancellationToken.None);
         }
@@ -34327,7 +34327,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response66> V2_permission_saved_listAsync(string projectID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2PermissionSavedListResponseSchema200> V2_permission_saved_listAsync(string projectID, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -34374,7 +34374,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response66>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2PermissionSavedListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -34537,7 +34537,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response67> V2_session_permission_listAsync(string sessionID)
+        public virtual System.Threading.Tasks.Task<V2SessionPermissionListResponseSchema200> V2_session_permission_listAsync(string sessionID)
         {
             return V2_session_permission_listAsync(sessionID, System.Threading.CancellationToken.None);
         }
@@ -34551,7 +34551,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response67> V2_session_permission_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2SessionPermissionListResponseSchema200> V2_session_permission_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -34597,7 +34597,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response67>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2SessionPermissionListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -34627,12 +34627,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response192>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response118>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response192>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response118>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -34662,7 +34662,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, Body78 body)
+        public virtual System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, V2SessionPermissionReplyRequest body)
         {
             return V2_session_permission_replyAsync(sessionID, requestID, body, System.Threading.CancellationToken.None);
         }
@@ -34676,7 +34676,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, Body78 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task V2_session_permission_replyAsync(string sessionID, string requestID, V2SessionPermissionReplyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -34758,12 +34758,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response193>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response119>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response193>("SessionNotFoundError | PermissionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response119>("SessionNotFoundError | PermissionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -34918,7 +34918,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response68> V2_fs_listAsync(Location15 location, string path)
+        public virtual System.Threading.Tasks.Task<V2FsListResponseSchema200> V2_fs_listAsync(Location15 location, string path)
         {
             return V2_fs_listAsync(location, path, System.Threading.CancellationToken.None);
         }
@@ -34932,7 +34932,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response68> V2_fs_listAsync(Location15 location, string path, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2FsListResponseSchema200> V2_fs_listAsync(Location15 location, string path, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -34990,7 +34990,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response68>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2FsListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -35045,7 +35045,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response69> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit)
+        public virtual System.Threading.Tasks.Task<V2FsFindResponseSchema200> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit)
         {
             return V2_fs_findAsync(location, query, type, limit, System.Threading.CancellationToken.None);
         }
@@ -35059,7 +35059,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response69> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2FsFindResponseSchema200> V2_fs_findAsync(Location16 location, string query, Type2? type, string limit, System.Threading.CancellationToken cancellationToken)
         {
             if (query == null)
                 throw new System.ArgumentNullException("query");
@@ -35125,7 +35125,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response69>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2FsFindResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -35180,7 +35180,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response70> V2_command_listAsync(Location17 location)
+        public virtual System.Threading.Tasks.Task<V2CommandListResponseSchema200> V2_command_listAsync(Location17 location)
         {
             return V2_command_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -35194,7 +35194,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response70> V2_command_listAsync(Location17 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2CommandListResponseSchema200> V2_command_listAsync(Location17 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -35248,7 +35248,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response70>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2CommandListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -35303,7 +35303,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response71> V2_skill_listAsync(Location18 location)
+        public virtual System.Threading.Tasks.Task<V2SkillListResponseSchema200> V2_skill_listAsync(Location18 location)
         {
             return V2_skill_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -35317,7 +35317,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response71> V2_skill_listAsync(Location18 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2SkillListResponseSchema200> V2_skill_listAsync(Location18 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -35371,7 +35371,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response71>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2SkillListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -35549,7 +35549,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response72> V2_question_request_listAsync(Location20 location)
+        public virtual System.Threading.Tasks.Task<V2QuestionRequestListResponseSchema200> V2_question_request_listAsync(Location20 location)
         {
             return V2_question_request_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -35563,7 +35563,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response72> V2_question_request_listAsync(Location20 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2QuestionRequestListResponseSchema200> V2_question_request_listAsync(Location20 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -35617,7 +35617,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response72>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2QuestionRequestListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -35672,7 +35672,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response73> V2_session_question_listAsync(string sessionID)
+        public virtual System.Threading.Tasks.Task<V2SessionQuestionListResponseSchema200> V2_session_question_listAsync(string sessionID)
         {
             return V2_session_question_listAsync(sessionID, System.Threading.CancellationToken.None);
         }
@@ -35686,7 +35686,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response73> V2_session_question_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2SessionQuestionListResponseSchema200> V2_session_question_listAsync(string sessionID, System.Threading.CancellationToken cancellationToken)
         {
             if (sessionID == null)
                 throw new System.ArgumentNullException("sessionID");
@@ -35732,7 +35732,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response73>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2SessionQuestionListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -35762,12 +35762,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response194>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response120>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response194>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response120>("SessionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -35893,12 +35893,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response195>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response121>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response195>("SessionNotFoundError | QuestionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response121>("SessionNotFoundError | QuestionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -36018,12 +36018,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response196>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response122>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response196>("SessionNotFoundError | QuestionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response122>("SessionNotFoundError | QuestionNotFoundError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -36053,7 +36053,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response74> V2_reference_listAsync(Location21 location)
+        public virtual System.Threading.Tasks.Task<V2ReferenceListResponseSchema200> V2_reference_listAsync(Location21 location)
         {
             return V2_reference_listAsync(location, System.Threading.CancellationToken.None);
         }
@@ -36067,7 +36067,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response74> V2_reference_listAsync(Location21 location, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V2ReferenceListResponseSchema200> V2_reference_listAsync(Location21 location, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;
@@ -36121,7 +36121,7 @@ namespace KiloVisualStudioExtension.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response74>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<V2ReferenceListResponseSchema200>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -36170,7 +36170,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         /// <returns>ProjectCopy.Copy</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, Body79 body)
+        public virtual System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, V2ProjectCopyCreateRequest body)
         {
             return V2_projectCopy_createAsync(projectID, location, body, System.Threading.CancellationToken.None);
         }
@@ -36178,7 +36178,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>ProjectCopy.Copy</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, Body79 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProjectCopyCopy> V2_projectCopy_createAsync(string projectID, Location22 location, V2ProjectCopyCreateRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (projectID == null)
                 throw new System.ArgumentNullException("projectID");
@@ -36251,12 +36251,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response197>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response123>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response197>("ProjectCopyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response123>("ProjectCopyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -36280,7 +36280,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, Body80 body)
+        public virtual System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, V2ProjectCopyRemoveRequest body)
         {
             return V2_projectCopy_removeAsync(projectID, location, body, System.Threading.CancellationToken.None);
         }
@@ -36288,7 +36288,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>&lt;No Content&gt;</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, Body80 body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task V2_projectCopy_removeAsync(string projectID, Location23 location, V2ProjectCopyRemoveRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (projectID == null)
                 throw new System.ArgumentNullException("projectID");
@@ -36355,12 +36355,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response198>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response124>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response198>("ProjectCopyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response124>("ProjectCopyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -36456,12 +36456,12 @@ namespace KiloVisualStudioExtension.ApiClient
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response199>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Response125>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<Response199>("ProjectCopyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<Response125>("ProjectCopyError | InvalidRequestError", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -39873,7 +39873,7 @@ namespace KiloVisualStudioExtension.ApiClient
         public Options Options { get; set; }
 
         [Newtonsoft.Json.JsonProperty("models", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, Anonymous12> Models { get; set; }
+        public System.Collections.Generic.IDictionary<string, Anonymous2> Models { get; set; }
 
         public string ToJson()
         {
@@ -40089,16 +40089,16 @@ namespace KiloVisualStudioExtension.ApiClient
         public ServerConfig Server { get; set; }
 
         [Newtonsoft.Json.JsonProperty("command", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, Anonymous13> Command { get; set; }
+        public System.Collections.Generic.IDictionary<string, Anonymous3> Command { get; set; }
 
         [Newtonsoft.Json.JsonProperty("skills", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Skills Skills { get; set; }
 
         [Newtonsoft.Json.JsonProperty("references", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, Anonymous14> References { get; set; }
+        public System.Collections.Generic.IDictionary<string, Anonymous4> References { get; set; }
 
         [Newtonsoft.Json.JsonProperty("reference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, Anonymous15> Reference { get; set; }
+        public System.Collections.Generic.IDictionary<string, Anonymous5> Reference { get; set; }
 
         [Newtonsoft.Json.JsonProperty("watcher", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Watcher Watcher { get; set; }
@@ -40185,10 +40185,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public Agent2 Agent { get; set; }
 
         [Newtonsoft.Json.JsonProperty("provider", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, Anonymous16> Provider { get; set; }
+        public System.Collections.Generic.IDictionary<string, Anonymous6> Provider { get; set; }
 
         [Newtonsoft.Json.JsonProperty("mcp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, Anonymous17> Mcp { get; set; }
+        public System.Collections.Generic.IDictionary<string, Anonymous7> Mcp { get; set; }
 
         /// <summary>
         /// Enable or configure formatters. Omit or set to false to disable, true to enable built-ins, or an object to enable built-ins with overrides.
@@ -42986,10 +42986,10 @@ namespace KiloVisualStudioExtension.ApiClient
         public Targets Targets { get; set; } = new Targets();
 
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.IDictionary<string, Anonymous18> Fields { get; set; } = new System.Collections.Generic.Dictionary<string, Anonymous18>();
+        public System.Collections.Generic.IDictionary<string, Anonymous8> Fields { get; set; } = new System.Collections.Generic.Dictionary<string, Anonymous8>();
 
         [Newtonsoft.Json.JsonProperty("collections", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<Anonymous19>> Collections { get; set; } = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.ICollection<Anonymous19>>();
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<Anonymous9>> Collections { get; set; } = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.ICollection<Anonymous9>>();
 
         public string ToJson()
         {
@@ -43059,7 +43059,7 @@ namespace KiloVisualStudioExtension.ApiClient
     {
 
         [Newtonsoft.Json.JsonProperty("model", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.IDictionary<string, Anonymous20> Model { get; set; } = new System.Collections.Generic.Dictionary<string, Anonymous20>();
+        public System.Collections.Generic.IDictionary<string, Anonymous10> Model { get; set; } = new System.Collections.Generic.Dictionary<string, Anonymous10>();
 
         [Newtonsoft.Json.JsonProperty("recent", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<Recent> Recent { get; set; } = new System.Collections.ObjectModel.Collection<Recent>();
@@ -43731,7 +43731,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AgentManagerAttention : System.Collections.ObjectModel.Collection<Anonymous21>
+    public partial class AgentManagerAttention : System.Collections.ObjectModel.Collection<Anonymous11>
     {
 
         public string ToJson()
@@ -49191,7 +49191,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ProjectDirectories : System.Collections.ObjectModel.Collection<Anonymous4>
+    public partial class ProjectDirectories : System.Collections.ObjectModel.Collection<Anonymous>
     {
 
         public string ToJson()
@@ -50911,7 +50911,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body
+    public partial class AppLogRequest
     {
 
         /// <summary>
@@ -50925,7 +50925,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </summary>
         [Newtonsoft.Json.JsonProperty("level", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public BodyLevel Level { get; set; }
+        public AppLogRequestLevel Level { get; set; }
 
         /// <summary>
         /// Log message
@@ -50942,16 +50942,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body FromJson(string data)
+        public static AppLogRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AppLogRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body2
+    public partial class ExperimentalControlPlaneMoveSessionRequest
     {
 
         [Newtonsoft.Json.JsonProperty("sessionID", Required = Newtonsoft.Json.Required.Always)]
@@ -50969,16 +50969,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body2 FromJson(string data)
+        public static ExperimentalControlPlaneMoveSessionRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body2>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalControlPlaneMoveSessionRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body3
+    public partial class GlobalUpgradeRequest
     {
 
         [Newtonsoft.Json.JsonProperty("target", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -50990,16 +50990,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body3 FromJson(string data)
+        public static GlobalUpgradeRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body3>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<GlobalUpgradeRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body4
+    public partial class ExperimentalConsoleSwitchOrgRequest
     {
 
         [Newtonsoft.Json.JsonProperty("accountID", Required = Newtonsoft.Json.Required.Always)]
@@ -51014,10 +51014,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body4 FromJson(string data)
+        public static ExperimentalConsoleSwitchOrgRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body4>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalConsoleSwitchOrgRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -51071,7 +51071,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body5
+    public partial class VcsApplyRequest
     {
 
         [Newtonsoft.Json.JsonProperty("patch", Required = Newtonsoft.Json.Required.Always)]
@@ -51083,16 +51083,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body5 FromJson(string data)
+        public static VcsApplyRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body5>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<VcsApplyRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body6
+    public partial class McpAddRequest
     {
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
@@ -51107,16 +51107,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body6 FromJson(string data)
+        public static McpAddRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body6>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<McpAddRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body7
+    public partial class McpAuthCallbackRequest
     {
 
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
@@ -51128,16 +51128,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body7 FromJson(string data)
+        public static McpAuthCallbackRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body7>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<McpAuthCallbackRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body8
+    public partial class ProjectUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51155,16 +51155,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body8 FromJson(string data)
+        public static ProjectUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body8>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body9
+    public partial class ExperimentalProjectCopyGenerateNameRequest
     {
 
         [Newtonsoft.Json.JsonProperty("context", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51176,16 +51176,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body9 FromJson(string data)
+        public static ExperimentalProjectCopyGenerateNameRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body9>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalProjectCopyGenerateNameRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body10
+    public partial class PtyCreateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("command", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51209,16 +51209,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body10 FromJson(string data)
+        public static PtyCreateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body10>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PtyCreateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body11
+    public partial class PtyUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51236,16 +51236,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body11 FromJson(string data)
+        public static PtyUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body11>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PtyUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body12
+    public partial class QuestionReplyRequest
     {
 
         /// <summary>
@@ -51260,21 +51260,21 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body12 FromJson(string data)
+        public static QuestionReplyRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body12>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<QuestionReplyRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body13
+    public partial class PermissionReplyRequest
     {
 
         [Newtonsoft.Json.JsonProperty("reply", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body13Reply Reply { get; set; }
+        public PermissionReplyRequestReply Reply { get; set; }
 
         [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Message { get; set; }
@@ -51285,16 +51285,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body13 FromJson(string data)
+        public static PermissionReplyRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body13>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PermissionReplyRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body14
+    public partial class PermissionSaveAlwaysRulesRequest
     {
 
         [Newtonsoft.Json.JsonProperty("approvedAlways", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51309,16 +51309,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body14 FromJson(string data)
+        public static PermissionSaveAlwaysRulesRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body14>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PermissionSaveAlwaysRulesRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body15
+    public partial class PermissionAllowEverythingRequest
     {
 
         [Newtonsoft.Json.JsonProperty("enable", Required = Newtonsoft.Json.Required.Always)]
@@ -51336,16 +51336,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body15 FromJson(string data)
+        public static PermissionAllowEverythingRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body15>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PermissionAllowEverythingRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body16
+    public partial class ProviderOauthAuthorizeRequest
     {
 
         /// <summary>
@@ -51363,16 +51363,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body16 FromJson(string data)
+        public static ProviderOauthAuthorizeRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body16>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ProviderOauthAuthorizeRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body17
+    public partial class ProviderOauthCallbackRequest
     {
 
         /// <summary>
@@ -51390,10 +51390,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body17 FromJson(string data)
+        public static ProviderOauthCallbackRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body17>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ProviderOauthCallbackRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -51408,7 +51408,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body18
+    public partial class SessionCreateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("parentID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51444,16 +51444,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body18 FromJson(string data)
+        public static SessionCreateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body18>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionCreateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body19
+    public partial class SessionUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51474,16 +51474,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body19 FromJson(string data)
+        public static SessionUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body19>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body20
+    public partial class SessionPromptRequest
     {
 
         [Newtonsoft.Json.JsonProperty("messageID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51512,7 +51512,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("snapshotInitialization", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body20SnapshotInitialization SnapshotInitialization { get; set; }
+        public SessionPromptRequestSnapshotInitialization SnapshotInitialization { get; set; }
 
         [Newtonsoft.Json.JsonProperty("editorContext", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public EditorContext2 EditorContext { get; set; }
@@ -51526,16 +51526,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body20 FromJson(string data)
+        public static SessionPromptRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body20>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionPromptRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body21
+    public partial class SessionForkRequest
     {
 
         [Newtonsoft.Json.JsonProperty("messageID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51547,16 +51547,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body21 FromJson(string data)
+        public static SessionForkRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body21>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionForkRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body22
+    public partial class SessionInitRequest
     {
 
         [Newtonsoft.Json.JsonProperty("modelID", Required = Newtonsoft.Json.Required.Always)]
@@ -51574,16 +51574,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body22 FromJson(string data)
+        public static SessionInitRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body22>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionInitRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body23
+    public partial class SessionSummarizeRequest
     {
 
         [Newtonsoft.Json.JsonProperty("providerID", Required = Newtonsoft.Json.Required.Always)]
@@ -51601,16 +51601,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body23 FromJson(string data)
+        public static SessionSummarizeRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body23>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionSummarizeRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body24
+    public partial class SessionPromptAsyncRequest
     {
 
         [Newtonsoft.Json.JsonProperty("messageID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51639,7 +51639,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("snapshotInitialization", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body24SnapshotInitialization SnapshotInitialization { get; set; }
+        public SessionPromptAsyncRequestSnapshotInitialization SnapshotInitialization { get; set; }
 
         [Newtonsoft.Json.JsonProperty("editorContext", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public EditorContext3 EditorContext { get; set; }
@@ -51653,16 +51653,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body24 FromJson(string data)
+        public static SessionPromptAsyncRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body24>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionPromptAsyncRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body25
+    public partial class SessionCommandRequest
     {
 
         [Newtonsoft.Json.JsonProperty("messageID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51685,7 +51685,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("snapshotInitialization", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body25SnapshotInitialization SnapshotInitialization { get; set; }
+        public SessionCommandRequestSnapshotInitialization SnapshotInitialization { get; set; }
 
         [Newtonsoft.Json.JsonProperty("parts", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<Parts3> Parts { get; set; }
@@ -51696,16 +51696,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body25 FromJson(string data)
+        public static SessionCommandRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body25>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionCommandRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body26
+    public partial class SessionShellRequest
     {
 
         [Newtonsoft.Json.JsonProperty("messageID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51726,16 +51726,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body26 FromJson(string data)
+        public static SessionShellRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body26>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionShellRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body27
+    public partial class SessionRevertRequest
     {
 
         [Newtonsoft.Json.JsonProperty("messageID", Required = Newtonsoft.Json.Required.Always)]
@@ -51750,21 +51750,21 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body27 FromJson(string data)
+        public static SessionRevertRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body27>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionRevertRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body28
+    public partial class PermissionRespondRequest
     {
 
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body28Response Response { get; set; }
+        public PermissionRespondRequestResponse Response { get; set; }
 
         public string ToJson()
         {
@@ -51772,16 +51772,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body28 FromJson(string data)
+        public static PermissionRespondRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body28>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PermissionRespondRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body29
+    public partial class SessionViewedRequest
     {
 
         [Newtonsoft.Json.JsonProperty("viewer", Required = Newtonsoft.Json.Required.Always)]
@@ -51799,16 +51799,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body29 FromJson(string data)
+        public static SessionViewedRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body29>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionViewedRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body30
+    public partial class SyncReplayRequest
     {
 
         [Newtonsoft.Json.JsonProperty("directory", Required = Newtonsoft.Json.Required.Always)]
@@ -51823,16 +51823,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body30 FromJson(string data)
+        public static SyncReplayRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body30>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SyncReplayRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body31
+    public partial class SyncStealRequest
     {
 
         [Newtonsoft.Json.JsonProperty("sessionID", Required = Newtonsoft.Json.Required.Always)]
@@ -51844,16 +51844,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body31 FromJson(string data)
+        public static SyncStealRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body31>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SyncStealRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body32
+    public partial class TuiAppendPromptRequest
     {
 
         [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Always)]
@@ -51865,16 +51865,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body32 FromJson(string data)
+        public static TuiAppendPromptRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body32>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TuiAppendPromptRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body33
+    public partial class TuiExecuteCommandRequest
     {
 
         [Newtonsoft.Json.JsonProperty("command", Required = Newtonsoft.Json.Required.Always)]
@@ -51886,16 +51886,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body33 FromJson(string data)
+        public static TuiExecuteCommandRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body33>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TuiExecuteCommandRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body34
+    public partial class TuiShowToastRequest
     {
 
         [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51906,7 +51906,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("variant", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body34Variant Variant { get; set; }
+        public TuiShowToastRequestVariant Variant { get; set; }
 
         [Newtonsoft.Json.JsonProperty("duration", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long Duration { get; set; }
@@ -51917,16 +51917,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body34 FromJson(string data)
+        public static TuiShowToastRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body34>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TuiShowToastRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body35
+    public partial class TuiPublishRequest
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -51944,16 +51944,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body35 FromJson(string data)
+        public static TuiPublishRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body35>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TuiPublishRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body36
+    public partial class TuiSelectSessionRequest
     {
 
         /// <summary>
@@ -51968,16 +51968,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body36 FromJson(string data)
+        public static TuiSelectSessionRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body36>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TuiSelectSessionRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body37
+    public partial class ExperimentalWorkspaceCreateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -51998,16 +51998,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body37 FromJson(string data)
+        public static ExperimentalWorkspaceCreateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body37>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalWorkspaceCreateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body38
+    public partial class ExperimentalWorkspaceWarpRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -52025,16 +52025,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body38 FromJson(string data)
+        public static ExperimentalWorkspaceWarpRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body38>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalWorkspaceWarpRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body39
+    public partial class AgentBuilderPreviewRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -52042,14 +52042,14 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("scope", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body39Scope Scope { get; set; }
+        public AgentBuilderPreviewRequestScope Scope { get; set; }
 
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         [Newtonsoft.Json.JsonProperty("mode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body39Mode Mode { get; set; }
+        public AgentBuilderPreviewRequestMode Mode { get; set; }
 
         [Newtonsoft.Json.JsonProperty("model", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Model { get; set; }
@@ -52075,16 +52075,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body39 FromJson(string data)
+        public static AgentBuilderPreviewRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body39>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AgentBuilderPreviewRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body40
+    public partial class AgentBuilderSaveRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -52092,14 +52092,14 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("scope", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body40Scope Scope { get; set; }
+        public AgentBuilderSaveRequestScope Scope { get; set; }
 
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         [Newtonsoft.Json.JsonProperty("mode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body40Mode Mode { get; set; }
+        public AgentBuilderSaveRequestMode Mode { get; set; }
 
         [Newtonsoft.Json.JsonProperty("model", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Model { get; set; }
@@ -52125,16 +52125,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body40 FromJson(string data)
+        public static AgentBuilderSaveRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body40>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AgentBuilderSaveRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body41
+    public partial class BranchNameGenerateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("prompt", Required = Newtonsoft.Json.Required.Always)]
@@ -52152,16 +52152,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body41 FromJson(string data)
+        public static BranchNameGenerateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body41>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<BranchNameGenerateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body42
+    public partial class CommitMessageGenerateRequest
     {
 
         /// <summary>
@@ -52185,10 +52185,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body42 FromJson(string data)
+        public static CommitMessageGenerateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body42>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<CommitMessageGenerateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -52206,12 +52206,12 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body43
+    public partial class ConfigOverlayUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("scope", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body43Scope Scope { get; set; } = KiloVisualStudioExtension.ApiClient.Body43Scope.Project;
+        public ConfigOverlayUpdateRequestScope Scope { get; set; } = KiloVisualStudioExtension.ApiClient.ConfigOverlayUpdateRequestScope.Project;
 
         [Newtonsoft.Json.JsonProperty("set", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public object Set { get; set; }
@@ -52225,21 +52225,21 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body43 FromJson(string data)
+        public static ConfigOverlayUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body43>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigOverlayUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body44
+    public partial class ConfigRulesUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("scope", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body44Scope Scope { get; set; } = KiloVisualStudioExtension.ApiClient.Body44Scope.Project;
+        public ConfigRulesUpdateRequestScope Scope { get; set; } = KiloVisualStudioExtension.ApiClient.ConfigRulesUpdateRequestScope.Project;
 
         [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.Always)]
         public string Content { get; set; }
@@ -52250,16 +52250,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body44 FromJson(string data)
+        public static ConfigRulesUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body44>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigRulesUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body45
+    public partial class ConfigModelStateUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("favorite", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -52271,10 +52271,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body45 FromJson(string data)
+        public static ConfigModelStateUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body45>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigModelStateUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -52292,7 +52292,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body46
+    public partial class TuiConfigUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("$schema", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -52315,7 +52315,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// </summary>
         [Newtonsoft.Json.JsonProperty("title_icon", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body46Title_icon Title_icon { get; set; }
+        public TuiConfigUpdateRequestTitle_icon Title_icon { get; set; }
 
         [Newtonsoft.Json.JsonProperty("scroll_speed", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Scroll_speed2 Scroll_speed { get; set; }
@@ -52325,7 +52325,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("diff_style", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body46Diff_style Diff_style { get; set; }
+        public TuiConfigUpdateRequestDiff_style Diff_style { get; set; }
 
         [Newtonsoft.Json.JsonProperty("mouse", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Mouse { get; set; }
@@ -52339,16 +52339,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body46 FromJson(string data)
+        public static TuiConfigUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body46>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TuiConfigUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body47
+    public partial class EnhancePromptEnhanceRequest
     {
 
         /// <summary>
@@ -52363,16 +52363,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body47 FromJson(string data)
+        public static EnhancePromptEnhanceRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body47>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<EnhancePromptEnhanceRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body48
+    public partial class KiloFimRequest
     {
 
         [Newtonsoft.Json.JsonProperty("prefix", Required = Newtonsoft.Json.Required.Always)]
@@ -52399,16 +52399,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body48 FromJson(string data)
+        public static KiloFimRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body48>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloFimRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body49
+    public partial class KiloEditRequest
     {
 
         [Newtonsoft.Json.JsonProperty("provider", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -52450,16 +52450,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body49 FromJson(string data)
+        public static KiloEditRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body49>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloEditRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body50
+    public partial class KiloAudioTranscriptionsRequest
     {
 
         [Newtonsoft.Json.JsonProperty("model", Required = Newtonsoft.Json.Required.Always)]
@@ -52483,16 +52483,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body50 FromJson(string data)
+        public static KiloAudioTranscriptionsRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body50>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloAudioTranscriptionsRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body51
+    public partial class KiloOrganizationSetRequest
     {
 
         [Newtonsoft.Json.JsonProperty("organizationId", Required = Newtonsoft.Json.Required.Always)]
@@ -52504,16 +52504,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body51 FromJson(string data)
+        public static KiloOrganizationSetRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body51>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloOrganizationSetRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body52
+    public partial class KiloCloudSessionImportRequest
     {
 
         [Newtonsoft.Json.JsonProperty("sessionId", Required = Newtonsoft.Json.Required.Always)]
@@ -52525,16 +52525,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body52 FromJson(string data)
+        public static KiloCloudSessionImportRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body52>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloCloudSessionImportRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body53
+    public partial class KilocodeRemoveSkillRequest
     {
 
         [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
@@ -52546,16 +52546,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body53 FromJson(string data)
+        public static KilocodeRemoveSkillRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body53>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeRemoveSkillRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body54
+    public partial class KilocodeRemoveAgentRequest
     {
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
@@ -52567,16 +52567,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body54 FromJson(string data)
+        public static KilocodeRemoveAgentRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body54>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeRemoveAgentRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body55
+    public partial class KilocodeNotebookReplyRequest
     {
 
         [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.Always)]
@@ -52588,16 +52588,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body55 FromJson(string data)
+        public static KilocodeNotebookReplyRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body55>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeNotebookReplyRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body56
+    public partial class KilocodeNotebookRejectRequest
     {
 
         [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.Always)]
@@ -52609,16 +52609,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body56 FromJson(string data)
+        public static KilocodeNotebookRejectRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body56>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeNotebookRejectRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body57
+    public partial class KilocodeAgentManagerReplyRequest
     {
 
         [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.Always)]
@@ -52630,16 +52630,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body57 FromJson(string data)
+        public static KilocodeAgentManagerReplyRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body57>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeAgentManagerReplyRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body58
+    public partial class KilocodeAgentManagerRejectRequest
     {
 
         [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.Always)]
@@ -52651,16 +52651,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body58 FromJson(string data)
+        public static KilocodeAgentManagerRejectRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body58>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeAgentManagerRejectRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body59
+    public partial class AnacondaDesktopSyncRequest
     {
 
         [Newtonsoft.Json.JsonProperty("acknowledgeToolLimitations", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -52672,16 +52672,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body59 FromJson(string data)
+        public static AnacondaDesktopSyncRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body59>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AnacondaDesktopSyncRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body60
+    public partial class KilocodeSessionImportProjectRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -52723,16 +52723,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body60 FromJson(string data)
+        public static KilocodeSessionImportProjectRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body60>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeSessionImportProjectRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body61
+    public partial class KilocodeSessionImportSessionRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -52792,16 +52792,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body61 FromJson(string data)
+        public static KilocodeSessionImportSessionRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body61>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeSessionImportSessionRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body62
+    public partial class KilocodeSessionImportMessageRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -52822,16 +52822,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body62 FromJson(string data)
+        public static KilocodeSessionImportMessageRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body62>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeSessionImportMessageRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body63
+    public partial class KilocodeSessionImportPartRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -52855,16 +52855,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body63 FromJson(string data)
+        public static KilocodeSessionImportPartRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body63>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeSessionImportPartRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body64
+    public partial class SuggestionAcceptRequest
     {
 
         /// <summary>
@@ -52879,16 +52879,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body64 FromJson(string data)
+        public static SuggestionAcceptRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body64>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SuggestionAcceptRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body65
+    public partial class TelemetryCaptureRequest
     {
 
         /// <summary>
@@ -52906,16 +52906,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body65 FromJson(string data)
+        public static TelemetryCaptureRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body65>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TelemetryCaptureRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body66
+    public partial class TelemetrySetEnabledRequest
     {
 
         [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
@@ -52927,16 +52927,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body66 FromJson(string data)
+        public static TelemetrySetEnabledRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body66>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TelemetrySetEnabledRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body67
+    public partial class MemoryConfigureRequest
     {
 
         [Newtonsoft.Json.JsonProperty("autoConsolidate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -52951,16 +52951,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body67 FromJson(string data)
+        public static MemoryConfigureRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body67>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryConfigureRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body68
+    public partial class MemoryRememberRequest
     {
 
         [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Always)]
@@ -52971,7 +52971,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("file", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body68File File { get; set; }
+        public MemoryRememberRequestFile File { get; set; }
 
         [Newtonsoft.Json.JsonProperty("section", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Section { get; set; }
@@ -52985,16 +52985,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body68 FromJson(string data)
+        public static MemoryRememberRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body68>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryRememberRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body69
+    public partial class MemoryCorrectRequest
     {
 
         [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Always)]
@@ -53012,16 +53012,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body69 FromJson(string data)
+        public static MemoryCorrectRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body69>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryCorrectRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body70
+    public partial class MemoryForgetRequest
     {
 
         [Newtonsoft.Json.JsonProperty("query", Required = Newtonsoft.Json.Required.Always)]
@@ -53036,16 +53036,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body70 FromJson(string data)
+        public static MemoryForgetRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body70>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryForgetRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body71
+    public partial class MemoryPurgeRequest
     {
 
         [Newtonsoft.Json.JsonProperty("confirm", Required = Newtonsoft.Json.Required.Always)]
@@ -53057,10 +53057,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body71 FromJson(string data)
+        public static MemoryPurgeRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body71>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryPurgeRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53126,7 +53126,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body72
+    public partial class V2SessionCreateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -53147,16 +53147,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body72 FromJson(string data)
+        public static V2SessionCreateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body72>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionCreateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body73
+    public partial class V2SessionPromptRequest
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -53167,7 +53167,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("delivery", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Body73Delivery Delivery { get; set; }
+        public V2SessionPromptRequestDelivery Delivery { get; set; }
 
         [Newtonsoft.Json.JsonProperty("resume", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Resume { get; set; }
@@ -53178,10 +53178,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body73 FromJson(string data)
+        public static V2SessionPromptRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body73>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionPromptRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53343,7 +53343,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body74
+    public partial class V2IntegrationConnectKeyRequest
     {
 
         [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.Always)]
@@ -53358,10 +53358,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body74 FromJson(string data)
+        public static V2IntegrationConnectKeyRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body74>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2IntegrationConnectKeyRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53391,7 +53391,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body75
+    public partial class V2IntegrationConnectOauthRequest
     {
 
         [Newtonsoft.Json.JsonProperty("methodID", Required = Newtonsoft.Json.Required.Always)]
@@ -53409,10 +53409,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body75 FromJson(string data)
+        public static V2IntegrationConnectOauthRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body75>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2IntegrationConnectOauthRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53490,7 +53490,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body76
+    public partial class V2IntegrationAttemptCompleteRequest
     {
 
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -53502,16 +53502,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body76 FromJson(string data)
+        public static V2IntegrationAttemptCompleteRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body76>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2IntegrationAttemptCompleteRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body77
+    public partial class V2CredentialUpdateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("label", Required = Newtonsoft.Json.Required.Always)]
@@ -53523,10 +53523,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body77 FromJson(string data)
+        public static V2CredentialUpdateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body77>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2CredentialUpdateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53556,7 +53556,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body78
+    public partial class V2SessionPermissionReplyRequest
     {
 
         [Newtonsoft.Json.JsonProperty("reply", Required = Newtonsoft.Json.Required.Always)]
@@ -53572,10 +53572,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body78 FromJson(string data)
+        public static V2SessionPermissionReplyRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body78>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionPermissionReplyRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53809,7 +53809,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body79
+    public partial class V2ProjectCopyCreateRequest
     {
 
         [Newtonsoft.Json.JsonProperty("strategy", Required = Newtonsoft.Json.Required.Always)]
@@ -53827,10 +53827,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body79 FromJson(string data)
+        public static V2ProjectCopyCreateRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body79>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2ProjectCopyCreateRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53860,7 +53860,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body80
+    public partial class V2ProjectCopyRemoveRequest
     {
 
         [Newtonsoft.Json.JsonProperty("directory", Required = Newtonsoft.Json.Required.Always)]
@@ -53875,10 +53875,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Body80 FromJson(string data)
+        public static V2ProjectCopyRemoveRequest FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Body80>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2ProjectCopyRemoveRequest>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53911,7 +53911,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Health information
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response
+    public partial class GlobalHealthResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("healthy", Required = Newtonsoft.Json.Required.Always)]
@@ -53926,10 +53926,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response FromJson(string data)
+        public static GlobalHealthResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<GlobalHealthResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53938,7 +53938,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Upgrade result
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response2
+    public partial class GlobalUpgradeResponseSchema200
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -53956,16 +53956,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response2 FromJson(string data)
+        public static GlobalUpgradeResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response2>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<GlobalUpgradeResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous
+    public partial class ConfigWarningsResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
@@ -53983,10 +53983,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous FromJson(string data)
+        public static ConfigWarningsResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigWarningsResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -53995,7 +53995,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// List of providers
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response3
+    public partial class ConfigProvidersResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("providers", Required = Newtonsoft.Json.Required.Always)]
@@ -54010,10 +54010,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response3 FromJson(string data)
+        public static ConfigProvidersResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response3>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigProvidersResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54022,7 +54022,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Switchable Console orgs
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response4
+    public partial class ExperimentalConsoleListOrgsResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("orgs", Required = Newtonsoft.Json.Required.Always)]
@@ -54034,16 +54034,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response4 FromJson(string data)
+        public static ExperimentalConsoleListOrgsResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response4>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalConsoleListOrgsResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous2
+    public partial class FindTextResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
@@ -54067,10 +54067,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous2 FromJson(string data)
+        public static FindTextResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous2>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<FindTextResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54079,7 +54079,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// VCS patch applied
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response5
+    public partial class VcsApplyResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("applied", Required = Newtonsoft.Json.Required.Always)]
@@ -54091,16 +54091,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response5 FromJson(string data)
+        public static VcsApplyResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response5>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<VcsApplyResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous3
+    public partial class AppSkillsResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
@@ -54121,10 +54121,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous3 FromJson(string data)
+        public static AppSkillsResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous3>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AppSkillsResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54133,7 +54133,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// OAuth flow started
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response6
+    public partial class McpAuthStartResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("authorizationUrl", Required = Newtonsoft.Json.Required.Always)]
@@ -54148,10 +54148,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response6 FromJson(string data)
+        public static McpAuthStartResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response6>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<McpAuthStartResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54160,7 +54160,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// OAuth credentials removed
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response7
+    public partial class McpAuthRemoveResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("success", Required = Newtonsoft.Json.Required.Always)]
@@ -54172,16 +54172,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response7 FromJson(string data)
+        public static McpAuthRemoveResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response7>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<McpAuthRemoveResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous4
+    public partial class Anonymous
     {
 
         [Newtonsoft.Json.JsonProperty("directory", Required = Newtonsoft.Json.Required.Always)]
@@ -54196,16 +54196,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous4 FromJson(string data)
+        public static Anonymous FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous4>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response8
+    public partial class ExperimentalProjectCopyGenerateNameResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
@@ -54217,16 +54217,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response8 FromJson(string data)
+        public static ExperimentalProjectCopyGenerateNameResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response8>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalProjectCopyGenerateNameResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous5
+    public partial class PtyShellsResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
@@ -54244,10 +54244,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous5 FromJson(string data)
+        public static PtyShellsResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous5>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PtyShellsResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54256,7 +54256,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// WebSocket connect token
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response9
+    public partial class PtyConnectTokenResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("ticket", Required = Newtonsoft.Json.Required.Always)]
@@ -54271,10 +54271,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response9 FromJson(string data)
+        public static PtyConnectTokenResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response9>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PtyConnectTokenResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54283,7 +54283,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// List of providers
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response10
+    public partial class ProviderListResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("all", Required = Newtonsoft.Json.Required.Always)]
@@ -54304,16 +54304,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response10 FromJson(string data)
+        public static ProviderListResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response10>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ProviderListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous6
+    public partial class SessionMessagesResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.Always)]
@@ -54328,16 +54328,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous6 FromJson(string data)
+        public static SessionMessagesResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous6>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionMessagesResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response11
+    public partial class SessionPromptResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.Always)]
@@ -54361,10 +54361,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response11 FromJson(string data)
+        public static SessionPromptResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response11>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionPromptResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54373,7 +54373,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Message
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response12
+    public partial class SessionMessageResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.Always)]
@@ -54388,16 +54388,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response12 FromJson(string data)
+        public static SessionMessageResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response12>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionMessageResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response13
+    public partial class SessionCommandResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.Always)]
@@ -54421,10 +54421,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response13 FromJson(string data)
+        public static SessionCommandResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response13>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionCommandResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54433,7 +54433,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Created message
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response14
+    public partial class SessionShellResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.Always)]
@@ -54448,10 +54448,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response14 FromJson(string data)
+        public static SessionShellResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response14>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SessionShellResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54460,7 +54460,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Replayed sync events
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response15
+    public partial class SyncReplayResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("sessionID", Required = Newtonsoft.Json.Required.Always)]
@@ -54472,10 +54472,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response15 FromJson(string data)
+        public static SyncReplayResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response15>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SyncReplayResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54484,7 +54484,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Session stolen into workspace
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response16
+    public partial class SyncStealResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("sessionID", Required = Newtonsoft.Json.Required.Always)]
@@ -54496,16 +54496,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response16 FromJson(string data)
+        public static SyncStealResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response16>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SyncStealResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous7
+    public partial class SyncHistoryListResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -54529,10 +54529,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous7 FromJson(string data)
+        public static SyncHistoryListResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous7>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SyncHistoryListResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54541,7 +54541,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Next TUI request
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response17
+    public partial class TuiControlNextResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
@@ -54556,16 +54556,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response17 FromJson(string data)
+        public static TuiControlNextResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response17>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TuiControlNextResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous8
+    public partial class ExperimentalWorkspaceAdapterListResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
@@ -54583,16 +54583,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous8 FromJson(string data)
+        public static ExperimentalWorkspaceAdapterListResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous8>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalWorkspaceAdapterListResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous9
+    public partial class ExperimentalWorkspaceStatusResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("workspaceID", Required = Newtonsoft.Json.Required.Always)]
@@ -54600,7 +54600,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Status Status { get; set; }
+        public ExperimentalWorkspaceStatusResponseSchema200ItemStatus Status { get; set; }
 
         public string ToJson()
         {
@@ -54608,10 +54608,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous9 FromJson(string data)
+        public static ExperimentalWorkspaceStatusResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous9>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExperimentalWorkspaceStatusResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54620,7 +54620,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Agent markdown preview
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response18
+    public partial class AgentBuilderPreviewResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -54628,7 +54628,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("scope", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Response18Scope Scope { get; set; }
+        public AgentBuilderPreviewResponseSchema200Scope Scope { get; set; }
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
         public string Path { get; set; }
@@ -54642,10 +54642,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response18 FromJson(string data)
+        public static AgentBuilderPreviewResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response18>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AgentBuilderPreviewResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54654,7 +54654,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Saved agent markdown
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response19
+    public partial class AgentBuilderSaveResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -54662,7 +54662,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("scope", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Response19Scope Scope { get; set; }
+        public AgentBuilderSaveResponseSchema200Scope Scope { get; set; }
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
         public string Path { get; set; }
@@ -54676,10 +54676,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response19 FromJson(string data)
+        public static AgentBuilderSaveResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response19>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AgentBuilderSaveResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54688,7 +54688,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Generated branch name or null when the task is not clear yet
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response20
+    public partial class BranchNameGenerateResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("branch", Required = Newtonsoft.Json.Required.Always)]
@@ -54700,10 +54700,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response20 FromJson(string data)
+        public static BranchNameGenerateResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response20>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<BranchNameGenerateResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54712,7 +54712,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Generated commit message
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response21
+    public partial class CommitMessageGenerateResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
@@ -54724,10 +54724,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response21 FromJson(string data)
+        public static CommitMessageGenerateResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response21>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<CommitMessageGenerateResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54736,7 +54736,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Enhanced prompt text
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response22
+    public partial class EnhancePromptEnhanceResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Always)]
@@ -54748,10 +54748,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response22 FromJson(string data)
+        public static EnhancePromptEnhanceResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response22>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<EnhancePromptEnhanceResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54760,7 +54760,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Profile data
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response23
+    public partial class KiloProfileResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("profile", Required = Newtonsoft.Json.Required.Always)]
@@ -54781,10 +54781,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response23 FromJson(string data)
+        public static KiloProfileResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response23>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloProfileResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54793,7 +54793,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Kilo authentication status
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response24
+    public partial class KiloAuthStatusResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("authenticated", Required = Newtonsoft.Json.Required.Always)]
@@ -54801,7 +54801,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Response24Type Type { get; set; }
+        public KiloAuthStatusResponseSchema200Type Type { get; set; }
 
         public string ToJson()
         {
@@ -54809,10 +54809,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response24 FromJson(string data)
+        public static KiloAuthStatusResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response24>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloAuthStatusResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54821,7 +54821,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Organization modes list
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response25
+    public partial class KiloModesResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("modes", Required = Newtonsoft.Json.Required.Always)]
@@ -54833,16 +54833,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response25 FromJson(string data)
+        public static KiloModesResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response25>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloModesResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response26
+    public partial class KiloFimResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("choices", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -54869,10 +54869,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response26 FromJson(string data)
+        public static KiloFimResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response26>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloFimResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54881,7 +54881,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Next Edit completion
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response27
+    public partial class KiloEditResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.Always)]
@@ -54896,10 +54896,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response27 FromJson(string data)
+        public static KiloEditResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response27>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloEditResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54908,7 +54908,7 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Transcription response
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response28
+    public partial class KiloAudioTranscriptionsResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Always)]
@@ -54923,16 +54923,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Response28 FromJson(string data)
+        public static KiloAudioTranscriptionsResponseSchema200 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response28>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloAudioTranscriptionsResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous10
+    public partial class KiloModelsImagesResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -54950,16 +54950,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous10 FromJson(string data)
+        public static KiloModelsImagesResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous10>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloModelsImagesResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous11
+    public partial class KiloNotificationsResponseSchema200Item
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
@@ -54986,10 +54986,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous11 FromJson(string data)
+        public static KiloNotificationsResponseSchema200Item FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous11>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloNotificationsResponseSchema200Item>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -54998,11 +54998,11 @@ namespace KiloVisualStudioExtension.ApiClient
     /// Instance status
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response29
+    public partial class KiloClawStatusResponseSchema200
     {
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
-        public Status2 Status { get; set; }
+        public Status Status { get; set; }
 
         [Newtonsoft.Json.JsonProperty("sandboxId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string SandboxId { get; set; }
@@ -55033,6 +55033,2012 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("botName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public BotName BotName { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static KiloClawStatusResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloClawStatusResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class KiloClawChatCredentialsResponseSchema200
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static KiloClawChatCredentialsResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloClawChatCredentialsResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Cloud sessions list
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class KiloCloudSessionsResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("cliSessions", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<CliSessions> CliSessions { get; set; } = new System.Collections.ObjectModel.Collection<CliSessions>();
+
+        [Newtonsoft.Json.JsonProperty("nextCursor", Required = Newtonsoft.Json.Required.Always)]
+        public NextCursor NextCursor { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static KiloCloudSessionsResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloCloudSessionsResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Cloud session data
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class KiloCloudSessionGetResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.Always)]
+        public Info Info { get; set; } = new Info();
+
+        [Newtonsoft.Json.JsonProperty("messages", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<Messages> Messages { get; set; } = new System.Collections.ObjectModel.Collection<Messages>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static KiloCloudSessionGetResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloCloudSessionGetResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Imported session info
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class KiloCloudSessionImportResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        public string Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.Always)]
+        public Time42 Time { get; set; } = new Time42();
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static KiloCloudSessionImportResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KiloCloudSessionImportResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Model usage for a session tree
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class KilocodeSessionModelUsageResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("sessionIDs", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<string> SessionIDs { get; set; } = new System.Collections.ObjectModel.Collection<string>();
+
+        [Newtonsoft.Json.JsonProperty("totals", Required = Newtonsoft.Json.Required.Always)]
+        public Totals Totals { get; set; } = new Totals();
+
+        [Newtonsoft.Json.JsonProperty("models", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<Models2> Models { get; set; } = new System.Collections.ObjectModel.Collection<Models2>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static KilocodeSessionModelUsageResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<KilocodeSessionModelUsageResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Anaconda Desktop connection synchronized
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class AnacondaDesktopSyncResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AnacondaDesktopSyncResponseSchema200Type Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("serverID", Required = Newtonsoft.Json.Required.Always)]
+        public string ServerID { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("serverName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ServerName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("models", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<Models3> Models { get; set; } = new System.Collections.ObjectModel.Collection<Models3>();
+
+        [Newtonsoft.Json.JsonProperty("context", Required = Newtonsoft.Json.Required.Always)]
+        public long Context { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("toolcall", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AnacondaDesktopSyncResponseSchema200Toolcall Toolcall { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static AnacondaDesktopSyncResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AnacondaDesktopSyncResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Remote connection enabled
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RemoteEnableResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
+        public bool Enabled { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("connected", Required = Newtonsoft.Json.Required.Always)]
+        public bool Connected { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static RemoteEnableResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<RemoteEnableResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Remote connection disabled
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RemoteDisableResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
+        public bool Enabled { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("connected", Required = Newtonsoft.Json.Required.Always)]
+        public bool Connected { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static RemoteDisableResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<RemoteDisableResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Remote connection status
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RemoteStatusResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
+        public bool Enabled { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("connected", Required = Newtonsoft.Json.Required.Always)]
+        public bool Connected { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static RemoteStatusResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<RemoteStatusResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Sandbox backend support
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SandboxSupportResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("available", Required = Newtonsoft.Json.Required.Always)]
+        public bool Available { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Reason { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static SandboxSupportResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SandboxSupportResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Session sandbox status
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SandboxStatusResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("directory", Required = Newtonsoft.Json.Required.Always)]
+        public string Directory { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
+        public bool Enabled { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("available", Required = Newtonsoft.Json.Required.Always)]
+        public bool Available { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Reason { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
+        public long Version { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static SandboxStatusResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SandboxStatusResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Updated session sandbox status
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SandboxToggleResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("directory", Required = Newtonsoft.Json.Required.Always)]
+        public string Directory { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
+        public bool Enabled { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("available", Required = Newtonsoft.Json.Required.Always)]
+        public bool Available { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Reason { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
+        public long Version { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static SandboxToggleResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SandboxToggleResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory status
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryStatusResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
+        public string Root { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
+        public State2 State { get; set; } = new State2();
+
+        [Newtonsoft.Json.JsonProperty("exists", Required = Newtonsoft.Json.Required.Always)]
+        public Exists Exists { get; set; } = new Exists();
+
+        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
+        public Index Index { get; set; } = new Index();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryStatusResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryStatusResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory source and index
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryShowResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
+        public string Root { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
+        public State3 State { get; set; } = new State3();
+
+        [Newtonsoft.Json.JsonProperty("sources", Required = Newtonsoft.Json.Required.Always)]
+        public Sources3 Sources { get; set; } = new Sources3();
+
+        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
+        public string Index { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
+        public string Items { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("changes", Required = Newtonsoft.Json.Required.Always)]
+        public string Changes { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("decisions", Required = Newtonsoft.Json.Required.Always)]
+        public string Decisions { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryShowResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryShowResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory enabled
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryEnableResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
+        public string Root { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
+        public State4 State { get; set; } = new State4();
+
+        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
+        public Index2 Index { get; set; } = new Index2();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryEnableResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryEnableResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory disabled
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryDisableResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
+        public string Root { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
+        public State5 State { get; set; } = new State5();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryDisableResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryDisableResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory configured
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryConfigureResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
+        public string Root { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
+        public State6 State { get; set; } = new State6();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryConfigureResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryConfigureResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory rebuilt
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryRebuildResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
+        public string Root { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
+        public State7 State { get; set; } = new State7();
+
+        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
+        public Index3 Index { get; set; } = new Index3();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryRebuildResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryRebuildResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory operation result
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryRememberResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("operationCount", Required = Newtonsoft.Json.Required.Always)]
+        public double OperationCount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("added", Required = Newtonsoft.Json.Required.Always)]
+        public double Added { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("removed", Required = Newtonsoft.Json.Required.Always)]
+        public double Removed { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("skipped", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<Skipped> Skipped { get; set; } = new System.Collections.ObjectModel.Collection<Skipped>();
+
+        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
+        public Index4 Index { get; set; } = new Index4();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryRememberResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryRememberResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory correction result
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryCorrectResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("operationCount", Required = Newtonsoft.Json.Required.Always)]
+        public double OperationCount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("added", Required = Newtonsoft.Json.Required.Always)]
+        public double Added { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("removed", Required = Newtonsoft.Json.Required.Always)]
+        public double Removed { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("skipped", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<Skipped2> Skipped { get; set; } = new System.Collections.ObjectModel.Collection<Skipped2>();
+
+        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
+        public Index5 Index { get; set; } = new Index5();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryCorrectResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryCorrectResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory forget result
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryForgetResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("operationCount", Required = Newtonsoft.Json.Required.Always)]
+        public double OperationCount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("added", Required = Newtonsoft.Json.Required.Always)]
+        public double Added { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("removed", Required = Newtonsoft.Json.Required.Always)]
+        public double Removed { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("skipped", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<Skipped3> Skipped { get; set; } = new System.Collections.ObjectModel.Collection<Skipped3>();
+
+        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
+        public Index6 Index { get; set; } = new Index6();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryForgetResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryForgetResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    /// <summary>
+    /// Memory purged
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MemoryPurgeResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
+        public string Root { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("purged", Required = Newtonsoft.Json.Required.Always)]
+        public bool Purged { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static MemoryPurgeResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MemoryPurgeResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2HealthGetResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("healthy", Required = Newtonsoft.Json.Required.Always)]
+        public bool Healthy { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2HealthGetResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2HealthGetResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2AgentListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<AgentV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<AgentV2Info>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2AgentListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2AgentListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2SessionCreateResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public SessionV2Info Data { get; set; } = new SessionV2Info();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2SessionCreateResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionCreateResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2SessionGetResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public SessionV2Info Data { get; set; } = new SessionV2Info();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2SessionGetResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionGetResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2SessionPromptResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public SessionInputAdmitted Data { get; set; } = new SessionInputAdmitted();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2SessionPromptResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionPromptResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2SessionContextResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<SessionMessage> Data { get; set; } = new System.Collections.ObjectModel.Collection<SessionMessage>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2SessionContextResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionContextResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2ModelListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<ModelV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<ModelV2Info>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2ModelListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2ModelListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2ProviderListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<ProviderV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<ProviderV2Info>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2ProviderListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2ProviderListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2ProviderGetResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public ProviderV2Info Data { get; set; } = new ProviderV2Info();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2ProviderGetResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2ProviderGetResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2IntegrationListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<IntegrationInfo> Data { get; set; } = new System.Collections.ObjectModel.Collection<IntegrationInfo>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2IntegrationListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2IntegrationListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2IntegrationGetResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public IntegrationInfo Data { get; set; } = new IntegrationInfo();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2IntegrationGetResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2IntegrationGetResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2IntegrationConnectOauthResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public IntegrationAttempt Data { get; set; } = new IntegrationAttempt();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2IntegrationConnectOauthResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2IntegrationConnectOauthResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2IntegrationAttemptStatusResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public Data22 Data { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2IntegrationAttemptStatusResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2IntegrationAttemptStatusResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2PermissionRequestListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<PermissionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<PermissionV2Request>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2PermissionRequestListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2PermissionRequestListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2PermissionSavedListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<PermissionSavedInfo> Data { get; set; } = new System.Collections.ObjectModel.Collection<PermissionSavedInfo>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2PermissionSavedListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2PermissionSavedListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2SessionPermissionListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<PermissionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<PermissionV2Request>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2SessionPermissionListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionPermissionListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2FsListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<FileSystemEntry> Data { get; set; } = new System.Collections.ObjectModel.Collection<FileSystemEntry>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2FsListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2FsListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2FsFindResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<FileSystemEntry> Data { get; set; } = new System.Collections.ObjectModel.Collection<FileSystemEntry>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2FsFindResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2FsFindResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2CommandListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<CommandV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<CommandV2Info>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2CommandListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2CommandListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2SkillListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<SkillV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<SkillV2Info>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2SkillListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SkillListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2QuestionRequestListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<QuestionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<QuestionV2Request>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2QuestionRequestListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2QuestionRequestListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2SessionQuestionListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<QuestionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<QuestionV2Request>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2SessionQuestionListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2SessionQuestionListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class V2ReferenceListResponseSchema200
+    {
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
+        public LocationInfo Location { get; set; } = new LocationInfo();
+
+        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
+        public System.Collections.Generic.ICollection<ReferenceInfo> Data { get; set; } = new System.Collections.ObjectModel.Collection<ReferenceInfo>();
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static V2ReferenceListResponseSchema200 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<V2ReferenceListResponseSchema200>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response2
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response2 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response2>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response3
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response3 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response3>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response4
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response4 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response4>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response5
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response5 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response5>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response6
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response6 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response6>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response7
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response7 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response7>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response8
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response8 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response8>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response9
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response9 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response9>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response10
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response10 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response10>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response11
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response11 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response11>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response12
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response12 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response12>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response13
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response13 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response13>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response14
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response14 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response14>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response15
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response15 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response15>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response16
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response16 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response16>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response17
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response17 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response17>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response18
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response18 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response18>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response19
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response19 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response19>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response20
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response20 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response20>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response21
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response21 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response21>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response22
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response22 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response22>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response23
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response23 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response23>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response24
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response24 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response24>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response25
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response25 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response25>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response26
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response26 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response26>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response27
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response27 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response27>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response28
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static Response28 FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response28>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response29
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55075,18 +57081,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Cloud sessions list
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response31
     {
 
-        [Newtonsoft.Json.JsonProperty("cliSessions", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<CliSessions> CliSessions { get; set; } = new System.Collections.ObjectModel.Collection<CliSessions>();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("nextCursor", Required = Newtonsoft.Json.Required.Always)]
-        public NextCursor NextCursor { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55102,18 +57108,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Cloud session data
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response32
     {
 
-        [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.Always)]
-        public Info Info { get; set; } = new Info();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("messages", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<Messages> Messages { get; set; } = new System.Collections.ObjectModel.Collection<Messages>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55129,21 +57135,9 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Imported session info
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response33
     {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public string Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
-        public string Title { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("time", Required = Newtonsoft.Json.Required.Always)]
-        public Time42 Time { get; set; } = new Time42();
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
@@ -55168,21 +57162,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Model usage for a session tree
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response34
     {
 
-        [Newtonsoft.Json.JsonProperty("sessionIDs", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<string> SessionIDs { get; set; } = new System.Collections.ObjectModel.Collection<string>();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("totals", Required = Newtonsoft.Json.Required.Always)]
-        public Totals Totals { get; set; } = new Totals();
-
-        [Newtonsoft.Json.JsonProperty("models", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<Models2> Models { get; set; } = new System.Collections.ObjectModel.Collection<Models2>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55198,32 +57189,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Anaconda Desktop connection synchronized
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response35
     {
 
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Response35Type Type { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("serverID", Required = Newtonsoft.Json.Required.Always)]
-        public string ServerID { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("serverName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ServerName { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("models", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<Models3> Models { get; set; } = new System.Collections.ObjectModel.Collection<Models3>();
-
-        [Newtonsoft.Json.JsonProperty("context", Required = Newtonsoft.Json.Required.Always)]
-        public long Context { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("toolcall", Required = Newtonsoft.Json.Required.Always)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Response35Toolcall Toolcall { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55239,18 +57216,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Remote connection enabled
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response36
     {
 
-        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
-        public bool Enabled { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("connected", Required = Newtonsoft.Json.Required.Always)]
-        public bool Connected { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55266,18 +57243,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Remote connection disabled
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response37
     {
 
-        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
-        public bool Enabled { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("connected", Required = Newtonsoft.Json.Required.Always)]
-        public bool Connected { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55293,18 +57270,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Remote connection status
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response38
     {
 
-        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
-        public bool Enabled { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("connected", Required = Newtonsoft.Json.Required.Always)]
-        public bool Connected { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55320,18 +57297,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Sandbox backend support
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response39
     {
 
-        [Newtonsoft.Json.JsonProperty("available", Required = Newtonsoft.Json.Required.Always)]
-        public bool Available { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Reason { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55347,27 +57324,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Session sandbox status
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response40
     {
 
-        [Newtonsoft.Json.JsonProperty("directory", Required = Newtonsoft.Json.Required.Always)]
-        public string Directory { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
-        public bool Enabled { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("available", Required = Newtonsoft.Json.Required.Always)]
-        public bool Available { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Reason { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
-        public long Version { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55383,27 +57351,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Updated session sandbox status
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response41
     {
 
-        [Newtonsoft.Json.JsonProperty("directory", Required = Newtonsoft.Json.Required.Always)]
-        public string Directory { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Always)]
-        public bool Enabled { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("available", Required = Newtonsoft.Json.Required.Always)]
-        public bool Available { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("reason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Reason { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
-        public long Version { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55419,24 +57378,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory status
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response42
     {
 
-        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
-        public string Root { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
-        public State2 State { get; set; } = new State2();
-
-        [Newtonsoft.Json.JsonProperty("exists", Required = Newtonsoft.Json.Required.Always)]
-        public Exists Exists { get; set; } = new Exists();
-
-        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public Index Index { get; set; } = new Index();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55452,33 +57405,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory source and index
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response43
     {
 
-        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
-        public string Root { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
-        public State3 State { get; set; } = new State3();
-
-        [Newtonsoft.Json.JsonProperty("sources", Required = Newtonsoft.Json.Required.Always)]
-        public Sources3 Sources { get; set; } = new Sources3();
-
-        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public string Index { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
-        public string Items { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("changes", Required = Newtonsoft.Json.Required.Always)]
-        public string Changes { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("decisions", Required = Newtonsoft.Json.Required.Always)]
-        public string Decisions { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55494,21 +57432,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory enabled
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response44
     {
 
-        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
-        public string Root { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
-        public State4 State { get; set; } = new State4();
-
-        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public Index2 Index { get; set; } = new Index2();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55524,18 +57459,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory disabled
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response45
     {
 
-        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
-        public string Root { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
-        public State5 State { get; set; } = new State5();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55551,18 +57486,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory configured
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response46
     {
 
-        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
-        public string Root { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
-        public State6 State { get; set; } = new State6();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55578,21 +57513,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory rebuilt
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response47
     {
 
-        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
-        public string Root { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
-        public State7 State { get; set; } = new State7();
-
-        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public Index3 Index { get; set; } = new Index3();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55608,27 +57540,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory operation result
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response48
     {
 
-        [Newtonsoft.Json.JsonProperty("operationCount", Required = Newtonsoft.Json.Required.Always)]
-        public double OperationCount { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("added", Required = Newtonsoft.Json.Required.Always)]
-        public double Added { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("removed", Required = Newtonsoft.Json.Required.Always)]
-        public double Removed { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("skipped", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<Skipped> Skipped { get; set; } = new System.Collections.ObjectModel.Collection<Skipped>();
-
-        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public Index4 Index { get; set; } = new Index4();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55644,27 +57567,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory correction result
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response49
     {
 
-        [Newtonsoft.Json.JsonProperty("operationCount", Required = Newtonsoft.Json.Required.Always)]
-        public double OperationCount { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("added", Required = Newtonsoft.Json.Required.Always)]
-        public double Added { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("removed", Required = Newtonsoft.Json.Required.Always)]
-        public double Removed { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("skipped", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<Skipped2> Skipped { get; set; } = new System.Collections.ObjectModel.Collection<Skipped2>();
-
-        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public Index5 Index { get; set; } = new Index5();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55680,27 +57594,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory forget result
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response50
     {
 
-        [Newtonsoft.Json.JsonProperty("operationCount", Required = Newtonsoft.Json.Required.Always)]
-        public double OperationCount { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("added", Required = Newtonsoft.Json.Required.Always)]
-        public double Added { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("removed", Required = Newtonsoft.Json.Required.Always)]
-        public double Removed { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("skipped", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<Skipped3> Skipped { get; set; } = new System.Collections.ObjectModel.Collection<Skipped3>();
-
-        [Newtonsoft.Json.JsonProperty("index", Required = Newtonsoft.Json.Required.Always)]
-        public Index6 Index { get; set; } = new Index6();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55716,18 +57621,18 @@ namespace KiloVisualStudioExtension.ApiClient
         }
     }
 
-    /// <summary>
-    /// Memory purged
-    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response51
     {
 
-        [Newtonsoft.Json.JsonProperty("root", Required = Newtonsoft.Json.Required.Always)]
-        public string Root { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("purged", Required = Newtonsoft.Json.Required.Always)]
-        public bool Purged { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55747,8 +57652,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response52
     {
 
-        [Newtonsoft.Json.JsonProperty("healthy", Required = Newtonsoft.Json.Required.Always)]
-        public bool Healthy { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55768,11 +57679,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response53
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<AgentV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<AgentV2Info>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55792,8 +57706,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response54
     {
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public SessionV2Info Data { get; set; } = new SessionV2Info();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55813,8 +57733,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response55
     {
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public SessionV2Info Data { get; set; } = new SessionV2Info();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55834,8 +57760,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response56
     {
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public SessionInputAdmitted Data { get; set; } = new SessionInputAdmitted();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55855,8 +57787,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response57
     {
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<SessionMessage> Data { get; set; } = new System.Collections.ObjectModel.Collection<SessionMessage>();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55876,11 +57814,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response58
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<ModelV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<ModelV2Info>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55900,11 +57841,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response59
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<ProviderV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<ProviderV2Info>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55924,11 +57868,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response60
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public ProviderV2Info Data { get; set; } = new ProviderV2Info();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55948,11 +57895,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response61
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<IntegrationInfo> Data { get; set; } = new System.Collections.ObjectModel.Collection<IntegrationInfo>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55972,11 +57922,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response62
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public IntegrationInfo Data { get; set; } = new IntegrationInfo();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -55996,11 +57949,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response63
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public IntegrationAttempt Data { get; set; } = new IntegrationAttempt();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56020,11 +57976,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response64
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public Data22 Data { get; set; }
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56044,11 +58003,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response65
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<PermissionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<PermissionV2Request>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56068,8 +58030,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response66
     {
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<PermissionSavedInfo> Data { get; set; } = new System.Collections.ObjectModel.Collection<PermissionSavedInfo>();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56089,8 +58057,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response67
     {
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<PermissionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<PermissionV2Request>();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56110,11 +58084,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response68
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<FileSystemEntry> Data { get; set; } = new System.Collections.ObjectModel.Collection<FileSystemEntry>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56134,11 +58111,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response69
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<FileSystemEntry> Data { get; set; } = new System.Collections.ObjectModel.Collection<FileSystemEntry>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56158,11 +58138,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response70
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<CommandV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<CommandV2Info>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56182,11 +58165,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response71
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<SkillV2Info> Data { get; set; } = new System.Collections.ObjectModel.Collection<SkillV2Info>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56206,11 +58192,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response72
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<QuestionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<QuestionV2Request>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56230,8 +58219,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response73
     {
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<QuestionV2Request> Data { get; set; } = new System.Collections.ObjectModel.Collection<QuestionV2Request>();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -56251,11 +58246,14 @@ namespace KiloVisualStudioExtension.ApiClient
     public partial class Response74
     {
 
-        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Always)]
-        public LocationInfo Location { get; set; } = new LocationInfo();
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<ReferenceInfo> Data { get; set; } = new System.Collections.ObjectModel.Collection<ReferenceInfo>();
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
         public string ToJson()
         {
@@ -57644,2004 +59642,6 @@ namespace KiloVisualStudioExtension.ApiClient
         {
 
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Response125>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response126
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response126 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response126>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response127
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response127 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response127>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response128
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response128 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response128>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response129
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response129 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response129>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response130
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response130 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response130>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response131
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response131 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response131>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response132
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response132 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response132>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response133
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response133 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response133>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response134
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response134 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response134>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response135
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response135 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response135>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response136
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response136 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response136>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response137
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response137 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response137>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response138
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response138 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response138>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response139
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response139 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response139>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response140
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response140 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response140>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response141
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response141 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response141>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response142
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response142 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response142>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response143
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response143 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response143>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response144
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response144 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response144>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response145
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response145 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response145>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response146
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response146 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response146>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response147
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response147 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response147>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response148
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response148 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response148>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response149
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response149 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response149>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response150
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response150 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response150>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response151
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response151 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response151>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response152
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response152 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response152>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response153
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response153 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response153>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response154
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response154 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response154>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response155
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response155 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response155>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response156
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response156 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response156>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response157
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response157 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response157>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response158
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response158 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response158>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response159
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response159 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response159>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response160
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response160 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response160>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response161
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response161 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response161>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response162
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response162 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response162>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response163
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response163 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response163>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response164
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response164 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response164>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response165
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response165 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response165>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response166
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response166 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response166>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response167
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response167 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response167>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response168
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response168 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response168>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response169
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response169 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response169>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response170
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response170 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response170>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response171
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response171 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response171>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response172
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response172 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response172>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response173
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response173 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response173>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response174
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response174 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response174>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response175
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response175 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response175>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response176
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response176 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response176>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response177
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response177 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response177>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response178
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response178 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response178>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response179
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response179 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response179>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response180
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response180 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response180>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response181
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response181 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response181>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response182
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response182 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response182>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response183
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response183 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response183>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response184
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response184 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response184>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response185
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response185 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response185>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response186
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response186 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response186>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response187
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response187 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response187>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response188
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response188 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response188>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response189
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response189 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response189>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response190
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response190 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response190>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response191
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response191 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response191>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response192
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response192 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response192>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response193
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response193 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response193>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response194
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response194 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response194>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response195
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response195 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response195>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response196
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response196 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response196>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response197
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response197 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response197>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response198
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response198 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response198>(data, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Response199
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-        public string ToJson()
-        {
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
-
-        }
-        public static Response199 FromJson(string data)
-        {
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Response199>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -62015,7 +62015,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous12
+    public partial class Anonymous2
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -62070,7 +62070,7 @@ namespace KiloVisualStudioExtension.ApiClient
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Status3 Status { get; set; }
+        public Status2 Status { get; set; }
 
         [Newtonsoft.Json.JsonProperty("provider", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Provider3 Provider { get; set; }
@@ -62085,7 +62085,7 @@ namespace KiloVisualStudioExtension.ApiClient
         /// Variant-specific configuration
         /// </summary>
         [Newtonsoft.Json.JsonProperty("variants", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, Anonymous22> Variants { get; set; }
+        public System.Collections.Generic.IDictionary<string, Anonymous12> Variants { get; set; }
 
         public string ToJson()
         {
@@ -62093,10 +62093,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous12 FromJson(string data)
+        public static Anonymous2 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous12>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous2>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -62147,7 +62147,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous13
+    public partial class Anonymous3
     {
 
         [Newtonsoft.Json.JsonProperty("template", Required = Newtonsoft.Json.Required.Always)]
@@ -62174,10 +62174,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous13 FromJson(string data)
+        public static Anonymous3 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous13>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous3>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -62207,7 +62207,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous14
+    public partial class Anonymous4
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -62225,16 +62225,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous14 FromJson(string data)
+        public static Anonymous4 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous14>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous4>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous15
+    public partial class Anonymous5
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -62252,10 +62252,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous15 FromJson(string data)
+        public static Anonymous5 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous15>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous5>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -62539,7 +62539,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous16
+    public partial class Anonymous6
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -62557,16 +62557,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous16 FromJson(string data)
+        public static Anonymous6 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous16>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous6>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous17
+    public partial class Anonymous7
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -62584,10 +62584,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous17 FromJson(string data)
+        public static Anonymous7 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous17>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous7>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -66067,7 +66067,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous18
+    public partial class Anonymous8
     {
 
         [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.Always)]
@@ -66107,16 +66107,16 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous18 FromJson(string data)
+        public static Anonymous8 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous18>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous8>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous19
+    public partial class Anonymous9
     {
 
         [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.Always)]
@@ -66156,10 +66156,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous19 FromJson(string data)
+        public static Anonymous9 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous19>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous9>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -66252,7 +66252,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous20
+    public partial class Anonymous10
     {
 
         [Newtonsoft.Json.JsonProperty("providerID", Required = Newtonsoft.Json.Required.Always)]
@@ -66267,10 +66267,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous20 FromJson(string data)
+        public static Anonymous10 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous20>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous10>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -66780,7 +66780,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Anonymous21
+    public enum Anonymous11
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"permission")]
@@ -74400,7 +74400,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum BodyLevel
+    public enum AppLogRequestLevel
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"debug")]
@@ -74547,7 +74547,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body13Reply
+    public enum PermissionReplyRequestReply
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"once")]
@@ -74634,7 +74634,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body20SnapshotInitialization
+    public enum SessionPromptRequestSnapshotInitialization
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"wait")]
@@ -74724,7 +74724,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body24SnapshotInitialization
+    public enum SessionPromptAsyncRequestSnapshotInitialization
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"wait")]
@@ -74790,7 +74790,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body25SnapshotInitialization
+    public enum SessionCommandRequestSnapshotInitialization
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"wait")]
@@ -74860,7 +74860,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body28Response
+    public enum PermissionRespondRequestResponse
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"once")]
@@ -74932,7 +74932,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body34Variant
+    public enum TuiShowToastRequestVariant
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"info")]
@@ -75031,7 +75031,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body39Scope
+    public enum AgentBuilderPreviewRequestScope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -75043,7 +75043,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body39Mode
+    public enum AgentBuilderPreviewRequestMode
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"primary")]
@@ -75085,7 +75085,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body40Scope
+    public enum AgentBuilderSaveRequestScope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -75097,7 +75097,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body40Mode
+    public enum AgentBuilderSaveRequestMode
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"primary")]
@@ -75139,7 +75139,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body43Scope
+    public enum ConfigOverlayUpdateRequestScope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -75151,7 +75151,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body44Scope
+    public enum ConfigRulesUpdateRequestScope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"project")]
@@ -75211,7 +75211,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body46Title_icon
+    public enum TuiConfigUpdateRequestTitle_icon
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"none")]
@@ -75274,7 +75274,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body46Diff_style
+    public enum TuiConfigUpdateRequestDiff_style
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"auto")]
@@ -75530,7 +75530,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body68File
+    public enum MemoryRememberRequestFile
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"project.md")]
@@ -75572,7 +75572,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Body73Delivery
+    public enum V2SessionPromptRequestDelivery
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"steer")]
@@ -75689,7 +75689,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Status
+    public enum ExperimentalWorkspaceStatusResponseSchema200ItemStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"connected")]
@@ -75707,7 +75707,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Response18Scope
+    public enum AgentBuilderPreviewResponseSchema200Scope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -75719,7 +75719,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Response19Scope
+    public enum AgentBuilderSaveResponseSchema200Scope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -75872,7 +75872,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Response24Type
+    public enum KiloAuthStatusResponseSchema200Type
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"api")]
@@ -76040,7 +76040,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Status2
+    public partial class Status
     {
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -76058,10 +76058,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Status2 FromJson(string data)
+        public static Status FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Status2>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Status>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }
@@ -76412,7 +76412,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Response35Type
+    public enum AnacondaDesktopSyncResponseSchema200Type
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ready")]
@@ -76445,7 +76445,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Response35Toolcall
+    public enum AnacondaDesktopSyncResponseSchema200Toolcall
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"supported")]
@@ -77545,7 +77545,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Status3
+    public enum Status2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"alpha")]
@@ -77587,7 +77587,7 @@ namespace KiloVisualStudioExtension.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous22
+    public partial class Anonymous12
     {
 
         [Newtonsoft.Json.JsonProperty("disabled", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -77608,10 +77608,10 @@ namespace KiloVisualStudioExtension.ApiClient
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
-        public static Anonymous22 FromJson(string data)
+        public static Anonymous12 FromJson(string data)
         {
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous22>(data, new Newtonsoft.Json.JsonSerializerSettings());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Anonymous12>(data, new Newtonsoft.Json.JsonSerializerSettings());
 
         }
     }

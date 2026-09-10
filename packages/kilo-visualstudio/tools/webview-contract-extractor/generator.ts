@@ -1091,28 +1091,26 @@ function generateTypeClass(typeDef: TypeDefinition, folder: string, generatedOrd
   const isRequestMessage = className.toLowerCase().includes("request") || 
     (typeDef.discriminator && typeDef.discriminator.value.toLowerCase().includes("request"))
   
+  // Add base interface if not already present
+  const hasRequestInterface = implementedInterfaces.some(i => i === "IWebviewMessageRequest")
+  const hasMessageInterface = implementedInterfaces.some(i => i === "IWebviewMessage")
+  
+  if (!hasRequestInterface) {
+    if (isRequestMessage && !hasMessageInterface) {
+      implementedInterfaces.push("IWebviewMessageRequest")
+    } else if (!isRequestMessage && !hasMessageInterface) {
+      implementedInterfaces.push("IWebviewMessage")
+    }
+  }
+  
+  // Deduplicate interfaces
+  const uniqueInterfaces = [...new Set(implementedInterfaces)]
+  
   // Build class declaration with inheritance and interfaces
   if (baseClassName) {
-    if (implementedInterfaces.length > 0) {
-      sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}, ${implementedInterfaces.join(', ')}`)
-    } else {
-      const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
-      sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}, ${baseInterface}`)
-    }
+    sb.push(`public partial class ${className} : ${pascalCase(baseClassName)}, ${uniqueInterfaces.join(', ')}`)
   } else {
-    if (implementedInterfaces.length > 0) {
-      // Check if any implemented interface is already IWebviewMessageRequest (which inherits IWebviewMessage)
-      const hasRequestInterface = implementedInterfaces.some(i => i === "IWebviewMessageRequest")
-      if (hasRequestInterface) {
-        sb.push(`public partial class ${className} : ${implementedInterfaces.join(', ')}`)
-      } else {
-        const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
-        sb.push(`public partial class ${className} : ${implementedInterfaces.join(', ')}, ${baseInterface}`)
-      }
-    } else {
-      const baseInterface = isRequestMessage ? "IWebviewMessageRequest" : "IWebviewMessage"
-      sb.push(`public partial class ${className} : ${baseInterface}`)
-    }
+    sb.push(`public partial class ${className} : ${uniqueInterfaces.join(', ')}`)
   }
   sb.push("{")
 

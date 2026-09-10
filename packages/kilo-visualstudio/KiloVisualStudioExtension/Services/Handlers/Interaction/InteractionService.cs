@@ -182,7 +182,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                 part.AdditionalProperties["type"] = "text";
                 part.AdditionalProperties["text"] = text;
                 
-                var promptBody = new Body24 
+                var promptBody = new SessionPromptAsyncRequest 
                 { 
                     Parts = new System.Collections.Generic.List<Parts2> { part } 
                 };
@@ -266,7 +266,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             {
                 try
                 {
-                    var saveBody = new Body14
+                    var saveBody = new PermissionSaveAlwaysRulesRequest
                     {
                         ApprovedAlways = approvedAlways.ToList(),
                         DeniedAlways = deniedAlways.ToList()
@@ -294,13 +294,13 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
             {
                 var reply = response.ToLowerInvariant() switch
                 {
-                    "approve" or "allow" => Body13Reply.Once,
-                    "always" => Body13Reply.Always,
-                    "reject" or "deny" => Body13Reply.Reject,
-                    _ => Body13Reply.Once
+                    "approve" or "allow" => PermissionReplyRequestReply.Once,
+                    "always" => PermissionReplyRequestReply.Always,
+                    "reject" or "deny" => PermissionReplyRequestReply.Reject,
+                    _ => PermissionReplyRequestReply.Once
                 };
 
-                await nswagClient.Permission_replyAsync(requestId, dir, "", new Body13 
+                await nswagClient.Permission_replyAsync(requestId, dir, "", new PermissionReplyRequest 
                 { 
                     Reply = reply,
                     Message = response 
@@ -391,7 +391,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Interaction
                         questionAnswerList.Add(qa);
                     }
                     
-                    var replyBody = new Body12 { Answers = questionAnswerList };
+                    var replyBody = new QuestionReplyRequest { Answers = questionAnswerList };
                     await nswagClient.Question_replyAsync(requestId, dir, "", replyBody);
                     _questionDirectories.Remove(requestId);
                     System.Diagnostics.Debug.WriteLine("[Kilo] InteractionHandler: question reply sent");

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SkillInfo = KiloVisualStudioExtension.ApiClient.Anonymous3;
 
 namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
 {
@@ -181,7 +180,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
       try
       {
         var workspaceDir = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
-        var skills = await nswagClient.App_skillsAsync(workspaceDir, "") ?? new List<SkillInfo>();
+        var skills = await nswagClient.App_skillsAsync(workspaceDir, "") ?? new List<AppSkillsResponseSchema200Item>();
         var message = new SkillsLoadedMessage
         {
           Skills = skills.Select(EntityConverter.Convert).ToList()
@@ -262,14 +261,14 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     // }
     public async Task HandleRequestKiloEmbeddingModelsAsync(JsonElement? payload)
     {
-      var catalog = await FetchKiloEmbeddingModelCatalog();
+      var catalog = await FetchKiloEmbeddingModelCatalogAsync();
       var message = new { type = "kiloEmbeddingModelsLoaded", catalog };
       var messageJson = JsonSerializer.SerializeToElement(message);
       await Cache.UpdateAsync("kiloEmbeddingModelsLoadedMessage", messageJson);
       Provider.PostMessage(messageJson);
     }
 
-    private async Task<object> FetchKiloEmbeddingModelCatalog()
+    private async Task<object> FetchKiloEmbeddingModelCatalogAsync()
     {
       return new { };
     }
@@ -293,7 +292,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
     public async Task HandleRequestImageModelsAsync(JsonElement? payload)
     {
       var dir = ServiceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory();
-      var result = await FetchImageModels(dir);
+      var result = await FetchImageModelsAsync(dir);
       if (!result.Ok)
       {
         var cachedMessage = Cache.GetJson("imageModelsLoadedMessage");
@@ -309,7 +308,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.MiscRequest
       Provider.PostMessage(messageJson);
     }
 
-    private async Task<(bool Ok, object Models)> FetchImageModels(string dir)
+    private async Task<(bool Ok, object Models)> FetchImageModelsAsync(string dir)
     {
       return (true, new object[0]);
     }

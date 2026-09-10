@@ -157,14 +157,14 @@ namespace KiloVisualStudioExtension.Services.Git
 //   if (head.error) return done(dir, `Unable to read git changes: ${head.error}`)
     if (head.Error != null) return Done(dir, $"Unable to read git changes: {head.Error}");
 //   if (base && head.code === 0) return await against(dir, base)
-    if (@base != null && head.Code == 0) return await Against(dir, @base);
+    if (@base != null && head.Code == 0) return await AgainstAsync(dir, @base);
 //   return await local(dir, head.code === 0)
-    return await Local(dir, head.Code == 0);
+    return await LocalAsync(dir, head.Code == 0);
   // }
 }
 //
 // async function local(dir: string, born: boolean): Promise<{ content: string; truncated: boolean }> {
-async Task<ContextResult> Local(string dir, bool born)
+async Task<ContextResult> LocalAsync(string dir, bool born)
     // {
     {
       //   const [status, diff, untracked] = await Promise.all([
@@ -172,7 +172,7 @@ async Task<ContextResult> Local(string dir, bool born)
 //     run(["status", "--short"], dir, SMALL),
         Run(new[] { "status", "--short" }, dir, SMALL),
 //     changes(dir, born),
-        Changes(dir, born),
+        ChangesAsync(dir, born),
 //     run(["ls-files", "--others", "--exclude-standard", "-z"], dir, SMALL),
         Run(new[] { "ls-files", "--others", "--exclude-standard", "-z" }, dir, SMALL),
 //   ])
@@ -194,7 +194,7 @@ async Task<ContextResult> Local(string dir, bool born)
         return Done(dir, $"Unable to read untracked files:\n{Output(untracked)}".Trim());
       //
       //   const extra = await untrackedDiff(dir, untracked.out)
-      var extra = await UntrackedDiff(dir, untracked.Out);
+      var extra = await UntrackedDiffAsync(dir, untracked.Out);
       //   const body = [diff.out.trim(), extra.content.trim()].filter(Boolean).join("\n\n")
       var body = new[] { diff.Out.Trim(), extra.Content.Trim() }.Where(s => s != "").Join("\n\n");
       //   const changed = status.out.trim() || body.trim()
@@ -218,7 +218,7 @@ async Task<ContextResult> Local(string dir, bool born)
     }
     //
     // async function against(dir: string, base: string): Promise<{ content: string; truncated: boolean }> {
-    async Task<ContextResult> Against(string dir, string @base)
+    async Task<ContextResult> AgainstAsync(string dir, string @base)
     // {
     {
       //   const ancestor = await run(["merge-base", "HEAD", base], dir, SMALL)
@@ -259,7 +259,7 @@ async Task<ContextResult> Local(string dir, bool born)
         return Done(dir, $"Unable to read untracked files:\n{Output(untracked)}".Trim());
       //
       //   const extra = await untrackedDiff(dir, untracked.out)
-      var extra = await UntrackedDiff(dir, untracked.Out);
+      var extra = await UntrackedDiffAsync(dir, untracked.Out);
       //   const files = [status.out.trim(), listed(untracked.out)].filter(Boolean).join("\n")
       var files = new[] { status.Out.Trim(), Listed(untracked.Out) }.Where(s => s != "").Join("\n");
       //   const body = [diff.out.trim(), extra.content.trim()].filter(Boolean).join("\n\n")
@@ -302,7 +302,7 @@ async Task<ContextResult> Local(string dir, bool born)
     }
     //
     // async function changes(dir: string, born: boolean): Promise<Result> {
-    async Task<Result> Changes(string dir, bool born)
+    async Task<Result> ChangesAsync(string dir, bool born)
     // {
     {
       //   if (born) return run(["diff", "HEAD"], dir, LIMIT)
@@ -335,7 +335,7 @@ async Task<ContextResult> Local(string dir, bool born)
 
     //
     // async function untrackedDiff(dir: string, raw: string): Promise<{ content: string; truncated: boolean }> {
-    async Task<ContextResult> UntrackedDiff(string dir, string raw)
+    async Task<ContextResult> UntrackedDiffAsync(string dir, string raw)
     // {
     {
       //   const files = raw.split("\0").filter(Boolean)
@@ -658,7 +658,7 @@ async Task<ContextResult> Local(string dir, bool born)
       var typedMessage = (RequestGitChangesContextMessage)message;
       if (!string.IsNullOrEmpty(typedMessage.ContextDirectory) || !string.IsNullOrEmpty(typedMessage.GitChangesBase))
         return (IWebviewMessage)typedMessage;
-      var target = await ResolveLocalDiffTarget(Ops(), (s) => { }, Dir);
+      var target = await ResolveLocalDiffTargetAsync(Ops(), (s) => { }, Dir);
       if (target == null)
       {
         typedMessage.ContextDirectory = Dir;
@@ -703,7 +703,7 @@ async Task<ContextResult> Local(string dir, bool born)
     /// <param name="log">Logging action.</param>
     /// <param name="root">Optional workspace root directory.</param>
     /// <returns>LocalDiffTarget if resolved, null otherwise.</returns>
-    public async Task<LocalDiffTarget?> ResolveLocalDiffTarget(
+    public async Task<LocalDiffTarget?> ResolveLocalDiffTargetAsync(
         GitOps gitOps,
         Action<string> log,
         string? root = null)
@@ -714,19 +714,19 @@ async Task<ContextResult> Local(string dir, bool born)
         return null;
       }
 
-      var branch = await gitOps.CurrentBranch(root);
+      var branch = await gitOps.CurrentBranchAsync(root);
       if (string.IsNullOrEmpty(branch) || branch == "HEAD")
       {
         log("Local diff: detached HEAD or no branch");
         return null;
       }
 
-      var tracking = await gitOps.ResolveTrackingBranch(root, branch);
+      var tracking = await gitOps.ResolveTrackingBranchAsync(root, branch);
       var fallback = tracking != null
           ? null
-          : await gitOps.ResolveDefaultBranch(root, branch);
+          : await gitOps.ResolveDefaultBranchAsync(root, branch);
       var raw = tracking ?? fallback ?? "HEAD";
-      var baseBranch = await ResolveBase(gitOps, root, raw);
+      var baseBranch = await ResolveBaseAsync(gitOps, root, raw);
 
       log($"Local diff: branch={branch} tracking={tracking ?? "none"} default={fallback ?? "none"} base={baseBranch}");
 
@@ -742,7 +742,7 @@ async Task<ContextResult> Local(string dir, bool born)
     /// <summary>
     /// Resolves the base branch for comparison.
     /// </summary>
-    private async Task<string> ResolveBase(GitOps git, string root, string gitBase)
+    private async Task<string> ResolveBaseAsync(GitOps git, string root, string gitBase)
     {
       // If the caller gave an explicit base, honor it. Return it as-is so merge-base
       // fails loudly on a stale/misspelled ref instead of silently diffing against

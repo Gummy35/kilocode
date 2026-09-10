@@ -206,9 +206,9 @@ namespace KiloVisualStudioExtension.Services.Handlers.Ui
 
 
 
-    internal async Task<bool> HandleEditorOpenMessage(IEditorActionMessage message)
+    internal async Task<bool> HandleEditorOpenMessageAsync(IEditorActionMessage message)
     {      
-      return await EditorActions.HandleEditorAction(message, new EditorActions.Options
+      return await EditorActions.HandleEditorActionAsync(message, new EditorActions.Options
       {
         Dir = () => _serviceProvider.GetService<ProjectDirectoryProvider>().GetWorkspaceDirectory(Provider.GetCurrentSessionID()),
         Storage = null, //this.extensionContext?.globalStorageUri,

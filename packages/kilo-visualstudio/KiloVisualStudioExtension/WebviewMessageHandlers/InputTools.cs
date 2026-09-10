@@ -34,7 +34,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
 
     {
       if (message is RequestAutocompleteSettingsMessage)
-        await ctx.ServiceProvider.GetService<SettingsService>().SendAutocompleteSettings();
+        await ctx.ServiceProvider.GetService<SettingsService>().SendAutocompleteSettingsAsync();
 
       //   if (message.type === "speechToTextPrewarm") {
       if (message is SpeechToTextPrewarmMessage)
@@ -58,7 +58,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       {
         if (string.IsNullOrEmpty(speechToTextStartMessage.RequestId)) return true;
         //     handleSpeechToTextStart(
-        await HandleSpeechToTextStart(
+        await HandleSpeechToTextStartAsync(
             //       { requestId: message.requestId, model: message.model, language: message.language },
             new SpeechToTextStartOptions
             {
@@ -81,7 +81,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       {
         if (string.IsNullOrEmpty(speechToTextStopMessage.RequestId)) return true;
         //     handleSpeechToTextStop(ctx.connection, { requestId: message.requestId }, ctx.dir, ctx.post)
-        await HandleSpeechToTextStop(
+        await HandleSpeechToTextStopAsync(
             ctx.Connection,
             new SpeechToTextStopOptions { RequestId = speechToTextStopMessage.RequestId },
             ctx.Directory,
@@ -135,7 +135,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       return ctx.ServiceProvider.GetService<CaptureService>().PrewarmSpeechCaptureAsync();
     }
     //
-    private static async Task HandleSpeechToTextStart(SpeechToTextStartOptions options, EarlyMessageRouter.Ctx ctx)
+    private static async Task HandleSpeechToTextStartAsync(SpeechToTextStartOptions options, EarlyMessageRouter.Ctx ctx)
     {
       ModelStateService.PostMessage post = ctx.Post;
       var task = ctx.ServiceProvider.GetService<CaptureService>().StartSpeechCaptureAsync(
@@ -165,11 +165,11 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
       }
     }
     //
-    private static async Task HandleSpeechToTextStop(KiloConnectionService connection, SpeechToTextStopOptions options, string dir, EarlyMessageRouter.Ctx ctx)
+    private static async Task HandleSpeechToTextStopAsync(KiloConnectionService connection, SpeechToTextStopOptions options, string dir, EarlyMessageRouter.Ctx ctx)
     {
       var ctrl = new CancellationTokenSource();
       var ready = _starts.TryGetValue(options.RequestId, out var task)
-          ? AsyncUtils.SafeTask(task)
+          ? AsyncUtils.SafeTaskAsync(task)
           : Task.FromResult(true);
 
       _aborts[options.RequestId] = ctrl;
@@ -240,7 +240,7 @@ namespace KiloVisualStudioExtension.WebviewMessageHandlers
         _cancelled.Add(options.RequestId);
         _stopping.Remove(options.RequestId);
 
-        _ = AsyncUtils.SafeTask(ready)
+        _ = AsyncUtils.SafeTaskAsync(ready)
             .ContinueWith(async t =>
             {
               try

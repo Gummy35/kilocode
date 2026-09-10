@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using AuthState = KiloVisualStudioExtension.ApiClient.Response24Type;
-using ProviderListResponse = KiloVisualStudioExtension.ApiClient.Response10;
+using AuthState = KiloVisualStudioExtension.ApiClient.KiloAuthStatusResponseSchema200Type;
+using ProviderListResponse = KiloVisualStudioExtension.ApiClient.ProviderListResponseSchema200;
 
 namespace KiloVisualStudioExtension.Services.Handlers.ProviderRequest
 {

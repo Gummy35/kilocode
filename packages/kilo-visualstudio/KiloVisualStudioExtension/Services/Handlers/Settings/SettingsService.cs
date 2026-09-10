@@ -32,7 +32,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// </summary>
     /// <param name="payload">The message payload (unused).</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task SendIndexingSettings()
+    public async Task SendIndexingSettingsAsync()
     {
       Provider.PostMessage(BuildIndexingSettingsMessage());
     }
@@ -54,7 +54,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// Sends the current chat settings to the webview.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task SendChatSettings()
+    public async Task SendChatSettingsAsync()
     {
       Provider.PostMessage(BuildChatSettingsMessage());
     }
@@ -75,7 +75,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// Sends the current throughput setting to the webview.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task SendThroughputSetting()
+    public async Task SendThroughputSettingAsync()
     {
       Provider.PostMessage(BuildThroughputSettingMessage());
     }
@@ -93,7 +93,7 @@ namespace KiloVisualStudioExtension.Services.Handlers.Settings
     /// Sends the current autocomplete settings to the webview.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task SendAutocompleteSettings()
+    public async Task SendAutocompleteSettingsAsync()
     {
       Provider.PostMessage(BuildAutocompleteSettingsMessage());
     }

@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PermissionResponse = KiloVisualStudioExtension.ApiClient.Body13Reply;
-using PermissionReplyRequestBody = KiloVisualStudioExtension.ApiClient.Body13;
 using KiloVisualStudioExtension.Utils;
 using Microsoft.VisualStudio.Utilities;
 
@@ -95,11 +93,11 @@ namespace KiloVisualStudioExtension.Services
       var prop = obj?.GetType().GetProperty(name);
       return prop?.GetValue(obj);
     }
-    public async Task HandlePermissionResponse(
+    public async Task HandlePermissionResponseAsync(
             PermissionContext ctx,
             string permissionId,
             string sessionID,
-            PermissionResponse response,
+            PermissionReplyRequestReply response,
             string[] approvedAlways,
             string[] deniedAlways)
     {
@@ -126,7 +124,7 @@ namespace KiloVisualStudioExtension.Services
       {
         ctx.ClearPermissionDirectory(permissionId);
         ctx.PostMessage(new PermissionErrorMessage { PermissionID = permissionId, Stale = true });
-        _ = FetchAndSendPendingPermissions(ctx);
+        _ = FetchAndSendPendingPermissionsAsync(ctx);
       }
 
       if (approvedAlways.Length > 0 || deniedAlways.Length > 0)
@@ -134,7 +132,7 @@ namespace KiloVisualStudioExtension.Services
         string saveResult;
         try
         {
-          await ctx.Client.Permission_saveAlwaysRulesAsync(permissionId, dir, "", new Body14
+          await ctx.Client.Permission_saveAlwaysRulesAsync(permissionId, dir, "", new PermissionSaveAlwaysRulesRequest
           {
             ApprovedAlways = approvedAlways,
             DeniedAlways = deniedAlways
@@ -171,7 +169,7 @@ namespace KiloVisualStudioExtension.Services
           permissionId,
           dir,
           "",
-          new PermissionReplyRequestBody
+          new PermissionReplyRequest
           {
             Reply = response
           });
@@ -199,7 +197,7 @@ namespace KiloVisualStudioExtension.Services
       }
     }
 
-    public async Task FetchAndSendPendingPermissions(PermissionContext ctx)
+    public async Task FetchAndSendPendingPermissionsAsync(PermissionContext ctx)
     {
       if (ctx.Client == null) return;
 
